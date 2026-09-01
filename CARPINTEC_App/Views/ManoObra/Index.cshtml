@@ -1,3 +1,4 @@
+@model IEnumerable<CARPINTEC_App.Models.ManoObra>
 
 <!DOCTYPE html>
 
@@ -155,7 +156,7 @@
                         <option value="finalizado">Finalizado</option>
                     </select>
                     <!-- New Assignment Button -->
-                    <button class="bg-primary text-on-primary hover:bg-primary/90 px-6 py-2 rounded-lg font-label-md text-label-md flex items-center gap-2 transition-colors active:bg-primary/80 focus:ring-2 focus:ring-primary-container focus:outline-none shadow-sm">
+                    <button type="button" onclick="abrirModalAsignacion()" class="bg-primary text-on-primary hover:bg-primary/90 px-6 py-2 rounded-lg font-label-md text-label-md flex items-center gap-2 transition-colors active:bg-primary/80 focus:ring-2 focus:ring-primary-container focus:outline-none shadow-sm">
                         <span class="material-symbols-outlined" data-icon="add">add</span>
                         Nueva asignación
                     </button>
@@ -249,111 +250,55 @@
                             </tr>
                         </thead>
                         <tbody class="font-body-sm text-body-sm text-on-surface">
-                            <!-- Row 1 (En proceso) -->
-                            <tr class="border-b border-outline-variant/20 hover:bg-surface-container-low/50 transition-colors">
-                                <td class="p-4 font-medium text-primary">#MO-1042</td>
-                                <td class="p-4">Mesa Comedor Roble</td>
-                                <td class="p-4 flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-primary font-bold text-xs">JC</div>
-                                    Juan Carlos
-                                </td>
-                                <td class="p-4 text-on-surface-variant">Ebanista Senior</td>
-                                <td class="p-4">Ensamblaje y Lijado</td>
-                                <td class="p-4 text-right">18h</td>
-                                <td class="p-4 text-right">$450.00</td>
-                                <td class="p-4 text-center">
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-container/50 text-secondary font-label-md text-[12px]">
-                                        <span class="w-2 h-2 rounded-full bg-secondary"></span>
-                                        En proceso
-                                    </span>
-                                </td>
-                                <td class="p-4 text-center">
-                                    <div class="flex items-center justify-center gap-2 text-outline">
-                                        <button class="hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]" data-icon="visibility">visibility</span></button>
-                                        <button class="hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span></button>
-                                        <button class="hover:text-error transition-colors"><span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span></button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <!-- Row 2 (Finalizado) - Zebra Striping -->
-                            <tr class="border-b border-outline-variant/20 bg-surface-container-low/30 hover:bg-surface-container-low/70 transition-colors">
-                                <td class="p-4 font-medium text-primary">#MO-1041</td>
-                                <td class="p-4">Sillas Comedor (x6)</td>
-                                <td class="p-4 flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-container font-bold text-xs">MR</div>
-                                    María Rodríguez
-                                </td>
-                                <td class="p-4 text-on-surface-variant">Especialista Barniz</td>
-                                <td class="p-4">Acabado y Barnizado</td>
-                                <td class="p-4 text-right">12h</td>
-                                <td class="p-4 text-right">$280.00</td>
-                                <td class="p-4 text-center">
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-tertiary-fixed text-tertiary font-label-md text-[12px]">
-                                        <span class="w-2 h-2 rounded-full bg-tertiary"></span>
-                                        Finalizado
-                                    </span>
-                                </td>
-                                <td class="p-4 text-center">
-                                    <div class="flex items-center justify-center gap-2 text-outline">
-                                        <button class="hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]" data-icon="visibility">visibility</span></button>
-                                        <button class="hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span></button>
-                                        <button class="hover:text-error transition-colors"><span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span></button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <!-- Row 3 (Pendiente) -->
-                            <tr class="border-b border-outline-variant/20 hover:bg-surface-container-low/50 transition-colors">
-                                <td class="p-4 font-medium text-primary">#MO-1045</td>
-                                <td class="p-4">Estantería Biblioteca</td>
-                                <td class="p-4 flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold text-xs">LG</div>
-                                    Luis Gómez
-                                </td>
-                                <td class="p-4 text-on-surface-variant">Carpintero Junior</td>
-                                <td class="p-4">Corte de Piezas</td>
-                                <td class="p-4 text-right">0h</td>
-                                <td class="p-4 text-right">$0.00</td>
-                                <td class="p-4 text-center">
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-error-container text-error font-label-md text-[12px]">
-                                        <span class="w-2 h-2 rounded-full bg-error"></span>
-                                        Pendiente
-                                    </span>
-                                </td>
-                                <td class="p-4 text-center">
-                                    <div class="flex items-center justify-center gap-2 text-outline">
-                                        <button class="hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]" data-icon="visibility">visibility</span></button>
-                                        <button class="hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span></button>
-                                        <button class="hover:text-error transition-colors"><span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span></button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <!-- Row 4 (En proceso) - Zebra Striping -->
-                            <tr class="border-b border-outline-variant/20 bg-surface-container-low/30 hover:bg-surface-container-low/70 transition-colors">
-                                <td class="p-4 font-medium text-primary">#MO-1046</td>
-                                <td class="p-4">Puerta Principal Caoba</td>
-                                <td class="p-4 flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-primary font-bold text-xs">AS</div>
-                                    Ana Silva
-                                </td>
-                                <td class="p-4 text-on-surface-variant">Ebanista Senior</td>
-                                <td class="p-4">Tallado a Mano</td>
-                                <td class="p-4 text-right">24h</td>
-                                <td class="p-4 text-right">$720.00</td>
-                                <td class="p-4 text-center">
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-container/50 text-secondary font-label-md text-[12px]">
-                                        <span class="w-2 h-2 rounded-full bg-secondary"></span>
-                                        En proceso
-                                    </span>
-                                </td>
-                                <td class="p-4 text-center">
-                                    <div class="flex items-center justify-center gap-2 text-outline">
-                                        <button class="hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]" data-icon="visibility">visibility</span></button>
-                                        <button class="hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span></button>
-                                        <button class="hover:text-error transition-colors"><span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span></button>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
+                         <tbody>
+    @foreach (var item in Model)
+    {
+        <tr class="border-b border-gray-100 hover:bg-gray-50/50 transition">
+            <td class="py-4 px-6 font-bold text-blue-600">@item.CodigoOrden</td>
+            <td class="py-4 px-6 text-gray-800 font-medium">Pedido #@item.IdPedido</td>
+            <td class="py-4 px-6">
+                <div class="flex items-center gap-2">
+                    <span class="w-7 h-7 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold">
+                        EMP
+                    </span>
+                    <span class="text-gray-700">ID: @item.IdEmpleado</span>
+                </div>
+            </td>
+            <td class="py-4 px-6 text-gray-600">Producto #@item.IdProducto</td>
+            <td class="py-4 px-6 text-gray-600">@item.Proceso</td>
+            <td class="py-4 px-6 text-gray-700 font-semibold">@(item.HorasReales ?? item.HorasEstimadas)h</td>
+            <td class="py-4 px-6 text-gray-900 font-bold">$@string.Format("{0:N2}", (item.HorasReales ?? item.HorasEstimadas) * item.CostoHora)</td>
+            <td class="py-4 px-6">
+                @if (item.Estado == "Completada" || item.Estado == "Finalizado")
+                {
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> @item.Estado
+                    </span>
+                }
+                else if (item.Estado == "En proceso")
+                {
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700">
+                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> @item.Estado
+                    </span>
+                }
+                else
+                {
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-rose-50 text-rose-700">
+                        <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> @item.Estado
+                    </span>
+                }
+            </td>
+            <td class="py-4 px-6 flex items-center gap-2 text-gray-400">
+                <a href="/ManoObra/Detalles/@item.IdManoObra" class="hover:text-blue-600 transition"><span class="material-symbols-outlined text-sm">visibility</span></a>
+                <a href="/ManoObra/Editar/@item.IdManoObra" class="hover:text-blue-600 transition"><span class="material-symbols-outlined text-sm">edit</span></a>
+                <a href="/ManoObra/Eliminar/@item.IdManoObra" class="hover:text-rose-600 transition"><span class="material-symbols-outlined text-sm">delete</span></a>
+            </td>
+        </tr>
+    }
+</tbody>
+                                
+                            
+                        
                     </table>
                 </div>
                 <!-- Pagination -->
@@ -374,4 +319,158 @@
             </div>
         </main>
     </div>
+
+    <!-- Ventana Emergente: Nueva Asignación de Mano de Obra -->
+    <div id="modalNuevaAsignacion" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6 space-y-6 relative max-h-[90vh] overflow-y-auto">
+
+            <!-- Cabecera -->
+            <div class="flex items-center justify-between border-b border-gray-100 pb-4">
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-blue-600">badge</span>
+                        Nueva Asignación de Mano de Obra
+                    </h3>
+                    <p class="text-xs text-gray-500">Registra las horas y costos asociados a una actividad de producción.</p>
+                </div>
+                <button type="button" onclick="cerrarModalAsignacion()" class="text-gray-400 hover:text-gray-600">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <!-- Formulario -->
+            <form asp-controller="ManoObra" asp-action="Crear" method="post" class="space-y-4">
+
+                <!-- Pedido Asociado y Empleado -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Pedido Asociado</label>
+                        <select name="IdPedido" class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option value="">Seleccionar pedido...</option>
+                            <!-- Aquí puedes iterar tu ViewBag.ListaPedidos si aplica -->
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Empleado Responsable</label>
+                        <select name="IdEmpleado" class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option value="">Seleccionar empleado...</option>
+                            <!-- Aquí puedes iterar tu ViewBag.ListaEmpleados si aplica -->
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Producto/Proyecto y Tipo de Actividad -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-1">
+                                Producto o Proyecto
+                            </label>
+
+                            <select name="IdProducto"
+                                    class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none">
+
+                                <option value="">Seleccionar producto...</option>
+
+                                @foreach (var producto in ViewBag.ListaProductos)
+                                {
+                                    <option value="@producto.IdProducto">
+                                        @producto.Nombre
+                                    </option>
+                                }
+
+                            </select>
+                        </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Tipo de Actividad</label>
+                        <select name="Proceso" class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option value="Diseño">Diseño</option>
+                            <option value="Corte">Corte</option>
+                            <option value="Ensamblaje">Ensamblaje</option>
+                            <option value="Lijado">Lijado</option>
+                            <option value="Pintura">Pintura</option>
+                            <option value="Instalación">Instalación</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Fechas -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Fecha de Inicio</label>
+                        <input type="date" name="FechaInicio" class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Fecha de Finalización</label>
+                        <input type="date" name="FechaFin" class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none" />
+                    </div>
+                </div>
+
+                <!-- Costos y Horas (Cálculo automático) -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Horas Trabajadas</label>
+                        <input type="number" id="inputHoras" name="HorasReales" step="0.5" placeholder="Ej. 8" oninput="calcularTotal()" class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Costo por Hora</label>
+                        <input type="number" id="inputCostoHora" name="CostoHora" step="0.01" placeholder="Ej. 15.00" oninput="calcularTotal()" class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Costo Total</label>
+                            <input type="text"
+                                   id="inputCostoTotal"
+                                   readonly
+                                   placeholder="$0.00"
+                                   class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-100 font-bold text-blue-600 outline-none cursor-not-allowed" />
+                    </div>
+                </div>
+
+                <!-- Estado -->
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Estado</label>
+                        <select name="Estado"
+                                class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none">
+
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="En proceso">En proceso</option>
+                            <option value="Completada">Completada</option>
+
+                        </select>
+                </div>
+
+                <!-- Observaciones -->
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Observaciones</label>
+                    <textarea name="Observaciones" rows="2" placeholder="Detalles adicionales sobre la labor realizada..." class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+                </div>
+
+                <!-- Botones de Acción -->
+                <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
+                    <button type="button" onclick="cerrarModalAsignacion()" class="px-4 py-2 text-xs font-bold text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-4 py-2 text-xs font-bold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition shadow">
+                        Guardar actividad
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+            // Funciones para abrir/cerrar y calcular automáticamente el costo total
+            function abrirModalAsignacion() {
+                document.getElementById('modalNuevaAsignacion').classList.remove('hidden');
+            }
+            function cerrarModalAsignacion() {
+                document.getElementById('modalNuevaAsignacion').classList.add('hidden');
+            }
+            function calcularTotal() {
+                let horas = parseFloat(document.getElementById('inputHoras').value) || 0;
+                let costoHora = parseFloat(document.getElementById('inputCostoHora').value) || 0;
+                let total = horas * costoHora;
+                document.getElementById('inputCostoTotal').value = "$" + total.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }
+    </script>
 </body></html>

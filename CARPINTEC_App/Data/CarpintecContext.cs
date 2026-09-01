@@ -27,7 +27,7 @@ public partial class CarpintecContext : DbContext
     public virtual DbSet<DetallePedido> DetallePedidos { get; set; }
     public virtual DbSet<Empleado> Empleados { get; set; }
     public virtual DbSet<Inventario> Inventarios { get; set; }
-    public virtual DbSet<ManoObra> ManoObras { get; set; }
+    public virtual DbSet<ManoObra> ManoObra { get; set; }
     
     public virtual DbSet<Pedido> Pedidos { get; set; }
     public virtual DbSet<Pqr> Pqrs { get; set; }
@@ -39,6 +39,7 @@ public partial class CarpintecContext : DbContext
     public DbSet<SolicitudReposicion> SolicitudesReposicion { get; set; }
     public DbSet<MovimientoInventario> MovimientosInventario { get; set; }
 
+    public DbSet<AsignacionManoObra> AsignacionesManoObra { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)

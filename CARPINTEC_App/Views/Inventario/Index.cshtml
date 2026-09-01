@@ -158,44 +158,49 @@
     </button>
 
     <!-- Main Content Canvas -->
-    <main class="pt-4 min-h-screen bg-background">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6"><h1 class="text-headline-xl font-headline-xl font-bold text-primary dark:text-primary-fixed">Inventario</h1></div>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-lg">
-            <!-- Summary Stats Bento Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md">
-                <div class="bg-surface-container-lowest p-md rounded-xl wood-shadow border border-outline-variant/20">
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="text-label-md text-on-surface-variant">Productos Totales</span>
-                        <span class="material-symbols-outlined text-primary">inventory</span>
-                    </div>
-                    <p class="text-headline-lg font-headline-lg text-primary">342</p>
-                    <p class="text-body-sm text-tertiary mt-2">↑ 12 nuevos este mes</p>
-                </div>
-                <div class="bg-error-container/30 p-md rounded-xl wood-shadow border border-error/20">
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="text-label-md text-on-surface-variant">Stock Bajo</span>
-                        <span class="material-symbols-outlined text-error">warning</span>
-                    </div>
-                    <p class="text-headline-lg font-headline-lg text-error">18</p>
-                    <p class="text-body-sm text-error mt-2">Requieren atención inmediata</p>
-                </div>
-                <div class="bg-surface-container-lowest p-md rounded-xl wood-shadow border border-outline-variant/20">
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="text-label-md text-on-surface-variant">Valor Inventario</span>
-                        <span class="material-symbols-outlined text-primary">payments</span>
-                    </div>
-                    <p class="text-headline-lg font-headline-lg text-primary">$285.600k</p>
-                    <p class="text-body-sm text-on-surface-variant mt-2">Basado en precio de compra</p>
-                </div>
-                <div class="bg-surface-container-lowest p-md rounded-xl wood-shadow border border-outline-variant/20">
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="text-label-md text-on-surface-variant">Movimientos</span>
-                        <span class="material-symbols-outlined text-primary">sync_alt</span>
-                    </div>
-                    <p class="text-headline-lg font-headline-lg text-primary">128</p>
-                    <p class="text-body-sm text-on-surface-variant mt-2">Últimos 30 días</p>
-                </div>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+
+        <!-- Tarjeta 1: Productos Totales -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-2">
+            <div class="flex items-center justify-between text-gray-500">
+                <span class="text-xs font-bold uppercase tracking-wider">Productos Totales</span>
+                <span class="material-symbols-outlined text-blue-600">inventory_2</span>
             </div>
+            <h3 class="text-3xl font-bold text-gray-900">@ViewBag.TotalProductos</h3>
+            <p class="text-xs text-gray-400">Total en catálogo actual</p>
+        </div>
+
+        <!-- Tarjeta 2: Stock Bajo -->
+        <div class="bg-red-50/40 rounded-2xl shadow-sm border border-red-100 p-6 space-y-2">
+            <div class="flex items-center justify-between text-red-600">
+                <span class="text-xs font-bold uppercase tracking-wider">Stock Bajo</span>
+                <span class="material-symbols-outlined">warning</span>
+            </div>
+            <h3 class="text-3xl font-bold text-red-600">@ViewBag.TotalStockBajo</h3>
+            <p class="text-xs text-red-500 font-medium">Requieren atención inmediata</p>
+        </div>
+
+        <!-- Tarjeta 3: Valor Inventario -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-2">
+            <div class="flex items-center justify-between text-gray-500">
+                <span class="text-xs font-bold uppercase tracking-wider">Valor Inventario</span>
+                <span class="material-symbols-outlined text-blue-600">payments</span>
+            </div>
+            <h3 class="text-3xl font-bold text-gray-900">$@string.Format("{0:N0}", ViewBag.ValorInventario)</h3>
+            <p class="text-xs text-gray-400">Basado en precio de compra</p>
+        </div>
+
+        <!-- Tarjeta 4: Movimientos -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-2">
+            <div class="flex items-center justify-between text-gray-500">
+                <span class="text-xs font-bold uppercase tracking-wider">Movimientos</span>
+                <span class="material-symbols-outlined text-blue-600">swap_vert</span>
+            </div>
+            <h3 class="text-3xl font-bold text-gray-900">@ViewBag.TotalMovimientos</h3>
+            <p class="text-xs text-gray-400">Últimos 30 días</p>
+        </div>
+
+    </div>
             <!-- Main Actions & Filters -->
             <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
                 <div class="flex bg-surface-container-high p-1 rounded-lg">
@@ -350,97 +355,94 @@
                     </table>
                     </div>
                 </div>
-            </div>
+            
             <!-- Recent Stock History / Entries & Exits -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-md">
-                <div class="lg:col-span-2 bg-surface-container-lowest p-md rounded-xl wood-shadow border border-outline-variant/20">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-headline-md font-headline-md text-primary">Historial de Movimientos</h3>
-                        <a class="text-label-md font-bold text-primary hover:underline" href="#">Ver reporte completo</a>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Columna Izquierda: Historial de Movimientos (Ocupa 2 espacios) -->
+                <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-4">
+                    <div class="flex items-center justify-between border-b border-gray-100 pb-4">
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">Historial de Movimientos</h3>
+                            <p class="text-xs text-gray-500">Registro en Tiempo Real</p>
+                        </div>
+                        <div class="flex items-center gap-1.5 px-3 py-1 bg-green-50 text-green-700 rounded-full text-xs font-semibold">
+                            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                            LIVE
+                        </div>
                     </div>
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between p-4 bg-surface-container-low rounded-lg border border-outline-variant/10">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-full bg-tertiary/10 text-tertiary flex items-center justify-center">
-                                    <span class="material-symbols-outlined">south_east</span>
+
+                    <div class="space-y-3">
+                        @{
+                            var movimientos = ViewBag.HistorialMovimientos as List<CARPINTEC_App.Models.MovimientoInventario>;
+                        }
+                        @if (movimientos != null && movimientos.Any())
+                        {
+                            @foreach (var mov in movimientos)
+                            {
+                                <div class="flex items-center justify-between p-4 rounded-xl bg-gray-50/50 border border-gray-100">
+                                    <div class="flex items-center gap-3">
+                                        <div class="p-2 rounded-full @(mov.Tipo == "Entrada" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700")">
+                                            <span class="material-symbols-outlined text-base">
+                                                @(mov.Tipo == "Entrada" ? "arrow_downward" : "arrow_upward")
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-sm font-bold text-gray-800">@mov.Tipo: @mov.NombreProducto</h4>
+                                            <p class="text-xs text-gray-500">@mov.ReferenciaOProyecto</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="text-sm font-bold @(mov.Tipo == "Entrada" ? "text-green-600" : "text-red-600")">
+                                            @(mov.Tipo == "Entrada" ? "+" : "-")@mov.Cantidad @mov.UnidadMedida
+                                        </span>
+                                        <p class="text-xs text-gray-500">@mov.FechaMovimiento.ToString("dd MMM, hh:mm tt")</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p class="text-body-md font-bold text-primary">Entrada: Madera Roble</p>
-                                    <p class="text-body-sm text-on-surface-variant">Orden de compra #OC-2024-081</p>
-                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="p-6 text-center text-gray-400 text-sm italic bg-gray-50 rounded-xl border border-gray-100">
+                                No hay movimientos registrados recientemente.
                             </div>
-                            <div class="text-right">
-                                <p class="text-body-md font-bold text-tertiary">+50 Tablones</p>
-                                <p class="text-body-sm text-on-surface-variant">Hoy, 09:15 AM</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center justify-between p-4 bg-surface-container-low rounded-lg border border-outline-variant/10">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-full bg-error/10 text-error flex items-center justify-center">
-                                    <span class="material-symbols-outlined">north_east</span>
-                                </div>
-                                <div>
-                                    <p class="text-body-md font-bold text-primary">Salida: Pegante PVA</p>
-                                    <p class="text-body-sm text-on-surface-variant">Proyecto: Cocina Integral #24-01</p>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-body-md font-bold text-error">-2 Galones</p>
-                                <p class="text-body-sm text-on-surface-variant">Ayer, 04:30 PM</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center justify-between p-4 bg-surface-container-low rounded-lg border border-outline-variant/10">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-full bg-error/10 text-error flex items-center justify-center">
-                                    <span class="material-symbols-outlined">north_east</span>
-                                </div>
-                                <div>
-                                    <p class="text-body-md font-bold text-primary">Salida: Madera Cedro</p>
-                                    <p class="text-body-sm text-on-surface-variant">Mobiliario Oficina "Torre 4"</p>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-body-md font-bold text-error">-12 Tablones</p>
-                                <p class="text-body-sm text-on-surface-variant">15 Mayo, 11:00 AM</p>
-                            </div>
-                        </div>
+                        }
                     </div>
                 </div>
-                <!-- Custom Material Swatches / Specialty Component -->
-                  <div class="bg-primary text-on-primary p-6 rounded-xl wood-shadow flex flex-col justify-between" style="background-color: rgb(210, 180, 140); color: rgb(27, 28, 28);">
+        </div>
+
+                <!-- Columna Derecha: Stock Bajo (Ocupa 1 espacio) -->
+                <div class="lg:col-span-1 p-5 rounded-2xl bg-blue-600 text-white shadow-md space-y-4">
                     <div>
-                        <h3 class="text-headline-md font-headline-md mb-2">&nbsp;Stock Bajo</h3>
-                        <p class="text-body-sm mb-6 text-on-surface-variant">Materiales con existencias críticas (1 a 10 unidades)</p>
+                        <h3 class="text-lg font-bold">Stock Bajo</h3>
+                        <p class="text-xs text-blue-100">Materiales con existencias críticas (1 a 10 unidades)</p>
+                    </div>
 
-                        <div class="space-y-4">
-                            @{
-                                var stockBajo = ViewBag.ProductosBajos as List<CARPINTEC_App.Models.Inventario>;
-                            }
-
-                            @if (stockBajo != null && stockBajo.Any())
+                    <div class="space-y-2">
+                        @{
+                            var productosBajos = ViewBag.ProductosBajos as List<CARPINTEC_App.Models.Inventario>;
+                        }
+                        @if (productosBajos != null && productosBajos.Any())
+                        {
+                            @foreach (var prod in productosBajos)
                             {
-                                @foreach (var item in stockBajo)
-                                {
-                                    <div class="flex items-center justify-between p-3 rounded-lg bg-white/10 border border-white/10">
-                                        <div class="flex items-center gap-3">
-                                            <span class="material-symbols-outlined text-warning">warning</span>
-                                            <div>
-                                                <span class="text-body-md font-bold block">@item.NombreProducto</span>
-                                                <span class="text-xs text-on-surface-variant">Quedan: @item.StockActual @item.UnidadMedida</span>
-                                            </div>
+                                <div class="flex items-center justify-between p-3 rounded-xl bg-white/10 border border-white/15">
+                                    <div class="flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-yellow-300 text-base">warning</span>
+                                        <div>
+                                            <h4 class="text-xs font-bold text-white">@prod.NombreProducto</h4>
+                                            <p class="text-[11px] text-blue-100">Quedan: @prod.StockActual Unidades</p>
                                         </div>
-                                        <span class="text-label-md font-bold text-error uppercase">Bajo</span>
                                     </div>
-                                }
-                            }
-                            else
-                            {
-                                <div class="p-3 text-center text-on-surface-variant text-sm italic">
-                                    No hay productos con stock crítico actualmente.
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-red-500/30 text-red-200 border border-red-400/30">BAJO</span>
                                 </div>
                             }
-                        </div>
+                        }
+                        else
+                        {
+                            <p class="text-xs italic text-blue-100 text-center py-2">No hay productos con stock crítico.</p>
+                        }
                     </div>
+
 
                     <!-- Botón que activa la ventana emergente -->
                     <button type="button" onclick="abrirModal()" class="mt-6 w-full py-3 rounded-lg bg-primary-fixed text-on-primary-fixed font-bold hover:bg-white transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm">
@@ -448,7 +450,7 @@
                         Solicitar Reposición
                     </button>
                 </div>
-    </main>
+    
     <!-- Bottom Navigation Bar (Mobile only) -->
     <nav class="fixed bottom-0 w-full lg:hidden z-50 rounded-t-xl bg-surface dark:bg-surface-container-highest border-t border-outline-variant/30 shadow-[0_-4px_12px_rgba(68,42,34,0.08)]">
         <div class="flex justify-around items-center h-16 pb-safe">

@@ -31,20 +31,20 @@ namespace CARPINTEC_App.Controllers
                 .Take(registrosPorPagina)
                 .ToListAsync<Inventario>();
 
-            // 1. Aquí colocas el fragmento para consultar los productos con stock bajo (1 a 10 unidades)
+            // 1. Productos con stock bajo (1 a 10 unidades)
             var productosBajos = await _context.VistaInventario
                 .Where(p => p.StockActual >= 1 && p.StockActual <= 10)
                 .ToListAsync();
-            // Consultamos el historial de movimientos reales ordenados del más reciente al más antiguo
-            var historialMovimientos = await _context.MovimientosInventario // (O el nombre de la tabla/vista que uses para los movimientos)
+            ViewBag.ProductosBajos = productosBajos;
+
+            // 2. Historial de movimientos reales (Últimos 3)
+            var historialMovimientos = await _context.MovimientosInventario
                 .OrderByDescending(m => m.FechaMovimiento)
                 .Take(3)
                 .ToListAsync();
-
             ViewBag.HistorialMovimientos = historialMovimientos;
 
-            // 2. Empaquetas esa lista en el ViewBag para que la vista pueda leerla
-            ViewBag.ProductosBajos = productosBajos;
+
 
             // Datos de paginación existentes
             ViewBag.PaginaActual = pagina;
@@ -52,11 +52,21 @@ namespace CARPINTEC_App.Controllers
             ViewBag.TotalRegistros = totalRegistros;
             ViewBag.RegistrosPorPagina = registrosPorPagina;
 
+            ViewBag.TotalProductos = totalRegistros;
+
+            ViewBag.TotalStockBajo = await _context.VistaInventario
+                .Where(p => p.StockActual >= 1 && p.StockActual <= 10)
+                .CountAsync();
+
+            ViewBag.ValorInventario = await _context.VistaInventario
+                .SumAsync(p => p.StockActual * p.PrecioCompra);
+
+            var fechaLimite = DateTime.Now.AddDays(-30);
+            ViewBag.TotalMovimientos = await _context.MovimientosInventario
+                .Where(m => m.FechaMovimiento >= fechaLimite)
+                .CountAsync();
+
             return View(listaInventario);
-
-
-
-
         }
 
         public IActionResult Rebastecimiento()
@@ -121,12 +131,28 @@ namespace CARPINTEC_App.Controllers
         {
             solicitud.FechaCreacion = DateTime.Now;
 
+            // 1. Guardamos la solicitud de reposición
             _context.SolicitudesReposicion.Add(solicitud);
-            await _context.SaveChangesAsync(); // <-- Aquí saltará la excepción exacta si algo falla
+
+            // 2. Creamos automáticamente el registro en el historial de movimientos
+            var movimiento = new MovimientoInventario
+            {
+                Tipo = "Entrada",
+                NombreProducto = "Producto ID: " + solicitud.ProductoId,
+                Cantidad = solicitud.Cantidad,
+                UnidadMedida = "Unidades",
+                ReferenciaOProyecto = "Reposición solicitada (" + solicitud.Motivo + ")",
+                FechaMovimiento = DateTime.Now
+            };
+
+            _context.MovimientosInventario.Add(movimiento);
+
+            // 3. Guardamos ambos cambios de golpe en la base de datos
+            await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
-        
         }
+
         // GET: InventarioController/Delete/5
         public ActionResult Delete(int id)
         {
