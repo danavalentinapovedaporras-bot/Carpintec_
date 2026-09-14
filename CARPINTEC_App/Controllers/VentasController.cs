@@ -3,9 +3,11 @@ using CARPINTEC_App.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CARPINTEC_App.Controllers
 {
+    [Authorize]
     public class VentasController : Controller
     {
         private readonly CarpintecContext _context;

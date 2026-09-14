@@ -114,14 +114,8 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link text-white" asp-controller="PQR" asp-action="Index">
+                    <a class="nav-link text-white" asp-controller="Pqr" asp-action="Index">
                         <i class="bi bi-chat-left-dots-fill"></i> PQR
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-white" asp-controller="Ayuda" asp-action="Index">
-                        <i class="bi bi-robot"></i> Ayuda / Chatbot
                     </a>
                 </li>
 
@@ -185,6 +179,233 @@
         </div>
 
     </div>
+
+    <!-- CHATBOT CARPINTEC -->
+
+    <div id="chatbot-box"
+         class="hidden"
+         style="
+        position:fixed;
+        bottom:90px;
+        right:20px;
+        width:350px;
+        background:white;
+        border-radius:15px;
+        box-shadow:0 5px 20px rgba(0,0,0,0.3);
+        z-index:9999;">
+
+        <!-- Encabezado -->
+        <div style="
+            background:#c39d7a;
+            color:white;
+            padding:15px;
+            border-radius:15px 15px 0 0;">
+
+            <b>🤖 Asistente CARPINTEC</b>
+
+            <button onclick="cerrarChatbot()"
+                    style="
+                float:right;
+                background:none;
+                border:none;
+                color:white;
+                font-size:18px;">
+                ✖
+            </button>
+
+        </div>
+
+        <!-- MENU CHATBOT -->
+
+        <div style="
+            padding:10px;
+            background:#f8f5f2;
+            border-bottom:1px solid #ddd;">
+
+            <p style="margin:0 0 8px 0;">
+                👋 Hola, soy el asistente de CARPINTEC.
+            </p>
+
+            <small>
+                Selecciona una opción:
+            </small>
+
+            <div style="margin-top:10px;">
+
+                <button onclick="enviarPregunta('productos')"
+                        class="btn btn-sm text-white m-1"
+                        style="background:#c39d7a;">
+                    🪑 Productos
+                </button>
+
+
+                <button onclick="enviarPregunta('clientes')"
+                        class="btn btn-sm text-white m-1"
+                        style="background:#c39d7a;">
+                    👥 Clientes
+                </button>
+
+
+                <button onclick="enviarPregunta('cotizaciones')"
+                        class="btn btn-sm text-white m-1"
+                        style="background:#c39d7a;">
+                    📄 Cotizaciones
+                </button>
+
+
+                <button onclick="enviarPregunta('pedidos')"
+                        class="btn btn-sm text-white m-1"
+                        style="background:#c39d7a;">
+                    📦 Pedidos
+                </button>
+
+
+                <button onclick="enviarPregunta('inventario')"
+                        class="btn btn-sm text-white m-1"
+                        style="background:#c39d7a;">
+                    📊 Inventario
+                </button>
+
+
+                <button onclick="enviarPregunta('facturas')"
+                        class="btn btn-sm text-white m-1"
+                        style="background:#c39d7a;">
+                    💰 Facturas
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- Mensajes -->
+        <div id="chat-respuestas"
+             style="
+            height:250px;
+            overflow-y:auto;
+            padding:15px;">
+        </div>
+
+
+        <!-- Entrada -->
+        <div style="
+            display:flex;
+            padding:10px;">
+
+            <input id="chat-input"
+                   class="form-control"
+                   placeholder="Escribe un mensaje..."
+                   style="margin-right:5px;">
+
+
+            <button onclick="enviarMensaje()"
+                    class="btn text-white"
+                    style="background:#c39d7a;">
+                Enviar
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- BOTÓN FLOTANTE -->
+
+    <button onclick="abrirChatbot()"
+            style="
+        position:fixed;
+        bottom:20px;
+        right:20px;
+        width:60px;
+        height:60px;
+        border-radius:50%;
+        border:none;
+        background:#c39d7a;
+        color:white;
+        font-size:25px;
+        z-index:9999;">
+        🤖
+    </button>
+
+
+
+    <script>
+
+            function abrirChatbot() {
+
+                document.getElementById("chatbot-box")
+                    .style.display = "block";
+
+            }
+
+
+            function cerrarChatbot() {
+
+                document.getElementById("chatbot-box")
+                    .style.display = "none";
+
+            }
+
+            function enviarPregunta(texto) {
+
+                document.getElementById("chat-input").value = texto;
+
+                enviarMensaje();
+
+            }
+
+            async function enviarMensaje() {
+
+                let input = document.getElementById("chat-input");
+
+                let mensaje = input.value;
+
+
+                if (mensaje.trim() == "") {
+                    return;
+                }
+
+
+                document.getElementById("chat-respuestas").innerHTML +=
+                    `
+                <p><b>Tú:</b> ${mensaje}</p>
+                `;
+
+
+                let respuesta = await fetch('/Chatbot/Preguntar',
+                    {
+
+                        method: 'POST',
+
+                        headers:
+                        {
+                            'Content-Type': 'application/json'
+                        },
+
+                        body: JSON.stringify(
+                            {
+                                mensaje: mensaje
+                            })
+
+                    });
+
+
+
+                let data = await respuesta.json();
+
+
+
+                document.getElementById("chat-respuestas").innerHTML +=
+                    `
+                <p><b>Bot:</b> ${data.respuesta}</p>
+                `;
+
+
+                input.value = "";
+
+
+            }
+
+    </script>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

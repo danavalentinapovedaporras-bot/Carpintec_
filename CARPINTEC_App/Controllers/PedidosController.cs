@@ -4,9 +4,11 @@ using ClosedXML.Excel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CARPINTEC_App.Controllers
 {
+    [Authorize]
     public class PedidosController : Controller
     {
         private readonly CarpintecContext _context;

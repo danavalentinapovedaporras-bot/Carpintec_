@@ -8,11 +8,10 @@ namespace CARPINTEC_App.Models
         public int IdFactura { get; set; }
 
         [Required]
-        public string Folio { get; set; }
+        public string Folio { get; set; } = string.Empty;
 
         [Required]
-        public string Cliente { get; set; }
-
+        public string Cliente { get; set; } = string.Empty;
         [Required]
         public DateTime Fecha { get; set; }
 

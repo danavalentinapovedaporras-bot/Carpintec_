@@ -2,10 +2,12 @@
 using CARPINTEC_App.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace CARPINTEC_App.Controllers
 {
+    [Authorize]
     public class InventarioController : Controller
     {
         private readonly CarpintecContext _context;

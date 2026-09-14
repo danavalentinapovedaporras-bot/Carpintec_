@@ -1,83 +1,263 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using CARPINTEC_App.Models;
+using CARPINTEC_App.Data;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using System.Linq;
 
 namespace CARPINTEC_App.Controllers
 {
-    public class CHATBOTController : Controller
+    public class ChatbotController : Controller
     {
-        // GET: CHATBOTController
-        public ActionResult Index()
+        private readonly CarpintecContext _context;
+
+        public ChatbotController(CarpintecContext context)
         {
-            return View();
+            _context = context;
         }
 
-        // GET: CHATBOTController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
 
-        // GET: CHATBOTController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: CHATBOTController/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> Preguntar([FromBody] MensajeChatbot mensaje)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
 
-        // GET: CHATBOTController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
+            string pregunta = mensaje.Mensaje.ToLower().Trim();
 
-        // POST: CHATBOTController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+            string respuesta = "";
 
-        // GET: CHATBOTController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
+            if (pregunta.Contains("hola") || pregunta.Contains("buenas"))
+            {
+                respuesta =
+                "👋 ¡Hola! Bienvenido a CARPINTEC 🪵\n\n" +
+                "Soy tu asistente virtual. ¿Cómo puedo ayudarte?\n\n" +
+                "Selecciona una opción:\n\n" +
+                "🪑 1. Productos disponibles\n" +
+                "🏠 2. Servicios de carpintería\n" +
+                "📄 3. Solicitar una cotización\n" +
+                "📦 4. Consultar mi pedido\n" +
+                "👨‍💼 5. Contactar un asesor\n\n" +
+                "Escribe el número de la opción.";
+            }
 
-        // POST: CHATBOTController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
+
+
+            else if (pregunta.Contains("servicio") ||
+                     pregunta.Contains("servicios"))
             {
-                return RedirectToAction(nameof(Index));
+                respuesta = "Ofrecemos cocinas integrales, closets, muebles personalizados, escritorios, puertas y centros de entretenimiento.";
             }
-            catch
+
+
+            else if (pregunta.Contains("producto") ||
+                     pregunta.Contains("productos") ||
+                     pregunta.Contains("mueble"))
             {
-                return View();
+
+                var productos = await _context.Productos
+                    .Where(p => p.Estado == "Activo")
+                    .Take(5)
+                    .ToListAsync();
+
+
+                if (productos.Count > 0)
+                {
+                    respuesta = "Estos son algunos productos disponibles:\n";
+
+                    foreach (var producto in productos)
+                    {
+                        respuesta +=
+                        $"- {producto.Nombre} | Precio: ${producto.Precio}\n";
+                    }
+                }
+                else
+                {
+                    respuesta = "Actualmente no hay productos disponibles.";
+                }
+
             }
+
+
+            else if (pregunta.Contains("pedido") ||
+                     pregunta.Contains("pedidos"))
+            {
+
+                var pedidos = await _context.Pedidos
+                    .Take(5)
+                    .ToListAsync();
+
+
+                if (pedidos.Count > 0)
+                {
+                    respuesta = "Estos son algunos pedidos registrados:\n";
+
+                    foreach (var pedido in pedidos)
+                    {
+                        respuesta +=
+                        $"- Pedido: {pedido.CodigoPedido} | Estado: {pedido.Estado}\n";
+                    }
+                }
+                else
+                {
+                    respuesta = "Actualmente no hay pedidos registrados.";
+                }
+
+            }
+
+
+            else if (pregunta.Contains("cotizacion") ||
+                     pregunta.Contains("cotización") ||
+                     pregunta.Contains("cotizaciones"))
+            {
+
+                var cotizaciones = await _context.Cotizaciones
+                    .Take(5)
+                    .ToListAsync();
+
+
+                if (cotizaciones.Count > 0)
+                {
+                    respuesta = "Estas son algunas cotizaciones registradas:\n";
+
+
+                    foreach (var cotizacion in cotizaciones)
+                    {
+                        respuesta +=
+                        $"- Folio: {cotizacion.Folio} | Estado: {cotizacion.Estado} | Total: ${cotizacion.Total}\n";
+                    }
+                }
+                else
+                {
+                    respuesta = "Actualmente no hay cotizaciones registradas.";
+                }
+
+            }
+
+
+            else if (pregunta.Contains("cliente") ||
+                     pregunta.Contains("clientes"))
+            {
+
+                var clientes = await _context.Clientes
+                    .Take(5)
+                    .ToListAsync();
+
+
+                if (clientes.Count > 0)
+                {
+                    respuesta = "Estos son algunos clientes registrados:\n";
+
+
+                    foreach (var cliente in clientes)
+                    {
+
+                        if (cliente.TipoCliente == "Empresa")
+                        {
+                            respuesta +=
+                            $"- Empresa: {cliente.NombreEmpresa} | Estado: {cliente.Estado}\n";
+                        }
+                        else
+                        {
+                            respuesta +=
+                            $"- Cliente: {cliente.Nombre} {cliente.Apellido} | Estado: {cliente.Estado}\n";
+                        }
+
+                    }
+                }
+                else
+                {
+                    respuesta = "Actualmente no hay clientes registrados.";
+                }
+
+            }
+
+
+            else if (pregunta.Contains("inventario") ||
+                     pregunta.Contains("stock") ||
+                     pregunta.Contains("disponible"))
+            {
+
+                var inventario = await _context.Inventarios
+                    .Include(i => i.IdProductoNavigation)
+                    .Take(5)
+                    .ToListAsync();
+
+
+                if (inventario.Count > 0)
+                {
+                    respuesta = "Productos disponibles en inventario:\n";
+
+
+                    foreach (var item in inventario)
+                    {
+                        respuesta +=
+                        $"- Producto: {item.IdProductoNavigation.Nombre} | Stock: {item.StockActual} | Estado: {item.Estado}\n";
+                    }
+
+                }
+                else
+                {
+                    respuesta = "No hay productos registrados en inventario.";
+                }
+
+            }
+
+
+            else if (pregunta.Contains("factura") ||
+         pregunta.Contains("facturas"))
+            {
+                var facturas = await _context.Facturas
+                    .Take(5)
+                    .ToListAsync();
+
+
+                if (facturas.Count > 0)
+                {
+                    respuesta = "Facturas encontradas:\n";
+
+                    foreach (var factura in facturas)
+                    {
+                        respuesta +=
+                        $"- Factura: {factura.Folio} | Cliente: {factura.Cliente} | Total: ${factura.Total} | Estado: {factura.Estado}\n";
+                    }
+
+                }
+                else
+                {
+                    respuesta = "Actualmente no hay facturas registradas.";
+                }
+            }
+
+
+            // Usuario conectado por JWT
+
+            var idUsuario = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+
+            Console.WriteLine("Usuario JWT: " + idUsuario);
+
+
+
+            // Guardar conversación
+            ChatBot chat = new ChatBot
+            {
+                IdUsuario = idUsuario != null ? int.Parse(idUsuario) : null,
+
+                MensajeUsuario = mensaje.Mensaje,
+
+                RespuestaBot = respuesta,
+
+                Fecha = DateTime.Now
+            };
+
+
+            _context.ChatBots.Add(chat);
+
+            await _context.SaveChangesAsync();
+            return Json(new
+            {
+                respuesta = respuesta
+            });
+
         }
     }
 }

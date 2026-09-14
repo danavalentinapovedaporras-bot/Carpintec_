@@ -1,83 +1,239 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using CARPINTEC_App.Data;
+using CARPINTEC_App.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CARPINTEC_App.Controllers
 {
+    [Authorize]
     public class ClientesController : Controller
     {
-        // GET: ClientesController
-        public ActionResult Index()
+        private readonly CarpintecContext _context;
+
+        public ClientesController(CarpintecContext context)
+        {
+            _context = context;
+        }
+
+
+        // LISTAR CLIENTES
+        public IActionResult Index()
+        {
+            var clientes = _context.Clientes
+                                   .OrderByDescending(c => c.FechaRegistro)
+                                   .ToList();
+
+
+            ViewBag.ClientesTotales = clientes.Count();
+
+            ViewBag.ClientesActivos = clientes
+                .Count(c => c.Estado == "Activo");
+
+
+            ViewBag.ClientesInactivos = clientes
+                .Count(c => c.Estado == "Inactivo");
+
+
+            ViewBag.NuevosClientes = clientes
+     .Count(c => c.FechaRegistro != null &&
+                 c.FechaRegistro.Value.Month == DateTime.Now.Month &&
+                 c.FechaRegistro.Value.Year == DateTime.Now.Year);
+
+
+            return View(clientes);
+        }
+
+
+        // VER DETALLES DEL CLIENTE
+        public IActionResult Details(int id)
+        {
+            var cliente = _context.Clientes
+                                  .FirstOrDefault(c => c.IdCliente == id);
+
+            if (cliente == null)
+            {
+                return NotFound();
+            }
+
+            return View(cliente);
+        }
+
+        // DATOS PARA MODAL VER CLIENTE
+        public IActionResult VerCliente(int id)
+        {
+            var cliente = _context.Clientes
+                                  .FirstOrDefault(c => c.IdCliente == id);
+
+            if (cliente == null)
+            {
+                return NotFound();
+            }
+
+            return Json(cliente);
+        }
+
+        // DATOS PARA EDITAR CLIENTE (MODAL)
+        public IActionResult EditarCliente(int id)
+        {
+            var cliente = _context.Clientes
+                                  .FirstOrDefault(c => c.IdCliente == id);
+
+            if (cliente == null)
+            {
+                return NotFound();
+            }
+
+            return Json(cliente);
+        }
+
+
+        // FORMULARIO CREAR CLIENTE
+        public IActionResult Create()
         {
             return View();
         }
 
-        // GET: ClientesController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
 
-        // GET: ClientesController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: ClientesController/Create
+        // GUARDAR CLIENTE
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public IActionResult Create(Cliente cliente)
         {
+
+            // Valores automáticos
+            cliente.Estado = "Activo";
+            cliente.FechaRegistro = DateTime.Now;
+
+
+            // Guardar cliente
+            _context.Clientes.Add(cliente);
+
             try
             {
+                _context.SaveChanges();
+
+                TempData["Mensaje"] = "Cliente creado correctamente";
+
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                TempData["Error"] = ex.Message;
+
+                return View(cliente);
             }
+
         }
 
-        // GET: ClientesController/Edit/5
-        public ActionResult Edit(int id)
+
+        // FORMULARIO EDITAR
+        public IActionResult Edit(int id)
         {
-            return View();
+            var cliente = _context.Clientes
+                                  .Find(id);
+
+            if (cliente == null)
+            {
+                return NotFound();
+            }
+
+            return View(cliente);
         }
 
-        // POST: ClientesController/Edit/5
+
+        // ACTUALIZAR CLIENTE
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public IActionResult Edit(Cliente cliente)
         {
-            try
+            var clienteBD = _context.Clientes
+                                    .FirstOrDefault(c => c.IdCliente == cliente.IdCliente);
+
+            if (clienteBD == null)
             {
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            catch
-            {
-                return View();
-            }
+
+
+            clienteBD.TipoCliente = cliente.TipoCliente;
+            clienteBD.Documento = cliente.Documento;
+            clienteBD.Nombre = cliente.Nombre;
+            clienteBD.Apellido = cliente.Apellido;
+            clienteBD.NombreEmpresa = cliente.NombreEmpresa;
+            clienteBD.Contacto = cliente.Contacto;
+            clienteBD.Telefono = cliente.Telefono;
+            clienteBD.Correo = cliente.Correo;
+            clienteBD.Direccion = cliente.Direccion;
+            clienteBD.Ciudad = cliente.Ciudad;
+
+
+            _context.SaveChanges();
+
+
+            TempData["Mensaje"] = "Cliente actualizado correctamente";
+
+
+            return RedirectToAction(nameof(Index));
         }
 
-        // GET: ClientesController/Delete/5
-        public ActionResult Delete(int id)
+
+
+        // CAMBIAR ESTADO ACTIVO / INACTIVO
+        public IActionResult CambiarEstado(int id)
         {
-            return View();
+            var cliente = _context.Clientes
+                                  .Find(id);
+
+
+            if (cliente == null)
+            {
+                return NotFound();
+            }
+
+
+            if (cliente.Estado == "Activo")
+            {
+                cliente.Estado = "Inactivo";
+            }
+            else
+            {
+                cliente.Estado = "Activo";
+            }
+
+
+            _context.SaveChanges();
+
+
+            TempData["Mensaje"] = "Estado actualizado correctamente";
+
+
+            return RedirectToAction(nameof(Index));
         }
 
-        // POST: ClientesController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+
+
+        // ELIMINAR CLIENTE
+        public IActionResult Delete(int id)
         {
-            try
+            var cliente = _context.Clientes
+                                  .Find(id);
+
+
+            if (cliente == null)
             {
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            catch
-            {
-                return View();
-            }
+
+
+            _context.Clientes.Remove(cliente);
+            _context.SaveChanges();
+
+
+            TempData["Mensaje"] = "Cliente eliminado correctamente";
+
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

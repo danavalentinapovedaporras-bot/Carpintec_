@@ -1,7 +1,8 @@
+@model IEnumerable<CARPINTEC_App.Models.Cliente>
+
 @{
-    ViewData["Title"] = "Reportes";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+    ViewData["Title"] = "Gestión de Clientes";
+    }
 <!DOCTYPE html>
 <html class="light" lang="es" style="">
 <head>
@@ -143,16 +144,24 @@
 
     <!-- Main Content Canvas -->
     <main class="pt-4 min-h-screen bg-background">
-        <div class="p-margin-desktop space-y-8">
+        <div class="p-6 space-y-8 w-full">
             <!-- Page Header & Action -->
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
                     <h2 class="text-headline-lg font-headline-lg text-black">Gestión de Clientes</h2>
                     <p class="text-body-md font-body-md text-black/60">Administra la base de datos de clientes y su historial comercial.</p>
                 </div>
-                <button class="flex items-center gap-2 px-6 py-3 bg-primary text-black rounded-lg shadow-lg hover:shadow-xl transition-all active:scale-95 group">
-                    <span class="material-symbols-outlined text-[20px] font-bold">person_add</span>
-                    <span class="font-title-md text-label-md font-bold">Nuevo Cliente</span>
+                <button onclick="abrirModalCliente()"
+                        class="flex items-center gap-2 px-6 py-3 bg-primary text-black rounded-lg shadow-lg hover:shadow-xl transition-all active:scale-95 group">
+
+                    <span class="material-symbols-outlined text-[20px] font-bold">
+                        person_add
+                    </span>
+
+                    <span class="font-title-md text-label-md font-bold">
+                        Nuevo Cliente
+                    </span>
+
                 </button>
             </div>
 
@@ -164,7 +173,9 @@
                     </div>
                     <span class="text-label-md font-label-md text-black/60 uppercase tracking-widest">Clientes Totales</span>
                     <div class="flex items-baseline gap-2">
-                        <span class="text-headline-lg font-headline-lg text-black">1,243</span>
+                        <span class="text-headline-lg font-headline-lg text-black">
+                            @ViewBag.ClientesTotales
+                        </span>
                         <span class="text-label-md text-green-700 flex items-center gap-0.5 font-bold"><span class="material-symbols-outlined text-[14px] font-bold">trending_up</span>+12%</span>
                     </div>
                 </div>
@@ -174,7 +185,9 @@
                     </div>
                     <span class="text-label-md font-label-md text-black/60 uppercase tracking-widest">Clientes Activos</span>
                     <div class="flex items-baseline gap-2">
-                        <span class="text-headline-lg font-headline-lg text-black">842</span>
+                        <span class="text-headline-lg font-headline-lg text-black">
+                            @ViewBag.ClientesActivos
+                        </span>
                         <span class="text-label-md text-black/40">67.7% del total</span>
                     </div>
                 </div>
@@ -184,7 +197,9 @@
                     </div>
                     <span class="text-label-md font-label-md text-black/60 uppercase tracking-widest">Nuevos este mes</span>
                     <div class="flex items-baseline gap-2">
-                        <span class="text-headline-lg font-headline-lg text-black">25</span>
+                        <span class="text-headline-lg font-headline-lg text-black">
+                            @ViewBag.NuevosClientes
+                        </span>
                         <span class="text-label-md text-black bg-primary/20 px-2 py-0.5 rounded-full font-medium">Objetivo 30</span>
                     </div>
                 </div>
@@ -192,16 +207,25 @@
                     <div class="absolute -right-4 -bottom-4 opacity-[0.1]">
                         <span class="material-symbols-outlined text-[120px] text-black">payments</span>
                     </div>
-                    <span class="text-label-md font-label-md text-black uppercase tracking-widest">Ventas este mes</span>
+                    <span class="text-label-md font-label-md text-black uppercase tracking-widest">
+                        Clientes Inactivos
+                    </span>
+
                     <div class="flex flex-col">
-                        <span class="text-headline-md font-headline-md text-black">$25.680.000</span>
-                        <span class="text-label-md text-black/70">Facturación acumulada</span>
+                        <span class="text-headline-md font-headline-md text-black">
+                            @ViewBag.ClientesInactivos
+                        </span>
+
+                        <span class="text-label-md text-black/70">
+                            Clientes deshabilitados
+                        </span>
                     </div>
-                </div>
-            </div>
+
+                    </div>
+                    </div>
 
             <!-- Customers Table Section -->
-            <div class="bg-surface-container-lowest rounded-xl border border-outline-variant/30 shadow-sm overflow-hidden">
+            <div class="w-full bg-surface-container-lowest rounded-xl border border-outline-variant/30 shadow-sm overflow-hidden">
                 <div class="px-card-padding py-4 border-b border-outline-variant flex justify-between items-center bg-surface-bright">
                     <h3 class="text-title-md font-title-md text-black">Listado de Clientes</h3>
                     <div class="flex gap-2">
@@ -213,14 +237,22 @@
                         </button>
                     </div>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full border-collapse">
+                <div class="overflow-x-auto w-full">
+                            <table class="w-full min-w-[1200px] border-collapse">
                         <thead>
                             <tr class="bg-surface-container-high/30">
-                                <th class="text-left px-6 py-4 text-label-md font-label-md text-black uppercase tracking-wider border-b border-outline-variant">Cliente</th>
-                                <th class="text-left px-6 py-4 text-label-md font-label-md text-black uppercase tracking-wider border-b border-outline-variant">Contacto</th>
-                                <th class="text-left px-6 py-4 text-label-md font-label-md text-black uppercase tracking-wider border-b border-outline-variant">Teléfono</th>
-                                <th class="text-left px-6 py-4 text-label-md font-label-md text-black uppercase tracking-wider border-b border-outline-variant">Email</th>
+                                        <th class="w-48 text-left px-6 py-4 text-label-md font-label-md text-black uppercase tracking-wider border-b border-outline-variant">
+                                            Cliente
+                                        </th>
+                                        <th class="w-32 text-left px-6 py-4 text-label-md font-label-md text-black uppercase tracking-wider border-b border-outline-variant">
+                                            Contacto
+                                        </th>
+                                        <th class="w-32 text-left px-6 py-4 text-label-md font-label-md text-black uppercase tracking-wider border-b border-outline-variant">
+                                            Teléfono
+                                        </th>
+                                        <th class="w-48 text-left px-6 py-4 text-label-md font-label-md text-black uppercase tracking-wider border-b border-outline-variant">
+                                            Email
+                                        </th>
                                 <th class="text-center px-6 py-4 text-label-md font-label-md text-black uppercase tracking-wider border-b border-outline-variant">Pedidos</th>
                                 <th class="text-right px-6 py-4 text-label-md font-label-md text-black uppercase tracking-wider border-b border-outline-variant">Total Compras</th>
                                 <th class="text-center px-6 py-4 text-label-md font-label-md text-black uppercase tracking-wider border-b border-outline-variant">Estado</th>
@@ -228,119 +260,845 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-outline-variant font-data-table text-data-table text-black">
-                            <tr class="hover:bg-primary/5 transition-colors group bg-primary/2">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-black font-bold text-xs">MV</div>
-                                        <div class="flex flex-col">
-                                            <span class="font-bold text-black">Muebles del Valle S.A.</span>
-                                            <span class="text-[10px] text-black font-bold uppercase tracking-tighter">Nuevo</span>
+                            @foreach (var cliente in Model)
+                            {
+                                <tr class="hover:bg-primary/5 transition-colors">
+
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+
+                                            <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-black font-bold text-xs">
+                                                @(cliente.Nombre != null ? cliente.Nombre.Substring(0, 1) : "C")
+                                            </div>
+
+                                            <div class="flex flex-col">
+
+                                                <span class="font-bold text-black">
+
+                                                    @(cliente.TipoCliente == "Empresa"
+                                                        ? cliente.NombreEmpresa
+                                                        : cliente.Nombre + " " + cliente.Apellido)
+
+                                                </span>
+
+                                                <span class="text-[10px] uppercase">
+                                                    @cliente.TipoCliente
+                                                </span>
+
+                                            </div>
+
                                         </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-black/80">Ricardo Torres</td>
-                                <td class="px-6 py-4 text-black/80 whitespace-nowrap">(601) 555 0123</td>
-                                <td class="px-6 py-4 text-black/80">contacto@mueblesdelvalle.co</td>
-                                <td class="px-6 py-4 text-center font-medium">0</td>
-                                <td class="px-6 py-4 text-right font-bold text-black">$ 0</td>
-                                <td class="px-6 py-4 text-center">
-                                    <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-green-100 text-green-800">Activo</span>
-                                </td>
-                                <td class="px-6 py-4 text-right">
-                                    <button class="p-1 hover:bg-primary/20 rounded-full transition-all text-black/40 group-hover:text-black">
-                                        <span class="material-symbols-outlined">more_vert</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-primary/5 transition-colors group">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-black font-bold text-xs">CG</div>
-                                        <span class="font-bold text-black">Carlos Gómez</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-black/80">Carlos Gómez</td>
-                                <td class="px-6 py-4 text-black/80 whitespace-nowrap">(601) 321 4567</td>
-                                <td class="px-6 py-4 text-black/80">carlos@gmail.com</td>
-                                <td class="px-6 py-4 text-center font-medium">8</td>
-                                <td class="px-6 py-4 text-right font-bold text-black">$ 28.500.000</td>
-                                <td class="px-6 py-4 text-center">
-                                    <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-green-100 text-green-800">Activo</span>
-                                </td>
-                                <td class="px-6 py-4 text-right">
-                                    <button class="p-1 hover:bg-primary/20 rounded-full transition-all text-black/40 group-hover:text-black">
-                                        <span class="material-symbols-outlined">more_vert</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-primary/5 transition-colors group">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-black font-bold text-xs">MR</div>
-                                        <span class="font-bold text-black">María Rodríguez</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-black/80">María Rodríguez</td>
-                                <td class="px-6 py-4 text-black/80 whitespace-nowrap">(601) 456 7890</td>
-                                <td class="px-6 py-4 text-black/80">maria@gmail.com</td>
-                                <td class="px-6 py-4 text-center font-medium">5</td>
-                                <td class="px-6 py-4 text-right font-bold text-black">$ 22.300.000</td>
-                                <td class="px-6 py-4 text-center">
-                                    <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-green-100 text-green-800">Activo</span>
-                                </td>
-                                <td class="px-6 py-4 text-right">
-                                    <button class="p-1 hover:bg-primary/20 rounded-full transition-all text-black/40 group-hover:text-black">
-                                        <span class="material-symbols-outlined">more_vert</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-primary/5 transition-colors group">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 rounded-full bg-primary/30 flex items-center justify-center text-black font-bold text-xs">JM</div>
-                                        <span class="font-bold text-black">Juan Martínez</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-black/80">Juan Martínez</td>
-                                <td class="px-6 py-4 text-black/80 whitespace-nowrap">(601) 777 8888</td>
-                                <td class="px-6 py-4 text-black/80">juan@gmail.com</td>
-                                <td class="px-6 py-4 text-center font-medium">6</td>
-                                <td class="px-6 py-4 text-right font-bold text-black">$ 18.750.000</td>
-                                <td class="px-6 py-4 text-center">
-                                    <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-green-100 text-green-800">Activo</span>
-                                </td>
-                                <td class="px-6 py-4 text-right">
-                                    <button class="p-1 hover:bg-primary/20 rounded-full transition-all text-black/40 group-hover:text-black">
-                                        <span class="material-symbols-outlined">more_vert</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-primary/5 transition-colors group">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-black font-bold text-xs">AL</div>
-                                        <span class="font-bold text-black">Ana López</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-black/80">Ana López</td>
-                                <td class="px-6 py-4 text-black/80 whitespace-nowrap">(601) 232 3333</td>
-                                <td class="px-6 py-4 text-black/80">ana@gmail.com</td>
-                                <td class="px-6 py-4 text-center font-medium">3</td>
-                                <td class="px-6 py-4 text-right font-bold text-black">$ 9.800.000</td>
-                                <td class="px-6 py-4 text-center">
-                                    <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-green-100 text-green-800">Activo</span>
-                                </td>
-                                <td class="px-6 py-4 text-right">
-                                    <button class="p-1 hover:bg-primary/20 rounded-full transition-all text-black/40 group-hover:text-black">
-                                        <span class="material-symbols-outlined">more_vert</span>
-                                    </button>
-                                </td>
-                            </tr>
+                                    </td>
+
+
+                                    <td class="px-6 py-4">
+                                        @cliente.Contacto
+                                    </td>
+
+
+                                    <td class="px-6 py-4 whitespace-nowrap">
+   
+                                        @cliente.Telefono
+                                        </td>
+
+
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        @cliente.Correo
+                                        </td>
+
+
+                                    <td class="px-6 py-4 text-center">
+                                        @cliente.Pedidos.Count()
+                                    </td>
+
+
+                                    <td class="px-6 py-4 text-right">
+                                        -
+                                    </td>
+
+
+                                    <td class="px-6 py-4 text-center">
+
+                                        @if (cliente.Estado == "Activo")
+                                        {
+                                            <span class="px-3 py-1 rounded-full bg-green-100 text-green-800">
+                                                Activo
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="px-3 py-1 rounded-full bg-red-100 text-red-800">
+                                                Inactivo
+                                            </span>
+                                        }
+
+                                    </td>
+
+
+                                    <td class="px-6 py-4 text-right">
+
+
+                                        <!-- VER CLIENTE -->
+
+                                        <button type="button"
+                                                onclick="abrirModalVerCliente('@cliente.IdCliente')">
+
+                                            <span class="material-symbols-outlined text-blue-700">
+
+                                                visibility
+
+                                            </span>
+
+                                        </button>
+
+
+
+                                        <!-- EDITAR CLIENTE -->
+
+                                        <button type="button"
+                                                onclick="abrirModalEditarCliente('@cliente.IdCliente')">
+
+                                            <span class="material-symbols-outlined text-yellow-600">
+
+                                                edit
+
+                                            </span>
+
+                                        </button>
+
+
+
+                                        <!-- CAMBIAR ESTADO -->
+
+                                        <button type="button"
+                                                onclick="abrirModalEstadoCliente('@cliente.IdCliente','@cliente.Estado')">
+
+                                            <span class="material-symbols-outlined text-red-600">
+
+                                                manage_accounts
+
+                                            </span>
+
+                                        </button>
+
+
+                                    </td>
+
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </main>
+    <!-- MODAL NUEVO CLIENTE -->
+
+    <div id="modalCliente"
+         class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+
+
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-3xl p-8">
+
+
+            <div class="flex justify-between items-center mb-6">
+
+                <h2 class="text-2xl font-bold">
+                    Nuevo Cliente
+                </h2>
+
+
+                <button onclick="cerrarModalCliente()">
+
+                    <span class="material-symbols-outlined">
+                        close
+                    </span>
+
+                </button>
+
+            </div>
+
+
+
+            <form asp-controller="Clientes"
+                  asp-action="Create"
+                  method="post">
+
+
+                @Html.AntiForgeryToken()
+
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+
+                    <!-- Tipo Cliente -->
+
+                    <div>
+
+                        <label class="font-bold">
+                            Tipo Cliente
+                        </label>
+
+                        <select name="TipoCliente"
+                                id="tipoCliente"
+                                onchange="cambiarTipoCliente()"
+                                class="w-full border rounded p-2">
+
+
+                            <option value="Natural">
+                                Natural
+                            </option>
+
+
+                            <option value="Empresa">
+                                Empresa
+                            </option>
+
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- Documento -->
+
+                    <div>
+
+                        <label class="font-bold">
+                            Documento
+                        </label>
+
+
+                        <input name="Documento"
+                               class="w-full border rounded p-2" />
+
+                    </div>
+
+
+
+                    <!-- Nombre -->
+
+                    <div id="campoNombre">
+
+                        <label class="font-bold">
+                            Nombre
+                        </label>
+
+
+                        <input name="Nombre"
+                               class="w-full border rounded p-2" />
+
+                    </div>
+
+
+
+                    <!-- Apellido -->
+
+                    <div id="campoApellido">
+
+                        <label class="font-bold">
+                            Apellido
+                        </label>
+
+
+                        <input name="Apellido"
+                               class="w-full border rounded p-2" />
+
+                    </div>
+
+
+
+                    <!-- Empresa -->
+
+                    <div id="campoEmpresa" class="hidden">
+
+                        <label class="font-bold">
+                            Nombre Empresa
+                        </label>
+
+
+                        <input name="NombreEmpresa"
+                               class="w-full border rounded p-2" />
+
+                    </div>
+
+
+
+                    <!-- Contacto -->
+
+                    <div>
+
+                        <label class="font-bold">
+                            Contacto
+                        </label>
+
+
+                        <input name="Contacto"
+                               class="w-full border rounded p-2" />
+
+                    </div>
+
+
+
+                    <!-- Teléfono -->
+
+                    <div>
+
+                        <label class="font-bold">
+                            Teléfono
+                        </label>
+
+
+                        <input name="Telefono"
+                               class="w-full border rounded p-2" />
+
+                    </div>
+
+
+
+                    <!-- Correo -->
+
+                    <div>
+
+                        <label class="font-bold">
+                            Correo
+                        </label>
+
+
+                        <input name="Correo"
+                               type="email"
+                               class="w-full border rounded p-2" />
+
+                    </div>
+
+
+
+                    <!-- Ciudad -->
+
+                    <div>
+
+                        <label class="font-bold">
+                            Ciudad
+                        </label>
+
+
+                        <input name="Ciudad"
+                               class="w-full border rounded p-2" />
+
+                    </div>
+
+
+
+                    <!-- Dirección -->
+
+                    <div class="md:col-span-2">
+
+                        <label class="font-bold">
+                            Dirección
+                        </label>
+
+
+                        <input name="Direccion"
+                               class="w-full border rounded p-2" />
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="flex justify-end gap-3 mt-6">
+
+
+                    <button type="button"
+                            onclick="cerrarModalCliente()"
+                            class="px-5 py-2 border rounded">
+
+                        Cancelar
+
+                    </button>
+
+
+                    <button type="submit"
+                            class="px-5 py-2 bg-primary rounded font-bold">
+
+                        Guardar Cliente
+
+                    </button>
+
+
+                </div>
+
+
+            </form>
+
+
+        </div>
+
+    </div>
+    <script>
+
+            function abrirModalCliente() {
+                document.getElementById("modalCliente").classList.remove("hidden");
+            }
+
+
+            function cerrarModalCliente() {
+                document.getElementById("modalCliente").classList.add("hidden");
+            }
+
+
+
+            function cambiarTipoCliente() {
+
+                let tipo = document.getElementById("tipoCliente").value;
+
+
+                if (tipo === "Empresa") {
+
+                    document.getElementById("campoEmpresa")
+                        .classList.remove("hidden");
+
+
+                    document.getElementById("campoNombre")
+                        .classList.add("hidden");
+
+
+                    document.getElementById("campoApellido")
+                        .classList.add("hidden");
+
+                }
+                else {
+
+                    document.getElementById("campoEmpresa")
+                        .classList.add("hidden");
+
+
+                    document.getElementById("campoNombre")
+                        .classList.remove("hidden");
+
+
+                    document.getElementById("campoApellido")
+                        .classList.remove("hidden");
+
+                }
+
+            }
+
+    </script>
+
+    <!-- MODAL VER CLIENTE -->
+
+    <div id="modalVerCliente"
+         class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+
+
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl p-6">
+
+
+            <div class="flex justify-between items-center mb-5">
+
+                <h2 class="text-xl font-bold">
+                    Información del Cliente
+                </h2>
+
+
+                <button onclick="cerrarModalVerCliente()">
+
+                    <span class="material-symbols-outlined">
+                        close
+                    </span>
+
+                </button>
+
+            </div>
+
+
+
+            <div id="datosCliente"
+                 class="grid grid-cols-2 gap-4 text-sm">
+            </div>
+
+
+
+            <div class="flex justify-end mt-6">
+
+                <button onclick="cerrarModalVerCliente()"
+                        class="px-5 py-2 bg-primary rounded">
+
+                    Cerrar
+
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </div>
+    <script>
+
+            function abrirModalVerCliente(idCliente) {
+
+                fetch('/Clientes/VerCliente?id=' + idCliente)
+
+                    .then(response => response.json())
+
+                    .then(cliente => {
+
+
+                        document.getElementById("datosCliente").innerHTML = `
+
+
+                    <p><b>Tipo Cliente:</b> ${cliente.tipoCliente}</p>
+
+                    <p><b>Documento:</b> ${cliente.documento ?? ''}</p>
+
+                    <p><b>Nombre:</b> ${cliente.nombre ?? ''}</p>
+
+                    <p><b>Apellido:</b> ${cliente.apellido ?? ''}</p>
+
+                    <p><b>Empresa:</b> ${cliente.nombreEmpresa ?? ''}</p>
+
+                    <p><b>Contacto:</b> ${cliente.contacto}</p>
+
+                    <p><b>Teléfono:</b> ${cliente.telefono}</p>
+
+                    <p><b>Correo:</b> ${cliente.correo}</p>
+
+                    <p><b>Dirección:</b> ${cliente.direccion ?? ''}</p>
+
+                    <p><b>Ciudad:</b> ${cliente.ciudad ?? ''}</p>
+
+                    <p><b>Estado:</b> ${cliente.estado}</p>
+
+
+                    `;
+
+
+                        document.getElementById("modalVerCliente")
+                            .classList.remove("hidden");
+
+
+                    });
+
+            }
+
+
+
+            function cerrarModalVerCliente() {
+
+                document.getElementById("modalVerCliente")
+                    .classList.add("hidden");
+
+            }
+
+
+    </script>
+    <!-- MODAL EDITAR CLIENTE -->
+
+    <div id="modalEditarCliente"
+         class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+
+
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl p-6">
+
+
+            <div class="flex justify-between items-center mb-5">
+
+                <h2 class="text-xl font-bold">
+                    Editar Cliente
+                </h2>
+
+
+                <button onclick="cerrarModalEditarCliente()">
+
+                    <span class="material-symbols-outlined">
+                        close
+                    </span>
+
+                </button>
+
+            </div>
+
+
+            <form id="formEditarCliente"
+                  method="post"
+                  asp-controller="Clientes"
+                  asp-action="Edit">
+
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" id="IdCliente" name="IdCliente">
+
+
+                <div class="grid grid-cols-2 gap-4">
+
+
+                    <div>
+                        <label>Tipo Cliente</label>
+
+                        <input id="TipoCliente"
+                               name="TipoCliente"
+                               class="w-full border rounded p-2">
+                    </div>
+
+
+                    <div>
+                        <label>Documento</label>
+
+                        <input id="Documento"
+                               name="Documento"
+                               class="w-full border rounded p-2">
+                    </div>
+
+
+                    <div>
+                        <label>Nombre</label>
+
+                        <input id="Nombre"
+                               name="Nombre"
+                               class="w-full border rounded p-2">
+                    </div>
+
+
+                    <div>
+                        <label>Apellido</label>
+
+                        <input id="Apellido"
+                               name="Apellido"
+                               class="w-full border rounded p-2">
+                    </div>
+
+
+                    <div>
+                        <label>Empresa</label>
+
+                        <input id="NombreEmpresa"
+                               name="NombreEmpresa"
+                               class="w-full border rounded p-2">
+                    </div>
+
+
+                    <div>
+                        <label>Contacto</label>
+
+                        <input id="Contacto"
+                               name="Contacto"
+                               class="w-full border rounded p-2">
+                    </div>
+
+
+                    <div>
+                        <label>Teléfono</label>
+
+                        <input id="Telefono"
+                               name="Telefono"
+                               class="w-full border rounded p-2">
+                    </div>
+
+
+                    <div>
+                        <label>Correo</label>
+
+                        <input id="Correo"
+                               name="Correo"
+                               class="w-full border rounded p-2">
+                    </div>
+
+
+                    <div>
+                        <label>Dirección</label>
+
+                        <input id="Direccion"
+                               name="Direccion"
+                               class="w-full border rounded p-2">
+                    </div>
+
+
+                    <div>
+                        <label>Ciudad</label>
+
+                        <input id="Ciudad"
+                               name="Ciudad"
+                               class="w-full border rounded p-2">
+                    </div>
+
+
+                </div>
+
+
+                <div class="flex justify-end gap-3 mt-6">
+
+
+                    <button type="button"
+                            onclick="cerrarModalEditarCliente()"
+                            class="px-4 py-2 border rounded">
+
+                        Cancelar
+
+                    </button>
+
+
+                    <button type="submit"
+                            class="px-4 py-2 bg-primary rounded">
+
+                        Guardar Cambios
+
+                    </button>
+
+
+                </div>
+
+
+            </form>
+
+
+        </div>
+
+
+    </div>
+    <script>
+
+            function abrirModalEditarCliente(idCliente) {
+
+                fetch('/Clientes/EditarCliente?id=' + idCliente)
+
+                    .then(response => response.json())
+
+                    .then(cliente => {
+
+
+                        document.getElementById("IdCliente").value = cliente.idCliente;
+
+                        document.getElementById("TipoCliente").value = cliente.tipoCliente ?? "";
+
+                        document.getElementById("Documento").value = cliente.documento ?? "";
+
+                        document.getElementById("Nombre").value = cliente.nombre ?? "";
+
+                        document.getElementById("Apellido").value = cliente.apellido ?? "";
+
+                        document.getElementById("NombreEmpresa").value = cliente.nombreEmpresa ?? "";
+
+                        document.getElementById("Contacto").value = cliente.contacto ?? "";
+
+                        document.getElementById("Telefono").value = cliente.telefono ?? "";
+
+                        document.getElementById("Correo").value = cliente.correo ?? "";
+
+                        document.getElementById("Direccion").value = cliente.direccion ?? "";
+
+                        document.getElementById("Ciudad").value = cliente.ciudad ?? "";
+
+
+
+                        document.getElementById("modalEditarCliente")
+                            .classList.remove("hidden");
+
+
+                    });
+
+            }
+
+
+
+            function cerrarModalEditarCliente() {
+
+                document.getElementById("modalEditarCliente")
+                    .classList.add("hidden");
+
+            }
+    </script>
+
+    <!-- MODAL CAMBIAR ESTADO CLIENTE -->
+
+    <div id="modalEstadoCliente"
+         class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+
+        <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md">
+
+            <div class="flex justify-between items-center mb-5">
+
+                <h2 class="text-xl font-bold">
+                    Cambiar Estado
+                </h2>
+
+                <button onclick="cerrarModalEstadoCliente()">
+
+                    <span class="material-symbols-outlined">
+                        close
+                    </span>
+
+                </button>
+
+            </div>
+
+
+            <p class="mb-5">
+                ¿Desea cambiar el estado del cliente?
+            </p>
+
+
+            <form method="post"
+                  id="formEstadoCliente"
+                  asp-controller="Clientes"
+                  asp-action="CambiarEstado">
+
+                @Html.AntiForgeryToken()
+
+                <input type="hidden"
+                       id="IdClienteEstado"
+                       name="id">
+
+
+                <div class="flex justify-end gap-3">
+
+                    <button type="button"
+                            onclick="cerrarModalEstadoCliente()"
+                            class="px-4 py-2 border rounded">
+
+                        Cancelar
+
+                    </button>
+
+
+                    <button type="submit"
+                            class="px-4 py-2 bg-primary rounded">
+
+                        Confirmar
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <script>
+
+            function abrirModalEstadoCliente(idCliente, estado) {
+
+                document.getElementById("IdClienteEstado").value = idCliente;
+
+                document.getElementById("modalEstadoCliente")
+                    .classList.remove("hidden");
+
+            }
+
+
+            function cerrarModalEstadoCliente() {
+
+                document.getElementById("modalEstadoCliente")
+                    .classList.add("hidden");
+
+            }
+
+    </script>
 </body>
 </html>

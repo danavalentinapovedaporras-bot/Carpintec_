@@ -27,7 +27,7 @@ public partial class CarpintecContext : DbContext
     public virtual DbSet<DetallePedido> DetallePedidos { get; set; }
     public virtual DbSet<Empleado> Empleados { get; set; }
     public virtual DbSet<Inventario> Inventarios { get; set; }
-    public virtual DbSet<ManoObra> ManoObra { get; set; }
+    public virtual DbSet<ManoObra> ManoObras { get; set; }
     
     public virtual DbSet<Pedido> Pedidos { get; set; }
     public virtual DbSet<Pqr> Pqrs { get; set; }
@@ -39,7 +39,8 @@ public partial class CarpintecContext : DbContext
     public DbSet<SolicitudReposicion> SolicitudesReposicion { get; set; }
     public DbSet<MovimientoInventario> MovimientosInventario { get; set; }
 
-    public DbSet<AsignacionManoObra> AsignacionesManoObra { get; set; }
+    public virtual DbSet<ChatBot> ChatBots { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
@@ -69,7 +70,33 @@ public partial class CarpintecContext : DbContext
             entity.Property(e => e.NombreEmpresa).HasMaxLength(150).IsUnicode(false);
             entity.Property(e => e.Telefono).HasMaxLength(20).IsUnicode(false);
             entity.Property(e => e.TipoCliente).HasMaxLength(20).IsUnicode(false);
+           
         });
+
+        modelBuilder.Entity<ChatBot>(entity =>
+{
+    entity.HasKey(e => e.IdChat);
+
+    entity.ToTable("ChatBot");
+
+    entity.Property(e => e.MensajeUsuario)
+        .HasMaxLength(500)
+        .IsUnicode(false);
+
+    entity.Property(e => e.RespuestaBot)
+        .HasMaxLength(500)
+        .IsUnicode(false);
+
+    entity.Property(e => e.Fecha)
+        .HasDefaultValueSql("(getdate())")
+        .HasColumnType("datetime");
+
+
+    entity.HasOne(e => e.Usuario)
+        .WithMany()
+        .HasForeignKey(e => e.IdUsuario)
+        .HasConstraintName("FK_ChatBot_Usuario");
+});
 
         modelBuilder.Entity<Configuracion>(entity =>
         {
@@ -368,6 +395,8 @@ public partial class CarpintecContext : DbContext
             entity.Property(e => e.Estado).HasMaxLength(20).IsUnicode(false);
             entity.Property(e => e.Nombre).HasMaxLength(100).IsUnicode(false);
             entity.Property(e => e.Rol).HasMaxLength(50).IsUnicode(false);
+            entity.Property(e => e.IntentosFallidos)
+    .HasDefaultValue(0);
         });
 
         modelBuilder.Entity<Venta>(entity =>

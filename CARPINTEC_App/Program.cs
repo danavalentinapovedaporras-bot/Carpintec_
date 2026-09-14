@@ -26,6 +26,8 @@ builder.Services.AddDbContext<CarpintecContext>(options =>
 // =========================
 builder.Services.AddScoped<TokenService>();
 
+// Servicio del Chatbot
+builder.Services.AddScoped<ChatbotService>();
 // =========================
 // Configuración JWT
 // =========================

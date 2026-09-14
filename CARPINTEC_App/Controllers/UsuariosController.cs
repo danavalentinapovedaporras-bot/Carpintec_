@@ -2,9 +2,12 @@
 using CARPINTEC_App.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace CARPINTEC_App.Controllers
 {
+    [Authorize]
     public class UsuariosController : Controller
     {
         private readonly CarpintecContext _context;
@@ -13,17 +16,74 @@ namespace CARPINTEC_App.Controllers
         {
             _context = context;
         }
-        // GET: UsuariosController
+
+        // GET: Usuarios
         public async Task<IActionResult> Index()
         {
             var usuarios = await _context.Usuarios.ToListAsync();
             return View(usuarios);
         }
+
+        // GET: Usuarios/NuevoUsuario
+        [HttpGet]
         public IActionResult NuevoUsuario()
         {
             return View();
         }
 
+        // POST: Usuarios/NuevoUsuario
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> NuevoUsuario(Usuario usuario)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(usuario);
+            }
+
+            // Verificar si el correo ya existe
+            if (!string.IsNullOrEmpty(usuario.Correo))
+            {
+                bool correoExiste = await _context.Usuarios
+                    .AnyAsync(u => u.Correo == usuario.Correo);
+
+                if (correoExiste)
+                {
+                    ModelState.AddModelError(
+                        "Correo",
+                        "Este correo ya está registrado."
+                    );
+
+                    return View(usuario);
+                }
+            }
+
+            // El usuario se crea activo
+            usuario.Estado = "Activo";
+
+            // Inicializar intentos de inicio de sesión
+            usuario.IntentosFallidos = 0;
+
+
+            // Crear hash de la contraseña
+            var hasher = new PasswordHasher<Usuario>();
+
+            usuario.Contraseña = hasher.HashPassword(
+                usuario,
+                usuario.Contraseña
+            );
+
+
+            // Guardar usuario
+            _context.Usuarios.Add(usuario);
+
+            await _context.SaveChangesAsync();
+            TempData["Success"] = "Usuario creado correctamente.";
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        // GET: Usuarios/Details/5
         public async Task<IActionResult> Details(int id)
         {
             var usuario = await _context.Usuarios.FindAsync(id);
@@ -36,94 +96,94 @@ namespace CARPINTEC_App.Controllers
             return View(usuario);
         }
 
-        // GET: UsuariosController/Create
-        public ActionResult Create()
+        // Obtener usuario para modal VER
+        [HttpGet]
+        public async Task<IActionResult> ObtenerUsuario(int id)
         {
-            return View();
+            var usuario = await _context.Usuarios
+                .FirstOrDefaultAsync(x => x.IdUsuario == id);
+
+            if (usuario == null)
+            {
+                return NotFound();
+            }
+
+            return Json(usuario);
         }
 
-        // POST: UsuariosController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
+        // GET: Usuarios/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
             var usuario = await _context.Usuarios.FindAsync(id);
 
             if (usuario == null)
+            {
                 return NotFound();
+            }
 
             return View(usuario);
         }
 
-        // POST: UsuariosController/Edit/5
+        // Editar usuario desde modal
         [HttpPost]
-        [ValidateAntiForgeryToken]
-       
-        public async Task<IActionResult> CambiarEstado(int id)
+        public async Task<IActionResult> Edit([FromBody] Usuario usuario)
         {
-            var usuario = await _context.Usuarios.FindAsync(id);
 
-            if (usuario == null)
+            var usuarioBD = await _context.Usuarios
+                .FirstOrDefaultAsync(x => x.IdUsuario == usuario.IdUsuario);
+
+
+            if (usuarioBD == null)
+            {
                 return NotFound();
+            }
 
-            usuario.Estado = usuario.Estado == "Activo" ? "Inactivo" : "Activo";
+
+            usuarioBD.Nombre = usuario.Nombre;
+
+            usuarioBD.Apellido = usuario.Apellido;
+
+            usuarioBD.Correo = usuario.Correo;
+
+            usuarioBD.Rol = usuario.Rol;
+
+
+            _context.Update(usuarioBD);
 
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index));
+
+            return Ok();
+
         }
-      
+
+        // Cambiar estado desde modal
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Usuario usuario)
+        public async Task<IActionResult> CambiarEstado(int id, string estado)
         {
-            if (id != usuario.IdUsuario)
+            var usuario = await _context.Usuarios
+                .FirstOrDefaultAsync(x => x.IdUsuario == id);
+
+
+            if (usuario == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
-                _context.Update(usuario);
-                await _context.SaveChangesAsync();
 
-                return RedirectToAction(nameof(Index));
-            }
+            usuario.Estado = estado;
 
-            return View(usuario);
-        }
 
-        // GET: UsuariosController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
+            _context.Update(usuario);
 
-        // POST: UsuariosController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            await _context.SaveChangesAsync();
+
+
+            TempData["Success"] = "Estado actualizado correctamente";
+
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

@@ -29,23 +29,24 @@ namespace CARPINTEC_App.Controllers
         {
             try
             {
-                // Validar datos obligatorios
-                if (!ModelState.IsValid)
-                {
-                    TempData["Error"] = "Complete todos los campos obligatorios.";
-                    return View("Index", usuario);
-                }
-
                 // Eliminar espacios
-                usuario.Nombre = usuario.Nombre.Trim();
-                usuario.Apellido = usuario.Apellido.Trim();
+                usuario.Nombre = usuario.Nombre?.Trim() ?? "";
+                usuario.Apellido = usuario.Apellido?.Trim() ?? "";
                 usuario.Correo = usuario.Correo?.Trim();
 
+
                 // Verificar correo repetido
-                if (_context.Usuarios.Any(u => u.Correo.ToLower() == usuario.Correo.ToLower()))
+                if (!string.IsNullOrEmpty(usuario.Correo))
                 {
-                    TempData["Error"] = "El correo ya está registrado.";
-                    return View("Index", usuario);
+                    bool existeCorreo = _context.Usuarios
+                        .Any(u => u.Correo != null &&
+                                  u.Correo.ToLower() == usuario.Correo.ToLower());
+
+                    if (existeCorreo)
+                    {
+                        TempData["Error"] = "El correo ya está registrado.";
+                        return View("Index", usuario);
+                    }
                 }
 
                 // Verificar contraseñas

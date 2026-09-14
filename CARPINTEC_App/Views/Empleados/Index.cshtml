@@ -1,6 +1,9 @@
+@model IEnumerable<CARPINTEC_App.Models.Empleado>
+
 @{
-    ViewData["Title"] = "Usuarios";
+    ViewData["Title"] = "Gestión Empleados";
 }
+
 <!DOCTYPE html>
 <html class="light" lang="es">
 <head>
@@ -116,9 +119,17 @@
                 <h2 class="text-headline-lg font-headline-lg text-on-surface text-3xl sm:text-4xl font-bold">Gestión Empleados</h2>
                 <p class="text-body-lg text-on-surface opacity-70 mt-1">Gestión de artesanos, operarios y personal administrativo.</p>
             </div>
-            <button class="flex items-center justify-center gap-2 bg-primary text-black px-6 py-3 rounded-lg font-bold hover:brightness-95 transition-all soft-wood-shadow active:scale-95 shrink-0">
-                <span class="material-symbols-outlined">person_add</span>
-                <span class="text-body-md">Nuevo Empleado</span>
+            <button onclick="abrirModalNuevoEmpleado()"
+                    class="flex items-center justify-center gap-2 bg-primary text-black px-6 py-3 rounded-lg font-bold hover:brightness-95 transition-all soft-wood-shadow active:scale-95 shrink-0">
+
+                <span class="material-symbols-outlined">
+                    person_add
+                </span>
+
+                <span class="text-body-md">
+                    Nuevo Empleado
+                </span>
+
             </button>
         </div>
 
@@ -128,7 +139,9 @@
             <div class="bg-surface-container-lowest border border-outline-variant p-card-padding rounded-xl soft-wood-shadow relative overflow-hidden group">
                 <div class="relative z-10">
                     <p class="text-label-md font-label-md text-on-surface opacity-60 mb-1 uppercase tracking-wider">Total Empleados</p>
-                    <h3 class="text-display-lg font-display-lg text-on-surface">24</h3>
+                    <h3 class="text-display-lg font-display-lg text-on-surface">
+                        @ViewBag.TotalEmpleados
+                    </h3>
                     <div class="flex items-center gap-1 text-on-surface mt-2">
                         <span class="material-symbols-outlined text-sm">trending_up</span>
                         <span class="text-label-md font-medium">+2 este mes</span>
@@ -140,7 +153,9 @@
             <div class="bg-surface-container-lowest border border-outline-variant p-card-padding rounded-xl soft-wood-shadow relative overflow-hidden group">
                 <div class="relative z-10">
                     <p class="text-label-md font-label-md text-on-surface opacity-60 mb-1 uppercase tracking-wider">En Taller</p>
-                    <h3 class="text-display-lg font-display-lg text-on-surface">18</h3>
+                    <h3 class="text-display-lg font-display-lg text-on-surface">
+                        @ViewBag.EnTaller
+                    </h3>
                     <div class="flex items-center gap-1 text-on-surface mt-2">
                         <span class="material-symbols-outlined text-sm">precision_manufacturing</span>
                         <span class="text-label-md font-medium">Operativos ahora</span>
@@ -152,7 +167,9 @@
             <div class="bg-surface-container-lowest border border-outline-variant p-card-padding rounded-xl soft-wood-shadow relative overflow-hidden group">
                 <div class="relative z-10">
                     <p class="text-label-md font-label-md text-on-surface opacity-60 mb-1 uppercase tracking-wider">En Vacaciones</p>
-                    <h3 class="text-display-lg font-display-lg text-on-surface">3</h3>
+                    <h3 class="text-display-lg font-display-lg text-on-surface">
+                        @ViewBag.Vacaciones
+                    </h3>
                     <div class="flex items-center gap-1 text-error mt-2">
                         <span class="material-symbols-outlined text-sm">event_busy</span>
                         <span class="text-label-md font-medium">Retorno próximo Lunes</span>
@@ -186,150 +203,982 @@
                             <th class="p-table-cell-padding uppercase tracking-wider font-bold text-xs text-right">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-outline-variant">
-                        <!-- Employee Row 1 -->
-                        <tr class="hover:bg-surface-container-low/50 transition-colors">
-                            <td class="p-table-cell-padding">
-                                <div class="flex items-center gap-3">
-                                    <img class="w-10 h-10 rounded-full object-cover border border-outline-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNwjgzDWKv2n7E4Zu8vwulV4wZTJthas9Cz7gGa-6XMbT_ePdNjWgH0E1BO41Cu2E6D77RqWfp-JbLxlYL5hHPUEGAVQ6AxBP1tpyrkcyqN9HxXVKukDIn5PqiS9rmUgw_AJandG-ZC24LOOqpJpPi5DZ8KYI79wEbq_Uzf2z_P15vWkj9wNcVbydXRZ4oi0ilcBzRxR64KxQlgYw9KSc5aj_oG7ULFfkgaA_RzH9lub1y8DYJ3gIQ6m3NyKUOjPp0lB_P6hZCdbj6">
-                                    <div>
-                                        <p class="font-bold text-on-surface">Roberto Gómez</p>
-                                        <p class="text-xs text-on-surface opacity-60">ID: EMP-1024</p>
+                    <tbody id="tablaEmpleados" class="divide-y divide-outline-variant">
+
+                        @foreach (var empleado in Model)
+                        {
+                            <tr class="hover:bg-surface-container-low/50 transition-colors">
+
+                                <!-- Nombre -->
+                                <td class="p-table-cell-padding">
+
+                                    <div class="flex items-center gap-3">
+
+                                        <div class="w-10 h-10 rounded-full bg-[#D2B48C] flex items-center justify-center font-bold">
+                                            @empleado.Nombre.Substring(0, 1)
+                                        </div>
+
+
+                                        <div>
+
+                                            <p class="font-bold text-on-surface">
+                                                @empleado.Nombre @empleado.Apellido
+                                            </p>
+
+
+                                            <p class="text-xs text-on-surface opacity-60">
+                                                Documento: @empleado.Documento
+                                            </p>
+
+                                        </div>
+
                                     </div>
-                                </div>
-                            </td>
-                            <td class="p-table-cell-padding">
-                                <span class="bg-primary/20 text-on-surface px-3 py-1 rounded-full text-xs font-bold">Carpintero Senior</span>
-                            </td>
-                            <td class="p-table-cell-padding">
-                                <div class="flex flex-col text-on-surface">
-                                    <span class="flex items-center gap-1 text-sm"><span class="material-symbols-outlined text-[14px]">mail</span> r.gomez@carpintec.com</span>
-                                    <span class="flex items-center gap-1 text-sm"><span class="material-symbols-outlined text-[14px]">phone</span> +52 55 1234 5678</span>
-                                </div>
-                            </td>
-                            <td class="p-table-cell-padding">
-                                <span class="inline-flex items-center gap-1 text-on-surface bg-primary/30 px-3 py-1 rounded-full text-xs font-bold border border-primary/20">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-black"></span> Activo
-                                </span>
-                            </td>
-                            <td class="p-table-cell-padding text-right">
-                                <button class="p-2 text-on-surface hover:text-black transition-colors">
-                                    <span class="material-symbols-outlined">more_vert</span>
-                                </button>
-                            </td>
-                        </tr>
-                        <!-- Employee Row 2 -->
-                        <tr class="hover:bg-surface-container-low/50 transition-colors">
-                            <td class="p-table-cell-padding">
-                                <div class="flex items-center gap-3">
-                                    <img class="w-10 h-10 rounded-full object-cover border border-outline-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAU0ibW3Y2L1PH6uylmack5mHM_Zi437td06caPCuhKQkMaoYcvx5YC81ZMKSRJi8ARwqh7oGxi4pIcROowe7g0LotlnmpweFnFFr25TvvepBsLgbZtLUxgQRTDr0h9QtOxyFGODcdFhcsUqE6ZV_Ejo_2msq8BpNfRRVd8DcekaBCOqtBodnW5-ZKEaCEeE_Q516SjCi79UpJe80E2fQBIQ9UjqSJmChV-2x-MOv3ev42ag-n2nSuM00pUM1AkYaWVczdNeuOdUXip">
-                                    <div>
-                                        <p class="font-bold text-on-surface">Elena Martínez</p>
-                                        <p class="text-xs text-on-surface opacity-60">ID: EMP-1025</p>
+
+                                </td>
+
+
+
+                                <!-- Cargo -->
+
+                                <td class="p-table-cell-padding">
+
+                                    <span class="bg-primary/20 px-3 py-1 rounded-full text-xs font-bold">
+
+                                        @empleado.Cargo
+
+                                    </span>
+
+                                </td>
+
+
+
+                                <!-- Contacto -->
+
+                                <td class="p-table-cell-padding">
+
+                                    <div class="flex flex-col">
+
+
+                                        <span class="text-sm">
+
+                                            📧 @empleado.Correo
+
+                                        </span>
+
+
+                                        <span class="text-sm">
+
+                                            📞 @empleado.Telefono
+
+                                        </span>
+
+
                                     </div>
-                                </div>
-                            </td>
-                            <td class="p-table-cell-padding">
-                                <span class="bg-primary/20 text-on-surface px-3 py-1 rounded-full text-xs font-bold">Lustradora Profesional</span>
-                            </td>
-                            <td class="p-table-cell-padding">
-                                <div class="flex flex-col text-on-surface">
-                                    <span class="flex items-center gap-1 text-sm"><span class="material-symbols-outlined text-[14px]">mail</span> e.martinez@carpintec.com</span>
-                                    <span class="flex items-center gap-1 text-sm"><span class="material-symbols-outlined text-[14px]">phone</span> +52 55 2345 6789</span>
-                                </div>
-                            </td>
-                            <td class="p-table-cell-padding">
-                                <span class="inline-flex items-center gap-1 text-on-surface bg-primary/30 px-3 py-1 rounded-full text-xs font-bold border border-primary/20">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-black"></span> Activo
-                                </span>
-                            </td>
-                            <td class="p-table-cell-padding text-right">
-                                <button class="p-2 text-on-surface hover:text-black transition-colors">
-                                    <span class="material-symbols-outlined">more_vert</span>
-                                </button>
-                            </td>
-                        </tr>
-                        <!-- Employee Row 3 -->
-                        <tr class="hover:bg-surface-container-low/50 transition-colors">
-                            <td class="p-table-cell-padding">
-                                <div class="flex items-center gap-3">
-                                    <img class="w-10 h-10 rounded-full object-cover border border-outline-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYo0gJck98JiF8Fun9Sp84tEqDEs1ZEdr64FbIX8vWvLinK9CVlx48KLgBm5ReL56QjEGraS2rYOG4MTTJgQpyugLiKKEpg-x6LA9UPZ6eKUAfdFbimVY3-Di92FO9At5XsCOe0LkVc0Szbsd5r17Sl-tP1RM47d0nLh93QpxJyezwegUjAAq6Ur3XLS9SmujIJN-oaRdhw6mxCD9ca5uEwJ8NZjOYcu80ZYulXhedgl7L7PQJ61q7eApuv1-vg3Sn70GMv0RfFi5h">
-                                    <div>
-                                        <p class="font-bold text-on-surface">Julián Soto</p>
-                                        <p class="text-xs text-on-surface opacity-60">ID: EMP-1011</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="p-table-cell-padding">
-                                <span class="bg-primary/20 text-on-surface px-3 py-1 rounded-full text-xs font-bold">Tallador Maestro</span>
-                            </td>
-                            <td class="p-table-cell-padding">
-                                <div class="flex flex-col text-on-surface">
-                                    <span class="flex items-center gap-1 text-sm"><span class="material-symbols-outlined text-[14px]">mail</span> j.soto@carpintec.com</span>
-                                    <span class="flex items-center gap-1 text-sm"><span class="material-symbols-outlined text-[14px]">phone</span> +52 55 3456 7890</span>
-                                </div>
-                            </td>
-                            <td class="p-table-cell-padding">
-                                <span class="inline-flex items-center gap-1 text-on-surface bg-surface-container-high px-3 py-1 rounded-full text-xs font-bold border border-outline-variant">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-on-surface opacity-50"></span> De Vacaciones
-                                </span>
-                            </td>
-                            <td class="p-table-cell-padding text-right">
-                                <button class="p-2 text-on-surface hover:text-black transition-colors">
-                                    <span class="material-symbols-outlined">more_vert</span>
-                                </button>
-                            </td>
-                        </tr>
-                        <!-- Employee Row 4 -->
-                        <tr class="hover:bg-surface-container-low/50 transition-colors">
-                            <td class="p-table-cell-padding">
-                                <div class="flex items-center gap-3">
-                                    <img class="w-10 h-10 rounded-full object-cover border border-outline-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuABvmWxV2e_7-aF3pZj8w1v8oPim6t31nGUkP2LHUaS5nWV6h50Wd0q_wn9UcNnHxXrRBIyGyuIozFGsQo3r3CWaP1CrrFYW3C9FAc4KAyg4LrO1saU0do4Le9oMOsxM1kASyoyMx-f1yOgFqnjfdYyGRqCm8cp1YQWtnkhzhL1rx66lZ3uVGYTqcGEy04Gsz3VUszcOqB3kCzwXFgFcnLjiTVyDVZxouAkxUjIwFT-jIQKjKDbDiltZOuHvJ6QH__SEHszIRWpemIx">
-                                    <div>
-                                        <p class="font-bold text-on-surface">Marcos Peña</p>
-                                        <p class="text-xs text-on-surface opacity-60">ID: EMP-1033</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="p-table-cell-padding">
-                                <span class="bg-primary/20 text-on-surface px-3 py-1 rounded-full text-xs font-bold">Logística e Inventario</span>
-                            </td>
-                            <td class="p-table-cell-padding">
-                                <div class="flex flex-col text-on-surface">
-                                    <span class="flex items-center gap-1 text-sm"><span class="material-symbols-outlined text-[14px]">mail</span> m.pena@carpintec.com</span>
-                                    <span class="flex items-center gap-1 text-sm"><span class="material-symbols-outlined text-[14px]">phone</span> +52 55 4567 8901</span>
-                                </div>
-                            </td>
-                            <td class="p-table-cell-padding">
-                                <span class="inline-flex items-center gap-1 text-on-surface bg-primary/30 px-3 py-1 rounded-full text-xs font-bold border border-primary/20">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-black"></span> Activo
-                                </span>
-                            </td>
-                            <td class="p-table-cell-padding text-right">
-                                <button class="p-2 text-on-surface hover:text-black transition-colors">
-                                    <span class="material-symbols-outlined">more_vert</span>
-                                </button>
-                            </td>
-                        </tr>
+
+                                </td>
+
+
+
+                                <!-- Estado -->
+
+                                <td class="p-table-cell-padding">
+
+
+                                    <span class="px-3 py-1 rounded-full text-xs font-bold
+                                        @(empleado.Estado == "Activo"
+                                            ? "bg-green-200 text-green-800"
+                                            : empleado.Estado == "Vacaciones"
+                                                ? "bg-blue-200 text-blue-800"
+                                                : empleado.Estado == "Incapacidad"
+                                                    ? "bg-yellow-200 text-yellow-800"
+                                                    : empleado.Estado == "Permiso"
+                                                        ? "bg-purple-200 text-purple-800"
+                                                        : empleado.Estado == "Suspendido"
+                                                            ? "bg-orange-200 text-orange-800"
+                                                            : "bg-red-200 text-red-800")">
+
+                                        @empleado.Estado
+
+                                    </span>
+
+                                </td>
+
+
+
+                                <!-- Acciones -->
+
+                                <td class="p-table-cell-padding text-right">
+
+                                    <button onclick="abrirModalVer(@empleado.IdEmpleado)"
+                                            class="p-2">
+                                        👁️
+                                    </button>
+
+                                    <button onclick="abrirModalEditar(@empleado.IdEmpleado)"
+                                            class="p-2">
+                                        ✏️
+                                    </button>
+
+                                    <button onclick="abrirModalEstado(@empleado.IdEmpleado)"
+                                            class="p-2">
+                                        ⚙️
+                                    </button>
+
+                                </td>
+
+
+                            </tr>
+                        }
+
                     </tbody>
                 </table>
             </div>
             <!-- Table Footer/Pagination -->
-            <div class="px-6 py-4 border-t border-outline-variant flex flex-col sm:flex-row items-center justify-between gap-4">
-                <p class="text-label-md text-on-surface font-bold">Mostrando 1-4 de 24 empleados</p>
-                <div class="flex gap-2">
-                    <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-outline-variant text-on-surface hover:bg-surface-container-low transition-colors disabled:opacity-50" disabled>
+            <div class="flex gap-2">
+
+                @if (ViewBag.PaginaActual > 1)
+                {
+                    <a href="?pagina=@(ViewBag.PaginaActual - 1)"
+                       class="w-8 h-8 flex items-center justify-center rounded-lg border border-outline-variant">
                         <span class="material-symbols-outlined">chevron_left</span>
-                    </button>
-                    <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-primary bg-primary text-black font-bold">1</button>
-                    <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-outline-variant text-on-surface hover:bg-surface-container-low transition-colors">2</button>
-                    <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-outline-variant text-on-surface hover:bg-surface-container-low transition-colors">3</button>
-                    <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-outline-variant text-on-surface hover:bg-surface-container-low transition-colors">
+                    </a>
+                }
+
+
+                @for (int i = 1; i <= ViewBag.TotalPaginas; i++)
+                {
+                    <a href="?pagina=@i"
+                       class="w-8 h-8 flex items-center justify-center rounded-lg border
+                        @(i == ViewBag.PaginaActual ? "border-primary bg-primary" : "border-outline-variant")">
+                        @i
+                    </a>
+                }
+
+
+                @if (ViewBag.PaginaActual < ViewBag.TotalPaginas)
+                {
+                    <a href="?pagina=@(ViewBag.PaginaActual + 1)"
+                       class="w-8 h-8 flex items-center justify-center rounded-lg border border-outline-variant">
                         <span class="material-symbols-outlined">chevron_right</span>
-                    </button>
-                </div>
+                    </a>
+                }
+
             </div>
         </div>
     </main>
+    <!-- ==========================
+MODAL NUEVO EMPLEADO
+=========================== -->
+
+    <div id="modalNuevoEmpleado"
+         class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+
+
+        <div class="bg-white rounded-3xl p-8 w-full max-w-2xl">
+
+
+            <h2 class="text-3xl font-bold mb-6 text-[#442a22]">
+                Nuevo Empleado
+            </h2>
+
+
+            <form asp-controller="Empleados"
+                  asp-action="NuevoEmpleado"
+                  method="post">
+
+
+                @Html.AntiForgeryToken()
+
+
+                <div class="grid grid-cols-2 gap-4">
+
+
+                    <div>
+                        <label class="font-semibold">
+                            Tipo de Documento
+                        </label>
+
+                        <select name="TipoDocumento"
+                                id="TipoDocumento"
+                                class="w-full border rounded-xl px-4 py-3"
+                                required>
+
+                            <option value="" disabled selected>
+                                Seleccione tipo de documento
+                            </option>
+
+                            <option value="CC">
+                                Cédula de Ciudadanía
+                            </option>
+
+                            <option value="CE">
+                                Cédula de Extranjería
+                            </option>
+
+                            <option value="TI">
+                                Tarjeta de Identidad
+                            </option>
+
+                        </select>
+                    </div>
+
+
+                    <div>
+                        <label class="font-semibold">
+                            Número de Documento
+                        </label>
+
+                        <input name="Documento"
+                               type="text"
+                               maxlength="10"
+                               pattern="[0-9]{1,10}"
+                               class="w-full border rounded-xl px-4 py-3"
+                               placeholder="Máximo 10 números"
+                               required />
+
+                    </div>
+
+
+
+                    <div>
+                        <label class="font-semibold">
+                            Cargo / Rol
+                        </label>
+
+                        <select name="Cargo"
+                                class="w-full border rounded-xl px-4 py-3">
+
+                            <option>
+                                Carpintero
+                            </option>
+
+                            <option>
+                                Diseñador
+                            </option>
+
+                            <option>
+                                Operario
+                            </option>
+
+                            <option>
+                                Administrador
+                            </option>
+
+                            <option>
+                                Logística
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <div>
+                        <label class="font-semibold">
+                            Nombre
+                        </label>
+
+                        <input name="Nombre"
+                               class="w-full border rounded-xl px-4 py-3"
+                               required />
+
+                    </div>
+
+
+
+                    <div>
+                        <label class="font-semibold">
+                            Apellido
+                        </label>
+
+                        <input name="Apellido"
+                               class="w-full border rounded-xl px-4 py-3"
+                               required />
+
+                    </div>
+
+
+
+                    <div>
+                        <label class="font-semibold">
+                            Correo
+                        </label>
+
+                        <input name="Correo"
+                               type="email"
+                               class="w-full border rounded-xl px-4 py-3"
+                               required />
+
+                    </div>
+
+
+
+                    <div>
+                        <label class="font-semibold">
+                            Teléfono
+                        </label>
+
+                        <input name="Telefono"
+                               class="w-full border rounded-xl px-4 py-3"
+                               required />
+
+                    </div>
+
+
+
+                    <div>
+                        <label class="font-semibold">
+                            Dirección
+                        </label>
+
+                        <input name="Direccion"
+                               class="w-full border rounded-xl px-4 py-3" />
+
+                    </div>
+
+
+
+                    <div>
+                        <label class="font-semibold">
+                            Salario
+                        </label>
+
+                        <input name="Salario"
+                               type="number"
+                               min="0"
+                               step="0.01"
+                               class="w-full border rounded-xl px-4 py-3"
+                               placeholder="Ingrese salario"
+                               required />
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="mt-4">
+
+                    <label class="font-semibold">
+                        Fecha ingreso
+                    </label>
+
+                    <input id="FechaIngreso"
+                           name="FechaIngreso"
+                           type="date"
+                           class="w-full border rounded-xl px-4 py-3"
+                           required />
+
+                </div>
+
+
+
+                <div class="flex justify-end gap-3 mt-8">
+
+
+                    <button type="button"
+                            onclick="cerrarModalNuevoEmpleado()"
+                            class="border px-6 py-3 rounded-xl">
+
+                        Cancelar
+
+                    </button>
+
+
+
+                    <button type="submit"
+                            class="px-6 py-3 rounded-xl"
+                            style="background:rgb(210,180,140);">
+
+                        Guardar
+
+                    </button>
+
+
+                </div>
+
+
+            </form>
+
+
+        </div>
+
+    </div>
+    <script>
+
+            function abrirModalNuevoEmpleado() {
+                document.getElementById("modalNuevoEmpleado")
+                    .classList.remove("hidden");
+
+                document.getElementById("modalNuevoEmpleado")
+                    .classList.add("flex");
+            }
+
+
+
+            function cerrarModalNuevoEmpleado() {
+
+                document.getElementById("modalNuevoEmpleado")
+                    .classList.add("hidden");
+
+                document.getElementById("modalNuevoEmpleado")
+                    .classList.remove("flex");
+
+            }
+
+    </script>
+
+    <script>
+
+            // Colocar fecha actual y bloquear fechas anteriores
+            document.addEventListener("DOMContentLoaded", function() {
+
+                let fecha = new Date();
+
+                let dia = String(fecha.getDate()).padStart(2, '0');
+                let mes = String(fecha.getMonth() + 1).padStart(2, '0');
+                let año = fecha.getFullYear();
+
+                let fechaActual = `${año}-${mes}-${dia}`;
+
+                let inputFecha = document.getElementById("FechaIngreso");
+
+                inputFecha.value = fechaActual;
+                inputFecha.min = fechaActual;
+
+            });
+
+    </script>
+    <div id="modalVerEmpleado"
+         class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+
+        <div class="bg-white rounded-3xl p-8 w-full max-w-lg">
+
+            <h2 class="text-3xl font-bold mb-6 text-[#442a22]">
+                Información del Empleado
+            </h2>
+
+            <div id="datosEmpleado" class="space-y-3">
+            </div>
+
+            <div class="flex justify-end mt-6">
+
+                <button onclick="cerrarModalVer()"
+                        class="px-6 py-3 rounded-xl"
+                        style="background:#D2B48C">
+
+                    Cerrar
+
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+    <!-- MODAL EDITAR EMPLEADO -->
+
+    <div id="modalEditarEmpleado"
+         class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+
+
+        <div class="bg-white rounded-3xl p-8 w-full max-w-2xl">
+
+
+            <h2 class="text-3xl font-bold mb-6 text-[#442a22]">
+                Editar Empleado
+            </h2>
+
+
+            <input type="hidden" id="editarIdEmpleado">
+
+
+            <div class="grid grid-cols-2 gap-4">
+
+
+                <div>
+                    <label>Documento</label>
+
+                    <input id="editarDocumento"
+                           class="w-full border rounded-xl px-4 py-3">
+                </div>
+
+
+
+                <div>
+                    <label>Cargo</label>
+
+                    <select id="editarCargo"
+                            class="w-full border rounded-xl px-4 py-3">
+
+                        <option>Carpintero</option>
+                        <option>Diseñador</option>
+                        <option>Operario</option>
+                        <option>Administrador</option>
+                        <option>Logística</option>
+
+                    </select>
+                </div>
+
+
+
+                <div>
+                    <label>Nombre</label>
+
+                    <input id="editarNombre"
+                           class="w-full border rounded-xl px-4 py-3">
+                </div>
+
+
+
+                <div>
+                    <label>Apellido</label>
+
+                    <input id="editarApellido"
+                           class="w-full border rounded-xl px-4 py-3">
+                </div>
+
+
+
+                <div>
+                    <label>Correo</label>
+
+                    <input id="editarCorreo"
+                           class="w-full border rounded-xl px-4 py-3">
+                </div>
+
+
+
+                <div>
+                    <label>Teléfono</label>
+
+                    <input id="editarTelefono"
+                           class="w-full border rounded-xl px-4 py-3">
+                </div>
+
+
+                <div>
+                    <label>Dirección</label>
+
+                    <input id="editarDireccion"
+                           class="w-full border rounded-xl px-4 py-3">
+                </div>
+
+
+                <div>
+                    <label>Salario</label>
+
+                    <input id="editarSalario"
+                           type="number"
+                           min="0"
+                           class="w-full border rounded-xl px-4 py-3">
+                </div>
+
+
+            </div>
+
+
+            <div class="flex justify-end gap-3 mt-8">
+
+
+                <button onclick="cerrarModalEditar()"
+                        class="border px-6 py-3 rounded-xl">
+                    Cancelar
+                </button>
+
+
+
+                <button onclick="guardarEditarEmpleado()"
+                        class="px-6 py-3 rounded-xl"
+                        style="background:#D2B48C">
+
+                    Guardar
+
+                </button>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+    <script>
+
+            function abrirModalVer(id) {
+
+                fetch('/Empleados/ObtenerEmpleado?id=' + id)
+                    .then(response => response.json())
+                    .then(data => {
+
+                        document.getElementById("datosEmpleado").innerHTML = `
+
+                                <p><b>Documento:</b> ${data.documento}</p>
+                                <p><b>Nombre:</b> ${data.nombre} ${data.apellido}</p>
+                                <p><b>Cargo:</b> ${data.cargo}</p>
+                                <p><b>Correo:</b> ${data.correo ?? ''}</p>
+                                <p><b>Teléfono:</b> ${data.telefono ?? ''}</p>
+                                <p><b>Estado:</b> ${data.estado}</p>
+
+                            `;
+
+
+                        document.getElementById("modalVerEmpleado")
+                            .classList.remove("hidden");
+
+                        document.getElementById("modalVerEmpleado")
+                            .classList.add("flex");
+
+                    });
+
+            }
+
+
+
+            function cerrarModalVer() {
+
+                document.getElementById("modalVerEmpleado")
+                    .classList.add("hidden");
+
+                document.getElementById("modalVerEmpleado")
+                    .classList.remove("flex");
+
+            }
+
+
+
+            function abrirModalEditar(id) {
+
+                fetch('/Empleados/ObtenerEmpleado?id=' + id)
+
+                    .then(response => response.json())
+
+                    .then(data => {
+
+
+                        document.getElementById("editarIdEmpleado").value = data.idEmpleado;
+                        document.getElementById("editarDocumento").value = data.documento;
+                        document.getElementById("editarNombre").value = data.nombre;
+                        document.getElementById("editarApellido").value = data.apellido;
+                        document.getElementById("editarCargo").value = data.cargo;
+                        document.getElementById("editarCorreo").value = data.correo ?? "";
+                        document.getElementById("editarTelefono").value = data.telefono ?? "";
+                        document.getElementById("editarDireccion").value = data.direccion ?? "";
+                        document.getElementById("editarSalario").value = data.salario ?? 0;
+
+
+
+                        document.getElementById("modalEditarEmpleado")
+                            .classList.remove("hidden");
+
+
+                        document.getElementById("modalEditarEmpleado")
+                            .classList.add("flex");
+
+
+                    });
+
+            }
+
+
+
+
+            function cerrarModalEditar() {
+
+                document.getElementById("modalEditarEmpleado")
+                    .classList.add("hidden");
+
+
+                document.getElementById("modalEditarEmpleado")
+                    .classList.remove("flex");
+
+            }
+
+
+
+
+            function guardarEditarEmpleado() {
+
+
+                let empleado = {
+
+
+                    idEmpleado:
+                        document.getElementById("editarIdEmpleado").value,
+
+
+                    documento:
+                        document.getElementById("editarDocumento").value,
+
+
+                    nombre:
+                        document.getElementById("editarNombre").value,
+
+
+                    apellido:
+                        document.getElementById("editarApellido").value,
+
+
+                    cargo:
+                        document.getElementById("editarCargo").value,
+
+
+                    correo:
+                        document.getElementById("editarCorreo").value,
+
+
+                    telefono:
+                        document.getElementById("editarTelefono").value,
+
+
+                    direccion:
+                        document.getElementById("editarDireccion").value,
+
+
+                    salario:
+                        document.getElementById("editarSalario").value
+
+                };
+
+
+
+                fetch('/Empleados/EditarEmpleado',
+                    {
+
+                        method: 'POST',
+
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+
+
+                        body: JSON.stringify(empleado)
+
+                    })
+
+
+                    .then(response => {
+
+                        if (response.ok) {
+
+                            location.reload();
+
+                        }
+                        else {
+
+                            alert("Error al actualizar empleado");
+
+                        }
+
+                    });
+
+
+            }
+
+
+
+
+
+            function abrirModalEstado(id) {
+
+
+                fetch('/Empleados/ObtenerEmpleado?id=' + id)
+
+                    .then(response => response.json())
+
+                    .then(data => {
+
+
+                        document.getElementById("estadoIdEmpleado").value =
+                            data.idEmpleado;
+
+
+                        document.getElementById("nuevoEstado").value =
+                            data.estado;
+
+
+
+                        document.getElementById("modalEstadoEmpleado")
+                            .classList.remove("hidden");
+
+
+                        document.getElementById("modalEstadoEmpleado")
+                            .classList.add("flex");
+
+
+                    });
+
+
+            }
+
+
+
+
+            function cerrarModalEstado() {
+
+
+                document.getElementById("modalEstadoEmpleado")
+                    .classList.add("hidden");
+
+
+                document.getElementById("modalEstadoEmpleado")
+                    .classList.remove("flex");
+
+
+            }
+
+
+
+
+
+            function guardarEstadoEmpleado() {
+
+
+                let datos = {
+
+
+                    idEmpleado:
+                        document.getElementById("estadoIdEmpleado").value,
+
+
+                    estado:
+                        document.getElementById("nuevoEstado").value
+
+                };
+
+
+
+                fetch('/Empleados/CambiarEstado',
+                    {
+
+
+                        method: 'POST',
+
+
+                        headers: {
+
+                            'Content-Type': 'application/json'
+
+                        },
+
+
+                        body: JSON.stringify(datos)
+
+
+                    })
+
+                    .then(response => {
+
+
+                        if (response.ok) {
+
+                            location.reload();
+
+                        }
+                        else {
+
+                            alert("Error cambiando estado");
+
+                        }
+
+
+                    });
+
+
+            }
+
+
+    </script>
+    <!-- MODAL CAMBIAR ESTADO -->
+
+    <div id="modalEstadoEmpleado"
+         class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+
+
+        <div class="bg-white rounded-3xl p-8 w-full max-w-md">
+
+
+            <h2 class="text-2xl font-bold mb-5 text-[#442a22]">
+                Cambiar estado del empleado
+            </h2>
+
+
+            <input type="hidden" id="estadoIdEmpleado">
+
+
+            <label class="font-semibold">
+                Estado
+            </label>
+
+
+
+                <select id="nuevoEstado"
+                        class="w-full border rounded-xl px-4 py-3 mt-2">
+
+
+                    <option value="Activo">
+                        Activo
+                    </option>
+
+
+                    <option value="Inactivo">
+                        Inactivo
+                    </option>
+
+
+                    <option value="Vacaciones">
+                        Vacaciones
+                    </option>
+
+
+                    <option value="Incapacidad">
+                        Incapacidad
+                    </option>
+
+
+                    <option value="Permiso">
+                        Permiso
+                    </option>
+
+
+                    <option value="Suspendido">
+                        Suspendido
+                    </option>
+
+
+                </select>
+
+
+
+            <div class="flex justify-end gap-3 mt-6">
+
+
+                <button onclick="cerrarModalEstado()"
+                        class="border px-5 py-3 rounded-xl">
+
+                    Cancelar
+
+                </button>
+
+
+
+                <button onclick="guardarEstadoEmpleado()"
+                        class="px-5 py-3 rounded-xl"
+                        style="background:#D2B48C">
+
+                    Guardar
+
+                </button>
+
+
+            </div>
+
+
+        </div>
+
+    </div>
+
 </body>
 </html>

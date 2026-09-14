@@ -1,5 +1,41 @@
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
 @{
+    ViewData["Title"] = "Chatbot";
 }
+
+
+<div class="max-w-xl mx-auto mt-10 bg-white shadow rounded p-5">
+
+    <h2 class="text-2xl font-bold mb-5">
+        🤖 Asistente CARPINTEC
+    </h2>
+
+
+    @if (ViewBag.MensajeUsuario != null)
+    {
+        <div class="bg-gray-200 p-3 rounded mb-3">
+            <b>Tú:</b>
+            @ViewBag.MensajeUsuario
+        </div>
+
+
+        <div class="bg-blue-100 p-3 rounded">
+            <b>CARPINTEC Bot:</b>
+            @ViewBag.RespuestaBot
+        </div>
+    }
+
+
+    <form asp-action="Enviar" method="post" class="mt-5">
+
+        <input name="mensaje"
+               class="border p-2 w-full rounded"
+               placeholder="Escribe tu pregunta..." />
+
+
+        <button class="bg-blue-600 text-white px-4 py-2 rounded mt-3">
+            Enviar
+        </button>
+
+    </form>
+
+</div>

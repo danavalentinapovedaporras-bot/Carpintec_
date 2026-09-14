@@ -828,5 +828,136 @@
                 }
             });
     </script>
+    <!-- CHATBOT CARPINTEC -->
+    <div id="chatbot-container"
+         class="fixed bottom-6 right-6 z-50">
+
+        <!-- Botón abrir chatbot -->
+        <button onclick="abrirChatbot()"
+                class="bg-primary text-white w-16 h-16 rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition">
+
+            <span class="material-symbols-outlined text-4xl">
+                robot_2
+            </span>
+
+        </button>
+
+
+        <!-- Ventana chatbot -->
+        <div id="chatbot-box"
+             class="hidden absolute bottom-20 right-0 w-80 bg-white rounded-xl shadow-xl border border-outline-variant">
+
+            <!-- Encabezado -->
+            <div class="bg-primary text-white p-4 rounded-t-xl flex justify-between">
+
+                <span class="font-bold">
+                    Asistente CARPINTEC
+                </span>
+
+                <button onclick="cerrarChatbot()">
+                    ✕
+                </button>
+
+            </div>
+
+
+            <!-- Mensajes -->
+            <div id="chat-messages"
+                 class="p-4 h-80 overflow-y-auto text-sm whitespace-pre-line space-y-2">
+
+                <div class="bg-surface-container p-3 rounded-lg max-w-[90%]">
+                    👋 Hola, soy el asistente virtual de CARPINTEC.
+
+                    ¿En qué puedo ayudarte?
+                </div>
+
+            </div>
+
+            <!-- Entrada -->
+            <div class="flex border-t">
+
+                <input id="chat-input"
+                       class="flex-1 p-3 outline-none"
+                       placeholder="Escribe tu mensaje...">
+
+                <button onclick="enviarMensaje()"
+                        class="bg-primary text-white px-4">
+                    ➤
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+            function abrirChatbot() {
+
+                document.getElementById("chatbot-box")
+                    .classList.remove("hidden");
+
+            }
+
+
+            function cerrarChatbot() {
+
+                document.getElementById("chatbot-box")
+                    .classList.add("hidden");
+
+            }
+
+            async function enviarMensaje() {
+
+                let input = document.getElementById("chat-input");
+
+                let mensaje = input.value;
+
+
+                if (mensaje.trim() == "")
+                    return;
+
+
+                let mensajes = document.getElementById("chat-messages");
+
+
+                mensajes.innerHTML +=
+                    `
+            <div class="flex justify-end">
+                <div class="bg-primary text-white p-3 rounded-lg max-w-[90%]">
+                    ${mensaje}
+                </div>
+            </div>`;
+
+
+                let respuesta = await fetch('/Chatbot/Preguntar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        mensaje: mensaje
+                    })
+                });
+
+
+                let data = await respuesta.json();
+
+
+                mensajes.innerHTML += `
+                <p class="bg-surface-container p-3 rounded-lg mt-2">
+                    ${data.respuesta}
+                </p>`;
+
+
+                input.value = "";
+
+                mensajes.scrollTop = mensajes.scrollHeight;
+
+            }
+            
+    </script>
 </body>
 </html>

@@ -64,7 +64,7 @@ namespace CARPINTEC_App.Controllers
             try
             {
                 // =========================
-                // Buscar usuario activo
+                // Buscar usuario
                 // =========================
                 var usuario = _context.Usuarios.FirstOrDefault(u =>
                     (
@@ -73,14 +73,29 @@ namespace CARPINTEC_App.Controllers
                         ||
                         u.Nombre.ToLower() == username.ToLower()
                     )
-                    &&
-                    u.Estado == "Activo"
                 );
 
+                // =========================
+                // Usuario inexistente
+                // =========================
                 if (usuario == null)
                 {
                     TempData["Error"] =
                         "Usuario o contraseña incorrectos.";
+
+                    return RedirectToAction("Index");
+                }
+
+                // =========================
+                // Verificar estado
+                // =========================
+                if (!string.Equals(
+                        usuario.Estado,
+                        "Activo",
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    TempData["Error"] =
+                        $"El usuario se encuentra {usuario.Estado?.ToLower() ?? "inactivo"}.";
 
                     return RedirectToAction("Index");
                 }
@@ -100,7 +115,7 @@ namespace CARPINTEC_App.Controllers
                 if (contraseñaYaHasheada)
                 {
                     // =========================
-                    // Usuario que ya tiene hash
+                    // Usuario con contraseña hash
                     // =========================
 
                     var resultado =
@@ -124,7 +139,7 @@ namespace CARPINTEC_App.Controllers
                         usuario.Contraseña == password;
 
                     // =========================
-                    // MIGRAR CONTRASEÑA
+                    // Migrar contraseña
                     // =========================
 
                     if (acceso)
@@ -134,26 +149,123 @@ namespace CARPINTEC_App.Controllers
                                 usuario,
                                 password
                             );
-
-                        await _context.SaveChangesAsync();
                     }
                 }
 
-                // =========================
-                // Contraseña incorrecta
-                // =========================
-
+                // =====================================================
+                // CONTRASEÑA INCORRECTA
+                // =====================================================
                 if (!acceso)
                 {
+                    // =================================================
+                    // Comprobar el rol REAL del usuario
+                    // =================================================
+
+                    string rolRealUsuario =
+                        (usuario.Rol ?? "").Trim();
+
+                    // =================================================
+                    // ADMINISTRADOR
+                    // NO TIENE LÍMITE DE INTENTOS
+                    // =================================================
+
+                    if (rolRealUsuario.Equals(
+                            "Administrador",
+                            StringComparison.OrdinalIgnoreCase))
+                    {
+                        TempData["Error"] =
+                            "Usuario o contraseña incorrectos.";
+
+                        return RedirectToAction("Index");
+                    }
+
+                    // =================================================
+                    // CLIENTE Y EMPLEADO
+                    // SÍ TIENEN LÍMITE DE 3 INTENTOS
+                    // =================================================
+
+                    if (rolRealUsuario.Equals(
+                            "Cliente",
+                            StringComparison.OrdinalIgnoreCase)
+                        ||
+                        rolRealUsuario.Equals(
+                            "Empleado",
+                            StringComparison.OrdinalIgnoreCase))
+                    {
+                        usuario.IntentosFallidos++;
+
+                        // =========================
+                        // Llegó a 3 intentos
+                        // =========================
+                        if (usuario.IntentosFallidos >= 3)
+                        {
+                            usuario.Estado = "Bloqueado";
+
+                            await _context.SaveChangesAsync();
+
+                            TempData["Error"] =
+                                "Has alcanzado el máximo de 3 intentos. Tu usuario ha sido bloqueado.";
+
+                            return RedirectToAction("Index");
+                        }
+
+                        // =========================
+                        // Guardar intento fallido
+                        // =========================
+
+                        await _context.SaveChangesAsync();
+
+                        int intentosRestantes =
+                            3 - usuario.IntentosFallidos;
+
+                        TempData["Error"] =
+                            $"Usuario o contraseña incorrectos. Intentos restantes: {intentosRestantes}.";
+
+                        return RedirectToAction("Index");
+                    }
+
+                    // =================================================
+                    // Si el rol no coincide con los roles conocidos
+                    // =================================================
+
                     TempData["Error"] =
                         "Usuario o contraseña incorrectos.";
 
                     return RedirectToAction("Index");
                 }
 
-                // =========================
+                // =====================================================
+                // LOGIN CORRECTO
+                // =====================================================
+
+                // =================================================
+                // Reiniciar contador de intentos
+                // =================================================
+
+                // Solo Cliente y Empleado utilizan el contador
+                string rolReal =
+                    (usuario.Rol ?? "").Trim();
+
+                if (rolReal.Equals(
+                        "Cliente",
+                        StringComparison.OrdinalIgnoreCase)
+                    ||
+                    rolReal.Equals(
+                        "Empleado",
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    usuario.IntentosFallidos = 0;
+                }
+
+                // =================================================
+                // Guardar cambios
+                // =================================================
+
+                await _context.SaveChangesAsync();
+
+                // =================================================
                 // Convertir rol seleccionado
-                // =========================
+                // =================================================
 
                 string rolSeleccionado =
                     rol.Trim().ToLower();
@@ -163,15 +275,21 @@ namespace CARPINTEC_App.Controllers
                 switch (rolSeleccionado)
                 {
                     case "cliente":
+
                         rolEsperado = "Cliente";
+
                         break;
 
                     case "admin":
+
                         rolEsperado = "Administrador";
+
                         break;
 
                     case "empleado":
+
                         rolEsperado = "Empleado";
+
                         break;
 
                     default:
@@ -182,12 +300,9 @@ namespace CARPINTEC_App.Controllers
                         return RedirectToAction("Index");
                 }
 
-                // =========================
+                // =================================================
                 // Comprobar rol real
-                // =========================
-
-                string rolReal =
-                    (usuario.Rol ?? "").Trim();
+                // =================================================
 
                 if (!rolReal.Equals(
                         rolEsperado,
@@ -199,16 +314,16 @@ namespace CARPINTEC_App.Controllers
                     return RedirectToAction("Index");
                 }
 
-                // =========================
+                // =================================================
                 // Generar JWT
-                // =========================
+                // =================================================
 
                 string token =
                     _tokenService.GenerarToken(usuario);
 
-                // =========================
+                // =================================================
                 // Guardar JWT en cookie
-                // =========================
+                // =================================================
 
                 Response.Cookies.Append(
                     "tokenJwt",
@@ -229,9 +344,9 @@ namespace CARPINTEC_App.Controllers
                     }
                 );
 
-                // =========================
+                // =================================================
                 // Mantener sesión
-                // =========================
+                // =================================================
 
                 HttpContext.Session.SetInt32(
                     "IdUsuario",
@@ -249,10 +364,9 @@ namespace CARPINTEC_App.Controllers
                     rolReal
                 );
 
-                // =========================
-                // Redireccionar según
-                // el rol REAL de SQL Server
-                // =========================
+                // =================================================
+                // Redireccionar según el rol REAL
+                // =================================================
 
                 switch (rolReal.ToLower())
                 {
@@ -292,7 +406,8 @@ namespace CARPINTEC_App.Controllers
             catch (Exception ex)
             {
                 TempData["Error"] =
-                    "Error: " + ex.Message;
+                    "Error al iniciar sesión: " +
+                    ex.Message;
 
                 return RedirectToAction("Index");
             }

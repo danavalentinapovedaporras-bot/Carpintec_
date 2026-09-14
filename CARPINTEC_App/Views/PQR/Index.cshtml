@@ -1,6 +1,6 @@
 @model IEnumerable<CARPINTEC_App.Models.Pqr>
 @{
-    ViewData["Title"] = "Usuarios";
+    ViewData["Title"] = "Gestion de pqr";
 }
 <!DOCTYPE html>
 <html class="light" lang="es" style="">
@@ -118,9 +118,11 @@
                 background-color: rgba(245, 245, 220, 0.3);
             }
 
-            .side-nav-active { @@apply
-                bg-primary-container text-on-primary-container rounded-lg mx-sm my-xs px-md py-sm;
-            }
+            .side-nav-active {
+    background-color: #5d4037;
+    color:white;
+}
+              
     </style>
 </head>
 <body class="bg-background text-on-background font-body-md min-h-screen flex">
@@ -155,78 +157,155 @@
         <!-- Canvas -->
         <div class="p-margin max-w-7xl w-full mx-auto">
             <!-- Page Header -->
-            <div class="mb-lg">
-                <h2 class="font-headline-lg text-headline-lg text-primary mb-xs">Gestión de PQR</h2>
-                <p class="text-on-surface-variant font-body-md">Administra las peticiones, quejas, reclamos y sugerencias enviadas por los clientes de forma centralizada.</p>
+<div class="mb-lg flex justify-between items-center">
+
+    <div>
+        <h2 class="font-headline-lg text-headline-lg text-primary mb-xs">
+            Gestión de PQR
+        </h2>
+
+        <p class="text-on-surface-variant font-body-md">
+            Administra las peticiones, quejas, reclamos y sugerencias enviadas por los clientes de forma centralizada.
+        </p>
+    </div>
+
+  <!-- Botón Nueva PQR -->
+<button onclick="abrirModalPQR()"
+        class="bg-primary text-on-primary px-md py-sm rounded-lg font-bold flex items-center gap-sm">
+
+    <span class="material-symbols-outlined">
+        add
+    </span>
+
+    Nueva PQR
+
+</button>
+
+        
+
+</div>
             </div>
             <!-- Resumen Stats -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter mb-lg">
                 <div class="bg-surface-container-lowest p-md rounded-xl shadow-sm border-l-4 border-yellow-500 hover:-translate-y-1 transition-transform">
                     <div class="flex items-center justify-between">
                         <span class="material-symbols-outlined text-yellow-600 bg-yellow-50 p-sm rounded-lg">pending_actions</span>
-                        <span class="text-headline-md font-headline-md text-primary">12</span>
+                        <span class="text-headline-md font-headline-md text-primary">@ViewBag.Pendientes</span>
                     </div>
                     <p class="mt-sm text-label-md text-on-surface-variant">PQR Pendientes</p>
                 </div>
                 <div class="bg-surface-container-lowest p-md rounded-xl shadow-sm border-l-4 border-blue-500 hover:-translate-y-1 transition-transform">
                     <div class="flex items-center justify-between">
                         <span class="material-symbols-outlined text-blue-600 bg-blue-50 p-sm rounded-lg">sync</span>
-                        <span class="text-headline-md font-headline-md text-primary">08</span>
+                        <span class="text-headline-md font-headline-md text-primary">@ViewBag.EnProceso</span>
                     </div>
                     <p class="mt-sm text-label-md text-on-surface-variant">En proceso</p>
                 </div>
                 <div class="bg-surface-container-lowest p-md rounded-xl shadow-sm border-l-4 border-green-500 hover:-translate-y-1 transition-transform">
                     <div class="flex items-center justify-between">
                         <span class="material-symbols-outlined text-green-600 bg-green-50 p-sm rounded-lg">verified</span>
-                        <span class="text-headline-md font-headline-md text-primary">45</span>
+                        <span class="text-headline-md font-headline-md text-primary">@ViewBag.Respondidas</span>
                     </div>
                     <p class="mt-sm text-label-md text-on-surface-variant">Respondidas</p>
                 </div>
                 <div class="bg-surface-container-lowest p-md rounded-xl shadow-sm border-l-4 border-gray-400 hover:-translate-y-1 transition-transform">
                     <div class="flex items-center justify-between">
                         <span class="material-symbols-outlined text-gray-600 bg-gray-50 p-sm rounded-lg">inventory_2</span>
-                        <span class="text-headline-md font-headline-md text-primary">120</span>
+                        <span class="text-headline-md font-headline-md text-primary">
+    @ViewBag.Cerradas
+</span>
                     </div>
                     <p class="mt-sm text-label-md text-on-surface-variant">Cerradas</p>
                 </div>
             </div>
             <!-- Filtros Section -->
-            <div class="bg-surface-container-lowest rounded-xl shadow-sm p-md mb-lg">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-md items-end">
-                    <div class="lg:col-span-1">
-                        <label class="block text-label-md text-on-surface-variant mb-xs">Radicado/Cliente</label>
-                        <input class="w-full border-outline-variant rounded-lg bg-surface-bright text-body-sm focus:ring-primary focus:border-primary" placeholder="Ej: PQR-2024-001" type="text">
-                    </div>
-                    <div>
-                        <label class="block text-label-md text-on-surface-variant mb-xs">Tipo</label>
-                        <select class="w-full border-outline-variant rounded-lg bg-surface-bright text-body-sm focus:ring-primary">
-                            <option>Todos</option>
-                            <option>Petición</option>
-                            <option>Queja</option>
-                            <option>Reclamo</option>
-                            <option>Sugerencia</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-label-md text-on-surface-variant mb-xs">Estado</label>
-                        <select class="w-full border-outline-variant rounded-lg bg-surface-bright text-body-sm focus:ring-primary">
-                            <option>Cualquier estado</option>
-                            <option>Pendiente</option>
-                            <option>En proceso</option>
-                            <option>Respondida</option>
-                            <option>Cerrada</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-label-md text-on-surface-variant mb-xs">Fecha</label>
-                        <input class="w-full border-outline-variant rounded-lg bg-surface-bright text-body-sm focus:ring-primary" type="date">
-                    </div>
-                    <div class="flex gap-sm">
-                        <button class="flex-1 bg-primary text-on-primary py-sm px-md rounded-lg font-label-md hover:bg-primary-container transition-colors shadow-sm">Buscar</button>
-                        <button class="bg-secondary-container text-primary py-sm px-md rounded-lg font-label-md hover:bg-outline-variant transition-colors">Limpiar</button>
-                    </div>
+        <div class="bg-surface-container-lowest rounded-xl shadow-sm p-md mb-lg">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-md items-end">
+
+                <!-- Radicado -->
+                <div class="lg:col-span-1">
+                    <label class="block text-label-md text-on-surface-variant mb-xs">
+                        Radicado/Cliente
+                    </label>
+
+                    <input id="filtroRadicado"
+                           class="w-full border-outline-variant rounded-lg bg-surface-bright text-body-sm"
+                           placeholder="Ej: PQR-2024-001">
                 </div>
+
+
+                <!-- Tipo -->
+                <div>
+                    <label class="block text-label-md text-on-surface-variant mb-xs">
+                        Tipo
+                    </label>
+
+                    <select id="filtroTipo"
+                            class="w-full border-outline-variant rounded-lg bg-surface-bright text-body-sm">
+
+                        <option value="">Todos</option>
+                        <option value="Peticion">Petición</option>
+                        <option value="Queja">Queja</option>
+                        <option value="Reclamo">Reclamo</option>
+                        <option value="Sugerencia">Sugerencia</option>
+
+                    </select>
+                </div>
+
+
+                <!-- Estado -->
+                <div>
+                    <label class="block text-label-md text-on-surface-variant mb-xs">
+                        Estado
+                    </label>
+
+                    <select id="filtroEstado"
+                            class="w-full border-outline-variant rounded-lg bg-surface-bright text-body-sm">
+
+                        <option value="">Cualquier estado</option>
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="En proceso">En proceso</option>
+                        <option value="Resuelta">Resuelta</option>
+                        <option value="Cerrada">Cerrada</option>
+
+                    </select>
+                </div>
+
+
+                <!-- Fecha -->
+                <div>
+                    <label class="block text-label-md text-on-surface-variant mb-xs">
+                        Fecha
+                    </label>
+
+                    <input id="filtroFecha"
+                           class="w-full border-outline-variant rounded-lg bg-surface-bright text-body-sm"
+                           type="date">
+                </div>
+
+
+                <!-- Botones -->
+                <div class="flex gap-sm">
+
+                    <button onclick="buscarPQR()"
+                            class="flex-1 bg-primary text-on-primary py-sm px-md rounded-lg font-label-md hover:bg-primary-container transition-colors shadow-sm">
+
+                        Buscar
+
+                    </button>
+
+
+                    <button onclick="limpiarFiltros()"
+                            class="bg-secondary-container text-primary py-sm px-md rounded-lg font-label-md hover:bg-outline-variant transition-colors">
+
+                        Limpiar
+
+                    </button>
+
+                </div>
+
             </div>
+        </div>
             <!-- Tabla de PQRs -->
             <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
                 <div class="overflow-x-auto">
@@ -243,7 +322,7 @@
                                 <th class="px-md py-sm font-label-md text-on-surface-variant uppercase text-xs text-center">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody class="text-body-sm divide-y divide-outline-variant/30">
+                    <tbody id="tablaPQR" class="text-body-sm divide-y divide-outline-variant/30">
 
                             @foreach (var item in Model)
                             {
@@ -254,7 +333,9 @@
                                     </td>
 
                                     <td class="px-md py-md">
-                                        @item.IdClienteNavigation.Nombre @item.IdClienteNavigation.Apellido
+                                       @(item.IdClienteNavigation != null 
+    ? item.IdClienteNavigation.Nombre + " " + item.IdClienteNavigation.Apellido 
+    : "Cliente no encontrado")
                                     </td>
 
                                     <td class="px-md py-md">
@@ -281,35 +362,31 @@
 
                                         <div class="flex justify-center gap-sm">
 
-                                            <a asp-action="Details"
-                                               asp-route-id="@item.IdPqr"
-                                               class="text-primary hover:scale-110 transition-transform">
+                                        <button onclick="abrirDetallePQR(@item.IdPqr)"
+                                                class="text-primary hover:scale-110 transition-transform">
 
-                                                <span class="material-symbols-outlined">
-                                                    visibility
-                                                </span>
+                                            <span class="material-symbols-outlined">
+                                                visibility
+                                            </span>
 
-                                            </a>
+                                        </button>
+                                        <button onclick="abrirDetallePQR(@item.IdPqr)"
+                                                class="text-primary hover:scale-110 transition-transform">
 
-                                            <a asp-action="Responder"
-                                               asp-route-id="@item.IdPqr"
-                                               class="text-primary hover:scale-110 transition-transform">
+                                            <span class="material-symbols-outlined">
+                                                reply
+                                            </span>
 
-                                                <span class="material-symbols-outlined">
-                                                    reply
-                                                </span>
+                                        </button>
 
-                                            </a>
+                                        <button onclick="abrirEditarPQR(@item.IdPqr)"
+                                                class="text-primary hover:scale-110 transition-transform">
 
-                                            <a asp-action="Edit"
-                                               asp-route-id="@item.IdPqr"
-                                               class="text-primary hover:scale-110 transition-transform">
+                                            <span class="material-symbols-outlined">
+                                                edit_note
+                                            </span>
 
-                                                <span class="material-symbols-outlined">
-                                                    edit_note
-                                                </span>
-
-                                            </a>
+                                        </button>
 
                                         </div>
 
@@ -332,7 +409,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        
     </main>
     <!-- Side Detail Panel (Modal Behavior) -->
     <div class="fixed inset-y-0 right-0 w-full md:w-[600px] bg-white shadow-2xl z-[60] transform translate-x-full transition-transform duration-500 flex flex-col border-l border-outline-variant" id="detailPanel">
@@ -357,19 +434,19 @@
                 <div class="grid grid-cols-2 gap-md">
                     <div>
                         <p class="text-xs text-on-surface-variant">Nombre Completo</p>
-                        <p class="font-semibold">Julián Andrés Restrepo</p>
+                        <p id="detalleCliente" class="font-semibold"></p>
                     </div>
                     <div>
                         <p class="text-xs text-on-surface-variant">Documento</p>
-                        <p class="font-semibold">CC 1.032.455.890</p>
+                        <p id="detalleDocumento" class="font-semibold"></p>
                     </div>
                     <div>
                         <p class="text-xs text-on-surface-variant">Correo Electrónico</p>
-                        <p class="font-semibold">jrestrepo.dev@email.com</p>
+                        <p id="detalleCorreo" class="font-semibold"></p>
                     </div>
                     <div>
                         <p class="text-xs text-on-surface-variant">Teléfono</p>
-                        <p class="font-semibold">+57 312 455 9010</p>
+                        <p id="detalleTelefono" class="font-semibold"></p>
                     </div>
                 </div>
             </div>
@@ -383,19 +460,19 @@
                     <div class="grid grid-cols-2 gap-md">
                         <div>
                             <p class="text-xs text-on-surface-variant">Tipo de Solicitud</p>
-                            <p class="font-semibold">Reclamo</p>
+                            <p id="detalleTipo" class="font-semibold"></p>
                         </div>
                         <div>
                             <p class="text-xs text-on-surface-variant">Fecha Radicación</p>
-                            <p class="font-semibold">24 Mayo 2024 - 10:45 AM</p>
+                            <p id="detalleFecha" class="font-semibold"></p>
                         </div>
                     </div>
                     <div>
                         <p class="text-xs text-on-surface-variant">Asunto</p>
-                        <p class="font-semibold text-lg">Retraso en entrega de comedor tallado (Orden #7721)</p>
+                        <p id="detalleAsunto" class="font-semibold text-lg"></p>
                     </div>
-                    <div class="p-md bg-surface-container rounded-lg border border-outline-variant/20 italic text-body-sm">
-                        "Cordial saludo, el pasado 15 de abril realicé un pedido de un comedor de 8 puestos tallado a mano. La fecha prometida de entrega era el 20 de mayo y a hoy no he recibido ni los muebles ni información del estado. He intentado llamar y no hay respuesta. Exijo una solución inmediata o la devolución de mi anticipo."
+                    <div id="detalleDescripcion"
+                         class="p-md bg-surface-container rounded-lg border border-outline-variant/20 italic text-body-sm">
                     </div>
                 </div>
             </div>
@@ -420,58 +497,567 @@
                     </div>
                 </div>
             </div>
+            <input type="hidden" id="idPqrRespuesta">
+
+            <input type="hidden" id="idPqrEstado">
+
+            <input type="hidden" id="idPqrCerrar">
             <!-- Respuesta del Admin -->
             <div class="mb-lg pt-md bg-surface-container-low p-md rounded-xl border border-outline-variant">
-                <div class="flex items-center gap-sm mb-md">
-                    <span class="material-symbols-outlined text-primary">chat_bubble</span>
-                    <h4 class="font-bold text-primary uppercase text-xs tracking-wider">Emitir Respuesta</h4>
-                </div>
-                <textarea class="w-full border-outline-variant rounded-lg bg-surface-bright text-body-sm focus:ring-primary focus:border-primary mb-md" placeholder="Escribe aquí la respuesta oficial para el cliente..." rows="4"></textarea>
-                <div class="flex flex-col gap-md">
-                    <div>
-                        <label class="block text-label-md text-on-surface-variant mb-xs">Cambiar Estado Operativo</label>
-                        <select class="w-full border-outline-variant rounded-lg bg-surface-bright text-body-sm focus:ring-primary">
-                            <option selected="" value="pendiente">Pendiente (Actual)</option>
-                            <option value="proceso">En proceso</option>
-                            <option value="respondida">Respondida</option>
-                            <option value="cerrada">Cerrada</option>
-                        </select>
+                <form id="formRespuesta">
+
+                    @Html.AntiForgeryToken()
+
+                    <div class="flex items-center gap-sm mb-md">
+                        <span class="material-symbols-outlined text-primary">chat_bubble</span>
+                        <h4 class="font-bold text-primary uppercase text-xs tracking-wider">
+                            Emitir Respuesta
+                        </h4>
                     </div>
-                    <div class="flex flex-wrap gap-sm">
-                        <button class="flex-1 bg-primary text-on-primary py-sm px-md rounded-lg font-label-md hover:bg-primary-container transition-all flex items-center justify-center gap-xs">
-                            <span class="material-symbols-outlined text-sm">send</span> Guardar Respuesta
-                        </button>
-                        <button class="flex-1 border-2 border-primary text-primary py-sm px-md rounded-lg font-label-md hover:bg-primary/5 transition-all">
-                            Actualizar Estado
-                        </button>
+
+
+                    <textarea id="respuestaPQR"
+                              name="respuesta"
+                              class="w-full border-outline-variant rounded-lg bg-surface-bright text-body-sm focus:ring-primary focus:border-primary mb-md"
+                              placeholder="Escribe aquí la respuesta oficial para el cliente..."
+                              rows="4"></textarea>
+
+
+                    <div class="flex flex-col gap-md">
+
+                        <div>
+                            <label class="block text-label-md text-on-surface-variant mb-xs">
+                                Cambiar Estado Operativo
+                            </label>
+
+                            <select id="estadoPQR"
+                                    class="w-full border-outline-variant rounded-lg bg-surface-bright text-body-sm focus:ring-primary">
+
+                                <option value="Pendiente">Pendiente (Actual)</option>
+                                <option value="En proceso">En proceso</option>
+                                <option value="Resuelta">Resuelta</option>
+                                <option value="Cerrada">Cerrada</option>
+
+                            </select>
+                        </div>
+
+
+                        <div class="flex flex-wrap gap-sm">
+
+                            <button type="button"
+                                    onclick="guardarRespuesta()"
+                                    class="flex-1 bg-primary text-on-primary py-sm px-md rounded-lg">
+
+                                Guardar Respuesta
+
+                            </button>
+
+
+                            <button type="button"
+                                    onclick="actualizarEstado()"
+                                    class="flex-1 border-2 border-primary text-primary py-sm px-md rounded-lg">
+
+                                Actualizar Estado
+
+                            </button>
+
+                        </div>
+
                     </div>
-                </div>
-            </div>
+
+
+                </form>
         </div>
+
         <!-- Footer -->
         <div class="p-md bg-surface-bright border-t border-outline-variant flex gap-sm">
             <button class="px-md py-sm bg-surface-container-high text-on-surface-variant rounded-lg font-label-md hover:bg-surface-container-highest transition-colors" onclick="toggleDetail()">Volver al Listado</button>
             <button class="ml-auto px-md py-sm bg-error text-on-error rounded-lg font-label-md hover:opacity-90 transition-opacity">Cerrar PQR Permanentemente</button>
         </div>
     </div>
+    </div>
     <!-- Overlay for Modal -->
     <div class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[55] opacity-0 pointer-events-none transition-opacity duration-500" id="overlay" onclick="toggleDetail()"></div>
     <script>
-            function toggleDetail() {
+            async function abrirDetallePQR(id) {
+
+                const respuesta = await fetch('/PQR/ObtenerPQR?id=' + id);
+
+                const datos = await respuesta.json();
+
+
+                // Abrir modal
+
                 const panel = document.getElementById('detailPanel');
                 const overlay = document.getElementById('overlay');
 
-                if (panel.classList.contains('translate-x-full')) {
-                    panel.classList.remove('translate-x-full');
-                    overlay.classList.remove('opacity-0', 'pointer-events-none');
-                } else {
-                    panel.classList.add('translate-x-full');
-                    overlay.classList.add('opacity-0', 'pointer-events-none');
-                }
+                panel.classList.remove('translate-x-full');
+
+                overlay.classList.remove('opacity-0');
+                overlay.classList.remove('pointer-events-none');
+
+
+                // Guardar id de la PQR actual
+
+                document.getElementById("idPqrRespuesta").value = datos.id;
+
+                // Cargar información
+
+                document.getElementById("detalleCliente").innerText = datos.cliente;
+                document.getElementById("detalleDocumento").innerText = datos.documento;
+                document.getElementById("detalleCorreo").innerText = datos.correo;
+                document.getElementById("detalleTelefono").innerText = datos.telefono;
+
+                document.getElementById("detalleTipo").innerText = datos.tipo;
+                document.getElementById("detalleFecha").innerText = datos.fecha;
+                document.getElementById("detalleAsunto").innerText = datos.asunto;
+                document.getElementById("detalleDescripcion").innerText = datos.descripcion;
+
             }
     </script>
+<div id="modalPQR"
+     class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
+
+
+    <div class="bg-white rounded-xl p-6 w-full max-w-lg">
+
+
+        <h3 class="text-xl font-bold mb-4">
+            Registrar nueva PQR
+        </h3>
+
+
+        <form asp-controller="PQR" asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+
+            @Html.AntiForgeryToken()
+
+
+            <label class="block mb-2">
+                Cliente
+            </label>
+
+            <select name="IdCliente"
+                    class="w-full border rounded-lg p-2 mb-4">
+
+                <option>
+                    Seleccione cliente
+                </option>
+
+                @foreach(var cliente in ViewBag.Clientes)
+                {
+                    <option value="@cliente.IdCliente">
+                        @cliente.Nombre @cliente.Apellido
+                    </option>
+                }
+
+            </select>
+
+
+            <label class="block mb-2">
+                Tipo
+            </label>
+
+            <select name="Tipo"
+                    class="w-full border rounded-lg p-2 mb-4">
+
+                <option value="Peticion">Petición</option>
+                <option value="Queja">Queja</option>
+                <option value="Reclamo">Reclamo</option>
+                <option value="Sugerencia">Sugerencia</option>
+
+            </select>
+
+
+            <label class="block mb-2">
+                Asunto
+            </label>
+
+            <input name="Asunto"
+                   class="w-full border rounded-lg p-2 mb-4"/>
+
+
+            <label class="block mb-2">
+                Descripción
+            </label>
+
+            <textarea name="Descripcion"
+                      class="w-full border rounded-lg p-2 mb-4"></textarea>
+
+
+            <div class="flex justify-end gap-3">
+
+                <button type="button"
+                        onclick="cerrarModalPQR()"
+                        class="bg-gray-300 px-4 py-2 rounded-lg">
+                    Cancelar
+                </button>
+
+
+                <button type="submit"
+                        class="bg-primary text-white px-4 py-2 rounded-lg">
+                    Guardar
+                </button>
+
+            </div>
+
+
+        </form>
+
+
+    </div>
+
+</div>
+
+    <!-- MODAL EDITAR PQR -->
+    <div id="modalEditarPQR"
+         class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
+
+
+        <div class="bg-white rounded-xl p-6 w-full max-w-lg">
+
+
+            <h3 class="text-xl font-bold mb-4">
+                Editar PQR
+            </h3>
+
+
+            <form id="formEditarPQR" method="post" asp-controller="PQR" asp-action="Edit">
+
+
+                @Html.AntiForgeryToken()
+
+
+                <input type="hidden" id="editIdPqr" name="IdPqr">
+                <input type="hidden" id="editIdCliente" name="IdCliente">
+                <input type="hidden" id="editId" name="id">
+
+                <label class="block mb-2">
+                    Código
+                </label>
+
+                <input id="editCodigo"
+                       name="CodigoPqr"
+                       readonly
+                       class="w-full border rounded-lg p-2 mb-4">
+
+
+                <label class="block mb-2">
+                    Tipo
+                </label>
+
+                <select id="editTipo"
+                        name="Tipo"
+                        class="w-full border rounded-lg p-2 mb-4">
+
+                    <option value="Peticion">Petición</option>
+                    <option value="Queja">Queja</option>
+                    <option value="Reclamo">Reclamo</option>
+                    <option value="Sugerencia">Sugerencia</option>
+
+                </select>
+
+
+                <label class="block mb-2">
+                    Asunto
+                </label>
+
+                <input id="editAsunto"
+                       name="Asunto"
+                       class="w-full border rounded-lg p-2 mb-4">
+
+
+                <label class="block mb-2">
+                    Descripción
+                </label>
+
+                <textarea id="editDescripcion"
+                          name="Descripcion"
+                          class="w-full border rounded-lg p-2 mb-4">
+            </textarea>
+
+
+                <label class="block mb-2">
+                    Estado
+                </label>
+
+                <select id="editEstado"
+                        name="Estado"
+                        class="w-full border rounded-lg p-2 mb-4">
+
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="En proceso">En proceso</option>
+                    <option value="Resuelta">Resuelta</option>
+                    <option value="Cerrada">Cerrada</option>
+
+                </select>
+
+
+                <label class="block mb-2">
+                    Respuesta
+                </label>
+
+                <textarea id="editRespuesta"
+                          name="Respuesta"
+                          class="w-full border rounded-lg p-2 mb-4">
+            </textarea>
+
+
+                <div class="flex justify-end gap-3">
+
+                    <button type="button"
+                            onclick="cerrarEditarPQR()"
+                            class="bg-gray-300 px-4 py-2 rounded-lg">
+                        Cancelar
+                    </button>
+
+
+                    <button type="submit"
+                            class="bg-primary text-white px-4 py-2 rounded-lg">
+                        Guardar Cambios
+                    </button>
+
+
+                </div>
+
+
+            </form>
+
+
+        </div>
+
+    </div>
+<script>
+
+function abrirModalPQR(){
+
+    let modal = document.getElementById("modalPQR");
+
+    modal.classList.remove("hidden");
+
+    modal.classList.add("flex");
+
+}
+
+
+function cerrarModalPQR(){
+
+    let modal = document.getElementById("modalPQR");
+
+    modal.classList.add("hidden");
+
+    modal.classList.remove("flex");
+
+}
+
+</script>
+    <script>
+
+            async function guardarRespuesta() {
+
+                let id = document.getElementById("idPqrRespuesta").value;
+                console.log("ID PQR:", id);
+
+                let respuesta = document.getElementById("respuestaPQR").value;
+                console.log("Respuesta:", respuesta);
+
+
+                if (respuesta.trim() === "") {
+                    alert("Escriba una respuesta antes de guardar");
+                    return;
+                }
+
+
+                let datos = new FormData();
+
+                datos.append("id", id);
+                datos.append("respuesta", respuesta);
+                let estado = document.getElementById("estadoPQR").value;
+
+                datos.append("estado", estado);
+
+                let token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+                datos.append("__RequestVerificationToken", token);
+
+
+                let resultado = await fetch('/PQR/Responder',
+                    {
+                        method: "POST",
+                        body: datos
+                    });
+
+                if (resultado.ok) {
+                    alert("Respuesta guardada correctamente");
+                    location.reload();
+                }
+                else {
+                    alert("Error al guardar respuesta");
+                }
+
+            }
+
+    </script>
+
+    <script>
+
+            async function actualizarEstado() {
+
+                let id = document.getElementById("idPqrRespuesta").value;
+
+                let datos = new FormData();
+
+                datos.append("id", id);
+                datos.append("estado", "En proceso");
+
+                datos.append(
+                    "__RequestVerificationToken",
+                    document.querySelector('input[name="__RequestVerificationToken"]').value
+                );
+
+
+                let respuesta = await fetch('/PQR/CambiarEstado', {
+                    method: "POST",
+                    body: datos
+                });
+
+
+                if (respuesta.ok) {
+
+                    alert("Estado actualizado correctamente");
+                    location.reload();
+
+                } else {
+
+                    alert("Error actualizando estado");
+
+                }
+
+            }
+
+    </script>
+    <script>
+
+            function buscarPQR() {
+
+                let radicado = document.getElementById("filtroRadicado").value.toLowerCase();
+                let tipo = document.getElementById("filtroTipo").value.toLowerCase();
+                let estado = document.getElementById("filtroEstado").value.toLowerCase();
+                let fecha = document.getElementById("filtroFecha").value;
+
+
+                let filas = document.querySelectorAll("#tablaPQR tr");
+
+
+                filas.forEach(fila => {
+
+                    let texto = fila.innerText.toLowerCase();
+
+
+                    let cumpleRadicado =
+                        radicado === "" || texto.includes(radicado);
+
+
+                    let cumpleTipo =
+                        tipo === "" || texto.includes(tipo);
+
+
+                    let cumpleEstado =
+                        estado === "" || texto.includes(estado);
+
+
+                    let cumpleFecha =
+                        fecha === "" || texto.includes(fecha);
+
+
+                    if (cumpleRadicado &&
+                        cumpleTipo &&
+                        cumpleEstado &&
+                        cumpleFecha) {
+                        fila.style.display = "";
+                    }
+                    else {
+                        fila.style.display = "none";
+                    }
+
+
+                });
+
+            }
 
 
 
+            function limpiarFiltros() {
 
-</body></html>
+                document.getElementById("filtroRadicado").value = "";
+
+                document.getElementById("filtroTipo").value = "";
+
+                document.getElementById("filtroEstado").value = "";
+
+                document.getElementById("filtroFecha").value = "";
+
+
+                let filas = document.querySelectorAll("#tablaPQR tr");
+
+
+                filas.forEach(fila => {
+
+                    fila.style.display = "";
+
+                });
+
+            }
+            
+
+                async function abrirEditarPQR(id){
+
+                    let respuesta = await fetch('/PQR/ObtenerPQR?id=' + id);
+
+                let datos = await respuesta.json();
+
+
+                document.getElementById("editIdPqr").value = datos.id;
+
+                document.getElementById("editIdCliente").value = datos.idCliente;
+
+                document.getElementById("editId").value = datos.id;
+
+                document.getElementById("editCodigo").value = datos.codigo;
+
+                document.getElementById("editTipo").value = datos.tipo;
+
+                document.getElementById("editAsunto").value = datos.asunto;
+
+                document.getElementById("editDescripcion").value = datos.descripcion;
+
+                document.getElementById("editEstado").value = datos.estado;
+
+                document.getElementById("editRespuesta").value = datos.respuesta ?? "";
+
+
+                let modal = document.getElementById("modalEditarPQR");
+
+                modal.classList.remove("hidden");
+
+                modal.classList.add("flex");
+
+            }
+
+
+                function cerrarEditarPQR(){
+
+                    let modal = document.getElementById("modalEditarPQR");
+
+                modal.classList.add("hidden");
+
+                modal.classList.remove("flex");
+
+            }
+
+    </script>
+
+</body>
+</html>
+
+   

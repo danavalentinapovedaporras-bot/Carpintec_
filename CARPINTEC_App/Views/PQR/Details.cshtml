@@ -1,157 +1,40 @@
 ﻿@model CARPINTEC_App.Models.Pqr
-@{
-    Layout = null;
-    ViewData["Title"] = "Detalle PQR";
-}
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Detalle PQR</title>
+<h2>Detalle PQR</h2>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+<p>
+    <strong>Código:</strong>
+    @Model.CodigoPqr
+</p>
 
-    <style>
-            body {
-                margin: 0;
-                padding: 30px;
-                background: #f2f2f2;
-                font-family: Arial, Helvetica, sans-serif;
-            }
+<p>
+    <strong>Cliente:</strong>
+    @(Model.IdClienteNavigation != null 
+        ? Model.IdClienteNavigation.Nombre + " " + Model.IdClienteNavigation.Apellido 
+        : "Cliente no encontrado")
+</p>
 
-            .detalle {
-                max-width: 900px;
-                margin: auto;
-                background: white;
-                padding: 40px;
-                border-radius: 12px;
-                box-shadow: 0 0 20px rgba(0,0,0,.15);
-            }
+<p>
+    <strong>Tipo:</strong>
+    @Model.Tipo
+</p>
 
-            h2 {
-                text-align: center;
-                margin-bottom: 30px;
-                color: #8B5E3C;
-            }
+<p>
+    <strong>Asunto:</strong>
+    @Model.Asunto
+</p>
 
-            .titulo {
-                font-weight: bold;
-                color: #8B5E3C;
-            }
+<p>
+    <strong>Descripción:</strong>
+    @Model.Descripcion
+</p>
 
-            .fila {
-                margin-bottom: 20px;
-            }
+<p>
+    <strong>Estado:</strong>
+    @Model.Estado
+</p>
 
-            .descripcion {
-                min-height: 120px;
-                border: 1px solid #ddd;
-                padding: 15px;
-                border-radius: 8px;
-                background: #fafafa;
-            }
-
-            .respuesta {
-                min-height: 120px;
-                border: 1px solid #ddd;
-                padding: 15px;
-                border-radius: 8px;
-                background: #fafafa;
-            }
-
-            .botones {
-                margin-top: 30px;
-                display: flex;
-                justify-content: center;
-                gap: 15px;
-            }
-    </style>
-</head>
-
-<body>
-
-    <div class="detalle">
-
-        <h2>DETALLE DEL PQR</h2>
-
-        <div class="row fila">
-            <div class="col-md-6">
-                <div class="titulo">Código</div>
-                @Model.CodigoPqr
-            </div>
-
-            <div class="col-md-6">
-                <div class="titulo">Cliente</div>
-                @Model.IdClienteNavigation.Nombre @Model.IdClienteNavigation.Apellido
-            </div>
-        </div>
-
-        <div class="row fila">
-            <div class="col-md-6">
-                <div class="titulo">Tipo</div>
-                @Model.Tipo
-            </div>
-
-            <div class="col-md-6">
-                <div class="titulo">Estado</div>
-                @Model.Estado
-            </div>
-        </div>
-
-        <div class="row fila">
-            <div class="col-md-6">
-                <div class="titulo">Fecha de Registro</div>
-                @Model.FechaRegistro.ToString("dd/MM/yyyy")
-            </div>
-
-            <div class="col-md-6">
-                <div class="titulo">Fecha de Respuesta</div>
-                @(Model.FechaRespuesta.HasValue
-                    ? Model.FechaRespuesta.Value.ToString("dd/MM/yyyy")
-                    : "Sin responder")
-            </div>
-        </div>
-
-        <div class="fila">
-            <div class="titulo">Asunto</div>
-            @Model.Asunto
-        </div>
-
-        <div class="fila">
-            <div class="titulo">Descripción</div>
-
-            <div class="descripcion">
-                @Model.Descripcion
-            </div>
-        </div>
-
-        <div class="fila">
-            <div class="titulo">Respuesta</div>
-
-            <div class="respuesta">
-                @(string.IsNullOrWhiteSpace(Model.Respuesta)
-                    ? "Aún no se ha respondido este PQR."
-                    : Model.Respuesta)
-            </div>
-        </div>
-
-        <div class="botones">
-
-            <a asp-action="Index" class="btn btn-secondary">
-                Volver
-            </a>
-
-            <a asp-action="Edit"
-               asp-route-id="@Model.IdPqr"
-               class="btn btn-warning">
-                Editar
-            </a>
-
-        </div>
-
-    </div>
-
-</body>
-</html>
+<p>
+    <strong>Fecha registro:</strong>
+    @Model.FechaRegistro.ToString("dd/MM/yyyy")
+</p>
