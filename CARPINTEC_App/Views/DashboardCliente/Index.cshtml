@@ -206,7 +206,7 @@
                     </div>
                 </div>
                 <div class="mt-6 pt-4 border-t border-outline-variant/30">
-                    <a asp-controller="MiPedidos"
+                    <a asp-controller="Mi_Pedido"
                        asp-action="Index"
                        class="w-full bg-primary text-on-primary font-bold py-3 rounded-lg flex items-center justify-center gap-2 group-hover:bg-secondary transition-colors">
                         Ver pedidos
@@ -267,7 +267,7 @@
                     </div>
                     <span class="font-title-md text-title-md font-bold text-primary">2</span>
                 </div>
-                <h4 class="font-title-md text-title-md text-on-surface mb-2">Pagos Pendientes</h4>
+                <h4 class="font-title-md text-title-md text-on-surface mb-2">Productos</h4>
                 <div class="space-y-2 mt-4">
                     <div class="flex justify-between items-center text-sm">
                         <span class="text-on-surface-variant flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-secondary mr-2"></span>Por Vencer</span>
@@ -279,10 +279,10 @@
                     </div>
                 </div>
                 <div class="mt-6 pt-4 border-t border-outline-variant/30">
-                   <a asp-controller="PagosPendientes"
+                   <a asp-controller="MisProductos"
    asp-action="Index"
    class="w-full bg-primary text-on-primary font-bold py-3 rounded-lg flex items-center justify-center gap-2 group-hover:bg-secondary transition-colors">
-    Ver Pagos
+    Ver Productos
     <span class="material-symbols-outlined text-sm">chevron_right</span>
 </a>
                 </div>
@@ -308,9 +308,9 @@
                     </div>
                 </div>
                 <div class="mt-6 pt-4 border-t border-outline-variant/30">
-                    <button class="w-full text-primary font-label-md text-label-md font-bold flex items-center justify-center hover:underline">
-                        Ver detalles <span class="material-symbols-outlined text-sm ml-1">arrow_forward</span>
-                    </button>
+                  <a asp-controller="PQRCliente" asp-action="Index" class="w-full text-primary font-label-md text-label-md font-bold flex items-center justify-center hover:underline">
+    Ver detalles <span class="material-symbols-outlined text-sm ml-1">arrow_forward</span>
+</a>
                 </div>
             </div>
         </section>

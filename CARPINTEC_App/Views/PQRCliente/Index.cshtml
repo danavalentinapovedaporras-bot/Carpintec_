@@ -3,230 +3,163 @@
 }
 
 <!DOCTYPE html>
-
-<html class="light" lang="es">
+<html lang="es">
 <head>
     <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>PQR - Carpintec</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;family=Work+Sans:wght@400;500&amp;display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
-    <script id="tailwind-config">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestión de PQR - Carpintec</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
             tailwind.config = {
-                darkMode: "class",
                 theme: {
                     extend: {
-                        "colors": {
-                            "primary-fixed": "#ffdbc9",
-                            "secondary-container": "#fd8a3e",
-                            "primary": "#6c2f00",
-                            "on-tertiary-container": "#e2cca2",
-                            "on-surface": "#201a18",
-                            "on-secondary-fixed-variant": "#763400",
-                            "on-tertiary-fixed": "#251a01",
-                            "on-secondary-container": "#672c00",
-                            "error-container": "#ffdad6",
-                            "tertiary-fixed-dim": "#dac49b",
-                            "on-error-container": "#93000a",
-                            "outline-variant": "#dac2b6",
-                            "secondary-fixed": "#ffdbc9",
-                            "surface-container-low": "#fef1ed",
-                            "on-secondary": "#ffffff",
-                            "secondary": "#9a4600",
-                            "on-primary": "#ffffff",
-                            "surface-container-highest": "#ede0dc",
-                            "secondary-fixed-dim": "#ffb68d",
-                            "surface-variant": "#ede0dc",
-                            "inverse-surface": "#362f2c",
-                            "on-tertiary-fixed-variant": "#544525",
-                            "inverse-on-surface": "#fbeeea",
-                            "error": "#ba1a1a",
-                            "surface-container-lowest": "#ffffff",
-                            "surface-container-high": "#f3e5e1",
-                            "background": "#fff8f6",
-                            "tertiary": "#4d3f20",
-                            "tertiary-fixed": "#f7e0b5",
-                            "surface-tint": "#934b19",
-                            "on-primary-fixed": "#321200",
-                            "surface-bright": "#fff8f6",
-                            "on-primary-container": "#ffc29f",
-                            "on-error": "#ffffff",
-                            "primary-fixed-dim": "#ffb68c",
-                            "on-background": "#201a18",
-                            "on-surface-variant": "#54433a",
-                            "surface-container": "#f9ebe7",
-                            "inverse-primary": "#ffb68c",
-                            "tertiary-container": "#665635",
-                            "primary-container": "#8b4513",
-                            "on-primary-fixed-variant": "#753401",
-                            "outline": "#877369",
-                            "on-secondary-fixed": "#321200",
-                            "surface-dim": "#e4d7d4",
-                            "surface": "#fff8f6",
-                            "on-tertiary": "#ffffff"
-                        },
-                        "borderRadius": {
-                            "DEFAULT": "0.125rem",
-                            "lg": "0.25rem",
-                            "xl": "0.5rem",
-                            "full": "0.75rem"
-                        },
-                        "spacing": {
-                            "container-max": "1280px",
-                            "margin-desktop": "64px",
-                            "gutter": "24px",
-                            "margin-mobile": "16px",
-                            "base": "8px"
-                        },
-                        "fontFamily": {
-                            "title-md": ["Montserrat"],
-                            "label-md": ["Work Sans"],
-                            "headline-lg": ["Montserrat"],
-                            "body-md": ["Work Sans"],
-                            "headline-lg-mobile": ["Montserrat"],
-                            "body-lg": ["Work Sans"],
-                            "display-lg": ["Montserrat"]
-                        },
-                        "fontSize": {
-                            "title-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
-                            "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500" }],
-                            "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
-                            "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
-                            "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
-                            "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
-                            "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                        colors: {
+                            carpintecPrimary: '#8B5A2B',    /* Marrón madera */
+                            carpintecSecondary: '#2F4F4F',  /* Azulado / Oscuro */
+                            carpintecAccent: '#F7F7B5',     /* Beige claro de acento */
+                            carpintecBackground: '#FFFFFF', /* Fondo blanco */
+                            carpintecSurface: '#FAF3E0',    /* Fondo secundario / tarjetas */
+                            carpintecText: '#333333',       /* Gris oscuro para texto */
+                            carpintecTitle: '#5A3E1B'       /* Marrón oscuro para títulos */
                         }
                     }
                 }
             }
     </script>
+
+    <!-- Google Fonts: Montserrat y Open Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- Material Symbols -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
     <style>
-            .material-symbols-outlined {
-                font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            body {
+                font-family: 'Open Sans', sans-serif;
+                background-color: #FAF3E0;
+                color: #333333;
+                margin: 0;
+                padding: 0;
+            }
+
+            h1, h2, h3, h4, h5, h6, button, label, th {
+                font-family: 'Montserrat', sans-serif;
             }
     </style>
 </head>
-<body class="text-on-background font-body-md min-h-screen flex flex-col" style="background-image: linear-gradient(rgba(255, 248, 246, 0.85), rgba(255, 248, 246, 0.85)), url('https://lh3.googleusercontent.com/aida/AP1WRLt5Wp5K1nFC95qh6hcVeU9_IHQrFjtKd44NsSbg7ttwY_kV3iZa9tGldOo1af2X6CsLSspeJ7sHqIBKJbLzYZIPLTCVfvOo9GHWgwm8VArvcqgHEq1GIU5H5YlivJkByOJdt3iRgzSmbOqoZ6Ff-UNT6afu-Z2TBFbos31OD6eBNRYIqPth6ZX69Jw7KT0loAu9Ijv0YaFw8nQy_Id2ngEwf61ncSjXUGr-x4Y-ZP5F4Z_6VrONHkdLCctm'); background-size: cover; background-attachment: fixed; background-position: center;">
-    <!-- TopAppBar -->
-    <header class="bg-primary dark:bg-primary-container font-title-md text-title-md docked full-width top-0 border-b-4 border-secondary-container flat no shadows flex justify-between items-center w-full px-margin-desktop py-4 sticky z-50">
-        <div class="flex items-center gap-4">
-            <a href="javascript:history.back()"
-               class="flex items-center gap-2">
-                <span class="material-symbols-outlined">arrow_back</span>
+<body class="antialiased min-h-screen py-10 px-4 md:px-8">
+
+    <!-- CONTENEDOR PRINCIPAL DE LA VISTA PQR -->
+    <div class="max-w-5xl mx-auto space-y-8">
+
+        <!-- Cabecera -->
+        <div class="bg-carpintecBackground p-6 md:p-8 rounded-xl border border-[#8B5A2B]/20 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold text-carpintecTitle flex items-center gap-3">
+                    <span class="material-symbols-outlined text-carpintecPrimary text-3xl">support_agent</span>
+                    Peticiones, Quejas y Reclamos (PQR)
+                </h1>
+                <p class="text-sm text-carpintecText/80 mt-1">
+                    Estamos aquí para escucharte. Radica una solicitud sobre tus productos de carpintería o consulta el estado de casos anteriores.
+                </p>
+            </div>
+            <a asp-action="Index" class="px-4 py-2 border border-carpintecPrimary/40 rounded-lg text-sm font-semibold text-carpintecTitle hover:bg-carpintecSurface transition-colors flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">arrow_back</span> Volver al Inicio
             </a>
-            <img alt="Carpintec Logo"
-                 class="h-8 w-8 object-contain mr-2"
-                 src="~/images/logo.png">
-            <span class="font-display-lg text-display-lg text-on-primary tracking-tight">Carpintec</span>
         </div>
-        <nav class="hidden md:flex gap-8">
-            <a class="text-on-primary/80 font-medium hover:bg-secondary dark:hover:bg-secondary-container transition-colors duration-300 px-4 py-2 rounded" href="#">Inicio</a>
-            <a class="text-on-primary/80 font-medium hover:bg-secondary dark:hover:bg-secondary-container transition-colors duration-300 px-4 py-2 rounded" href="#">Catálogo</a>
-            <a class="text-on-primary/80 font-medium hover:bg-secondary dark:hover:bg-secondary-container transition-colors duration-300 px-4 py-2 rounded" href="#">Perfil</a>
-            <a class="text-on-primary/80 font-medium hover:bg-secondary dark:hover:bg-secondary-container transition-colors duration-300 px-4 py-2 rounded" href="#">Cerrar sesión</a>
-        </nav>
-        <span class="material-symbols-outlined text-on-primary text-3xl cursor-pointer active:scale-95 transition-transform" data-icon="account_circle">account_circle</span>
-    </header>
-    <!-- Main Content Canvas -->
-    <main class="flex-grow max-w-container-max mx-auto w-full px-margin-mobile md:px-margin-desktop py-12 md:py-20 flex flex-col gap-12">
-        <!-- Header Section -->
-        <section class="text-center max-w-2xl mx-auto space-y-6">
-<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary">Atención al Cliente (PQR)</h1>
-            <p class="font-body-lg text-body-lg text-on-surface-variant">Tu opinión es vital para nuestra artesanía. Cuéntanos cómo podemos mejorar o en qué podemos ayudarte.</p>
-        </section>
-        <!-- Form Section (Bento-style framing) -->
-        <section class="bg-surface-container-lowest border-2 border-primary rounded-xl shadow-sm p-6 md:p-10 max-w-3xl mx-auto w-full relative">
-            <form class="flex flex-col gap-8">
-                <!-- Grid for top fields -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="flex flex-col gap-2">
-                        <label class="font-label-md text-label-md text-on-surface" for="tipo">Tipo de solicitud *</label>
-                        <select class="w-full bg-surface-container-lowest border border-outline rounded-DEFAULT px-3 py-3 font-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors appearance-none cursor-pointer" id="tipo">
-                            <option value="">Selecciona una opción</option>
-                            <option value="peticion">Petición</option>
-                            <option value="queja">Queja</option>
-                            <option value="reclamo">Reclamo</option>
-                            <option value="sugerencia">Sugerencia</option>
+
+        <!-- Sección de Formulario: Crear Nueva PQR -->
+        <div class="bg-carpintecBackground rounded-xl border border-[#8B5A2B]/20 shadow-sm p-6 md:p-8">
+            <h2 class="text-lg font-bold text-carpintecTitle mb-4 flex items-center gap-2 pb-3 border-b border-[#8B5A2B]/20">
+                <span class="material-symbols-outlined text-carpintecPrimary">edit_note</span> Radicar Nueva Solicitud
+            </h2>
+
+            <form asp-action="CreatePQR" method="post" class="space-y-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-xs font-bold text-carpintecTitle uppercase tracking-wider mb-2">Tipo de Solicitud (PQR)</label>
+                        <select name="TipoPQR" class="w-full px-4 py-3 rounded-lg border border-[#8B5A2B]/30 bg-carpintecSurface/40 text-carpintecText focus:outline-none focus:border-carpintecPrimary text-sm font-medium" required>
+                            <option value="">Seleccione una opción...</option>
+                            <option value="Peticion">Petición</option>
+                            <option value="Queja">Queja</option>
+                            <option value="Reclamo">Reclamo</option>
+                            <option value="Sugerencia">Sugerencia</option>
                         </select>
                     </div>
-                    <div class="flex flex-col gap-2">
-                        <label class="font-label-md text-label-md text-on-surface" for="pedido">Número de pedido/cotización (opcional)</label>
-                        <input class="w-full bg-surface-container-lowest border border-outline rounded-DEFAULT px-3 py-3 font-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors" id="pedido" placeholder="Ej: CARP-1234" type="text" />
+                    <div>
+                        <label class="block text-xs font-bold text-carpintecTitle uppercase tracking-wider mb-2">Asociado a Cotización / Pedido (Opcional)</label>
+                        <input name="ReferenciaPedido" class="w-full px-4 py-3 rounded-lg border border-[#8B5A2B]/30 bg-carpintecSurface/40 text-carpintecText focus:outline-none focus:border-carpintecPrimary text-sm font-medium" placeholder="Ej: COT-2026-001" />
                     </div>
                 </div>
-                <div class="flex flex-col gap-2">
-                    <label class="font-label-md text-label-md text-on-surface" for="asunto">Asunto *</label>
-                    <input class="w-full bg-surface-container-lowest border border-outline rounded-DEFAULT px-3 py-3 font-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors" id="asunto" placeholder="Resumen breve de su solicitud" type="text" />
+
+                <div>
+                    <label class="block text-xs font-bold text-carpintecTitle uppercase tracking-wider mb-2">Asunto</label>
+                    <input name="Asunto" class="w-full px-4 py-3 rounded-lg border border-[#8B5A2B]/30 bg-carpintecSurface/40 text-carpintecText focus:outline-none focus:border-carpintecPrimary text-sm font-medium" placeholder="Breve resumen de su solicitud" required />
                 </div>
-                <div class="flex flex-col gap-2">
-                    <label class="font-label-md text-label-md text-on-surface" for="descripcion">Descripción detallada *</label>
-                    <textarea class="w-full bg-surface-container-lowest border border-outline rounded-DEFAULT px-3 py-3 font-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors resize-y" id="descripcion" placeholder="Por favor, sea lo más específico posible..." rows="5"></textarea>
+
+                <div>
+                    <label class="block text-xs font-bold text-carpintecTitle uppercase tracking-wider mb-2">Descripción Detallada</label>
+                    <textarea name="Descripcion" rows="4" class="w-full px-4 py-3 rounded-lg border border-[#8B5A2B]/30 bg-carpintecSurface/40 text-carpintecText focus:outline-none focus:border-carpintecPrimary text-sm font-medium resize-none" placeholder="Explíquenos detalladamente su petición, queja o reclamo..." required></textarea>
                 </div>
-                <div class="flex flex-col gap-2 items-start">
-                    <label class="font-label-md text-label-md text-on-surface">Adjuntar evidencia</label>
-                    <div class="relative">
-                        <input class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" id="adjunto" type="file" />
-                        <div class="bg-surface-container hover:bg-surface-container-high border-2 border-dashed border-outline-variant rounded-xl px-6 py-4 flex items-center gap-3 transition-colors text-on-surface-variant font-label-md">
-                            <span class="material-symbols-outlined" data-icon="upload_file">upload_file</span>
-                            <span>Seleccionar imagen o archivo (Max 5MB)</span>
-                        </div>
-                    </div>
+
+                <div class="flex justify-end gap-3 pt-3">
+                    <button type="submit" class="px-6 py-3 bg-carpintecPrimary text-white text-sm font-bold rounded-lg shadow-md hover:bg-[#734A23] transition-colors flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm">send</span> Enviar Solicitud
+                    </button>
                 </div>
-                <button class="mt-4 bg-primary hover:bg-secondary text-on-primary font-title-md rounded-DEFAULT py-4 px-8 w-full md:w-auto md:self-end transition-colors duration-300 shadow-sm flex items-center justify-center gap-2" type="button">
-                    <span class="material-symbols-outlined" data-icon="send">send</span>
-                    Enviar Solicitud
-                </button>
             </form>
-        </section>
-        <!-- FAQ Section -->
-        <section class="max-w-3xl mx-auto w-full mt-8">
-            <h2 class="font-title-md text-title-md text-primary mb-6 border-b-2 border-surface-dim pb-2">Preguntas Frecuentes</h2>
-            <div class="space-y-4">
-                <details class="group bg-surface-container-lowest border border-outline-variant rounded-lg [&amp;_summary::-webkit-details-marker]:hidden">
-                    <summary class="flex items-center justify-between cursor-pointer p-4 font-label-md text-on-surface">
-                        <span class="font-semibold">¿Cuánto tiempo tardan en responder una PQR?</span>
-                        <span class="material-symbols-outlined transition duration-300 group-open:-rotate-180" data-icon="expand_more">expand_more</span>
-                    </summary>
-                    <div class="p-4 pt-0 text-on-surface-variant font-body-md border-t border-outline-variant mt-2">
-                        Nuestro equipo de atención al cliente revisará su solicitud y se pondrá en contacto con usted en un plazo máximo de 48 horas hábiles.
-                    </div>
-                </details>
-                <details class="group bg-surface-container-lowest border border-outline-variant rounded-lg [&amp;_summary::-webkit-details-marker]:hidden">
-                    <summary class="flex items-center justify-between cursor-pointer p-4 font-label-md text-on-surface">
-                        <span class="font-semibold">¿Qué necesito para presentar un reclamo sobre un mueble?</span>
-                        <span class="material-symbols-outlined transition duration-300 group-open:-rotate-180" data-icon="expand_more">expand_more</span>
-                    </summary>
-                    <div class="p-4 pt-0 text-on-surface-variant font-body-md border-t border-outline-variant mt-2">
-                        Le recomendamos incluir el número de pedido o factura, y adjuntar fotografías claras del defecto o problema para agilizar el proceso de garantía.
-                    </div>
-                </details>
-                <details class="group bg-surface-container-lowest border border-outline-variant rounded-lg [&amp;_summary::-webkit-details-marker]:hidden">
-                    <summary class="flex items-center justify-between cursor-pointer p-4 font-label-md text-on-surface">
-                        <span class="font-semibold">¿Puedo modificar una solicitud ya enviada?</span>
-                        <span class="material-symbols-outlined transition duration-300 group-open:-rotate-180" data-icon="expand_more">expand_more</span>
-                    </summary>
-                    <div class="p-4 pt-0 text-on-surface-variant font-body-md border-t border-outline-variant mt-2">
-                        Una vez enviada, no es posible editarla a través del formulario. Sin embargo, puede enviar información adicional respondiendo al correo de confirmación que recibirá.
-                    </div>
-                </details>
+        </div>
+
+        <!-- Sección: Historial de PQR del Cliente -->
+        <div class="bg-carpintecBackground rounded-xl border border-[#8B5A2B]/20 shadow-sm overflow-hidden">
+            <div class="p-6 border-b border-[#8B5A2B]/20">
+                <h2 class="text-lg font-bold text-carpintecTitle flex items-center gap-2">
+                    <span class="material-symbols-outlined text-carpintecPrimary">history</span> Mis Solicitudes Radicadas
+                </h2>
             </div>
-        </section>
-    </main>
-    <!-- Footer -->
-    <footer class="bg-primary dark:bg-on-surface w-full mt-auto border-t-4 border-secondary flat no shadows w-full px-margin-desktop py-base flex flex-col md:flex-row justify-between items-center gap-gutter">
-        <div class="flex items-center gap-2">
-            <span class="font-headline-lg-mobile text-headline-lg-mobile text-on-primary">Carpintec</span>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-carpintecSurface/60 text-carpintecTitle text-xs uppercase tracking-wider border-b border-[#8B5A2B]/20">
+                            <th class="py-3 px-4 font-bold">Radicado</th>
+                            <th class="py-3 px-4 font-bold">Tipo</th>
+                            <th class="py-3 px-4 font-bold">Asunto</th>
+                            <th class="py-3 px-4 font-bold">Fecha</th>
+                            <th class="py-3 px-4 font-bold">Estado</th>
+                            <th class="py-3 px-4 text-center font-bold">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-[#8B5A2B]/10 text-sm text-carpintecText">
+
+                        <!-- Fila de Ejemplo -->
+                        <tr class="hover:bg-carpintecSurface/30 transition-colors">
+                            <td class="py-4 px-4 font-semibold text-carpintecPrimary">PQR-2026-001</td>
+                            <td class="py-4 px-4 font-medium">Reclamo</td>
+                            <td class="py-4 px-4">Demora en entrega de closet a medida</td>
+                            <td class="py-4 px-4 text-xs">2026-06-08</td>
+                            <td class="py-4 px-4">
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-[#f2e605]/20 text-yellow-800">
+                                    <span class="material-symbols-outlined text-xs">schedule</span> En Proceso
+                                </span>
+                            </td>
+                            <td class="py-4 px-4 text-center">
+                                <button class="p-1.5 hover:bg-carpintecSurface rounded-lg text-carpintecPrimary transition-colors" title="Ver Seguimiento">
+                                    <span class="material-symbols-outlined text-base">visibility</span>
+                                </button>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <p class="font-body-md text-body-md text-on-primary/70">
-            © 2024 Carpintec. Artesanía en Madera.
-        </p>
-        <div class="flex gap-6 font-body-md text-body-md">
-            <a class="text-on-primary/70 hover:text-secondary-fixed-dim transition-colors cursor-pointer" href="#">Contacto</a>
-            <a class="text-on-primary/70 hover:text-secondary-fixed-dim transition-colors cursor-pointer flex items-center gap-1" href="#"><span class="material-symbols-outlined text-sm" data-icon="link">link</span> Facebook</a>
-            <a class="text-on-primary/70 hover:text-secondary-fixed-dim transition-colors cursor-pointer flex items-center gap-1" href="#"><span class="material-symbols-outlined text-sm" data-icon="photo_camera">photo_camera</span> Instagram</a>
-            <a class="text-on-primary/70 hover:text-secondary-fixed-dim transition-colors cursor-pointer flex items-center gap-1" href="#"><span class="material-symbols-outlined text-sm" data-icon="chat">chat</span> WhatsApp</a>
-        </div>
-    </footer>
-</body></html>
+
+    </div>
+
+</body>
+</html>
