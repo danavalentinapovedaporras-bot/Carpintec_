@@ -1,4 +1,4 @@
-﻿using CARPINTEC_App.Data;
+using CARPINTEC_App.Data;
 using CARPINTEC_App.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -141,10 +141,56 @@ namespace CARPINTEC_App.Controllers
                 var empleadoDb = await _context.Empleados.FirstOrDefaultAsync();
                 int idEmpleadoValido = empleadoDb != null ? empleadoDb.IdEmpleado : 1;
 
+                // Buscar o sincronizar Cliente según el nombre o correo del cliente/usuario registrado
+                string correoNormalizado = (correo ?? "").Trim().ToLower();
+                string nombreNormalizado = (nombreCliente ?? "").Trim().ToLower();
+
+                Cliente? clienteEncontrado = null;
+                if (!string.IsNullOrEmpty(correoNormalizado))
+                {
+                    clienteEncontrado = await _context.Clientes.FirstOrDefaultAsync(c => c.Correo != null && c.Correo.ToLower() == correoNormalizado);
+                }
+
+                if (clienteEncontrado == null && !string.IsNullOrEmpty(nombreNormalizado))
+                {
+                    clienteEncontrado = await _context.Clientes.FirstOrDefaultAsync(c =>
+                        (c.Nombre != null && c.Nombre.ToLower() == nombreNormalizado) ||
+                        ((c.Nombre + " " + (c.Apellido ?? "")).Trim().ToLower() == nombreNormalizado)
+                    );
+                }
+
+                // Si no está en Cliente pero existe en Usuario, crear su registro en Cliente
+                if (clienteEncontrado == null)
+                {
+                    var usuarioEncontrado = await _context.Usuarios.FirstOrDefaultAsync(u =>
+                        (!string.IsNullOrEmpty(correoNormalizado) && u.Correo != null && u.Correo.ToLower() == correoNormalizado) ||
+                        (!string.IsNullOrEmpty(nombreNormalizado) && ((u.Nombre + " " + (u.Apellido ?? "")).Trim().ToLower() == nombreNormalizado || u.Nombre.ToLower() == nombreNormalizado))
+                    );
+
+                    if (usuarioEncontrado != null)
+                    {
+                        clienteEncontrado = new Cliente
+                        {
+                            Nombre = usuarioEncontrado.Nombre,
+                            Apellido = usuarioEncontrado.Apellido,
+                            Correo = usuarioEncontrado.Correo ?? "",
+                            Telefono = telefono ?? "",
+                            TipoCliente = "Natural",
+                            Contacto = $"{usuarioEncontrado.Nombre} {usuarioEncontrado.Apellido}".Trim(),
+                            Estado = "Activo",
+                            FechaRegistro = DateTime.Now
+                        };
+                        _context.Clientes.Add(clienteEncontrado);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+
+                int idClienteFinal = clienteEncontrado?.IdCliente ?? 1;
+
                 var nuevaCotizacion = new Cotizacion
                 {
                     Folio = "COT-" + DateTime.Now.Year + "-" + new Random().Next(1000, 9999),
-                    IdCliente = 1,
+                    IdCliente = idClienteFinal,
                     IdEmpleado = idEmpleadoValido,
                     Fecha = DateOnly.FromDateTime(DateTime.Now),
                     Total = total,

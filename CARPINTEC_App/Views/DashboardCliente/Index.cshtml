@@ -1,5 +1,12 @@
 @{
     Layout = null;
+    var notificaciones = ViewBag.ListaNotificaciones as List<CARPINTEC_App.Controllers.DashboardClienteController.NotificacionClienteItem> 
+                        ?? new List<CARPINTEC_App.Controllers.DashboardClienteController.NotificacionClienteItem>();
+    int totalNotif = ViewBag.TotalNotificaciones ?? notificaciones.Count;
+    int totalPagos = ViewBag.TotalPagosPendientes ?? notificaciones.Count(n => n.Tipo == "pago");
+    int totalTerminar = ViewBag.TotalProductosPorTerminar ?? notificaciones.Count(n => n.Tipo == "terminar");
+    var primerPago = ViewBag.PrimerPagoPendiente as CARPINTEC_App.Controllers.DashboardClienteController.NotificacionClienteItem;
+    var primerTerminar = ViewBag.PrimerProductoPorTerminar as CARPINTEC_App.Controllers.DashboardClienteController.NotificacionClienteItem;
 }
 <!DOCTYPE html>
 <html class="light" lang="es">
@@ -114,10 +121,109 @@
                 </div>
             </div>
             <div class="flex items-center space-x-6">
-                <button class="text-on-surface-variant hover:text-primary transition-colors relative">
-                    <span class="material-symbols-outlined">notifications</span>
-                    <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-secondary rounded-full border border-surface"></span>
-                </button>
+                <!-- Campanita con Notificaciones Flotantes -->
+                <div class="relative" id="containerCampanita">
+                    <button id="btnCampanita" onclick="toggleDropdownCampanita(event)" type="button" 
+                            class="text-on-surface-variant hover:text-primary transition-colors relative p-2 rounded-full hover:bg-surface-container flex items-center justify-center focus:outline-none cursor-pointer"
+                            title="Ver notificaciones">
+                        <span class="material-symbols-outlined text-2xl">notifications</span>
+                        @if (totalNotif > 0)
+                        {
+                            <span class="absolute top-0.5 right-0.5 min-w-[19px] h-[19px] bg-rose-600 text-white text-[10px] font-black rounded-full flex items-center justify-center px-1 border-2 border-surface animate-bounce shadow-sm">
+                                @totalNotif
+                            </span>
+                        }
+                    </button>
+
+                    <!-- Menú Flotante de Notificaciones -->
+                    <div id="dropdownCampanita" 
+                         class="hidden absolute right-0 mt-3 w-80 sm:w-96 bg-white border border-outline-variant/60 rounded-2xl shadow-2xl z-50 overflow-hidden transform transition-all duration-200 origin-top-right">
+                        <!-- Cabecera -->
+                        <div class="p-4 bg-[#FAF6F0] border-b border-[#E8DDD5] flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary text-xl">notifications_active</span>
+                                <h3 class="font-bold text-sm text-[#34261B]">Notificaciones</h3>
+                                <span class="bg-primary/10 text-primary text-xs font-bold px-2 py-0.5 rounded-full">@totalNotif</span>
+                            </div>
+                            <button type="button" onclick="cerrarDropdownCampanita()" class="text-[#8C7665] hover:text-[#34261B] text-xs font-semibold">
+                                <span class="material-symbols-outlined text-lg">close</span>
+                            </button>
+                        </div>
+
+                        <!-- Filtros Rápidos -->
+                        <div class="flex items-center gap-1.5 px-3 py-2 bg-[#F8F5F1] border-b border-[#EAE0D5] text-[11px] font-medium overflow-x-auto">
+                            <button type="button" onclick="filtrarNotificacionesCampanita('todas', this)" class="btn-filtro-notif px-2.5 py-1 rounded-full bg-primary text-white font-semibold transition shrink-0">
+                                Todas (@totalNotif)
+                            </button>
+                            @if (totalPagos > 0)
+                            {
+                                <button type="button" onclick="filtrarNotificacionesCampanita('pago', this)" class="btn-filtro-notif px-2.5 py-1 rounded-full bg-white text-[#6C5645] border border-[#D9CABA] hover:bg-[#EAE0D5] transition shrink-0">
+                                    Pagos (@totalPagos)
+                                </button>
+                            }
+                            @if (totalTerminar > 0)
+                            {
+                                <button type="button" onclick="filtrarNotificacionesCampanita('terminar', this)" class="btn-filtro-notif px-2.5 py-1 rounded-full bg-white text-[#6C5645] border border-[#D9CABA] hover:bg-[#EAE0D5] transition shrink-0">
+                                    En Taller (@totalTerminar)
+                                </button>
+                            }
+                        </div>
+
+                        <!-- Listado de Notificaciones -->
+                        <div class="max-h-80 overflow-y-auto divide-y divide-[#F0E6DB]" id="listaNotifCampanita">
+                            @if (notificaciones.Any())
+                            {
+                                foreach (var notif in notificaciones)
+                                {
+                                    <div class="item-notif p-3.5 hover:bg-[#FAF7F2] transition flex items-start gap-3" data-tipo="@notif.Tipo">
+                                        <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white shrink-0 mt-0.5 shadow-xs @(notif.Tipo == "pago" ? "bg-rose-500" : (notif.Tipo == "terminar" ? "bg-emerald-600" : "bg-[#8B4513]"))">
+                                            <span class="material-symbols-outlined text-[18px]">@notif.Icono</span>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="flex items-center justify-between gap-1 mb-0.5">
+                                                <h4 class="text-xs font-bold text-[#2E1F14] truncate">@notif.Titulo</h4>
+                                                <span class="text-[10px] text-[#8C7665] shrink-0">@notif.FechaStr</span>
+                                            </div>
+                                            <p class="text-[11px] text-[#5C4535] leading-snug mb-2">@notif.Mensaje</p>
+                                            <div class="flex items-center justify-between">
+                                                @if (!string.IsNullOrEmpty(notif.Monto))
+                                                {
+                                                    <span class="text-xs font-black text-rose-700">@notif.Monto</span>
+                                                }
+                                                else if (!string.IsNullOrEmpty(notif.Estado))
+                                                {
+                                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-[#EFE3D5] text-[#5C3821]">@notif.Estado</span>
+                                                }
+                                                <a href="@notif.UrlAccion" class="inline-flex items-center gap-1 text-[11px] font-bold text-primary hover:text-secondary transition ml-auto">
+                                                    @notif.TextoAccion
+                                                    <span class="material-symbols-outlined text-[12px]">chevron_right</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="p-6 text-center text-[#8C7665]">
+                                    <span class="material-symbols-outlined text-3xl text-emerald-600 mb-1">verified</span>
+                                    <p class="text-xs font-bold text-[#34261B]">¡Todo al día!</p>
+                                    <p class="text-[11px] mt-0.5">No tienes pagos pendientes ni pedidos por vencer.</p>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Pie del Menú -->
+                        <div class="p-3 bg-[#FAF6F0] border-t border-[#E8DDD5] flex items-center justify-between text-xs">
+                            <a asp-controller="GestionFacturas" asp-action="Index" class="font-bold text-primary hover:underline text-[11px] flex items-center gap-1">
+                                <span class="material-symbols-outlined text-sm">receipt</span> Mis Facturas
+                            </a>
+                            <a asp-controller="Mi_Pedido" asp-action="Index" class="font-bold text-primary hover:underline text-[11px] flex items-center gap-1">
+                                <span class="material-symbols-outlined text-sm">inventory_2</span> Mis Pedidos
+                            </a>
+                        </div>
+                    </div>
+                </div>
                 <a asp-controller="Login" asp-action="CerrarSesion" class="flex items-center space-x-2 text-on-surface-variant hover:text-primary transition-colors mr-2">
                     <span class="material-symbols-outlined">logout</span>
                     <span class="font-label-md text-label-md hidden lg:inline">Cerrar Sesión</span>
@@ -149,7 +255,7 @@
                 <div class="absolute inset-0 z-20 flex flex-col justify-center items-start p-8 md:p-12">
                     <span class="inline-block px-3 py-1 bg-secondary/90 text-primary font-label-md text-label-md rounded-md uppercase tracking-widest mb-4 backdrop-blur-sm font-bold">Artesanía Pura</span>
                     <h3 class="font-display-lg text-headline-lg md:text-display-lg text-white max-w-2xl leading-tight mb-6 drop-shadow-lg">Diseñamos muebles personalizados para transformar tus espacios</h3>
-                    <a asp-controller="MiCotizacion"
+                    <a asp-controller="NuevaCotizacion"
                        asp-action="Index"
                        class="bg-secondary text-on-secondary w-full py-4 rounded-lg font-bold text-headline-lg-mobile shadow-lg active:scale-95 transition-all relative z-10 flex items-center justify-center">
                         Crear Cotización
@@ -246,19 +352,117 @@
                     </a>
                 </div>
             </div>
-            <!-- Card 4: Notificaciones -->
-            <div class="glass-card rounded-lg p-6 relative overflow-hidden group bg-surface-container border-none shadow-none">
-                <div class="absolute top-0 right-0 w-24 h-24 bg-white/40 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
-                <div class="flex justify-between items-start mb-4 relative z-10">
-                    <div class="p-3 bg-white rounded-lg text-primary shadow-sm">
-                        <span class="material-symbols-outlined fill-icon text-3xl animate-pulse">notifications_active</span>
+            <!-- Card 4: Notificaciones y Novedades del Taller -->
+            <div class="glass-card rounded-lg p-6 relative overflow-hidden group bg-gradient-to-br from-surface to-surface-container border-2 border-primary/15 hover:border-primary/30 transition-all shadow-sm">
+                <div class="absolute top-0 right-0 w-28 h-28 bg-primary/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110 pointer-events-none"></div>
+                
+                <div class="flex justify-between items-start mb-3 relative z-10">
+                    <div class="p-2.5 bg-primary/10 text-primary rounded-xl flex items-center gap-2">
+                        <span class="material-symbols-outlined fill-icon text-2xl animate-pulse">notifications_active</span>
+                        <span class="text-xs font-bold uppercase tracking-wider text-primary">Notificaciones</span>
                     </div>
+                    @if (totalNotif > 0)
+                    {
+                        <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-rose-100 text-rose-800 border border-rose-200 flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-rose-600 animate-ping"></span>
+                            @totalNotif @(totalNotif == 1 ? "alerta" : "alertas")
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
+                            Al día
+                        </span>
+                    }
                 </div>
-                <h4 class="font-title-md text-title-md text-primary mb-2 relative z-10">Novedades</h4>
-                <p class="font-body-md text-body-md text-on-surface-variant mt-2 relative z-10">Tienes <strong class="text-primary">2</strong> actualizaciones sobre tus pedidos en taller.</p>
-                <button class="mt-4 text-primary font-label-md text-label-md font-bold flex items-center hover:underline relative z-10">
-                    Ver todas <span class="material-symbols-outlined text-sm ml-1">arrow_forward</span>
-                </button>
+
+                <h4 class="font-title-md text-title-md text-primary font-bold mb-3 relative z-10">
+                    Centro de Novedades
+                </h4>
+
+                <!-- Contenido Dinámico según Alertas Reales -->
+                <div class="space-y-3 relative z-10 text-xs">
+                    <!-- SECCIÓN 1: Pagos Pendientes -->
+                    @if (primerPago != null)
+                    {
+                        <div class="bg-rose-50/90 border border-rose-200 rounded-xl p-3 flex items-start justify-between gap-3 shadow-2xs">
+                            <div class="flex items-start gap-2.5 min-w-0">
+                                <div class="w-7 h-7 rounded-lg bg-rose-500 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+                                    <span class="material-symbols-outlined text-[16px]">payments</span>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="font-bold text-rose-900 text-xs">Pago Pendiente</span>
+                                        @if (!string.IsNullOrEmpty(primerPago.Codigo))
+                                        {
+                                            <span class="text-[10px] bg-rose-200/80 text-rose-950 px-1.5 py-0.2 rounded font-semibold">@primerPago.Codigo</span>
+                                        }
+                                    </div>
+                                    <p class="text-[11px] text-rose-800 line-clamp-1 mt-0.5">@primerPago.Mensaje</p>
+                                    @if (!string.IsNullOrEmpty(primerPago.Monto))
+                                    {
+                                        <span class="font-black text-xs text-rose-700 block mt-1">@primerPago.Monto</span>
+                                    }
+                                </div>
+                            </div>
+                            <a href="@primerPago.UrlAccion" class="shrink-0 bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg transition shadow-xs flex items-center gap-1">
+                                Pagar
+                                <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+                            </a>
+                        </div>
+                    }
+
+                    <!-- SECCIÓN 2: Producto por Terminar / En Taller -->
+                    @if (primerTerminar != null)
+                    {
+                        <div class="bg-emerald-50/90 border border-emerald-200 rounded-xl p-3 flex items-start justify-between gap-3 shadow-2xs">
+                            <div class="flex items-start gap-2.5 min-w-0">
+                                <div class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+                                    <span class="material-symbols-outlined text-[16px]">@primerTerminar.Icono</span>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="font-bold text-emerald-950 text-xs">@primerTerminar.Titulo</span>
+                                        @if (!string.IsNullOrEmpty(primerTerminar.Estado))
+                                        {
+                                            <span class="text-[10px] bg-emerald-200/80 text-emerald-900 px-1.5 py-0.2 rounded font-bold">@primerTerminar.Estado</span>
+                                        }
+                                    </div>
+                                    <p class="text-[11px] text-emerald-800 line-clamp-2 mt-0.5">@primerTerminar.Mensaje</p>
+                                </div>
+                            </div>
+                            <a href="@primerTerminar.UrlAccion" class="shrink-0 bg-emerald-700 hover:bg-emerald-800 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg transition shadow-xs flex items-center gap-1">
+                                Avance
+                                <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+                            </a>
+                        </div>
+                    }
+
+                    <!-- Si no hay pagos ni productos en alerta -->
+                    @if (primerPago == null && primerTerminar == null)
+                    {
+                        <div class="bg-surface-container rounded-xl p-3.5 flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                                <span class="material-symbols-outlined text-lg">check_circle</span>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-on-surface">No tienes pagos pendientes ni entregas atrasadas</p>
+                                <p class="text-[11px] text-on-surface-variant mt-0.5">Tus pedidos y finanzas están al día.</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Botón de Acción Ver Todas las Notificaciones -->
+                <div class="mt-4 pt-3 border-t border-outline-variant/30 flex items-center justify-between relative z-10">
+                    <button type="button" onclick="toggleDropdownCampanita(event)" class="text-primary hover:text-secondary font-label-md text-xs font-bold flex items-center gap-1 transition cursor-pointer">
+                        <span>Ver todas (@totalNotif)</span>
+                        <span class="material-symbols-outlined text-sm">open_in_new</span>
+                    </button>
+                    <a asp-controller="Mi_Pedido" asp-action="Index" class="text-on-surface-variant hover:text-primary text-[11px] font-medium transition">
+                        Ver Mis Pedidos →
+                    </a>
+                </div>
             </div>
             <!-- Card 5: Pagos Pendientes -->
             <div class="glass-card rounded-lg p-6 relative overflow-hidden group">
@@ -332,5 +536,57 @@
     </button>
 </main>
 
+    <script>
+        // Control interactivo del Dropdown de la Campanita de Notificaciones
+        function toggleDropdownCampanita(e) {
+            if (e) e.stopPropagation();
+            const dropdown = document.getElementById('dropdownCampanita');
+            if (dropdown) {
+                dropdown.classList.toggle('hidden');
+            }
+        }
 
+        function cerrarDropdownCampanita() {
+            const dropdown = document.getElementById('dropdownCampanita');
+            if (dropdown) {
+                dropdown.classList.add('hidden');
+            }
+        }
+
+        // Filtro de pestañas dentro del dropdown de la campanita
+        function filtrarNotificacionesCampanita(tipo, btn) {
+            // Actualizar estilo visual de los botones
+            const botones = document.querySelectorAll('.btn-filtro-notif');
+            botones.forEach(b => {
+                b.classList.remove('bg-primary', 'text-white');
+                b.classList.add('bg-white', 'text-[#6C5645]', 'border', 'border-[#D9CABA]');
+            });
+            if (btn) {
+                btn.classList.remove('bg-white', 'text-[#6C5645]', 'border', 'border-[#D9CABA]');
+                btn.classList.add('bg-primary', 'text-white');
+            }
+
+            // Filtrar elementos
+            const items = document.querySelectorAll('#listaNotifCampanita .item-notif');
+            items.forEach(item => {
+                const itemTipo = item.getAttribute('data-tipo');
+                if (tipo === 'todas' || itemTipo === tipo) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        }
+
+        // Cerrar dropdown al hacer clic fuera
+        document.addEventListener('click', function (e) {
+            const container = document.getElementById('containerCampanita');
+            const dropdown = document.getElementById('dropdownCampanita');
+            if (dropdown && !dropdown.classList.contains('hidden')) {
+                if (container && !container.contains(e.target)) {
+                    dropdown.classList.add('hidden');
+                }
+            }
+        });
+    </script>
 </body></html>

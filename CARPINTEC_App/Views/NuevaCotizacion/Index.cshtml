@@ -1,4 +1,4 @@
-﻿@{
+@{
     Layout = null;
 }
 <!DOCTYPE html>
@@ -88,10 +88,11 @@
                 </div>
             </div>
             <!-- Navigation Links -->
-            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium" data-purpose="main-nav">
-                <a class="text-[#7E5F43] hover:text-[#4A2613] transition-colors py-1" href="#">Inicio</a>
-                <a class="text-[#7E5F43] hover:text-[#4A2613] transition-colors py-1" href="#">Instructivos</a>
-                <a class="text-[#7E5F43] hover:text-[#4A2613] transition-colors py-1" href="#">Contacto</a>
+            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium" data-purpose="main-nav">
+                <a class="text-[#7E5F43] hover:text-[#4A2613] transition-colors py-1" href="/DashboardCliente">Inicio</a>
+                <a class="text-[#7E5F43] hover:text-[#4A2613] transition-colors py-1" href="/MisProductos">Catálogo</a>
+                <a class="text-[#7E5F43] hover:text-[#4A2613] transition-colors py-1" href="/MiCotizacion">Mis Cotizaciones</a>
+                <a class="text-[#7E5F43] hover:text-[#4A2613] transition-colors py-1" href="/Mi_Pedido">Mis Pedidos</a>
                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-[#F0E6DA] text-[#6E4B31] border border-[#E0D0C0]">
                     Cotizador Online
                 </span>
@@ -99,12 +100,12 @@
             <!-- Customer Profile Quick Access -->
             <div class="flex items-center gap-3.5 pl-4 border-l border-[#EAE3DA]" data-purpose="user-profile-badge">
                 <div class="text-right hidden sm:block">
-                    <p class="text-xs font-bold text-[#34261B] leading-none">Carlos Hernández</p>
+                    <p class="text-xs font-bold text-[#34261B] leading-none">@(ViewBag.NombreCliente ?? "Cliente Carpintec")</p>
                     <span class="text-[11px] text-[#8C7665] font-medium">Cliente Verificado</span>
                 </div>
                 <div class="relative">
                     <div class="w-10 h-10 rounded-full bg-[#E5D5C5] text-[#5C3821] flex items-center justify-center font-bold text-sm border-2 border-[#FAF7F2] shadow-sm">
-                        CH
+                        @(ViewBag.Iniciales ?? "CL")
                     </div>
                     <span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white"></span>
                 </div>
@@ -156,21 +157,21 @@
                         <div>
                             <label class="block text-xs font-semibold text-[#6C5645] mb-1.5" for="client-name">Nombre del Cliente</label>
                             <div class="relative rounded-lg shadow-xs">
-                                <input class="w-full text-xs font-medium text-[#2E1F14] bg-[#FAF7F2] border border-[#D9CABA] rounded-lg px-3.5 py-2.5 focus:bg-white focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A] transition-all" id="client-name" placeholder="Escribe el nombre completo" type="text" value="Carlos Hernández" />
+                                <input class="w-full text-xs font-medium text-[#2E1F14] bg-[#FAF7F2] border border-[#D9CABA] rounded-lg px-3.5 py-2.5 focus:bg-white focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A] transition-all" id="client-name" placeholder="Escribe el nombre completo" type="text" value="@(ViewBag.NombreCliente ?? "")" />
                             </div>
                         </div>
                         <!-- Phone -->
                         <div>
                             <label class="block text-xs font-semibold text-[#6C5645] mb-1.5" for="client-phone">Teléfono Móvil</label>
                             <div class="relative rounded-lg shadow-xs">
-                                <input class="w-full text-xs font-medium text-[#2E1F14] bg-[#FAF7F2] border border-[#D9CABA] rounded-lg px-3.5 py-2.5 focus:bg-white focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A] transition-all" id="client-phone" placeholder="Ej. 300 000 0000" type="text" value="300 123 4567" />
+                                <input class="w-full text-xs font-medium text-[#2E1F14] bg-[#FAF7F2] border border-[#D9CABA] rounded-lg px-3.5 py-2.5 focus:bg-white focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A] transition-all" id="client-phone" placeholder="Ej. 300 000 0000" type="text" value="@(ViewBag.TelefonoCliente ?? "")" />
                             </div>
                         </div>
                         <!-- Email -->
                         <div>
                             <label class="block text-xs font-semibold text-[#6C5645] mb-1.5" for="client-email">Correo Electrónico</label>
                             <div class="relative rounded-lg shadow-xs">
-                                <input class="w-full text-xs font-medium text-[#2E1F14] bg-[#FAF7F2] border border-[#D9CABA] rounded-lg px-3.5 py-2.5 focus:bg-white focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A] transition-all" id="client-email" placeholder="carlos@ejemplo.com" type="email" value="carlos@gmail.com" />
+                                <input class="w-full text-xs font-medium text-[#2E1F14] bg-[#FAF7F2] border border-[#D9CABA] rounded-lg px-3.5 py-2.5 focus:bg-white focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A] transition-all" id="client-email" placeholder="correo@ejemplo.com" type="email" value="@(ViewBag.CorreoCliente ?? "")" />
                             </div>
                         </div>
                     </div>
@@ -189,9 +190,9 @@
                                 <input class="w-full text-xs font-semibold text-[#2E1F14] bg-[#FAF7F2] border border-[#D9CABA] rounded-lg px-3.5 py-2.5 focus:bg-white focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A] transition-all" id="product-name" placeholder="Ej. Mesa de Comedor, Estantería, etc." type="text" value="Mesa de Comedor Artesanal" />
                                 <div class="mt-2 flex flex-wrap gap-1.5">
                                     <span class="text-[10px] text-[#8C7564]">Sugerencias:</span>
-                                    <button class="text-[10px] bg-[#EFE3D5] hover:bg-[#E2D2C2] text-[#5C3821] px-2 py-0.5 rounded transition" type="button">Mesa Auxiliar</button>
-                                    <button class="text-[10px] bg-[#EFE3D5] hover:bg-[#E2D2C2] text-[#5C3821] px-2 py-0.5 rounded transition" type="button">Escritorio Nórdico</button>
-                                    <button class="text-[10px] bg-[#EFE3D5] hover:bg-[#E2D2C2] text-[#5C3821] px-2 py-0.5 rounded transition" type="button">Mueble TV</button>
+                                    <button class="text-[10px] bg-[#EFE3D5] hover:bg-[#E2D2C2] text-[#5C3821] px-2 py-0.5 rounded transition" type="button" onclick="seleccionarSugerencia('Mesa Auxiliar')">Mesa Auxiliar</button>
+                                    <button class="text-[10px] bg-[#EFE3D5] hover:bg-[#E2D2C2] text-[#5C3821] px-2 py-0.5 rounded transition" type="button" onclick="seleccionarSugerencia('Escritorio Nórdico')">Escritorio Nórdico</button>
+                                    <button class="text-[10px] bg-[#EFE3D5] hover:bg-[#E2D2C2] text-[#5C3821] px-2 py-0.5 rounded transition" type="button" onclick="seleccionarSugerencia('Mueble TV')">Mueble TV</button>
                                 </div>
                             </div>
                         </div>
@@ -211,11 +212,11 @@
                         <div class="md:col-span-7">
                             <div class="flex items-center justify-between mb-1.5">
                                 <label class="block text-xs font-semibold text-[#6C5645]" for="wood-select">Tipo de Madera</label>
-                                <span class="text-xs font-bold text-[#8C5229] bg-[#F7ECE1] px-2 py-0.5 rounded border border-[#DEC9B7]">
+                                <span id="ncWoodPriceBadge" class="text-xs font-bold text-[#8C5229] bg-[#F7ECE1] px-2 py-0.5 rounded border border-[#DEC9B7]">
                                     Precio Base: $320.000 COP
                                 </span>
                             </div>
-                            <select class="w-full text-xs font-medium text-[#2E1F14] bg-[#FAF7F2] border border-[#D9CABA] rounded-lg px-3.5 py-2.5 focus:bg-white focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A]" id="wood-select">
+                            <select class="w-full text-xs font-medium text-[#2E1F14] bg-[#FAF7F2] border border-[#D9CABA] rounded-lg px-3.5 py-2.5 focus:bg-white focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A]" id="wood-select" onchange="recalcularTotalNuevaCotizacion()">
                                 <option selected="" value="pino">Pino Macizo - Acabado Natural ($320.000)</option>
                                 <option value="roble">Roble Europeo (+ $180.000)</option>
                                 <option value="cedro">Cedro Rojo Tradicional (+ $140.000)</option>
@@ -226,9 +227,9 @@
                         <div class="md:col-span-5">
                             <label class="block text-xs font-semibold text-[#6C5645] mb-1.5">Cantidad</label>
                             <div class="flex items-center bg-[#FAF7F2] border border-[#D9CABA] rounded-lg p-1">
-                                <button class="w-8 h-8 rounded bg-white shadow-xs text-[#5C3821] hover:bg-[#EFE4D6] font-bold text-sm flex items-center justify-center transition" type="button">−</button>
-                                <input class="w-full text-center border-0 bg-transparent text-sm font-bold text-[#34261B] focus:ring-0" min="1" type="number" value="1" />
-                                <button class="w-8 h-8 rounded bg-white shadow-xs text-[#5C3821] hover:bg-[#EFE4D6] font-bold text-sm flex items-center justify-center transition" type="button">+</button>
+                                <button class="w-8 h-8 rounded bg-white shadow-xs text-[#5C3821] hover:bg-[#EFE4D6] font-bold text-sm flex items-center justify-center transition" type="button" onclick="cambiarCantidad(-1)">−</button>
+                                <input id="input-cantidad" class="w-full text-center border-0 bg-transparent text-sm font-bold text-[#34261B] focus:ring-0" min="1" type="number" value="1" oninput="recalcularTotalNuevaCotizacion()" />
+                                <button class="w-8 h-8 rounded bg-white shadow-xs text-[#5C3821] hover:bg-[#EFE4D6] font-bold text-sm flex items-center justify-center transition" type="button" onclick="cambiarCantidad(1)">+</button>
                             </div>
                         </div>
                     </div>
@@ -257,7 +258,7 @@
                                     <span class="text-xs font-semibold text-[#543D2D] uppercase tracking-wide">Alto</span>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <input class="w-20 text-center font-bold text-sm bg-white border border-[#CFBEAE] rounded-lg py-1.5 text-[#34261B] focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A]" type="number" value="80" />
+                                    <input id="nc-alto" oninput="recalcularTotalNuevaCotizacion()" class="w-20 text-center font-bold text-sm bg-white border border-[#CFBEAE] rounded-lg py-1.5 text-[#34261B] focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A]" type="number" value="80" />
                                     <span class="text-xs font-semibold text-[#7E6654]">cm</span>
                                 </div>
                             </div>
@@ -268,7 +269,7 @@
                                     <span class="text-xs font-semibold text-[#543D2D] uppercase tracking-wide">Ancho</span>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <input class="w-20 text-center font-bold text-sm bg-white border border-[#CFBEAE] rounded-lg py-1.5 text-[#34261B] focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A]" type="number" value="120" />
+                                    <input id="nc-ancho" oninput="recalcularTotalNuevaCotizacion()" class="w-20 text-center font-bold text-sm bg-white border border-[#CFBEAE] rounded-lg py-1.5 text-[#34261B] focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A]" type="number" value="120" />
                                     <span class="text-xs font-semibold text-[#7E6654]">cm</span>
                                 </div>
                             </div>
@@ -279,7 +280,7 @@
                                     <span class="text-xs font-semibold text-[#543D2D] uppercase tracking-wide">Profundidad</span>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <input class="w-20 text-center font-bold text-sm bg-white border border-[#CFBEAE] rounded-lg py-1.5 text-[#34261B] focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A]" type="number" value="60" />
+                                    <input id="nc-profundidad" oninput="recalcularTotalNuevaCotizacion()" class="w-20 text-center font-bold text-sm bg-white border border-[#CFBEAE] rounded-lg py-1.5 text-[#34261B] focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A]" type="number" value="60" />
                                     <span class="text-xs font-semibold text-[#7E6654]">cm</span>
                                 </div>
                             </div>
@@ -304,13 +305,13 @@
                                 <!-- Dimension Lines -->
                                 <!-- Ancho (Width) -->
                                 <line stroke="#8C4412" stroke-dasharray="2 2" stroke-width="1.2" x1="30" x2="95" y1="44" y2="14"></line>
-                                <text fill="#8C4412" font-size="8" font-weight="700" x="50" y="24">120 cm</text>
+                                <text id="svgTextAncho" fill="#8C4412" font-size="8" font-weight="700" x="50" y="24">120 cm</text>
                                 <!-- Profundidad (Depth) -->
                                 <line stroke="#8C4412" stroke-dasharray="2 2" stroke-width="1.2" x1="105" x2="170" y1="14" y2="44"></line>
-                                <text fill="#8C4412" font-size="8" font-weight="700" x="142" y="24">60 cm</text>
+                                <text id="svgTextProfundidad" fill="#8C4412" font-size="8" font-weight="700" x="142" y="24">60 cm</text>
                                 <!-- Alto (Height) -->
                                 <line stroke="#8C4412" stroke-dasharray="2 2" stroke-width="1.2" x1="28" x2="28" y1="52" y2="110"></line>
-                                <text fill="#8C4412" font-size="8" font-weight="700" x="10" y="85">80 cm</text>
+                                <text id="svgTextAlto" fill="#8C4412" font-size="8" font-weight="700" x="10" y="85">80 cm</text>
                             </svg>
                             <div class="text-[10px] text-[#7A5B44] text-center mt-2 font-medium">
                                 Visualización dimensional aproximada
@@ -325,7 +326,7 @@
                         <h2 class="text-sm font-bold uppercase tracking-wider text-[#4A3222]">Observaciones y Especificaciones</h2>
                     </div>
                     <div>
-                        <textarea class="w-full text-xs text-[#2E1F14] bg-[#FAF7F2] border border-[#D9CABA] rounded-xl p-3.5 focus:bg-white focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A] placeholder-[#9E8B7C] transition-all" placeholder="Indica detalles de esquinas redondeadas, perforaciones para cables, tono de barniz mate/satinado o requisitos particulares para el ensamble..." rows="3">Deseo los bordes superiores suavemente biselados con acabado poliuretano semi-mate resistente a la humedad.</textarea>
+                        <textarea id="nc-observaciones" class="w-full text-xs text-[#2E1F14] bg-[#FAF7F2] border border-[#D9CABA] rounded-xl p-3.5 focus:bg-white focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A] placeholder-[#9E8B7C] transition-all" placeholder="Indica detalles de esquinas redondeadas, perforaciones para cables, tono de barniz mate/satinado o requisitos particulares para el ensamble..." rows="3">Deseo los bordes superiores suavemente biselados con acabado poliuretano semi-mate resistente a la humedad.</textarea>
                     </div>
                 </section>
                 <!-- SECTION 5: Payment Methods Selection -->
@@ -338,7 +339,7 @@
                         <!-- Option 1: Transfer / Cash -->
                         <label class="cursor-pointer border-2 border-[#9C5A2A] bg-[#FAF3EC] rounded-xl p-3 flex flex-col justify-between transition-all hover:shadow-xs">
                             <div class="flex items-center justify-between">
-                                <input checked="" class="text-[#9C5A2A] focus:ring-[#9C5A2A] w-4 h-4" name="payment_method" type="radio" />
+                                <input checked="" value="transferencia" onchange="recalcularTotalNuevaCotizacion()" class="text-[#9C5A2A] focus:ring-[#9C5A2A] w-4 h-4" name="payment_method" type="radio" />
                                 <span class="text-[10px] font-bold bg-[#EAD4C2] text-[#693D1B] px-1.5 py-0.5 rounded">-5% OFF</span>
                             </div>
                             <div class="mt-3">
@@ -349,7 +350,7 @@
                         <!-- Option 2: Credit Card -->
                         <label class="cursor-pointer border border-[#E0D2C3] bg-[#FAF7F2] hover:bg-[#FDFBF9] rounded-xl p-3 flex flex-col justify-between transition-all">
                             <div class="flex items-center justify-between">
-                                <input class="text-[#9C5A2A] focus:ring-[#9C5A2A] w-4 h-4" name="payment_method" type="radio" />
+                                <input value="tarjeta" onchange="recalcularTotalNuevaCotizacion()" class="text-[#9C5A2A] focus:ring-[#9C5A2A] w-4 h-4" name="payment_method" type="radio" />
                                 <span class="text-[10px] text-[#8C7665]">Hasta 12 cuotas</span>
                             </div>
                             <div class="mt-3">
@@ -360,7 +361,7 @@
                         <!-- Option 3: Instalments -->
                         <label class="cursor-pointer border border-[#E0D2C3] bg-[#FAF7F2] hover:bg-[#FDFBF9] rounded-xl p-3 flex flex-col justify-between transition-all">
                             <div class="flex items-center justify-between">
-                                <input class="text-[#9C5A2A] focus:ring-[#9C5A2A] w-4 h-4" name="payment_method" type="radio" />
+                                <input value="anticipo" onchange="recalcularTotalNuevaCotizacion()" class="text-[#9C5A2A] focus:ring-[#9C5A2A] w-4 h-4" name="payment_method" type="radio" />
                                 <span class="text-[10px] text-[#8C7665]">50% y 50%</span>
                             </div>
                             <div class="mt-3">
@@ -371,7 +372,7 @@
                         <!-- Option 4: PSE -->
                         <label class="cursor-pointer border border-[#E0D2C3] bg-[#FAF7F2] hover:bg-[#FDFBF9] rounded-xl p-3 flex flex-col justify-between transition-all">
                             <div class="flex items-center justify-between">
-                                <input class="text-[#9C5A2A] focus:ring-[#9C5A2A] w-4 h-4" name="payment_method" type="radio" />
+                                <input value="pse" onchange="recalcularTotalNuevaCotizacion()" class="text-[#9C5A2A] focus:ring-[#9C5A2A] w-4 h-4" name="payment_method" type="radio" />
                                 <span class="text-[10px] text-[#8C7665]">Inmediato</span>
                             </div>
                             <div class="mt-3">
@@ -383,14 +384,14 @@
                 </section>
                 <!-- Generate Quotation Action Button -->
                 <div class="pt-2">
-                    <button class="w-full bg-[#8B4513] hover:bg-[#72370D] active:bg-[#592B0A] text-white font-bold py-4 px-6 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-3 group text-sm tracking-wide uppercase" type="button">
+                    <button id="btnGenerarCotizacionOficial" onclick="enviarNuevaCotizacion()" class="w-full bg-[#8B4513] hover:bg-[#72370D] active:bg-[#592B0A] text-white font-bold py-4 px-6 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-3 group text-sm tracking-wide uppercase cursor-pointer" type="button">
                         <svg class="w-5 h-5 text-[#E7C6A5] group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
                             <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round"></path>
                         </svg>
                         Generar Cotización Oficial
                     </button>
                     <p class="text-center text-[11px] text-[#8A7666] mt-2">
-                        Al generar la cotización se enviará un PDF técnico y especificaciones a carlos@gmail.com
+                        Al generar la cotización se registrará automáticamente tu Pedido y se enviará soporte a @(ViewBag.CorreoCliente ?? "tu correo")
                     </p>
                 </div>
             </div>
@@ -403,14 +404,15 @@
                         <span class="text-[10px] text-[#9C6D45] font-semibold bg-[#F5EADF] px-2 py-0.5 rounded">Opcional</span>
                     </div>
                     <!-- Dropzone Area -->
-                    <div class="border-2 border-dashed border-[#D2BFAF] hover:border-[#8B4513] bg-[#FAF6F0] rounded-xl p-5 text-center transition-colors cursor-pointer group">
+                    <input type="file" id="nc-foto-lugar" accept="image/*" class="hidden" onchange="mostrarNombreArchivo(this)" />
+                    <div onclick="document.getElementById('nc-foto-lugar').click()" class="border-2 border-dashed border-[#D2BFAF] hover:border-[#8B4513] bg-[#FAF6F0] rounded-xl p-5 text-center transition-colors cursor-pointer group">
                         <div class="w-12 h-12 mx-auto rounded-full bg-[#EFE3D5] flex items-center justify-center text-[#8B4513] mb-3 group-hover:bg-[#E7D4C1] transition-colors">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
                                 <path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" stroke-linecap="round" stroke-linejoin="round"></path>
                                 <path d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
                             </svg>
                         </div>
-                        <p class="text-xs font-bold text-[#3F2B1D]">Sube una foto del espacio</p>
+                        <p id="dropzone-texto" class="text-xs font-bold text-[#3F2B1D]">Sube una foto del espacio</p>
                         <p class="text-[11px] text-[#867160] mt-1">Arrastra o haz clic para cargar (PNG, JPG)</p>
                     </div>
                     <p class="text-[11px] text-[#786353] leading-relaxed mt-3.5">
@@ -445,26 +447,26 @@
                 <div class="bg-[#FFFDFB] rounded-2xl border border-[#E7DCCE] p-6 shadow-sm" data-purpose="pricing-summary-card">
                     <div class="flex items-center justify-between pb-3 mb-4 border-b border-[#F0E6DB]">
                         <h3 class="text-xs font-bold uppercase tracking-wider text-[#4A3222]">Resumen Total</h3>
-                        <span class="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                        <span id="badgeDescuento" class="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                             Descuento Aplicado
                         </span>
                     </div>
                     <div class="space-y-2.5 text-xs">
                         <div class="flex justify-between text-[#685444]">
-                            <span>Madera seleccionada (Pino Macizo):</span>
-                            <span class="font-medium text-[#2E1F14]">$320.000</span>
+                            <span id="summaryMaderaTexto">Madera seleccionada (Pino Macizo):</span>
+                            <span id="summaryMaderaValor" class="font-medium text-[#2E1F14]">$320.000</span>
                         </div>
                         <div class="flex justify-between text-[#685444]">
                             <span>Mano de obra artesanal y ensamble:</span>
-                            <span class="font-medium text-[#2E1F14]">$120.000</span>
+                            <span id="summaryManoObra" class="font-medium text-[#2E1F14]">$120.000</span>
                         </div>
                         <div class="flex justify-between text-[#685444]">
                             <span>Acabado poliuretano resistente:</span>
                             <span class="font-medium text-emerald-700">Incluido</span>
                         </div>
                         <div class="flex justify-between text-emerald-700 font-medium">
-                            <span>Descuento Transferencia (-5%):</span>
-                            <span>-$22.000</span>
+                            <span id="summaryDescuentoTexto">Descuento Transferencia (-5%):</span>
+                            <span id="summaryDescuentoValor">-$22.000</span>
                         </div>
                         <div class="pt-3 border-t border-[#EAE0D4] mt-3">
                             <div class="flex items-baseline justify-between">
@@ -473,7 +475,7 @@
                                     <span class="text-[10px] text-[#8C7665]">*IVA incluido (COP)</span>
                                 </div>
                                 <div class="text-right">
-                                    <span class="text-2xl font-black text-[#8B4513] tracking-tight">$418.000</span>
+                                    <span id="summaryTotalGrande" class="text-2xl font-black text-[#8B4513] tracking-tight">$418.000</span>
                                     <span class="text-[11px] font-bold text-[#8B4513] block">COP</span>
                                 </div>
                             </div>
@@ -538,4 +540,236 @@
         </div>
     </footer>
     <!-- END: Footer -->
+
+    <script>
+        // Precios base por tipo de madera
+        function obtenerDatosMadera(clave) {
+            switch ((clave || '').toLowerCase()) {
+                case 'roble':
+                    return { nombre: 'Roble Europeo', base: 500000 };
+                case 'cedro':
+                    return { nombre: 'Cedro Rojo Tradicional', base: 460000 };
+                case 'nogal':
+                    return { nombre: 'Nogal Americano Prémium', base: 580000 };
+                case 'pino':
+                default:
+                    return { nombre: 'Pino Macizo - Acabado Natural', base: 320000 };
+            }
+        }
+
+        // Recalcular costos, dimensiones y diagrama SVG
+        function recalcularTotalNuevaCotizacion() {
+            const alto = parseFloat(document.getElementById('nc-alto')?.value) || 80;
+            const ancho = parseFloat(document.getElementById('nc-ancho')?.value) || 120;
+            const prof = parseFloat(document.getElementById('nc-profundidad')?.value) || 60;
+            const cantidad = Math.max(1, parseInt(document.getElementById('input-cantidad')?.value) || 1);
+
+            // Actualizar etiquetas en el diagrama isométrico SVG
+            const svgAncho = document.getElementById('svgTextAncho');
+            if (svgAncho) svgAncho.textContent = `${ancho} cm`;
+
+            const svgProf = document.getElementById('svgTextProfundidad');
+            if (svgProf) svgProf.textContent = `${prof} cm`;
+
+            const svgAlto = document.getElementById('svgTextAlto');
+            if (svgAlto) svgAlto.textContent = `${alto} cm`;
+
+            // Cálculo volumétrico
+            const volBase = 120 * 80 * 60; // 576,000 cm3
+            const volActual = ancho * alto * prof;
+            let factorVolumen = volActual / volBase;
+            factorVolumen = Math.max(0.65, Math.min(2.5, factorVolumen));
+
+            // Tipo de madera
+            const selectMadera = document.getElementById('wood-select');
+            const claveMadera = selectMadera ? selectMadera.value : 'pino';
+            const infoMadera = obtenerDatosMadera(claveMadera);
+
+            // Costo de madera proporcional al volumen y cantidad
+            const costoMaderaUnitario = Math.round(infoMadera.base * factorVolumen);
+            const costoMaderaTotal = costoMaderaUnitario * cantidad;
+
+            // Mano de obra proporcional
+            const manoObraBase = 120000;
+            const manoObraUnit = Math.round(manoObraBase * (factorVolumen > 1 ? (1 + (factorVolumen - 1) * 0.4) : 1));
+            const manoObraTotal = manoObraUnit * cantidad;
+
+            const subtotal = costoMaderaTotal + manoObraTotal;
+
+            // Método de pago y descuento
+            const radioTransfer = document.querySelector('input[name="payment_method"]:checked');
+            const esTransferencia = radioTransfer ? (radioTransfer.value === 'transferencia') : true;
+
+            let descuento = 0;
+            if (esTransferencia) {
+                descuento = Math.round(subtotal * 0.05);
+            }
+
+            const totalFinal = Math.max(50000, subtotal - descuento);
+
+            // Formateador de moneda colombiana
+            const fmt = (num) => '$' + Number(num).toLocaleString('es-CO');
+
+            // Actualizar resumen visual
+            const lblMaderaTexto = document.getElementById('summaryMaderaTexto');
+            if (lblMaderaTexto) lblMaderaTexto.textContent = `Madera (${infoMadera.nombre}):`;
+
+            const lblMaderaValor = document.getElementById('summaryMaderaValor');
+            if (lblMaderaValor) lblMaderaValor.textContent = fmt(costoMaderaTotal);
+
+            const lblManoObra = document.getElementById('summaryManoObra');
+            if (lblManoObra) lblManoObra.textContent = fmt(manoObraTotal);
+
+            const lblDescTexto = document.getElementById('summaryDescuentoTexto');
+            const lblDescValor = document.getElementById('summaryDescuentoValor');
+            const badgeDesc = document.getElementById('badgeDescuento');
+
+            if (esTransferencia) {
+                if (lblDescTexto) lblDescTexto.textContent = 'Descuento Transferencia (-5%):';
+                if (lblDescValor) lblDescValor.textContent = '-' + fmt(descuento);
+                if (badgeDesc) badgeDesc.classList.remove('hidden');
+            } else {
+                if (lblDescTexto) lblDescTexto.textContent = 'Descuento por método:';
+                if (lblDescValor) lblDescValor.textContent = '$0';
+                if (badgeDesc) badgeDesc.classList.add('hidden');
+            }
+
+            const lblTotal = document.getElementById('summaryTotalGrande');
+            if (lblTotal) lblTotal.textContent = fmt(totalFinal);
+
+            const badgePrecioMadera = document.getElementById('ncWoodPriceBadge');
+            if (badgePrecioMadera) badgePrecioMadera.textContent = `Precio Base: ${fmt(infoMadera.base)} COP`;
+        }
+
+        // Selección rápida de producto sugerido
+        function seleccionarSugerencia(nombre) {
+            const inputProd = document.getElementById('product-name');
+            if (inputProd) {
+                inputProd.value = nombre;
+                recalcularTotalNuevaCotizacion();
+            }
+        }
+
+        // Incrementar o decrementar cantidad
+        function cambiarCantidad(delta) {
+            const input = document.getElementById('input-cantidad');
+            if (!input) return;
+            let actual = parseInt(input.value) || 1;
+            actual = Math.max(1, actual + delta);
+            input.value = actual;
+            recalcularTotalNuevaCotizacion();
+        }
+
+        // Mostrar nombre del archivo subido en el dropzone
+        function mostrarNombreArchivo(input) {
+            if (input && input.files && input.files.length > 0) {
+                const archivo = input.files[0];
+                const dropTexto = document.getElementById('dropzone-texto');
+                if (dropTexto) {
+                    dropTexto.innerHTML = `<span class="text-emerald-700 font-bold">✓ Foto adjunta: ${archivo.name}</span>`;
+                }
+            }
+        }
+
+        // Enviar formulario al backend para crear Cotización y Pedido de forma inmediata
+        async function enviarNuevaCotizacion() {
+            const btn = document.getElementById('btnGenerarCotizacionOficial');
+            const originalHtml = btn ? btn.innerHTML : '';
+
+            try {
+                const nombre = (document.getElementById('client-name')?.value || '').trim();
+                const telefono = (document.getElementById('client-phone')?.value || '').trim();
+                const correo = (document.getElementById('client-email')?.value || '').trim();
+                const producto = (document.getElementById('product-name')?.value || '').trim();
+                const estilo = document.getElementById('product-style')?.value || '';
+                const maderaSelect = document.getElementById('wood-select');
+                const maderaNombre = maderaSelect ? maderaSelect.options[maderaSelect.selectedIndex].text.split('(')[0].trim() : 'Pino Macizo';
+                const cantidad = Math.max(1, parseInt(document.getElementById('input-cantidad')?.value) || 1);
+                const alto = parseFloat(document.getElementById('nc-alto')?.value) || 80;
+                const ancho = parseFloat(document.getElementById('nc-ancho')?.value) || 120;
+                const profundidad = parseFloat(document.getElementById('nc-profundidad')?.value) || 60;
+                const observaciones = document.getElementById('nc-observaciones')?.value || '';
+
+                if (!producto) {
+                    alert('Por favor especifica el nombre o tipo de producto a cotizar.');
+                    document.getElementById('product-name')?.focus();
+                    return;
+                }
+
+                // Obtener total final numérico
+                const textoTotal = document.getElementById('summaryTotalGrande')?.textContent || '';
+                const totalNumerico = parseInt(textoTotal.replace(/[^0-9]/g, '')) || 418000;
+
+                // Feedback visual en el botón
+                if (btn) {
+                    btn.disabled = true;
+                    btn.innerHTML = `
+                        <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Generando Cotización y Pedido...
+                    `;
+                }
+
+                const formData = new FormData();
+                formData.append('nombreCliente', nombre);
+                formData.append('telefono', telefono);
+                formData.append('correo', correo);
+                formData.append('producto', estilo ? `${producto} (${estilo})` : producto);
+                formData.append('madera', maderaNombre);
+                formData.append('cantidad', cantidad);
+                formData.append('alto', alto);
+                formData.append('ancho', ancho);
+                formData.append('profundidad', profundidad);
+                formData.append('tiempoEntrega', '15 días hábiles');
+                formData.append('observaciones', observaciones);
+                formData.append('total', totalNumerico);
+
+                const fileInput = document.getElementById('nc-foto-lugar');
+                if (fileInput && fileInput.files && fileInput.files.length > 0) {
+                    formData.append('fotoLugar', fileInput.files[0]);
+                }
+
+                const response = await fetch('/NuevaCotizacion/GuardarCotizacion', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const mensajeExito = `🎉 ¡Cotización y Pedido registrados exitosamente!\n\n` +
+                        `• Folio Cotización: ${data.folioCotizacion || 'Generado'}\n` +
+                        `• Código Pedido: ${data.codigoPedido || 'Generado'}\n\n` +
+                        `• Pulsa ACEPTAR para ir a "Mis Pedidos" y ver el avance en tiempo real.\n` +
+                        `• Pulsa CANCELAR para ir a "Mis Cotizaciones".`;
+
+                    if (confirm(mensajeExito)) {
+                        window.location.href = data.redirectUrl || '/Mi_Pedido';
+                    } else {
+                        window.location.href = '/MiCotizacion';
+                    }
+                } else {
+                    alert('Error al guardar: ' + (data.message || 'Error desconocido'));
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerHTML = originalHtml;
+                    }
+                }
+            } catch (err) {
+                console.error('Error al enviar la cotización:', err);
+                alert('Ocurrió un error al comunicar con el servidor. Por favor intenta de nuevo.');
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalHtml;
+                }
+            }
+        }
+
+        // Inicializar cálculos al cargar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            recalcularTotalNuevaCotizacion();
+        });
+    </script>
 </body></html>

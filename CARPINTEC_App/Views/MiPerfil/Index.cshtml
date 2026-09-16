@@ -1,290 +1,293 @@
 ﻿@{
     Layout = null;
 }
-<!DOCTYPE html><html class="light" lang="es"><head>
+<!DOCTYPE html><html lang="es" style=""><head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
-<title>CARPINTEC - Mi Perfil</title>
-<!-- Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&amp;family=Work+Sans:wght@400;500&amp;display=swap" rel="stylesheet">
-<!-- Material Symbols -->
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-<!-- Tailwind CSS -->
+<title>Carpintec - Portal Cliente | Mi Perfil</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&amp;family=Plus+Jakarta+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS v3 with plugins -->
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "surface-bright": "#fff8f6",
-                    "on-secondary-fixed-variant": "#763400",
-                    "background": "#fff8f6",
-                    "surface-dim": "#e4d7d4",
-                    "surface-tint": "#934b19",
-                    "primary-container": "#8b4513",
-                    "on-primary-fixed": "#321200",
-                    "error": "#ba1a1a",
-                    "surface-container": "#f9ebe7",
-                    "on-secondary": "#ffffff",
-                    "outline": "#877369",
-                    "on-primary": "#ffffff",
-                    "on-secondary-fixed": "#321200",
-                    "surface-container-high": "#f3e5e1",
-                    "tertiary-fixed": "#f7e0b5",
-                    "secondary": "#9a4600",
-                    "on-surface": "#201a18",
-                    "primary-fixed-dim": "#ffb68c",
-                    "tertiary-container": "#665635",
-                    "on-tertiary": "#ffffff",
-                    "on-error-container": "#93000a",
-                    "inverse-on-surface": "#fbeeea",
-                    "primary-fixed": "#ffdbc9",
-                    "on-surface-variant": "#54433a",
-                    "surface-container-low": "#fef1ed",
-                    "error-container": "#ffdad6",
-                    "on-primary-container": "#ffc29f",
-                    "on-primary-fixed-variant": "#753401",
-                    "tertiary-fixed-dim": "#dac49b",
-                    "secondary-fixed-dim": "#ffb68d",
-                    "inverse-primary": "#ffb68c",
-                    "surface-variant": "#ede0dc",
-                    "surface": "#fff8f6",
-                    "secondary-fixed": "#ffdbc9",
-                    "on-secondary-container": "#672c00",
-                    "secondary-container": "#fd8a3e",
-                    "outline-variant": "#dac2b6",
-                    "on-tertiary-container": "#e2cca2",
-                    "primary": "#6c2f00",
-                    "on-error": "#ffffff",
-                    "inverse-surface": "#362f2c",
-                    "tertiary": "#4d3f20",
-                    "on-tertiary-fixed": "#251a01",
-                    "surface-container-lowest": "#ffffff",
-                    "on-tertiary-fixed-variant": "#544525",
-                    "surface-container-highest": "#ede0dc",
-                    "on-background": "#201a18"
-            },
-            "borderRadius": {
-                    "DEFAULT": "0.125rem",
-                    "lg": "0.25rem",
-                    "xl": "0.5rem",
-                    "full": "0.75rem"
-            },
-            "spacing": {
-                    "container-max": "1280px",
-                    "margin-mobile": "16px",
-                    "gutter": "24px",
-                    "margin-desktop": "64px",
-                    "base": "8px"
-            },
-            "fontFamily": {
-                    "headline-lg-mobile": ["Montserrat"],
-                    "body-lg": ["Work Sans"],
-                    "display-lg": ["Montserrat"],
-                    "headline-lg": ["Montserrat"],
-                    "body-md": ["Work Sans"],
-                    "title-md": ["Montserrat"],
-                    "label-md": ["Work Sans"]
-            },
-            "fontSize": {
-                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
-                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
-                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
-                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-                    "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
-                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}]
+<!-- Custom Configuration for Theme Colors -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            wood: {
+              50: '#fbf7f4',
+              100: '#f5eee6',
+              200: '#eddccf',
+              700: '#6b361a',
+              800: '#532813',
+              900: '#3d1c0b',
+              coffee: '#442211',
+              darkCoffee: '#34190c',
+              gold: '#c99658',
+              alert: '#d85822'
             }
           },
-        },
+          fontFamily: {
+            sans: ['Montserrat', 'Plus Jakarta Sans', 'sans-serif'],
+          }
+        }
       }
-    </script>
-<style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-            vertical-align: middle;
-        }
-        body {
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-        .wood-texture-overlay {
-            background-image: radial-gradient(circle at 2px 2px, rgba(108, 47, 0, 0.05) 1px, transparent 0);
-            background-size: 24px 24px;
-        }
-    </style>
-<style>
+    }
+  </script>
+<!-- BEGIN: Custom Styles -->
+<style data-purpose="custom-enhancements">
     body {
-      min-height: max(884px, 100dvh);
+      font-family: 'Montserrat', sans-serif;
+    }
+    .card-profile {
+      box-shadow: 0 10px 25px -4px rgba(105, 53, 20, 0.08), 0 2px 6px -1px rgba(139, 69, 19, 0.06);
+      transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .card-profile:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 32px -6px rgba(105, 53, 20, 0.16), 0 0 0 1px rgba(139, 69, 19, 0.25);
     }
   </style>
+<!-- END: Custom Styles -->
 </head>
-<body class="bg-surface-bright text-on-surface font-body-md selection:bg-secondary-container selection:text-on-secondary-container">
-<!-- TopAppBar -->
-<header class="w-full top-0 sticky z-50 bg-primary dark:bg-primary-container text-on-primary dark:text-on-primary-container border-b-4 border-secondary shadow-sm flex items-center justify-between px-margin-mobile md:px-margin-desktop h-16">
-<div class="flex items-center gap-3">
-<img alt="CARPINTEC Logo" class="h-10 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ADBb0ujXTWGiMUJ27cbfJB5F5tUq9INp3VfUFc6zxbKaRDrhTllex4-XbX22fONDlzKv445GGLKgOR5_UxDoq0mjAwruqetB4Jd00b3Gw6uv4KZJ6HxBOf_r9lCV5Vv_TO6e4Ir_NFsThUXkDmppfOS9_9u6yzHz3gYFm46sO89qC4sbUvpjFNwdva5JsMFw0sDthyHYJ1OPZX60CXQzH0fyRQLS9v6ycpW3wx4cguWtjrYBWCokfVkPiYL_SvRobsPwUKFoyyfz_HvFEQA">
-<h1 class="font-headline-lg text-headline-lg font-bold text-on-primary tracking-tight">CARPINTEC</h1>
-</div>
-<div class="hidden md:flex items-center gap-8"><a class="text-on-primary/80 font-label-md hover:text-on-primary transition-colors" href="#">Inicio</a><a class="text-on-primary/80 font-label-md hover:text-on-primary transition-colors" href="#">Acerca de</a><a class="text-on-primary/80 font-label-md hover:text-on-primary transition-colors" href="#">Contacto</a><a class="text-on-primary font-bold font-label-md" href="#">MI PERFIL</a><button class="bg-secondary text-on-secondary px-6 py-2 rounded-lg font-label-md hover:bg-secondary-container transition-transform active:scale-95">Cerrar Sesión</button></div>
-<div class="md:hidden">
-<span class="material-symbols-outlined cursor-pointer">menu</span>
-</div>
-</header>
-<main class="min-h-[calc(100vh-144px)] pb-24 md:pb-12 wood-texture-overlay">
-<!-- Hero Header -->
-<section class="bg-primary py-8 px-margin-mobile md:px-margin-desktop mb-8">
-<div class="max-w-container-max mx-auto">
-<h2 class="font-headline-lg text-headline-lg text-on-primary text-center md:text-left">MI PERFIL</h2>
-</div>
-</section>
-<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop grid grid-cols-1 md:grid-cols-12 gap-gutter">
-<!-- Left Panel: User Info Card -->
-<div class="md:col-span-5 lg:col-span-4">
-<div class="bg-surface-container-lowest border-4 border-primary rounded-xl shadow-lg p-8 sticky top-24">
-<div class="flex flex-col items-center mb-8">
-<div class="w-32 h-32 rounded-full border-4 border-secondary overflow-hidden mb-4 shadow-sm">
-<img alt="Carlos Perez" class="w-full h-full object-cover" data-alt="A professional headshot of Carlos Perez, a friendly man in his late 30s, wearing a crisp denim shirt in a bright, modern studio setting. The lighting is warm and cinematic, highlighting natural wood textures in the background. The overall aesthetic is clean, corporate yet approachable, with soft earthy tones and sharp focus on the subject." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjEtMinfJFicotQLwvdjs6lW-iHS5Z740yXd191tg6lP-Ez-ZQW5EwoZc47VBcbqN2pNSRxXKXAWKQlnVRKo-5TGFlShjBJhDzc_bQGM0zy5NNXqhYGOYQ2zDgJb9k57pgnrcRwfR188gSgzNBoBgEYYVildqCsVtr4Y1wLBixy5p-MjyqBuh3YgMLZiZ5cQ47bWUKYnSJmn_SjJMls3WqUCBJ-zogItyAPMdolN8a9lyhpF3WhF_yc6nnGyCu7w8CHxXzvDccS_Sl">
-</div>
-<h3 class="font-title-md text-title-md text-primary font-bold">Carlos Perez</h3>
-<p class="font-label-md text-on-surface-variant">Cliente Premium</p>
-</div>
-<div class="space-y-6">
-<div class="flex items-center gap-4">
-<div class="w-10 h-10 bg-surface-variant flex items-center justify-center rounded-lg">
-<span class="material-symbols-outlined text-primary">person</span>
-</div>
-<div>
-<p class="text-xs font-bold text-on-surface-variant/60 uppercase tracking-widest">NOMBRE</p>
-<p class="font-body-md font-semibold text-on-surface">Carlos Hernandez</p>
+<body class="bg-[#FAF7F4] min-h-screen text-[#382114] flex flex-col antialiased selection:bg-[#c99658] selection:text-white">
+<!-- BEGIN: MainHeader -->
+<!-- Header with rich artisan warm brown / coffee color (#3e1e0e) background -->
+<header class="bg-[#F5EBE1] border-b border-[#DCC7B0] shadow-sm sticky top-0 z-40" data-purpose="top-navigation-bar">
+<div class="max-w-[1440px] mx-auto px-6 lg:px-12 h-20 flex items-center justify-between">
+<!-- Carpintec Brand / Logo -->
+<div class="flex items-center gap-3.5">
+<a aria-label="Ir a página de inicio de Carpintec" class="flex items-center gap-3 group focus:outline-none" href="#">
+<!-- Stylized Woodcraft Logo Badge -->
+<div class="w-11 h-11 rounded-lg bg-gradient-to-br from-[#c99658] to-[#8d4f24] p-[1.5px] shadow-sm">
+<div class="w-full h-full bg-[#3e1e0e] rounded-[7px] flex items-center justify-center">
+<svg class="w-6 h-6 text-[#e8ba80]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+<polyline points="9 22 9 12 15 12 15 22"></polyline>
+</svg>
 </div>
 </div>
-<div class="flex items-center gap-4">
-<div class="w-10 h-10 bg-surface-variant flex items-center justify-center rounded-lg">
-<span class="material-symbols-outlined text-primary">mail</span>
+<!-- Logo Text -->
+<div class="flex flex-col">
+<span class="text-xl font-extrabold tracking-wider text-[#382114] uppercase font-sans">Carpintec</span>
+<span class="text-[11px] font-semibold tracking-widest text-[#7A695E] uppercase -mt-1">Portal Cliente</span>
 </div>
-<div>
-<p class="text-xs font-bold text-on-surface-variant/60 uppercase tracking-widest">CORREO</p>
-<p class="font-body-md font-semibold text-on-surface">carlos@gmail.com</p>
-</div>
-</div>
-<div class="flex items-center gap-4">
-<div class="w-10 h-10 bg-surface-variant flex items-center justify-center rounded-lg">
-<span class="material-symbols-outlined text-primary">call</span>
-</div>
-<div>
-<p class="text-xs font-bold text-on-surface-variant/60 uppercase tracking-widest">TELÉFONO</p>
-<p class="font-body-md font-semibold text-on-surface">3001234567</p>
-</div>
-</div>
-<div class="flex items-center gap-4">
-<div class="w-10 h-10 bg-surface-variant flex items-center justify-center rounded-lg">
-<span class="material-symbols-outlined text-primary">location_on</span>
-</div>
-<div>
-<p class="text-xs font-bold text-on-surface-variant/60 uppercase tracking-widest">DIRECCIÓN</p>
-<p class="font-body-md font-semibold text-on-surface">Cali, Valle del Cauca</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-<!-- Right Panel: Options & Actions -->
-<div class="md:col-span-7 lg:col-span-8">
-<div class="bg-surface-container border-2 border-outline-variant rounded-xl overflow-hidden mb-gutter"><div class="p-6 space-y-6">
-<button class="w-full flex items-center gap-4 border-b-2 border-outline-variant pb-4 mb-4 hover:bg-surface-variant/50 transition-colors cursor-pointer text-left">
-  <div class="w-12 h-12 bg-primary-container text-on-primary-container flex items-center justify-center rounded-lg shadow-sm">
-    <span class="material-symbols-outlined">settings</span>
-  </div>
-  <h4 class="font-headline-lg-mobile text-on-surface font-bold">Configuración</h4>
-</button>
-<div class="grid grid-cols-1 gap-4"><a class="flex items-center justify-between p-4 bg-surface-container-low border border-outline-variant rounded-xl hover:bg-surface-variant transition-colors group" href="#">
-<div class="flex items-center gap-4">
-<span class="material-symbols-outlined text-primary">lock_reset</span>
-<span class="font-title-md text-on-surface">Cambiar contraseña</span>
-</div>
-
 </a>
-<a class="flex items-center justify-between p-4 bg-surface-container-low border border-outline-variant rounded-xl hover:bg-surface-variant transition-colors group" href="#">
-<div class="flex items-center gap-4">
-<span class="material-symbols-outlined text-primary">person</span>
-<span class="font-title-md text-on-surface">Información personal</span>
 </div>
-
-</a>
-<a class="flex items-center justify-between p-4 bg-surface-container-low border border-outline-variant rounded-xl hover:bg-surface-variant transition-colors group" href="#">
-<div class="flex items-center gap-4">
-<span class="material-symbols-outlined text-primary">notifications</span>
-<span class="font-title-md text-on-surface">Preferencias de notificaciones</span>
-</div>
-
-</a></div>
-</div></div>
-<!-- Secondary Actions -->
-<div class="flex flex-col sm:flex-row gap-4 mb-gutter">
-<button class="flex-1 bg-surface-container-lowest border-2 border-primary py-4 px-6 rounded-lg text-primary font-bold hover:bg-surface-variant transition-colors flex items-center justify-center gap-2">
-<span class="material-symbols-outlined">edit</span>
-                        Editar información
-                    </button>
-<button class="flex-1 bg-surface-container-lowest border-2 border-primary py-4 px-6 rounded-lg text-primary font-bold hover:bg-surface-variant transition-colors flex items-center justify-center gap-2">
-<span class="material-symbols-outlined">lock_reset</span>
-                        Cambiar contraseña
-                    </button>
-</div>
-<!-- Primary Action -->
-<button class="w-full bg-secondary text-on-secondary py-5 rounded-lg font-headline-lg-mobile text-headline-lg-mobile font-bold shadow-lg hover:bg-on-secondary-fixed-variant transition-all active:scale-95 flex items-center justify-center gap-3">
-<span class="material-symbols-outlined text-3xl">logout</span>
-                    CERRAR SESION
-                </button>
-</div>
-</div>
-</main>
-<!-- BottomNavBar -->
-<nav class="md:hidden fixed bottom-0 w-full z-50 bg-surface-container-highest dark:bg-surface-container-low border-t-4 border-primary shadow-lg flex justify-around items-center h-20 pb-safe px-2">
-<a class="flex flex-col items-center justify-center text-on-surface-variant transition-transform active:scale-90" href="#">
-<span class="material-symbols-outlined">dashboard</span>
-<span class="font-label-md text-label-md">Home</span>
-</a>
-<a class="flex flex-col items-center justify-center text-on-surface-variant transition-transform active:scale-90" href="#">
-<span class="material-symbols-outlined">handyman</span>
-<span class="font-label-md text-label-md">Catalog</span>
-</a>
-<a class="flex flex-col items-center justify-center text-on-surface-variant transition-transform active:scale-90" href="#">
-<span class="material-symbols-outlined">add_circle</span>
-<span class="font-label-md text-label-md">Quote</span>
-</a>
-<a class="flex flex-col items-center justify-center text-on-surface-variant transition-transform active:scale-90" href="#">
-<span class="material-symbols-outlined">receipt_long</span>
-<span class="font-label-md text-label-md">Orders</span>
-</a>
-<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-xl px-4 py-1 transition-transform active:scale-90" href="#">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
-<span class="font-label-md text-label-md">Profile</span>
+<!-- Navigation Links -->
+<nav class="hidden md:flex items-center gap-8 text-[14.5px] font-medium" data-purpose="header-links">
+<a class="text-[#54433a] hover:text-[#382114] transition-colors duration-150 py-1" href="#">Inicio</a>
+<a class="text-[#54433a] hover:text-[#382114] transition-colors duration-150 py-1" href="#">Catálogo</a>
+<a class="text-[#54433a] hover:text-[#382114] transition-colors duration-150 py-1" href="#">Mis Pedidos</a>
+<a class="text-[#54433a] hover:text-[#382114] transition-colors duration-150 py-1" href="#">Cotizaciones</a>
+<!-- Active 'Mi Perfil' Pill Button -->
+<a aria-current="page" class="inline-flex items-center gap-2 bg-[#4E2A18] hover:bg-[#3D1E10] text-[#f7ede3] px-4 py-2 rounded-lg border border-[#3e1e0e] text-[14px] font-semibold transition-all shadow-sm" href="#">
+<svg class="w-4 h-4 text-[#e2a866]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="">Mi Perfil</span>
 </a>
 </nav>
-<script>
-        // Simple interactivity for feedback
-        document.querySelectorAll('button, [cursor-pointer]').forEach(el => {
-            el.addEventListener('click', function(e) {
-                // Micro-interaction logic could be added here
-                console.log('Action triggered:', this.innerText || 'Icon Button');
-            });
-        });
+<!-- User Profile Badge -->
+<div class="flex items-center gap-3 pl-4" data-purpose="user-profile-badge">
+<div class="w-10 h-10 rounded-full bg-[#4E2A18] text-[#FAF7F4] flex items-center justify-center font-bold text-sm shadow-sm ring-2 ring-[#c99658]">
+          CA
+        </div>
+<div class="hidden sm:flex flex-col text-left">
+<span class="text-sm font-bold text-[#382114] leading-tight">Carlos</span>
+<span class="text-xs font-medium text-[#7A695E] leading-tight">Arango</span>
+</div>
+</div>
+</div>
+</header>
+<!-- END: MainHeader -->
+<!-- BEGIN: MainContent -->
+<main class="flex-grow py-12 px-6 lg:px-12 max-w-[1360px] mx-auto w-full flex flex-col justify-center">
+<!-- BEGIN: GridOfOptions -->
+<!-- 3-Column Profile Cards Grid with stylized beige and wood-coffee frames -->
+<section aria-label="Opciones del Portal de Cliente" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-7"><!-- Card 1: Información de tu perfil -->
+<article class="bg-white rounded-[24px] p-7 shadow-[0_4px_24px_rgba(78,42,24,0.06)] hover:shadow-[0_8px_30px_rgba(78,42,24,0.1)] transition-all duration-200 relative overflow-hidden flex flex-col justify-between min-h-[260px] border border-[#F0E6DE]/60 group cursor-pointer">
+  <!-- Esquina decorativa orgánica suave -->
+  <div class="absolute -top-6 -right-6 w-24 h-24 bg-[#EADCCF]/65 rounded-full pointer-events-none transition-transform group-hover:scale-105"></div>
+  
+  <div>
+    <!-- Icono en pastilla redondeada beige -->
+    <div class="w-12 h-12 rounded-2xl bg-[#F4ECE4] text-[#4E2A18] flex items-center justify-center shadow-sm relative z-10">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15A2.25 2.25 0 002.25 6.75v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    </div>
+    <!-- Título y descripción -->
+    <div class="mt-5 relative z-10">
+      <h2 class="text-[18px] font-bold text-[#382114] tracking-tight group-hover:text-[#4E2A18] transition-colors">
+        Información de tu perfil
+      </h2>
+      <p class="text-[13.5px] text-[#7A695E] font-normal mt-1.5 leading-snug">
+        Datos personales, documento y de tu cuenta.
+      </p>
+    </div>
+  </div>
+  
+  <!-- Botón tipo cápsula café madera profundo con flecha -->
+  <div class="mt-6 relative z-10">
+    <button type="button" class="w-full py-2.5 px-5 rounded-xl bg-[#4E2A18] hover:bg-[#3D1E10] text-white text-[13.5px] font-semibold flex items-center justify-center gap-2 transition-colors duration-150 shadow-sm">
+      <span class="">Ver perfil</span>
+      <span class="text-xs font-bold">›</span>
+    </button>
+  </div>
+</article>
 
-        // Sticky header opacity change on scroll
-        window.addEventListener('scroll', () => {
-            const header = document.querySelector('header');
-            if (window.scrollY > 20) {
-                header.classList.add('shadow-xl');
-            } else {
-                header.classList.remove('shadow-xl');
-            }
-        });
-    </script>
+<!-- Card 2: Seguridad -->
+<article class="bg-white rounded-[24px] p-7 shadow-[0_4px_24px_rgba(78,42,24,0.06)] hover:shadow-[0_8px_30px_rgba(78,42,24,0.1)] transition-all duration-200 relative overflow-hidden flex flex-col justify-between min-h-[260px] border border-[#F0E6DE]/60 group cursor-pointer">
+  <div class="absolute -top-6 -right-6 w-24 h-24 bg-[#EADCCF]/65 rounded-full pointer-events-none transition-transform group-hover:scale-105"></div>
+  
+  <div>
+    <div class="w-12 h-12 rounded-2xl bg-[#F4ECE4] text-[#4E2A18] flex items-center justify-center shadow-sm relative z-10">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    </div>
+    <div class="mt-5 relative z-10">
+      <h2 class="text-[18px] font-bold text-[#382114] tracking-tight group-hover:text-[#4E2A18] transition-colors">
+        Seguridad
+      </h2>
+      <p class="text-[13.5px] text-[#7A695E] font-normal mt-1.5 leading-snug">
+        Tienes configuraciones pendientes o cambio de clave.
+      </p>
+    </div>
+  </div>
+  
+  <div class="mt-6 relative z-10">
+    <button type="button" class="w-full py-2.5 px-5 rounded-xl bg-[#4E2A18] hover:bg-[#3D1E10] text-white text-[13.5px] font-semibold flex items-center justify-center gap-2 transition-colors duration-150 shadow-sm">
+      <span class="">Ver seguridad</span>
+      <span class="text-xs font-bold">›</span>
+    </button>
+  </div>
+</article>
 
+<!-- Card 3: Tarjetas -->
+<article class="bg-white rounded-[24px] p-7 shadow-[0_4px_24px_rgba(78,42,24,0.06)] hover:shadow-[0_8px_30px_rgba(78,42,24,0.1)] transition-all duration-200 relative overflow-hidden flex flex-col justify-between min-h-[260px] border border-[#F0E6DE]/60 group cursor-pointer">
+  <div class="absolute -top-6 -right-6 w-24 h-24 bg-[#EADCCF]/65 rounded-full pointer-events-none transition-transform group-hover:scale-105"></div>
+  
+  <div>
+    <div class="w-12 h-12 rounded-2xl bg-[#F4ECE4] text-[#4E2A18] flex items-center justify-center shadow-sm relative z-10">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-6.75 4.5h16.5a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5H3.75A2.25 2.25 0 001.5 6.75v10.5A2.25 2.25 0 003.75 21.75z" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    </div>
+    <div class="mt-5 relative z-10">
+      <h2 class="text-[18px] font-bold text-[#382114] tracking-tight group-hover:text-[#4E2A18] transition-colors">
+        Tarjetas
+      </h2>
+      <p class="text-[13.5px] text-[#7A695E] font-normal mt-1.5 leading-snug">
+        Tarjetas guardadas en tu cuenta, PSE y créditos directos.
+      </p>
+    </div>
+  </div>
+  
+  <div class="mt-6 relative z-10">
+    <button type="button" class="w-full py-2.5 px-5 rounded-xl bg-[#4E2A18] hover:bg-[#3D1E10] text-white text-[13.5px] font-semibold flex items-center justify-center gap-2 transition-colors duration-150 shadow-sm">
+      <span class="">Ver tarjetas</span>
+      <span class="text-xs font-bold">›</span>
+    </button>
+  </div>
+</article>
 
+<!-- Card 4: Direcciones -->
+<article class="bg-white rounded-[24px] p-7 shadow-[0_4px_24px_rgba(78,42,24,0.06)] hover:shadow-[0_8px_30px_rgba(78,42,24,0.1)] transition-all duration-200 relative overflow-hidden flex flex-col justify-between min-h-[260px] border border-[#F0E6DE]/60 group cursor-pointer">
+  <div class="absolute -top-6 -right-6 w-24 h-24 bg-[#EADCCF]/65 rounded-full pointer-events-none transition-transform group-hover:scale-105"></div>
+  
+  <div>
+    <div class="w-12 h-12 rounded-2xl bg-[#F4ECE4] text-[#4E2A18] flex items-center justify-center shadow-sm relative z-10">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    </div>
+    <div class="mt-5 relative z-10">
+      <h2 class="text-[18px] font-bold text-[#382114] tracking-tight group-hover:text-[#4E2A18] transition-colors">
+        Direcciones
+      </h2>
+      <p class="text-[13.5px] text-[#7A695E] font-normal mt-1.5 leading-snug">
+        Direcciones guardadas en tu cuenta para instalación o flete.
+      </p>
+    </div>
+  </div>
+  
+  <div class="mt-6 relative z-10">
+    <button type="button" class="w-full py-2.5 px-5 rounded-xl bg-[#4E2A18] hover:bg-[#3D1E10] text-white text-[13.5px] font-semibold flex items-center justify-center gap-2 transition-colors duration-150 shadow-sm">
+      <span class="">Ver direcciones</span>
+      <span class="text-xs font-bold">›</span>
+    </button>
+  </div>
+</article>
+
+<!-- Card 5: Privacidad -->
+<article class="bg-white rounded-[24px] p-7 shadow-[0_4px_24px_rgba(78,42,24,0.06)] hover:shadow-[0_8px_30px_rgba(78,42,24,0.1)] transition-all duration-200 relative overflow-hidden flex flex-col justify-between min-h-[260px] border border-[#F0E6DE]/60 group cursor-pointer">
+  <div class="absolute -top-6 -right-6 w-24 h-24 bg-[#EADCCF]/65 rounded-full pointer-events-none transition-transform group-hover:scale-105"></div>
+  
+  <div>
+    <div class="w-12 h-12 rounded-2xl bg-[#F4ECE4] text-[#4E2A18] flex items-center justify-center shadow-sm relative z-10">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    </div>
+    <div class="mt-5 relative z-10">
+      <h2 class="text-[18px] font-bold text-[#382114] tracking-tight group-hover:text-[#4E2A18] transition-colors">
+        Privacidad
+      </h2>
+      <p class="text-[13.5px] text-[#7A695E] font-normal mt-1.5 leading-snug">
+        Preferencias y control sobre el uso de tus datos y medidas.
+      </p>
+    </div>
+  </div>
+  
+  <div class="mt-6 relative z-10">
+    <button type="button" class="w-full py-2.5 px-5 rounded-xl bg-[#4E2A18] hover:bg-[#3D1E10] text-white text-[13.5px] font-semibold flex items-center justify-center gap-2 transition-colors duration-150 shadow-sm">
+      <span class="">Ver privacidad</span>
+      <span class="text-xs font-bold">›</span>
+    </button>
+  </div>
+</article>
+
+<!-- Card 6: Comunicaciones -->
+<article class="bg-white rounded-[24px] p-7 shadow-[0_4px_24px_rgba(78,42,24,0.06)] hover:shadow-[0_8px_30px_rgba(78,42,24,0.1)] transition-all duration-200 relative overflow-hidden flex flex-col justify-between min-h-[260px] border border-[#F0E6DE]/60 group cursor-pointer">
+  <div class="absolute -top-6 -right-6 w-24 h-24 bg-[#EADCCF]/65 rounded-full pointer-events-none transition-transform group-hover:scale-105"></div>
+  
+  <div>
+    <div class="w-12 h-12 rounded-2xl bg-[#F4ECE4] text-[#4E2A18] flex items-center justify-center shadow-sm relative z-10">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a.75.75 0 01-.845-.968c.287-.96.48-1.99.568-3.033C3.766 15.65 3 13.914 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    </div>
+    <div class="mt-5 relative z-10">
+      <h2 class="text-[18px] font-bold text-[#382114] tracking-tight group-hover:text-[#4E2A18] transition-colors">
+        Comunicaciones
+      </h2>
+      <p class="text-[13.5px] text-[#7A695E] font-normal mt-1.5 leading-snug">
+        Elige qué tipo de información quieres recibir y novedades de stock.
+      </p>
+    </div>
+  </div>
+  
+  <div class="mt-6 relative z-10">
+    <button type="button" class="w-full py-2.5 px-5 rounded-xl bg-[#4E2A18] hover:bg-[#3D1E10] text-white text-[13.5px] font-semibold flex items-center justify-center gap-2 transition-colors duration-150 shadow-sm">
+      <span class="">Ver comunicaciones</span>
+      <span class="text-xs font-bold">›</span>
+    </button>
+  </div>
+</article></section>
+<!-- END: GridOfOptions -->
+</main>
+<!-- END: MainContent -->
+<!-- BEGIN: Footer -->
+<footer class="py-6 text-center text-xs text-stone-400 border-t border-stone-200/60" data-purpose="site-footer">
+<p class="">© 2025 CARPINTEC - Muebles con Alma. Todos los derechos reservados.</p>
+</footer>
+<!-- END: Footer -->
 
 
 </body></html>

@@ -1,4 +1,4 @@
-﻿using CARPINTEC_App.Data;
+using CARPINTEC_App.Data;
 using CARPINTEC_App.Models;
 using ClosedXML.Excel;
 using Microsoft.AspNetCore.Http;
@@ -36,7 +36,42 @@ namespace CARPINTEC_App.Controllers
             ViewBag.ValorEnCursoFormatted = valorEnCurso.ToString("N2");
 
             // --- NUEVO: CARGAR LA LISTA DE CLIENTES PARA EL SELECTOR DEL MODAL ---
-            ViewBag.ListaClientes = await _context.Clientes.ToListAsync();
+            // Sincronizar usuarios registrados en la tabla Usuario que aún no existan en Cliente
+            var usuariosClientes = await _context.Usuarios
+                .Where(u => u.Rol == "Cliente" || u.Rol == null)
+                .ToListAsync();
+
+            bool huboNuevos = false;
+            foreach (var u in usuariosClientes)
+            {
+                bool existe = await _context.Clientes.AnyAsync(c =>
+                    (!string.IsNullOrEmpty(u.Correo) && c.Correo != null && c.Correo.ToLower() == u.Correo.ToLower()) ||
+                    (c.Nombre != null && c.Nombre.ToLower() == u.Nombre.ToLower() && (c.Apellido ?? "").ToLower() == (u.Apellido ?? "").ToLower())
+                );
+
+                if (!existe)
+                {
+                    _context.Clientes.Add(new Cliente
+                    {
+                        Nombre = u.Nombre,
+                        Apellido = u.Apellido,
+                        Correo = u.Correo ?? "",
+                        Telefono = "",
+                        TipoCliente = "Natural",
+                        Contacto = $"{u.Nombre} {u.Apellido}".Trim(),
+                        Estado = "Activo",
+                        FechaRegistro = DateTime.Now
+                    });
+                    huboNuevos = true;
+                }
+            }
+
+            if (huboNuevos)
+            {
+                await _context.SaveChangesAsync();
+            }
+
+            ViewBag.ListaClientes = await _context.Clientes.OrderBy(c => c.Nombre).ToListAsync();
 
             // --- 2. CONSULTA DE LA TABLA CON PAGINACIÓN Y FILTROS ---
             var query = _context.Pedidos.Include(p => p.IdClienteNavigation).AsQueryable();

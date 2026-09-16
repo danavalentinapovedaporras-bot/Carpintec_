@@ -268,7 +268,36 @@ namespace CARPINTEC_App.Controllers
                 _context.Cotizaciones.Add(nuevaCotizacion);
                 await _context.SaveChangesAsync();
 
-                return Json(new { success = true, message = "¡Su cotización ha sido enviada con éxito! Nuestro equipo técnico se comunicará pronto." });
+                // Crear automáticamente el Pedido vinculado a esta cotización para que se refleje de inmediato en Mi_Pedido
+                string codigoPedidoGen = !string.IsNullOrEmpty(nuevaCotizacion.Folio)
+                    ? nuevaCotizacion.Folio.Replace("COT", "PED")
+                    : $"PED-{DateTime.Now.Year}-{new Random().Next(1000, 9999)}";
+
+                var nuevoPedido = new Pedido
+                {
+                    CodigoPedido = codigoPedidoGen,
+                    Producto = !string.IsNullOrWhiteSpace(nuevaCotizacion.DetalleProducto) ? nuevaCotizacion.DetalleProducto : producto,
+                    IdCotizacion = nuevaCotizacion.IdCotizacion,
+                    IdCliente = idClienteFinal,
+                    FechaSolicitud = DateOnly.FromDateTime(DateTime.Now),
+                    FechaEntrega = DateOnly.FromDateTime(DateTime.Now.AddDays(15)),
+                    Estado = "Pendiente",
+                    ValorTotal = nuevaCotizacion.Total > 0 ? nuevaCotizacion.Total : 320000,
+                    Observaciones = $"Pedido generado automáticamente desde cotización {nuevaCotizacion.Folio}. Madera: {nuevaCotizacion.TipoMadera}, Medidas: {nuevaCotizacion.Medidas}.",
+                    FechaRegistro = DateTime.Now
+                };
+
+                _context.Pedidos.Add(nuevoPedido);
+                await _context.SaveChangesAsync();
+
+                return Json(new { 
+                    success = true, 
+                    idCotizacion = nuevaCotizacion.IdCotizacion,
+                    idPedido = nuevoPedido.IdPedido,
+                    codigoPedido = nuevoPedido.CodigoPedido,
+                    folioCotizacion = nuevaCotizacion.Folio,
+                    message = "¡Su cotización y orden de pedido han sido enviadas con éxito! Ya se encuentran reflejadas en 'Mis Cotizaciones' y 'Mis Pedidos'." 
+                });
             }
             catch (Exception ex)
             {

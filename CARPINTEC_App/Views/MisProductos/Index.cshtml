@@ -223,9 +223,15 @@
                 </div>
             </div>
             <!-- Header -->
-            <div class="mb-6 flex items-baseline justify-between border-b-2 border-primary pb-2">
-                <h1 class="font-headline-lg-mobile md:font-headline-lg text-primary">Nuestro Catálogo</h1>
-                <span class="font-label-md text-outline">12 Productos Destacados</span>
+            <div class="mb-6 flex flex-wrap items-center justify-between gap-3 border-b-2 border-primary pb-3">
+                <div>
+                    <h1 class="font-headline-lg-mobile md:font-headline-lg text-primary">Nuestro Catálogo</h1>
+                    <span class="font-label-md text-outline">12 Productos Destacados</span>
+                </div>
+                <button type="button" onclick="abrirModalCotizarProducto('Mueble Personalizado', 'pino', 80, 120, 60)" class="bg-[#8B4513] hover:bg-[#72370D] text-white font-bold py-2.5 px-5 rounded-xl shadow-sm hover:shadow transition-all active:scale-95 flex items-center gap-2 text-sm tracking-wide">
+                    <span class="material-symbols-outlined text-base">calculate</span>
+                    <span>Nueva Cotización</span>
+                </button>
             </div>
 
             <!-- Products Grid -->
@@ -1259,7 +1265,12 @@
 
                 if (data.success) {
                     cerrarModalCotizacion();
-                    if (confirm(data.message + "\n\n¿Deseas ver tus cotizaciones registradas ahora?")) {
+                    const msg = (data.message || '¡Cotización y Pedido registrados exitosamente!') + 
+                                '\n\n• Pulsa ACEPTAR para ver el avance de tu orden en "Mis Pedidos".' + 
+                                '\n• Pulsa CANCELAR para consultar tu proforma técnica en "Mis Cotizaciones".';
+                    if (confirm(msg)) {
+                        window.location.href = '/Mi_Pedido';
+                    } else {
                         window.location.href = '/MiCotizacion';
                     }
                 } else {
