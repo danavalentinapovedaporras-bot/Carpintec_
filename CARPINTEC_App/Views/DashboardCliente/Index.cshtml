@@ -1,4 +1,4 @@
-﻿@{
+@{
     Layout = null;
 }
 <!DOCTYPE html>
@@ -118,12 +118,15 @@
                     <span class="material-symbols-outlined">notifications</span>
                     <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-secondary rounded-full border border-surface"></span>
                 </button>
-                <button class="flex items-center space-x-2 text-on-surface-variant hover:text-primary transition-colors mr-2">
+                <a asp-controller="Login" asp-action="CerrarSesion" class="flex items-center space-x-2 text-on-surface-variant hover:text-primary transition-colors mr-2">
                     <span class="material-symbols-outlined">logout</span>
                     <span class="font-label-md text-label-md hidden lg:inline">Cerrar Sesión</span>
-                </button><div class="flex items-center space-x-3 cursor-pointer">
-                <div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-title-md font-bold overflow-hidden border border-primary/20">
-                    <img alt="User Avatar" class="w-full h-full object-cover" data-alt="A professional headshot of a middle-aged man in a brightly lit modern office. He has dark hair, a warm smile, and is wearing a crisp white collared shirt. The background is slightly out of focus, showing wooden architectural elements typical of a high-end carpentry studio. High-key lighting, corporate modern aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuATT25ztSc8o_6HzPdDXqtzYaq830mRVSokuA_S50HccqW5g_rE6o2gVs-JlGGIANdiw4cirsGkMaH1RpViq2qxaSl0_R7YzStneFjLRmU46JaLDHsgTvWV2Nqj2wsf8D-FOLrVQN0vBsDB_BpgAbegAowZnEwLqh2d8jHahGzAaBJQzWhsGJ_aRtXrzW6_KlRekwaETWGSOI7XGVJ9pr3qBtfGueB98VpwGfKZIiX5w8i3jwgNej91iA">
+                </a>
+                <div class="flex items-center space-x-3 cursor-pointer">
+                    <span class="font-label-md text-label-md text-primary font-bold hidden md:inline">@(ViewBag.PrimerNombre ?? "Cliente")</span>
+                    <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-title-md font-bold overflow-hidden border border-primary/20 shadow-sm">
+                        @(ViewBag.Iniciales ?? "CL")
+                    </div>
                 </div>
             </div>
         </div>
@@ -134,21 +137,21 @@
         <section class="space-y-6">
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
-                    <h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary mb-1">Bienvenido, Carlos Hernandez</h2>
+                    <h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary mb-1">@(ViewBag.SaludoPersonalizado ?? "Bienvenido, Cliente")</h2>
                     <p class="font-body-lg text-body-lg text-on-surface-variant">Aquí está el resumen de tus proyectos en el taller.</p>
                 </div>
-                <p class="font-label-md text-label-md text-on-surface-variant/80">Martes, 24 de Octubre 2024</p>
+                <p class="font-label-md text-label-md text-on-surface-variant/80">@(ViewBag.FechaActual ?? DateTime.Now.ToString("dddd, d 'de' MMMM yyyy"))</p>
             </div>
             <!-- Hero Banner -->
             <div class="relative w-full h-64 md:h-80 rounded-lg overflow-hidden border border-outline-variant group">
                 <div class="absolute inset-0 bg-black/40 z-10 transition-opacity group-hover:bg-black/50"></div>
-                <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="A wide angle shot inside a high-end, modern woodworking studio. Sunlight streams through large industrial windows, illuminating a massive bespoke oak dining table in the center. Wood shavings are scattered artistically on the floor. The aesthetic is clean, professional, and tactile, emphasizing durability and natural warmth. High resolution, architectural photography style." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC33Km2jrTUezlbqzUcD2K7mPV-akme7-YL0z5BGR92-pZaGmXvyigKxmbNajsgDgUSL5qSX136R4MHlbVa3QxjEZT2k0N7eheRjIGgyhprNE5o7eN7sndUorPS7NiOtmQEuND3xD-yonJykx3U3XPfem60yUdXGdzwKjETOqbIQPN7DWeLj8ryh-RJqhfpljec-sOCKDEnTX6Y8AanHMBe9cmOX3DA5FloQ72lbWzbVCx097aX_BHuDg')"></div>
+                <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="Woodworking studio" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC33Km2jrTUezlbqzUcD2K7mPV-akme7-YL0z5BGR92-pZaGmXvyigKxmbNajsgDgUSL5qSX136R4MHlbVa3QxjEZT2k0N7eheRjIGgyhprNE5o7eN7sndUorPS7NiOtmQEuND3xD-yonJykx3U3XPfem60yUdXGdzwKjETOqbIQPN7DWeLj8ryh-RJqhfpljec-sOCKDEnTX6Y8AanHMBe9cmOX3DA5FloQ72lbWzbVCx097aX_BHuDg')"></div>
                 <div class="absolute inset-0 z-20 flex flex-col justify-center items-start p-8 md:p-12">
                     <span class="inline-block px-3 py-1 bg-secondary/90 text-primary font-label-md text-label-md rounded-md uppercase tracking-widest mb-4 backdrop-blur-sm font-bold">Artesanía Pura</span>
                     <h3 class="font-display-lg text-headline-lg md:text-display-lg text-white max-w-2xl leading-tight mb-6 drop-shadow-lg">Diseñamos muebles personalizados para transformar tus espacios</h3>
-                    <<a asp-controller="NuevaCotizacion"
-                        asp-action="Index"
-                        class="bg-secondary text-on-secondary w-full py-4 rounded-lg font-bold text-headline-lg-mobile shadow-lg active:scale-95 transition-all relative z-10 flex items-center justify-center">
+                    <a asp-controller="MiCotizacion"
+                       asp-action="Index"
+                       class="bg-secondary text-on-secondary w-full py-4 rounded-lg font-bold text-headline-lg-mobile shadow-lg active:scale-95 transition-all relative z-10 flex items-center justify-center">
                         Crear Cotización
                     </a>
                 </div>
@@ -163,17 +166,17 @@
                     <div class="p-3 bg-surface-container rounded-lg text-primary">
                         <span class="material-symbols-outlined fill-icon text-3xl">request_quote</span>
                     </div>
-                    <span class="font-title-md text-title-md font-bold text-primary">12</span>
+                    <span class="font-title-md text-title-md font-bold text-primary">@(ViewBag.TotalCotizaciones ?? 0)</span>
                 </div>
                 <h4 class="font-title-md text-title-md text-on-surface mb-2">Cotizaciones</h4>
                 <div class="space-y-2 mt-4">
                     <div class="flex justify-between items-center text-sm">
                         <span class="text-on-surface-variant flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-secondary mr-2"></span>Pendientes</span>
-                        <span class="font-medium text-on-surface">4</span>
+                        <span class="font-medium text-on-surface">@(ViewBag.CotizacionesPendientes ?? 0)</span>
                     </div>
                     <div class="flex justify-between items-center text-sm">
                         <span class="text-on-surface-variant flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-green-600 mr-2"></span>Aprobadas</span>
-                        <span class="font-medium text-on-surface">6</span>
+                        <span class="font-medium text-on-surface">@(ViewBag.CotizacionesAprobadas ?? 0)</span>
                     </div>
                 </div>
                 <div class="mt-6 pt-4 border-t border-outline-variant/30">
@@ -192,17 +195,17 @@
                     <div class="p-3 bg-surface-container rounded-lg text-primary">
                         <span class="material-symbols-outlined fill-icon text-3xl">shopping_bag</span>
                     </div>
-                    <span class="font-title-md text-title-md font-bold text-primary">8</span>
+                    <span class="font-title-md text-title-md font-bold text-primary">@(ViewBag.TotalPedidos ?? 0)</span>
                 </div>
                 <h4 class="font-title-md text-title-md text-on-surface mb-2">Pedidos</h4>
                 <div class="space-y-2 mt-4">
                     <div class="flex justify-between items-center text-sm">
                         <span class="text-on-surface-variant flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-secondary mr-2"></span>En Fabricación</span>
-                        <span class="font-medium text-on-surface">5</span>
+                        <span class="font-medium text-on-surface">@(ViewBag.PedidosEnFabricacion ?? 0)</span>
                     </div>
                     <div class="flex justify-between items-center text-sm">
                         <span class="text-on-surface-variant flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-primary mr-2"></span>Listos</span>
-                        <span class="font-medium text-on-surface">3</span>
+                        <span class="font-medium text-on-surface">@(ViewBag.PedidosListos ?? 0)</span>
                     </div>
                 </div>
                 <div class="mt-6 pt-4 border-t border-outline-variant/30">
@@ -221,26 +224,25 @@
                     <div class="p-3 bg-surface-container rounded-lg text-primary">
                         <span class="material-symbols-outlined fill-icon text-3xl">receipt</span>
                     </div>
-                    <span class="font-title-md text-title-md font-bold text-primary">3</span>
+                    <span class="font-title-md text-title-md font-bold text-primary">@(ViewBag.TotalFacturas ?? 0)</span>
                 </div>
                 <h4 class="font-title-md text-title-md text-on-surface mb-2">Facturas</h4>
                 <div class="space-y-2 mt-4">
                     <div class="flex justify-between items-center text-sm">
                         <span class="text-on-surface-variant flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-error mr-2"></span>Pendientes</span>
-                        <span class="font-medium text-on-surface font-bold text-error">1</span>
+                        <span class="font-medium text-on-surface font-bold text-error">@(ViewBag.FacturasPendientes ?? 0)</span>
                     </div>
                     <div class="flex justify-between items-center text-sm">
                         <span class="text-on-surface-variant flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-green-600 mr-2"></span>Pagadas</span>
-                        <span class="font-medium text-on-surface">2</span>
+                        <span class="font-medium text-on-surface">@(ViewBag.FacturasPagadas ?? 0)</span>
                     </div>
                 </div>
                 <div class="mt-6 pt-4 border-t border-outline-variant/30">
-               <a asp-controller="GestionFacturas"
-   asp-action="Index"
-   class="w-full bg-primary text-on-primary font-bold py-3 rounded-lg flex items-center justify-center gap-2 group-hover:bg-secondary transition-colors">
-    Ver Factura
-    <span class="material-symbols-outlined text-sm">chevron_right</span>
-</a>
+                    <a asp-controller="GestionFacturas"
+                       asp-action="Index"
+                       class="w-full bg-primary text-on-primary font-bold py-3 rounded-lg flex items-center justify-center gap-2 group-hover:bg-secondary transition-colors">
+                        Ver Factura
+                        <span class="material-symbols-outlined text-sm">chevron_right</span>
                     </a>
                 </div>
             </div>
@@ -294,17 +296,17 @@
                     <div class="p-3 bg-surface-container rounded-lg text-primary">
                         <span class="material-symbols-outlined fill-icon text-3xl">support_agent</span>
                     </div>
-                    <span class="font-title-md text-title-md font-bold text-primary">5</span>
+                    <span class="font-title-md text-title-md font-bold text-primary">@(ViewBag.TotalPqrs ?? 0)</span>
                 </div>
                 <h4 class="font-title-md text-title-md text-on-surface mb-2">PQR</h4>
                 <div class="space-y-2 mt-4">
                     <div class="flex justify-between items-center text-sm">
                         <span class="text-on-surface-variant flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-secondary mr-2"></span>Abiertas</span>
-                        <span class="font-medium text-on-surface">3</span>
+                        <span class="font-medium text-on-surface">@(ViewBag.PqrsAbiertas ?? 0)</span>
                     </div>
                     <div class="flex justify-between items-center text-sm">
                         <span class="text-on-surface-variant flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-green-600 mr-2"></span>Resueltas</span>
-                        <span class="font-medium text-on-surface">2</span>
+                        <span class="font-medium text-on-surface">@(ViewBag.PqrsResueltas ?? 0)</span>
                     </div>
                 </div>
                 <div class="mt-6 pt-4 border-t border-outline-variant/30">

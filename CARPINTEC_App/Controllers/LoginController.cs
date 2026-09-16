@@ -1,4 +1,4 @@
-﻿using CARPINTEC_App.Data;
+using CARPINTEC_App.Data;
 using CARPINTEC_App.Models;
 using CARPINTEC_App.Services;
 using Microsoft.AspNetCore.Identity;
@@ -360,8 +360,18 @@ namespace CARPINTEC_App.Controllers
                 );
 
                 HttpContext.Session.SetString(
+                    "PrimerNombre",
+                    usuario.Nombre ?? ""
+                );
+
+                HttpContext.Session.SetString(
                     "Rol",
                     rolReal
+                );
+
+                HttpContext.Session.SetString(
+                    "CorreoUsuario",
+                    usuario.Correo ?? ""
                 );
 
                 // =================================================
@@ -413,7 +423,7 @@ namespace CARPINTEC_App.Controllers
             }
 
         }
-       
-        
+
+
     }
 }
