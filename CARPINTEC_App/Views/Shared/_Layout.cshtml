@@ -127,9 +127,12 @@
 
                 <hr />
 
-                <a class="btn btn-danger w-100"
+                <a class="btn text-white w-100"
+                   style="background-color: #442a22;"
                    asp-controller="Login"
-                   asp-action="CerrarSesion">
+                   asp-action="CerrarSesion"
+                   onmouseover="this.style.backgroundColor='#5a382d'"
+                   onmouseout="this.style.backgroundColor='#442a22'">
                     <i class="bi bi-box-arrow-right"></i>
                     Cerrar sesión
                 </a>
@@ -163,7 +166,10 @@
 
                         <a asp-controller="Login"
                            asp-action="CerrarSesion"
-                           class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg">
+                           class="text-white px-4 py-2 rounded-lg"
+                           style="background-color: #442a22; text-decoration: none;"
+                           onmouseover="this.style.backgroundColor='#5a382d'"
+                           onmouseout="this.style.backgroundColor='#442a22'">
                             Cerrar sesión
                         </a>
 

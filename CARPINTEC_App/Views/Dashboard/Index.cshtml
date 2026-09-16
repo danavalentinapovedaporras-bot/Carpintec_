@@ -1,3 +1,4 @@
+@model CARPINTEC_App.Models.ViewModels.DashboardViewModel
 
 @{
     ViewData["Title"] = "Dashboard";
@@ -10,7 +11,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>CARPINTEC | Panel Administrativo</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&amp;family=Hanken+Grotesk:wght@400;600&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script id="tailwind-config">
@@ -85,31 +86,41 @@
                             "margin": "32px"
                         },
                         "fontFamily": {
-                            "body-md": ["Hanken Grotesk"],
-                            "headline-lg-mobile": ["Manrope"],
-                            "body-lg": ["Hanken Grotesk"],
-                            "body-sm": ["Hanken Grotesk"],
-                            "headline-xl": ["Manrope"],
-                            "headline-md": ["Manrope"],
-                            "headline-lg": ["Manrope"],
-                            "label-md": ["Hanken Grotesk"]
+                            "body-md": ["Work Sans", "sans-serif"],
+                            "headline-lg-mobile": ["Work Sans", "sans-serif"],
+                            "body-lg": ["Work Sans", "sans-serif"],
+                            "body-sm": ["Work Sans", "sans-serif"],
+                            "headline-xl": ["Work Sans", "sans-serif"],
+                            "headline-md": ["Work Sans", "sans-serif"],
+                            "headline-lg": ["Work Sans", "sans-serif"],
+                            "label-md": ["Work Sans", "sans-serif"]
                         },
                         "fontSize": {
-                            "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
-                            "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
-                            "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
-                            "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                            "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "700" }],
+                            "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                            "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "700" }],
+                            "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "700" }],
                             "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
-                            "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
-                            "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
-                            "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }]
+                            "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                            "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                            "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }]
                         }
                     },
                 },
             }
     </script>
     <style>
+            @@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&display=swap');
+
+            main[role="main"],
+            main[role="main"] *:not(.material-symbols-outlined) {
+                font-family: 'Work Sans', sans-serif !important;
+                font-weight: 700 !important;
+            }
+
             .material-symbols-outlined {
+                font-family: 'Material Symbols Outlined' !important;
+                font-weight: normal !important;
                 font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
             }
 
@@ -133,17 +144,48 @@
             }
     </style>
 </head>
-<body class="bg-background font-body-md text-on-background min-h-screen">
-
+<body class="bg-background font-body-md text-black min-h-screen">
    
     <!-- Main Content Canvas (Sin margen para Sidebar) -->
-    <main class="pt-24 pb-12 px-gutter lg:px-margin max-w-7xl mx-auto">
+    <main class="pt-24 pb-12 px-gutter lg:px-margin max-w-7xl mx-auto"
+          role="main"
+          aria-label="Panel administrativo CARPINTEC">
+        <div class="mb-lg bg-[#D2B48C] text-[#442a22] rounded-2xl p-6 shadow-md">
+            <div class="flex justify-between items-center">
+
+                <div>
+
+                    <h1 class="text-3xl font-bold text-black">
+                        Bienvenido a CARPINTEC
+                    </h1>
+
+                    <p class="mt-2 opacity-90 text-black">
+                        Administra clientes, pedidos, inventario y producción desde un solo lugar.
+                    </p>
+
+                </div>
+
+                <div class="text-right">
+
+                    <p class="text-sm opacity-80">
+                        @DateTime.Now.ToString("dddd, dd MMMM yyyy")
+                    </p>
+
+                    <p class="text-xl font-bold">
+                        @DateTime.Now.ToString("HH:mm")
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
         <!-- KPI Metrics Bento Grid -->
         <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-md mb-lg">
             <!-- Sales Metric -->
-            <div class="bg-surface-container-lowest p-md rounded-xl shadow-[0_4px_12px_rgba(68,42,34,0.04)] border border-outline-variant/20 hover:scale-[1.02] transition-transform duration-300">
+            <div class="bg-surface-container-lowest p-md rounded-xl shadow-[0_4px_12px_rgba(68,42,34,0.04)] border border-outline-variant/20 hover:scale-[1.03] hover:shadow-lg transition-all duration-300">
                 <div class="flex justify-between items-start mb-2">
-                    <div class="bg-primary-fixed/30 p-2 rounded-lg text-primary">
+                    <div class="bg-primary-fixed/30 p-2 rounded-lg text-[#D2B48C]">
                         <span class="material-symbols-outlined">payments</span>
                     </div>
                     <span class="text-body-sm font-semibold text-green-600 flex items-center">
@@ -151,7 +193,9 @@
                     </span>
                 </div>
                 <p class="text-on-surface-variant text-label-md mb-1 uppercase tracking-wider">Ventas del Mes</p>
-                <h3 class="text-headline-md font-headline-md text-primary">$ 25.680.000</h3>
+                <h3 class="text-headline-md font-headline-md text-black">
+                    $ @Model.VentasMes.ToString("N0")
+                </h3>
                 <p class="text-body-sm text-on-surface-variant/70 mt-1">vs mes anterior</p>
             </div>
             <!-- Active Orders -->
@@ -165,7 +209,9 @@
                     </span>
                 </div>
                 <p class="text-on-surface-variant text-label-md mb-1 uppercase tracking-wider">Pedidos Activos</p>
-                <h3 class="text-headline-md font-headline-md text-primary">28</h3>
+                <h3 class="text-headline-md font-headline-md text-black">
+                    @Model.PedidosActivos
+                </h3>
                 <p class="text-body-sm text-on-surface-variant/70 mt-1">proyectos en marcha</p>
             </div>
             <!-- Pending Quotes -->
@@ -179,7 +225,9 @@
                     </span>
                 </div>
                 <p class="text-on-surface-variant text-label-md mb-1 uppercase tracking-wider">Cotizaciones Pendientes</p>
-                <h3 class="text-headline-md font-headline-md text-primary">16</h3>
+                <h3 class="text-headline-md font-headline-md text-black">
+                    @Model.CotizacionesPendientes
+                </h3>
                 <p class="text-body-sm text-on-surface-variant/70 mt-1">requieren atención</p>
             </div>
             <!-- Stock Status -->
@@ -193,135 +241,333 @@
                     </span>
                 </div>
                 <p class="text-on-surface-variant text-label-md mb-1 uppercase tracking-wider">Stock Inventario</p>
-                <h3 class="text-headline-md font-headline-md text-primary">342</h3>
+                <h3 class="text-headline-md font-headline-md text-black">
+                    @Model.TotalProductos
+                </h3>
                 <p class="text-body-sm text-on-surface-variant/70 mt-1">productos registrados</p>
             </div>
         </section>
 
         <!-- Main Dashboard Section -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-lg mb-lg">
-            <!-- Performance Chart -->
-            <div class="lg:col-span-2 bg-surface-container-lowest p-md rounded-3xl shadow-sm border border-outline-variant/20">
-                <div class="flex items-center justify-between mb-lg">
-                    <h2 class="text-headline-md font-headline-md text-primary">Producción vs Ventas</h2>
-                    <select class="bg-surface-container-low border-none rounded-lg text-body-sm font-label-md focus:ring-primary px-3 py-1.5">
-                        <option>Últimos 6 meses</option>
-                        <option>Este año</option>
-                    </select>
-                </div>
-                <div class="h-[300px] w-full">
-                    <canvas id="productionChart"></canvas>
-                </div>
-            </div>
+            <!-- Resumen Administrativo -->
+            <div class="lg:col-span-2 bg-surface-container-lowest p-5 rounded-3xl shadow-sm border border-outline-variant/20">
 
+                <div class="flex items-center justify-between mb-5">
+
+                    <h2 class="text-xl font-semibold text-black">
+                        Resumen Administrativo
+                    </h2>
+
+                    <span class="material-symbols-outlined text-[#D2B48C]">
+                        dashboard
+                    </span>
+
+                </div>
+
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+
+                    <!-- Usuarios registrados -->
+                    <div class="bg-[#D2B48C]/20 rounded-xl p-4 border border-[#D2B48C]/40 hover:shadow-md transition">
+
+                        <div class="flex justify-between items-center">
+
+                            <span class="material-symbols-outlined text-[#D2B48C] text-2xl">
+                                manage_accounts
+                            </span>
+
+                        </div>
+
+                        <p class="text-xs text-on-surface-variant mt-3">
+                            Usuarios registrados
+                        </p>
+
+                        <h3 class="text-2xl font-bold text-black">
+                            @Model.TotalUsuarios
+                        </h3>
+
+                    </div>
+
+
+
+                    <!-- Empleados registrados -->
+                    <div class="bg-[#D2B48C]/20 rounded-xl p-4 border border-[#D2B48C]/40 hover:shadow-md transition">
+
+                        <div class="flex justify-between items-center">
+
+                            <span class="material-symbols-outlined text-[#D2B48C] text-2xl">
+                                badge
+                            </span>
+
+                        </div>
+
+                        <p class="text-xs text-on-surface-variant mt-3">
+                            Empleados registrados
+                        </p>
+
+                        <h3 class="text-2xl font-bold text-black">
+                            @Model.TotalEmpleados
+                        </h3>
+
+                    </div>
+
+
+
+                    <!-- Clientes registrados -->
+                    <div class="bg-[#D2B48C]/20 rounded-xl p-4 border border-[#D2B48C]/40 hover:shadow-md transition">
+
+                        <div class="flex justify-between items-center">
+
+                            <span class="material-symbols-outlined text-[#D2B48C] text-2xl">
+                                groups
+                            </span>
+
+                        </div>
+
+                        <p class="text-xs text-on-surface-variant mt-3">
+                            Clientes registrados
+                        </p>
+
+                        <h3 class="text-2xl font-bold text-black">
+                            @Model.TotalClientes
+                        </h3>
+
+                    </div>
+
+
+
+                    <!-- Productos registrados -->
+                    <div class="bg-[#D2B48C]/20 rounded-xl p-4 border border-[#D2B48C]/40 hover:shadow-md transition">
+
+                        <div class="flex justify-between items-center">
+
+                            <span class="material-symbols-outlined text-[#D2B48C] text-2xl">
+                                inventory_2
+                            </span>
+
+                        </div>
+
+                        <p class="text-xs text-on-surface-variant mt-3">
+                            Productos registrados
+                        </p>
+
+                        <h3 class="text-2xl font-bold text-black">
+                            @Model.TotalProductos
+                        </h3>
+
+                    </div>
+
+
+                </div>
+
+            </div>
             <!-- Recent Activity Feed -->
             <div class="bg-surface-container-lowest p-md rounded-3xl shadow-sm border border-outline-variant/20 flex flex-col">
+
                 <div class="flex items-center justify-between mb-md">
-                    <h2 class="text-headline-md font-headline-md text-primary">Actividad Reciente</h2>
-                    <button class="text-primary hover:underline text-label-md">Ver todo</button>
+                    <h2 id="actividad-reciente"
+                        class="text-headline-md font-headline-md text-black">
+                        Actividad Reciente
+                    </h2>
+
+                    <button class="text-black hover:underline text-label-md">
+                        Ver todo
+                    </button>
                 </div>
-                <div class="space-y-4 overflow-y-auto max-h-[300px] pr-2 custom-scrollbar">
-                    <div class="flex gap-4 p-3 rounded-xl hover:bg-surface-container-low transition-colors">
-                        <div class="w-10 h-10 rounded-full bg-primary-fixed/20 flex items-center justify-center text-primary shrink-0">
-                            <span class="material-symbols-outlined text-lg">add_circle</span>
+
+
+                <div class="space-y-4 overflow-y-auto max-h-[300px] pr-2 custom-scrollbar"
+                     aria-labelledby="actividad-reciente">
+
+
+                    @if (Model.ActividadesRecientes != null && Model.ActividadesRecientes.Any())
+                    {
+
+                        foreach (var actividad in Model.ActividadesRecientes)
+                        {
+                            <div class="flex gap-4 p-3 rounded-xl hover:bg-surface-container-low transition-colors">
+
+
+                                <div class="w-10 h-10 rounded-full bg-primary-fixed/20 flex items-center justify-center text-[#D2B48C] shrink-0">
+
+                                    <span class="material-symbols-outlined text-lg">
+                                        @actividad.Icono
+                                    </span>
+
+                                </div>
+
+
+                                <div>
+
+                                    <p class="text-body-sm text-on-surface">
+
+                                        <span class="font-bold">
+                                            @actividad.Titulo
+                                        </span>
+
+                                        @actividad.Descripcion
+
+                                    </p>
+
+
+                                    <p class="text-xs text-on-surface-variant/60">
+                                        @actividad.Fecha
+                                    </p>
+
+                                </div>
+
+
+                            </div>
+                        }
+
+                    }
+                    else
+                    {
+
+                        <div class="text-center text-on-surface-variant py-5">
+
+                            No hay actividad reciente
+
                         </div>
-                        <div>
-                            <p class="text-body-sm text-on-surface"><span class="font-bold">Nuevo pedido:</span> Mesa Comedor de Roble para Juan Pérez.</p>
-                            <p class="text-xs text-on-surface-variant/60">Hace 20 min</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-4 p-3 rounded-xl hover:bg-surface-container-low transition-colors">
-                        <div class="w-10 h-10 rounded-full bg-tertiary-fixed/20 flex items-center justify-center text-tertiary shrink-0">
-                            <span class="material-symbols-outlined text-lg">check_circle</span>
-                        </div>
-                        <div>
-                            <p class="text-body-sm text-on-surface"><span class="font-bold">Cotización aprobada:</span> #C-2024-044 por Carlos Gómez.</p>
-                            <p class="text-xs text-on-surface-variant/60">Hace 1 hora</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-4 p-3 rounded-xl hover:bg-surface-container-low transition-colors">
-                        <div class="w-10 h-10 rounded-full bg-secondary-fixed/20 flex items-center justify-center text-secondary shrink-0">
-                            <span class="material-symbols-outlined text-lg">local_shipping</span>
-                        </div>
-                        <div>
-                            <p class="text-body-sm text-on-surface"><span class="font-bold">Pedido entregado:</span> Mueble TV - Maria Rodriguez.</p>
-                            <p class="text-xs text-on-surface-variant/60">Hace 3 horas</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-4 p-3 rounded-xl hover:bg-surface-container-low transition-colors">
-                        <div class="w-10 h-10 rounded-full bg-error-container/20 flex items-center justify-center text-error shrink-0">
-                            <span class="material-symbols-outlined text-lg">warning</span>
-                        </div>
-                        <div>
-                            <p class="text-body-sm text-on-surface"><span class="font-bold">Stock Bajo:</span> Madera Cedro (Menos de 5 unidades).</p>
-                            <p class="text-xs text-on-surface-variant/60">Hace 5 horas</p>
-                        </div>
-                    </div>
+
+                    }
+
+
                 </div>
+
             </div>
-        </div>
+            </div>
 
         <!-- Quick Access Section -->
         <section class="mb-lg">
-            <h2 class="text-headline-md font-headline-md text-primary mb-md">Accesos Rápidos</h2>
+            <h2 id="accesos-rapidos"
+                class="text-headline-md font-headline-md text-black mb-md">
+                Accesos Rápidos
+            </h2>
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-md">
-                <button class="flex flex-col items-center gap-3 p-6 bg-surface-container-lowest border border-outline-variant/30 rounded-2xl hover:bg-primary hover:text-on-primary transition-all duration-300 group shadow-sm">
-                    <span class="material-symbols-outlined text-3xl text-primary group-hover:text-on-primary">add_box</span>
-                    <span class="text-label-md">Nueva Cotización</span>
-                </button>
-                <a asp-controller="NuevoPedido"
+
+
+                <!-- Nueva Cotización -->
+                
+                <a asp-controller="MiCotizacion"
                    asp-action="Index"
-                   class="flex flex-col items-center gap-3 p-6 bg-surface-container-lowest border border-outline-variant/30 rounded-2xl hover:bg-primary hover:text-on-primary transition-all duration-300 group shadow-sm text-decoration-none">
+                   aria-label="Crear nueva cotización"
+                   class="flex flex-col items-center gap-3 p-6 bg-surface-container-lowest border border-outline-variant/30 rounded-2xl hover:bg-primary hover:text-on-primary transition-all duration-300 group shadow-sm">
 
-                    <span class="material-symbols-outlined text-3xl text-primary group-hover:text-on-primary">
-                        post_add
+                    <span class="material-symbols-outlined text-3xl text-[#D2B48C] group-hover:text-on-primary">
+                        add_box
                     </span>
 
-                    <span class="text-label-md">
-                        Nuevo Pedido
+                    <span class="text-label-md text-black">
+                        Nueva Cotización
                     </span>
+
                 </a>
-                <a asp-controller="Stock"
+
+
+
+                <!-- Pedidos -->
+                <a asp-controller="Pedidos"
                    asp-action="Index"
-                   class="flex flex-col items-center gap-3 p-6 bg-surface-container-lowest border border-outline-variant/30 rounded-2xl hover:bg-primary hover:text-on-primary transition-all duration-300 group shadow-sm text-decoration-none">
+                   aria-label="Ver pedidos"
+                   class="flex flex-col items-center gap-3 p-6 bg-surface-container-lowest border border-outline-variant/30 rounded-2xl hover:bg-primary hover:text-on-primary transition-all duration-300 group shadow-sm">
 
-                    <span class="material-symbols-outlined text-3xl text-primary group-hover:text-on-primary">
-                        move_to_inbox
+                    <span class="material-symbols-outlined text-3xl text-[#D2B48C] group-hover:text-on-primary">
+                        assignment
+                    </span>
+                    <span class="text-label-md text-black">
+                        Pedidos
                     </span>
 
-                    <span class="text-label-md">
-                        Entrada Stock
-                    </span>
                 </a>
-                <button class="flex flex-col items-center gap-3 p-6 bg-surface-container-lowest border border-outline-variant/30 rounded-2xl hover:bg-primary hover:text-on-primary transition-all duration-300 group shadow-sm">
-                    <span class="material-symbols-outlined text-3xl text-primary group-hover:text-on-primary">engineering</span>
-                    <span class="text-label-md">Asignar Mano Obra</span>
-                </button>
+
+
+
+                <!-- Reportes -->
+                <a asp-controller="Reportes"
+                   asp-action="Index"
+                   aria-label="Abrir reportes"
+                   class="flex flex-col items-center gap-3 p-6 bg-surface-container-lowest border border-outline-variant/30 rounded-2xl hover:bg-primary hover:text-on-primary transition-all duration-300 group shadow-sm">
+
+
+                    <span class="material-symbols-outlined text-3xl text-[#D2B48C] group-hover:text-on-primary">
+                        assessment
+                    </span>
+
+
+                    <span class="text-label-md text-black">
+                        Reportes
+                    </span>
+
+
+                </a>
+
+
+
+                <!-- Empleados -->
+                <a asp-controller="Empleados"
+                   asp-action="Index"
+                   aria-label="Gestionar empleados"
+                   class="flex flex-col items-center gap-3 p-6 bg-surface-container-lowest border border-outline-variant/30 rounded-2xl hover:bg-primary hover:text-on-primary transition-all duration-300 group shadow-sm">
+
+
+                    <span class="material-symbols-outlined text-3xl text-[#D2B48C] group-hover:text-on-primary">
+                        badge
+                    </span>
+
+                    <span class="text-label-md text-black">
+                        Empleados
+                    </span>
+
+
+                </a>
+
+
+
+                <!-- Calendario -->
                 <a asp-controller="Calendario"
                    asp-action="Index"
+                   aria-label="Abrir calendario de producción"
                    class="hidden lg:flex flex-col items-center gap-3 p-6 bg-surface-container-lowest border border-outline-variant/30 rounded-2xl hover:bg-primary hover:text-on-primary transition-all duration-300 group shadow-sm">
-                    <span class="material-symbols-outlined text-3xl text-primary group-hover:text-on-primary">
+
+
+                    <span class="material-symbols-outlined text-3xl text-[#D2B48C] group-hover:text-on-primary">
                         calendar_month
                     </span>
-                    <span class="text-label-md">Calendario Prod.</span>
+
+
+                    <span class="text-label-md text-black">
+                        Calendario Prod.
+                    </span>
+
+
                 </a>
+
+
             </div>
         </section>
 
         <!-- Current Projects Table -->
         <section class="bg-surface-container-lowest p-md rounded-3xl shadow-sm border border-outline-variant/20 overflow-hidden">
             <div class="flex items-center justify-between mb-lg px-2">
-                <h2 class="text-headline-md font-headline-md text-primary">Proyectos en Producción</h2>
+                <h2 class="text-headline-md font-headline-md text-black">Proyectos en Producción</h2>
                 <div class="flex gap-2">
                     <div class="relative">
                         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
-                        <input class="pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-full text-body-sm focus:ring-primary w-48 lg:w-64" placeholder="Buscar proyecto..." type="text">
+                        <input id="buscarProyecto"
+                               class="pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-full text-body-sm focus:ring-primary w-48 lg:w-64"
+                               placeholder="Buscar proyecto..."
+                               type="text">
                     </div>
                 </div>
             </div>
             <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead>
+
+                <table class="w-full text-left border-collapse"
+                       aria-label="Proyectos en producción">
+                    <thead class="bg-surface-container-low">
                         <tr class="border-b border-outline-variant/30 text-label-md text-on-surface-variant uppercase tracking-wider">
                             <th class="px-6 py-4">Pedido ID</th>
                             <th class="px-6 py-4">Cliente</th>
@@ -332,91 +578,132 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-outline-variant/10">
-                        <tr class="hover:bg-surface-container-low/50 transition-colors">
-                            <td class="px-6 py-4 font-bold text-primary">P-2024-028</td>
-                            <td class="px-6 py-4">Carlos Gómez</td>
-                            <td class="px-6 py-4">Cocina Integral Cedro</td>
-                            <td class="px-6 py-4">
-                                <span class="bg-primary text-on-primary px-3 py-1 rounded-full text-xs font-bold">PRODUCCIÓN</span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="w-32 bg-surface-variant rounded-full h-2">
-                                    <div class="bg-primary h-2 rounded-full" style="width: 65%"></div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 text-right">
-                                <button class="p-2 hover:bg-surface-container rounded-full"><span class="material-symbols-outlined">more_vert</span></button>
-                            </td>
-                        </tr>
-                        <tr class="bg-secondary-fixed/10 hover:bg-surface-container-low/50 transition-colors">
-                            <td class="px-6 py-4 font-bold text-primary">P-2024-027</td>
-                            <td class="px-6 py-4">Maria Rodriguez</td>
-                            <td class="px-6 py-4">Closet Moderno Blanco</td>
-                            <td class="px-6 py-4">
-                                <span class="bg-secondary-container text-on-secondary-fixed-variant px-3 py-1 rounded-full text-xs font-bold">MONTAJE</span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="w-32 bg-surface-variant rounded-full h-2">
-                                    <div class="bg-secondary h-2 rounded-full" style="width: 90%"></div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 text-right">
-                                <button class="p-2 hover:bg-surface-container rounded-full"><span class="material-symbols-outlined">more_vert</span></button>
-                            </td>
-                        </tr>
+
+                        @foreach (var proyecto in Model.ProyectosProduccion)
+                        {
+
+                            var progreso = proyecto.Estado switch
+                            {
+                                "Pendiente" => 25,
+                                "Producción" => 60,
+                                "PRODUCCIÓN" => 60,
+                                "Montaje" => 90,
+                                "MONTAJE" => 90,
+                                "Finalizado" => 100,
+                                _ => 10
+                            };
+
+
+                            <tr class="hover:bg-surface-container-low/50 transition-colors">
+
+                                <!-- Código pedido -->
+                                <td class="px-6 py-4 font-bold text-black">
+                                    @proyecto.CodigoPedido
+                                </td>
+
+
+                                <!-- Cliente -->
+                                <td class="px-6 py-4">
+                                    @proyecto.IdClienteNavigation.Nombre
+                                </td>
+
+
+                                <!-- Producto -->
+                                <td class="px-6 py-4">
+                                    @proyecto.Producto
+                                </td>
+
+
+                                <!-- Estado -->
+                                <td class="px-6 py-4">
+
+                                    <span class="bg-[#D2B48C] text-black px-3 py-1 rounded-full text-xs font-bold"
+                                          style="background-color: #D2B48C;">
+                                        @proyecto.Estado.ToUpper()
+                                    </span>
+
+                                </td>
+
+
+                                <!-- Progreso -->
+                                <td class="px-6 py-4">
+
+                                    <div class="flex items-center gap-3">
+
+                                        <div class="w-32 bg-surface-variant rounded-full h-2">
+
+                                            <div class="bg-[#D2B48C] h-2 rounded-full"
+                                                 style="width:@progreso%; background-color: #D2B48C;">
+                                            </div>
+
+                                        </div>
+
+
+                                        <span class="text-xs font-bold">
+                                            @progreso%
+                                        </span>
+
+                                    </div>
+
+                                </td>
+
+
+                                <!-- Opciones -->
+                                <td class="px-6 py-4 text-right">
+
+                                    <button class="p-2 hover:bg-surface-container rounded-full"
+                                            aria-label="Más opciones del pedido">
+
+                                        <span class="material-symbols-outlined">
+                                            more_vert
+                                        </span>
+
+                                    </button>
+
+                                </td>
+
+
+                            </tr>
+
+                        }
+
                     </tbody>
                 </table>
             </div>
         </section>
     </main>
 
-    <!-- Script Chart.js -->
     <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                const ctx = document.getElementById('productionChart').getContext('2d');
-                new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
-                        datasets: [
-                            {
-                                label: 'Ventas ($)',
-                                data: [12000000, 19000000, 15000000, 22000000, 18000000, 25680000],
-                                borderColor: '#442a22',
-                                backgroundColor: 'rgba(68, 42, 34, 0.1)',
-                                fill: true,
-                                tension: 0.4
-                            },
-                            {
-                                label: 'Proyectos Producidos',
-                                data: [10, 15, 12, 18, 14, 20],
-                                borderColor: '#5e604d',
-                                backgroundColor: 'transparent',
-                                borderDash: [5, 5],
-                                tension: 0.4,
-                                yAxisID: 'y1'
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    callback: function(value) { return '$' + value.toLocaleString(); }
-                                }
-                            },
-                            y1: {
-                                beginAtZero: true,
-                                position: 'right',
-                                grid: { drawOnChartArea: false }
-                            }
-                        }
+
+            document.getElementById("buscarProyecto")
+            .addEventListener("keyup", function () {
+
+                let filtro = this.value.toLowerCase();
+
+                let filas = document.querySelectorAll(
+                    "tbody tr"
+                );
+
+
+                filas.forEach(function(fila){
+
+                    let texto = fila.textContent.toLowerCase();
+
+
+                    if(texto.includes(filtro))
+                    {
+                        fila.style.display = "";
                     }
+                    else
+                    {
+                        fila.style.display = "none";
+                    }
+
                 });
+
             });
+
     </script>
+    
 </body>
 </html>

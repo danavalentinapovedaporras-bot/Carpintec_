@@ -7,8 +7,10 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Carpintec - Reportes y Estadísticas</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;family=Work+Sans:wght@400;500&amp;display=swap" rel="stylesheet" />
+    <!-- INICIO: Fuentes de Google - Work Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
+    <!-- FIN: Fuentes de Google - Work Sans -->
     <!-- Tailwind Theme Config -->
     <script id="tailwind-config">
             tailwind.config = {
@@ -78,29 +80,59 @@
                             "card-padding": "24px",
                             "margin-desktop": "40px"
                         },
+                        /* INICIO: Configuración Work Sans en Tailwind */
                         "fontFamily": {
-                            "body-lg": ["Manrope"],
-                            "headline-md": ["Manrope"],
-                            "headline-lg": ["Manrope"],
-                            "title-md": ["Manrope"],
-                            "label-md": ["Work Sans"],
-                            "data-table": ["Work Sans"],
-                            "body-md": ["Manrope"],
-                            "display-lg": ["Manrope"]
+                            "body-lg": ["Work Sans", "sans-serif"],
+                            "headline-md": ["Work Sans", "sans-serif"],
+                            "headline-lg": ["Work Sans", "sans-serif"],
+                            "title-md": ["Work Sans", "sans-serif"],
+                            "label-md": ["Work Sans", "sans-serif"],
+                            "data-table": ["Work Sans", "sans-serif"],
+                            "body-md": ["Work Sans", "sans-serif"],
+                            "display-lg": ["Work Sans", "sans-serif"]
                         }
+                        /* FIN: Configuración Work Sans en Tailwind */
                     },
                 },
             }
     </script>
+    <!-- INICIO: Estilos de tipografía Work Sans en negrita y corrección de colores -->
     <style>
-            body {
-                background-color: #fbf9f4;
-                font-family: 'Manrope', sans-serif;
-                color: #000000;
+            @@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&display=swap');
+
+            body,
+            main,
+            #main-content,
+            #main-content *:not(.material-symbols-outlined):not([class*="fa-"]):not(i) {
+                font-family: 'Work Sans', sans-serif !important;
+                font-weight: 700 !important;
             }
 
             .material-symbols-outlined {
+                font-family: 'Material Symbols Outlined' !important;
+                font-weight: normal !important;
                 font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+                vertical-align: middle;
+            }
+
+            body {
+                background-color: #fbf9f4;
+                font-family: 'Work Sans', sans-serif !important;
+                font-weight: 700 !important;
+                color: #000000;
+            }
+
+            /* Corrección de azul de Bootstrap a beige (#D2B48C) y negro */
+            .bg-primary {
+                background-color: #D2B48C !important;
+            }
+
+            .text-primary {
+                color: #000000 !important;
+            }
+
+            .border-primary {
+                border-color: #D2B48C !important;
             }
 
             .card-shadow {
@@ -120,22 +152,23 @@
                 border-radius: 10px;
             }
     </style>
+    <!-- FIN: Estilos de tipografía Work Sans en negrita y corrección de colores -->
 </head>
 <body class="bg-background text-on-background">
     <!-- MAIN CONTENT AREA -->
     <div class="w-full" id="main-content">
         <!-- TOP APP BAR -->
         <button onclick="history.back()"
-                class="flex items-center gap-2 text-primary hover:underline mb-4">
-            <span class="material-symbols-outlined">arrow_back</span>
+                class="flex items-center gap-2 text-black font-bold hover:underline mb-4" style="color: #000000;">
+            <span class="material-symbols-outlined text-black">arrow_back</span>
             Volver
         </button>
 
-        <h2 class="text-4xl font-bold text-black">
+        <h2 class="text-4xl font-bold text-black" style="color: #000000;">
             Reportes
         </h2>
 
-        <p class="text-gray-500 mb-6">
+        <p class="text-black/80 font-bold mb-6">
             Consulta y exporta los reportes del sistema.
         </p>
         <!-- DASHBOARD CANVAS -->
@@ -148,14 +181,16 @@
                     <button class="px-6 py-2 rounded-lg text-black font-title-md text-title-md hover:bg-surface-container-high transition-all">Año</button>
                 </div>
                 <div class="flex gap-3 w-full md:w-auto">
-                    <button class="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2 bg-surface-container-lowest border-2 border-primary text-black font-bold rounded-xl font-title-md text-title-md hover:bg-primary/5 transition-all">
-                        <span class="material-symbols-outlined" data-icon="download">download</span>
+                    <!-- INICIO: Botones de exportación en beige (#D2B48C) con letra en negro -->
+                    <button class="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2 bg-surface-container-lowest border-2 border-[#D2B48C] text-black font-bold rounded-xl font-title-md text-title-md hover:bg-[#D2B48C]/10 transition-all" style="border-color: #D2B48C !important; color: #000000 !important;">
+                        <span class="material-symbols-outlined text-black" data-icon="download">download</span>
                         Exportar Excel
                     </button>
-                    <button class="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2 bg-primary text-black font-bold rounded-xl font-title-md text-title-md hover:opacity-90 transition-all shadow-md">
-                        <span class="material-symbols-outlined" data-icon="picture_as_pdf">picture_as_pdf</span>
+                    <button class="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2 bg-[#D2B48C] text-black font-bold rounded-xl font-title-md text-title-md hover:brightness-95 transition-all shadow-md" style="background-color: #D2B48C !important; color: #000000 !important;">
+                        <span class="material-symbols-outlined text-black" data-icon="picture_as_pdf">picture_as_pdf</span>
                         Exportar PDF
                     </button>
+                    <!-- FIN: Botones de exportación en beige (#D2B48C) con letra en negro -->
                 </div>
             </section>
             <!-- KPI GRID -->

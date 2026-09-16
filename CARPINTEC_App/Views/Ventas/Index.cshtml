@@ -9,7 +9,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 <title>Ventas y Facturación - CARPINTEC</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600&amp;family=Manrope:wght@600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
 <script id="tailwind-config">
         tailwind.config = {
@@ -81,16 +81,18 @@
                         "margin": "32px",
                         "lg": "40px"
                     },
+                    /* INICIO: Configuración Work Sans en Tailwind */
                     fontFamily: {
-                        "label-md": ["Hanken Grotesk"],
-                        "body-md": ["Hanken Grotesk"],
-                        "headline-xl": ["Manrope"],
-                        "headline-lg-mobile": ["Manrope"],
-                        "body-sm": ["Hanken Grotesk"],
-                        "headline-md": ["Manrope"],
-                        "body-lg": ["Hanken Grotesk"],
-                        "headline-lg": ["Manrope"]
+                        "label-md": ["Work Sans", "sans-serif"],
+                        "body-md": ["Work Sans", "sans-serif"],
+                        "headline-xl": ["Work Sans", "sans-serif"],
+                        "headline-lg-mobile": ["Work Sans", "sans-serif"],
+                        "body-sm": ["Work Sans", "sans-serif"],
+                        "headline-md": ["Work Sans", "sans-serif"],
+                        "body-lg": ["Work Sans", "sans-serif"],
+                        "headline-lg": ["Work Sans", "sans-serif"]
                     },
+                    /* FIN: Configuración Work Sans en Tailwind */
                     fontSize: {
                         "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
                         "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
@@ -105,14 +107,50 @@
             }
         }
     </script>
-<style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .icon-fill {
-            font-variation-settings: 'FILL' 1;
-        }
+    <!-- INICIO: Estilos de tipografía Work Sans en negrita y corrección de colores -->
+    <style>
+            @@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&display=swap');
+
+            button[onclick="history.back()"],
+            main,
+            main *:not(.material-symbols-outlined):not([class*="fa-"]):not(i),
+            #modal-nueva-factura,
+            #modal-nueva-factura *:not(.material-symbols-outlined):not([class*="fa-"]):not(i) {
+                font-family: 'Work Sans', sans-serif !important;
+                font-weight: 700 !important;
+            }
+
+            .material-symbols-outlined {
+                font-family: 'Material Symbols Outlined' !important;
+                font-weight: normal !important;
+                font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            }
+
+            .icon-fill {
+                font-variation-settings: 'FILL' 1;
+            }
+
+            body {
+                background-color: #fcf9f8;
+                font-family: 'Work Sans', sans-serif !important;
+                font-weight: 700 !important;
+                color: #000000;
+            }
+
+            /* Corrección de azul de Bootstrap a beige (#D2B48C) y negro */
+            .bg-primary {
+                background-color: #D2B48C !important;
+            }
+
+            .text-primary {
+                color: #000000 !important;
+            }
+
+            .border-primary {
+                border-color: #D2B48C !important;
+            }
     </style>
+    <!-- FIN: Estilos de tipografía Work Sans en negrita y corrección de colores -->
 </head>
 <body class="bg-surface text-on-surface font-body-md min-h-screen">
 <!-- Top App Bar -->
@@ -126,9 +164,11 @@
 <h2 class="text-headline-lg-mobile md:text-headline-lg font-headline-lg-mobile md:font-headline-lg text-on-surface">Ventas y Facturación</h2>
 <p class="text-body-sm font-body-sm text-on-surface-variant mt-1">Gestiona las ventas, facturas y pagos de CARPINTEC desde un solo lugar.</p>
 </div>
-                <button type="button" onclick="abrirModalFactura()" class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-on-primary font-semibold rounded-lg shadow-sm hover:opacity-95 transition-opacity">
-                    <span class="material-symbols-outlined text-[18px]">add</span> Nueva Factura
+                <!-- INICIO: Botón Nueva Factura en color beige (#D2B48C) -->
+                <button type="button" onclick="abrirModalFactura()" class="inline-flex items-center gap-2 px-4 py-2 bg-[#D2B48C] hover:brightness-95 text-black font-bold rounded-lg shadow-sm transition-all" style="background-color: #D2B48C; color: #000000;">
+                    <span class="material-symbols-outlined text-[18px] text-black">add</span> Nueva Factura
                 </button>
+                <!-- FIN: Botón Nueva Factura en color beige (#D2B48C) -->
 </div>
 <!-- KPI Cards Grid -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md mb-lg">
@@ -240,8 +280,9 @@
                     @foreach (var item in Model)
                     {
                         <tr class="border-b border-outline-variant/10 hover:bg-surface-container-lowest transition-colors bg-surface-container-low/20">
-                            <!-- Número de Factura dinámico -->
-                            <td class="py-3 px-4 font-semibold text-primary">@item.NumeroFactura</td>
+                            <!-- INICIO: Número de Factura dinámico en color negro -->
+                            <td class="py-3 px-4 font-bold text-black" style="color: #000000 !important;">@item.NumeroFactura</td>
+                            <!-- FIN: Número de Factura dinámico en color negro -->
                             
                             <!-- Nombre del Cliente desde la base de datos -->
                             <td class="py-3 px-4">@item.IdClienteNavigation?.Nombre</td>
@@ -294,7 +335,7 @@
         <span>Mostrando registros de la base de datos</span>
         <div class="flex gap-1">
             <button class="px-3 py-1 border border-outline-variant/50 rounded hover:bg-surface-container-low transition-colors disabled:opacity-50">Anterior</button>
-            <button class="px-3 py-1 bg-primary text-on-primary rounded font-semibold">1</button>
+            <button class="px-3 py-1 bg-[#D2B48C] text-black rounded font-bold" style="background-color: #D2B48C; color: #000000;">1</button>
             <button class="px-3 py-1 border border-outline-variant/50 rounded hover:bg-surface-container-low transition-colors">Siguiente</button>
         </div>
     </div>
@@ -348,9 +389,10 @@
             </tr>
         </thead>
         <tbody class="text-body-sm font-body-sm">
+            <!-- INICIO: Listado de Facturas pendientes con códigos en negro -->
             <tr class="border-b border-outline-variant/10 hover:bg-surface-container-low/30 transition-colors">
                 <td class="py-3 px-2 font-semibold text-on-surface">María Gómez</td>
-                <td class="py-3 px-2 text-primary">FAC-2026-003</td>
+                <td class="py-3 px-2 font-bold text-black" style="color: #000000 !important;">FAC-2026-003</td>
                 <td class="py-3 px-2 font-semibold">$1.200.000</td>
                 <td class="py-3 px-2 text-on-surface-variant">21/08/2026</td>
                 <td class="py-3 px-2">
@@ -359,7 +401,7 @@
             </tr>
             <tr class="border-b border-outline-variant/10 hover:bg-surface-container-low/30 transition-colors">
                 <td class="py-3 px-2 font-semibold text-on-surface">Carlos Pérez</td>
-                <td class="py-3 px-2 text-primary">FAC-2026-004</td>
+                <td class="py-3 px-2 font-bold text-black" style="color: #000000 !important;">FAC-2026-004</td>
                 <td class="py-3 px-2 font-semibold">$850.000</td>
                 <td class="py-3 px-2 text-on-surface-variant">27/08/2026</td>
                 <td class="py-3 px-2">
@@ -368,13 +410,14 @@
             </tr>
             <tr class="border-b border-outline-variant/10 hover:bg-surface-container-low/30 transition-colors">
                 <td class="py-3 px-2 font-semibold text-on-surface">Ana Martínez</td>
-                <td class="py-3 px-2 text-primary">FAC-2026-005</td>
+                <td class="py-3 px-2 font-bold text-black" style="color: #000000 !important;">FAC-2026-005</td>
                 <td class="py-3 px-2 font-semibold">$1.200.000</td>
                 <td class="py-3 px-2 text-on-surface-variant">29/08/2026</td>
                 <td class="py-3 px-2">
                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-secondary-fixed text-on-secondary-fixed-variant">Pendiente</span>
                 </td>
             </tr>
+            <!-- FIN: Listado de Facturas pendientes con códigos en negro -->
         </tbody>
     </table>
 </div>
@@ -422,7 +465,7 @@
             <!-- Cabecera del Modal -->
             <div class="flex justify-between items-center pb-4 border-b border-outline-variant/30 mb-4">
                 <h3 class="text-lg font-bold text-on-surface flex items-center gap-2">
-                    <span class="material-symbols-outlined text-primary">add_circle</span> Crear Nueva Factura
+                    <span class="material-symbols-outlined text-[#D2B48C]">add_circle</span> Crear Nueva Factura
                 </h3>
                 <button type="button" onclick="cerrarModalFactura()" class="p-1 hover:bg-surface-container-low rounded-lg text-on-surface-variant">
                     <span class="material-symbols-outlined">close</span>
@@ -495,9 +538,11 @@
                     <button type="button" onclick="cerrarModalFactura()" class="px-4 py-2 border border-outline-variant/50 rounded-lg text-sm font-medium text-on-surface hover:bg-surface-container-low transition-colors">
                         Cancelar
                     </button>
-                    <button type="submit" class="px-5 py-2 bg-primary text-on-primary text-sm font-semibold rounded-lg shadow-sm hover:opacity-90 transition-opacity">
+                    <!-- INICIO: Botón Guardar Factura en color beige (#D2B48C) -->
+                    <button type="submit" class="px-5 py-2 bg-[#D2B48C] hover:brightness-95 text-black text-sm font-bold rounded-lg shadow-sm transition-all" style="background-color: #D2B48C; color: #000000;">
                         Guardar Factura
                     </button>
+                    <!-- FIN: Botón Guardar Factura en color beige (#D2B48C) -->
                 </div>
 
             </form>
