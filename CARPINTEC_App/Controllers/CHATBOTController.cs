@@ -1,263 +1,134 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using CARPINTEC_App.Models;
 using CARPINTEC_App.Data;
+using CARPINTEC_App.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using System.Linq;
 
 namespace CARPINTEC_App.Controllers
 {
+    /// <summary>
+    /// Controlador que gestiona los dos chatbots independientes de CARPINTEC:
+    /// 1. Chatbot Administrativo: Atiende a los usuarios con sesión iniciada en el panel administrativo (_Layout.cshtml),
+    ///    conectado a la base de datos completa (clientes, inventario, pedidos, cotizaciones, etc.).
+    /// 2. Chatbot Público: Atiende exclusivamente a visitantes de la página web (Home/Index.cshtml) con información
+    ///    institucional, servicios, contacto y la regla obligatoria de registro para cotizaciones y pedidos.
+    /// </summary>
     public class ChatbotController : Controller
     {
         private readonly CarpintecContext _context;
+        private readonly ChatbotService _chatbotService;
+        private readonly ChatbotPublicoService _chatbotPublicoService;
 
-        public ChatbotController(CarpintecContext context)
+        public ChatbotController(
+            CarpintecContext context,
+            ChatbotService chatbotService,
+            ChatbotPublicoService chatbotPublicoService)
         {
             _context = context;
+            _chatbotService = chatbotService;
+            _chatbotPublicoService = chatbotPublicoService;
         }
 
-
+        // =========================================================================
+        // 1. CHATBOT ADMINISTRATIVO (Panel de Administración / Layout)
+        // =========================================================================
+        /// <summary>
+        /// Endpoint exclusivo para el panel de administración.
+        /// Consulta la base de datos, métricas ERP y guías paso a paso del sistema.
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> Preguntar([FromBody] MensajeChatbot mensaje)
         {
-
-            string pregunta = mensaje.Mensaje.ToLower().Trim();
-
-            string respuesta = "";
-
-            if (pregunta.Contains("hola") || pregunta.Contains("buenas"))
+            if (mensaje == null || string.IsNullOrWhiteSpace(mensaje.Mensaje))
             {
-                respuesta =
-                "👋 ¡Hola! Bienvenido a CARPINTEC 🪵\n\n" +
-                "Soy tu asistente virtual. ¿Cómo puedo ayudarte?\n\n" +
-                "Selecciona una opción:\n\n" +
-                "🪑 1. Productos disponibles\n" +
-                "🏠 2. Servicios de carpintería\n" +
-                "📄 3. Solicitar una cotización\n" +
-                "📦 4. Consultar mi pedido\n" +
-                "👨‍💼 5. Contactar un asesor\n\n" +
-                "Escribe el número de la opción.";
+                return Json(new { respuesta = "Por favor escribe un mensaje o selecciona una de las opciones disponibles." });
             }
 
+            // Procesar respuesta a través del servicio administrativo
+            string respuesta = await _chatbotService.ResponderAsync(mensaje.Mensaje);
 
+            // Identificar usuario conectado por JWT o Sesión
+            var idUsuarioClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            int? idUsuario = null;
 
-            else if (pregunta.Contains("servicio") ||
-                     pregunta.Contains("servicios"))
+            if (!string.IsNullOrEmpty(idUsuarioClaim) && int.TryParse(idUsuarioClaim, out int parsedId))
             {
-                respuesta = "Ofrecemos cocinas integrales, closets, muebles personalizados, escritorios, puertas y centros de entretenimiento.";
+                idUsuario = parsedId;
+            }
+            else
+            {
+                idUsuario = HttpContext.Session.GetInt32("IdUsuario");
             }
 
-
-            else if (pregunta.Contains("producto") ||
-                     pregunta.Contains("productos") ||
-                     pregunta.Contains("mueble"))
+            // Guardar registro de la conversación en la base de datos
+            try
             {
-
-                var productos = await _context.Productos
-                    .Where(p => p.Estado == "Activo")
-                    .Take(5)
-                    .ToListAsync();
-
-
-                if (productos.Count > 0)
+                ChatBot chat = new ChatBot
                 {
-                    respuesta = "Estos son algunos productos disponibles:\n";
+                    IdUsuario = idUsuario,
+                    MensajeUsuario = mensaje.Mensaje,
+                    RespuestaBot = respuesta,
+                    Fecha = DateTime.Now
+                };
 
-                    foreach (var producto in productos)
-                    {
-                        respuesta +=
-                        $"- {producto.Nombre} | Precio: ${producto.Precio}\n";
-                    }
-                }
-                else
-                {
-                    respuesta = "Actualmente no hay productos disponibles.";
-                }
-
+                _context.ChatBots.Add(chat);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Nota: No se pudo registrar historial del chat administrativo: {ex.Message}");
             }
 
-
-            else if (pregunta.Contains("pedido") ||
-                     pregunta.Contains("pedidos"))
-            {
-
-                var pedidos = await _context.Pedidos
-                    .Take(5)
-                    .ToListAsync();
-
-
-                if (pedidos.Count > 0)
-                {
-                    respuesta = "Estos son algunos pedidos registrados:\n";
-
-                    foreach (var pedido in pedidos)
-                    {
-                        respuesta +=
-                        $"- Pedido: {pedido.CodigoPedido} | Estado: {pedido.Estado}\n";
-                    }
-                }
-                else
-                {
-                    respuesta = "Actualmente no hay pedidos registrados.";
-                }
-
-            }
-
-
-            else if (pregunta.Contains("cotizacion") ||
-                     pregunta.Contains("cotización") ||
-                     pregunta.Contains("cotizaciones"))
-            {
-
-                var cotizaciones = await _context.Cotizaciones
-                    .Take(5)
-                    .ToListAsync();
-
-
-                if (cotizaciones.Count > 0)
-                {
-                    respuesta = "Estas son algunas cotizaciones registradas:\n";
-
-
-                    foreach (var cotizacion in cotizaciones)
-                    {
-                        respuesta +=
-                        $"- Folio: {cotizacion.Folio} | Estado: {cotizacion.Estado} | Total: ${cotizacion.Total}\n";
-                    }
-                }
-                else
-                {
-                    respuesta = "Actualmente no hay cotizaciones registradas.";
-                }
-
-            }
-
-
-            else if (pregunta.Contains("cliente") ||
-                     pregunta.Contains("clientes"))
-            {
-
-                var clientes = await _context.Clientes
-                    .Take(5)
-                    .ToListAsync();
-
-
-                if (clientes.Count > 0)
-                {
-                    respuesta = "Estos son algunos clientes registrados:\n";
-
-
-                    foreach (var cliente in clientes)
-                    {
-
-                        if (cliente.TipoCliente == "Empresa")
-                        {
-                            respuesta +=
-                            $"- Empresa: {cliente.NombreEmpresa} | Estado: {cliente.Estado}\n";
-                        }
-                        else
-                        {
-                            respuesta +=
-                            $"- Cliente: {cliente.Nombre} {cliente.Apellido} | Estado: {cliente.Estado}\n";
-                        }
-
-                    }
-                }
-                else
-                {
-                    respuesta = "Actualmente no hay clientes registrados.";
-                }
-
-            }
-
-
-            else if (pregunta.Contains("inventario") ||
-                     pregunta.Contains("stock") ||
-                     pregunta.Contains("disponible"))
-            {
-
-                var inventario = await _context.Inventarios
-                    .Include(i => i.IdProductoNavigation)
-                    .Take(5)
-                    .ToListAsync();
-
-
-                if (inventario.Count > 0)
-                {
-                    respuesta = "Productos disponibles en inventario:\n";
-
-
-                    foreach (var item in inventario)
-                    {
-                        respuesta +=
-                        $"- Producto: {item.IdProductoNavigation.Nombre} | Stock: {item.StockActual} | Estado: {item.Estado}\n";
-                    }
-
-                }
-                else
-                {
-                    respuesta = "No hay productos registrados en inventario.";
-                }
-
-            }
-
-
-            else if (pregunta.Contains("factura") ||
-         pregunta.Contains("facturas"))
-            {
-                var facturas = await _context.Facturas
-                    .Take(5)
-                    .ToListAsync();
-
-
-                if (facturas.Count > 0)
-                {
-                    respuesta = "Facturas encontradas:\n";
-
-                    foreach (var factura in facturas)
-                    {
-                        respuesta +=
-                        $"- Factura: {factura.Folio} | Cliente: {factura.Cliente} | Total: ${factura.Total} | Estado: {factura.Estado}\n";
-                    }
-
-                }
-                else
-                {
-                    respuesta = "Actualmente no hay facturas registradas.";
-                }
-            }
-
-
-            // Usuario conectado por JWT
-
-            var idUsuario = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-
-            Console.WriteLine("Usuario JWT: " + idUsuario);
-
-
-
-            // Guardar conversación
-            ChatBot chat = new ChatBot
-            {
-                IdUsuario = idUsuario != null ? int.Parse(idUsuario) : null,
-
-                MensajeUsuario = mensaje.Mensaje,
-
-                RespuestaBot = respuesta,
-
-                Fecha = DateTime.Now
-            };
-
-
-            _context.ChatBots.Add(chat);
-
-            await _context.SaveChangesAsync();
             return Json(new
             {
                 respuesta = respuesta
             });
+        }
 
+        // =========================================================================
+        // 2. CHATBOT PÚBLICO (Página de Inicio / Visitantes Web)
+        // =========================================================================
+        /// <summary>
+        /// Endpoint exclusivo para visitantes de la página principal (Home/Index.cshtml).
+        /// Brinda información general de la empresa, productos, servicios, contacto y
+        /// exige inicio de sesión / registro para cotizaciones y pedidos.
+        /// No tiene acceso a datos administrativos ni de nómina o ERP.
+        /// </summary>
+        [HttpPost]
+        public async Task<IActionResult> PreguntarPublico([FromBody] MensajeChatbot mensaje)
+        {
+            if (mensaje == null || string.IsNullOrWhiteSpace(mensaje.Mensaje))
+            {
+                return Json(new { respuesta = "👋 ¡Hola! ¿En qué te podemos asesorar sobre CARPINTEC hoy?" });
+            }
+
+            // Procesar la consulta mediante el servicio especializado de atención pública
+            string respuesta = await _chatbotPublicoService.ResponderPublicoAsync(mensaje.Mensaje);
+
+            // Opcional: Registrar consulta pública sin usuario asociado para métricas de atención
+            try
+            {
+                ChatBot chat = new ChatBot
+                {
+                    IdUsuario = null, // Visitante anónimo de la página web
+                    MensajeUsuario = "[Público] " + mensaje.Mensaje,
+                    RespuestaBot = respuesta,
+                    Fecha = DateTime.Now
+                };
+
+                _context.ChatBots.Add(chat);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Nota: No se pudo registrar consulta del chatbot público: {ex.Message}");
+            }
+
+            return Json(new
+            {
+                respuesta = respuesta
+            });
         }
     }
 }

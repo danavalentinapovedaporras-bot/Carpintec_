@@ -28,6 +28,14 @@
 
 <script src="https://cdn.tailwindcss.com"></script>
 
+<!-- DATATABLES -->
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css">
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+
+
 <!-- INICIO: Tipografía Work Sans en negrita -->
 <style>
     @@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&display=swap');
@@ -268,8 +276,7 @@ Administradores
 <div class="overflow-x-auto">
 
 
-<table class="w-full text-left">
-
+<table id="tablaUsuarios" class="w-full text-left">
 
 <thead class="bg-[#f0eded]">
 
@@ -428,7 +435,7 @@ Acciones
 
                                                 </span>
 
-                                      </button>
+                                            </button>
 
                               </div>
 
@@ -563,6 +570,7 @@ Acciones
 
 
                             </div>
+
 
 
 
@@ -1008,9 +1016,80 @@ MODAL ESTADO
 
 
     
-
 </main>
-    
+
+
+<script>
+
+// ======================
+// DATATABLE USUARIOS
+// ======================
+
+document.addEventListener("DOMContentLoaded", function () {
+
+
+    new DataTable('#tablaUsuarios', {
+
+        columnDefs: [
+            {
+                targets: 4,
+                searchable: false,
+                orderable: false
+            }
+        ],
+
+
+        pageLength: 5,
+
+
+        lengthMenu: [
+            [5,10,15,20],
+            [5,10,15,20]
+        ],
+
+
+        language: {
+
+            search: "Buscar:",
+
+            lengthMenu: "Mostrar _MENU_ usuarios",
+
+            info: "Mostrando _START_ a _END_ de _TOTAL_ usuarios",
+
+            infoEmpty: "Mostrando 0 usuarios",
+
+            zeroRecords: "No se encontraron usuarios",
+
+
+            paginate: {
+
+                first: "Primero",
+
+                last: "Último",
+
+                next: "Siguiente",
+
+                previous: "Anterior"
+
+            }
+
+        }
+
+
+    });
+
+
+});
+
+</script>
+
+
+
+<script>
+
+// ======================
+// MODAL CREAR USUARIO
+// ======================
     <script>
 
 
