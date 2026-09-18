@@ -130,10 +130,10 @@ namespace CARPINTEC_App.Controllers
             }
 
 
-            // Fecha no anterior
-            if (empleado.FechaIngreso < DateOnly.FromDateTime(DateTime.Now))
+            // Fecha no muy futura (máximo 1 año adelante)
+            if (empleado.FechaIngreso > DateOnly.FromDateTime(DateTime.Now.AddYears(1)))
             {
-                TempData["Error"] = "La fecha de ingreso no puede ser anterior a la fecha actual";
+                TempData["Error"] = "La fecha de ingreso no puede ser más de 1 año en el futuro";
                 return RedirectToAction(nameof(Index));
             }
 

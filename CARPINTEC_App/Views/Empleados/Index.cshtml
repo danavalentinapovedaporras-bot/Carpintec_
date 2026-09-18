@@ -150,7 +150,20 @@
            
                 <h2 class="text-headline-lg font-headline-lg text-on-surface text-3xl sm:text-4xl font-bold">Gestión Empleados</h2>
                 <p class="text-body-lg text-on-surface opacity-70 mt-1">Gestión de artesanos, operarios y personal administrativo.</p>
-            </div>
+            <div class="flex flex-col sm:flex-row justify-between sm:items-end gap-4 mb-8">
+    <div>
+        <h2 class="text-headline-lg font-headline-lg text-on-surface text-3xl sm:text-4xl font-bold">Gestión Empleados</h2>
+        <p class="text-body-lg text-on-surface opacity-70 mt-1">Gestión de artesanos, operarios y personal administrativo.</p>
+    </div>
+
+    <!-- INICIO: Botón Nuevo Empleado en beige (#D2B48C) -->
+    <button onclick="abrirModalNuevoEmpleado()"
+            class="flex items-center justify-center gap-2 bg-[#D2B48C] text-black px-6 py-3 rounded-lg font-bold hover:brightness-95 transition-all soft-wood-shadow active:scale-95 shrink-0"
+            style="background-color: #D2B48C;">
+        <span class="material-symbols-outlined">person_add</span>
+        <span class="text-body-md">Nuevo Empleado</span>
+    </button>
+    <!-- FIN: Botón Nuevo Empleado en beige (#D2B48C) -->
             <!-- INICIO: Botón Nuevo Empleado en beige (#D2B48C) -->
             <button onclick="abrirModalNuevoEmpleado()"
                     class="flex items-center justify-center gap-2 bg-[#D2B48C] text-black px-6 py-3 rounded-lg font-bold hover:brightness-95 transition-all soft-wood-shadow active:scale-95 shrink-0"
@@ -247,7 +260,18 @@
         <div class="bg-surface-container-lowest rounded-xl border border-outline-variant soft-wood-shadow overflow-hidden">
             <div class="px-6 py-4 border-b border-outline-variant flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <h4 class="text-title-md font-title-md text-on-surface font-bold">Listado de Personal</h4>
-                <div class="flex gap-2">
+                <div class="flex items-center gap-2">
+    <div class="relative w-96">
+        <span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+        <input class="w-full pl-xl pr-md py-xs bg-surface-container-low border-none rounded-full text-body-sm focus:ring-2 focus:ring-primary" placeholder="Buscar empleado por nombre o cargo..." type="text" id="empleadoSearch" oninput="filtrarEmpleados()" />
+    </div>
+    <button class="p-2 hover:bg-surface-container-low rounded-lg transition-colors border border-outline-variant flex items-center gap-2 text-label-md font-medium text-on-surface">
+        <span class="material-symbols-outlined text-lg">filter_list</span> Filtrar
+    </button>
+    <button class="p-2 hover:bg-surface-container-low rounded-lg transition-colors border border-outline-variant flex items-center gap-2 text-label-md font-medium text-on-surface">
+        <span class="material-symbols-outlined text-lg">download</span> Exportar
+    </button>
+</div>
                     <button class="p-2 hover:bg-surface-container-low rounded-lg transition-colors border border-outline-variant flex items-center gap-2 text-label-md font-medium text-on-surface">
                         <span class="material-symbols-outlined text-lg">filter_list</span> Filtrar
                     </button>
@@ -257,8 +281,8 @@
                 </div>
             </div>
             <div class="overflow-x-auto">
-     <table id="tablaEmpleados" class="w-full text-left font-data-table text-data-table">
-    <thead class="bg-surface-container-low text-on-surface border-b border-outline-variant">
+                <table id="tablaEmpleados" class="w-full text-left font-data-table text-data-table">
+                    <thead class="bg-surface-container-low text-on-surface border-b border-outline-variant">
                         <tr>
                             <th class="p-table-cell-padding uppercase tracking-wider font-bold text-xs">Empleado</th>
                             <th class="p-table-cell-padding uppercase tracking-wider font-bold text-xs">Puesto</th>
@@ -267,8 +291,7 @@
                             <th class="p-table-cell-padding uppercase tracking-wider font-bold text-xs text-right">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody id="tablaEmpleados" class="divide-y divide-outline-variant">
-
+                    <tbody class="divide-y divide-outline-variant">
                         @foreach (var empleado in Model)
                         {
                             <tr class="hover:bg-surface-container-low/50 transition-colors">
@@ -440,18 +463,23 @@
                                 <td class="p-table-cell-padding text-right">
 
                                     <button onclick="abrirModalVer(@empleado.IdEmpleado)"
-                                            class="p-2">
+                                            class="p-2" title="Ver empleado">
                                         👁️
                                     </button>
 
                                     <button onclick="abrirModalEditar(@empleado.IdEmpleado)"
-                                            class="p-2">
+                                            class="p-2" title="Editar datos">
                                         ✏️
                                     </button>
 
                                     <button onclick="abrirModalEstado(@empleado.IdEmpleado)"
-                                            class="p-2">
+                                            class="p-2" title="Cambiar estado">
                                         ⚙️
+                                    </button>
+
+                                    <button onclick="abrirCalendarioEditar(@empleado.IdEmpleado, '@empleado.Nombre @empleado.Apellido', '@empleado.Estado', '@(empleado.FechaInicioEstado?.ToString("yyyy-MM-dd") ?? empleado.FechaInicioVacaciones?.ToString("yyyy-MM-dd") ?? "")', '@(empleado.FechaFinEstado?.ToString("yyyy-MM-dd") ?? empleado.FechaFinVacaciones?.ToString("yyyy-MM-dd") ?? "")')"
+                                            class="p-2" title="Asignar fechas en calendario">
+                                        📅
                                     </button>
 
                                 </td>
@@ -785,6 +813,16 @@ MODAL NUEVO EMPLEADO
 
             });
 
+    </script>
+    <script>
+    function filtrarEmpleados() {
+        const filter = document.getElementById('empleadoSearch').value.toLowerCase().trim();
+        const rows = document.querySelectorAll('#tablaEmpleados tbody tr');
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(filter) ? '' : 'none';
+        });
+    }
     </script>
     <div id="modalVerEmpleado"
          class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
@@ -1390,15 +1428,44 @@ MODAL NUEVO EMPLEADO
             </div>
 
             <!-- Leyenda -->
-            <div class="flex items-center justify-center gap-5 text-xs font-bold text-gray-600 mt-4">
+            <div class="flex flex-wrap items-center justify-center gap-4 text-xs font-bold text-gray-600 mt-4">
                 <div class="flex items-center gap-1.5">
                     <span class="w-3.5 h-3.5 rounded-md bg-[#D2B48C] border border-[#c39d7a] inline-block"></span>
-                    <span>Días de vacaciones</span>
+                    <span>Días seleccionados</span>
                 </div>
                 <div class="flex items-center gap-1.5">
                     <span class="w-3.5 h-3.5 rounded-md border-2 border-black inline-block"></span>
                     <span>Hoy</span>
                 </div>
+                <div id="calLeyendaEdicion" class="items-center gap-1.5 hidden">
+                    <span class="w-3.5 h-3.5 rounded-md bg-green-200 border border-green-500 inline-block"></span>
+                    <span>1er clic = Inicio &nbsp;·&nbsp; 2do clic = Fin</span>
+                </div>
+            </div>
+
+            <!-- Panel de edición de fechas (visible solo en modo editar) -->
+            <div id="calPanelEdicion" class="mt-5 pt-4 border-t border-gray-200 hidden">
+                <p class="text-xs text-[#442a22] font-bold mb-3 flex items-center gap-1">
+                    <span class="material-symbols-outlined text-sm text-[#D2B48C]">edit_calendar</span>
+                    Selecciona fechas haciendo clic en el calendario o escríbelas aquí:
+                </p>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs font-bold text-gray-600 block mb-1" for="calInputInicio">Fecha Inicio</label>
+                        <input type="date"
+                               id="calInputInicio"
+                               class="w-full border border-gray-300 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#D2B48C] focus:border-[#D2B48C]"
+                               oninput="calActualizarDesdeCampos()">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-gray-600 block mb-1" for="calInputFin">Fecha Fin</label>
+                        <input type="date"
+                               id="calInputFin"
+                               class="w-full border border-gray-300 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#D2B48C] focus:border-[#D2B48C]"
+                               oninput="calActualizarDesdeCampos()">
+                    </div>
+                </div>
+                <p id="calMsgError" class="text-xs text-red-600 font-bold mt-2 hidden">⚠️ La fecha fin no puede ser anterior a la fecha inicio.</p>
             </div>
 
             <!-- Lista de empleados en vacaciones (vista general) -->
@@ -1407,8 +1474,24 @@ MODAL NUEVO EMPLEADO
                 <div id="calContenedorListaEmpleados" class="space-y-2 max-h-48 overflow-y-auto"></div>
             </div>
 
-            <div class="flex justify-end mt-6">
+            <div class="flex justify-end gap-3 mt-6">
                 <button type="button"
+                        onclick="cerrarModalCalendario()"
+                        class="px-5 py-2.5 rounded-xl font-bold transition text-sm border border-gray-300 hover:bg-gray-50">
+                    Cancelar
+                </button>
+                <!-- Botón guardar: visible solo en modo editar -->
+                <button type="button"
+                        id="calBtnGuardar"
+                        onclick="calGuardarFechas()"
+                        class="hidden px-6 py-2.5 rounded-xl font-bold transition shadow-sm text-sm flex items-center gap-2"
+                        style="background:#D2B48C; color:#442a22;">
+                    <span class="material-symbols-outlined text-sm" style="vertical-align:middle">save</span>
+                    Guardar Fechas
+                </button>
+                <!-- Botón cerrar: visible solo en modo vista -->
+                <button type="button"
+                        id="calBtnCerrar"
                         onclick="cerrarModalCalendario()"
                         class="px-6 py-2.5 rounded-xl font-bold transition shadow-sm text-sm"
                         style="background:#D2B48C; color:#442a22;">
@@ -1423,6 +1506,10 @@ MODAL NUEVO EMPLEADO
         let calFechaActualVisual = new Date();
         let calFechaInicioSel = null;
         let calFechaFinSel = null;
+        let calModoEdicion = false;        // true = permite editar y guardar
+        let calIdEmpleado = null;          // id del empleado en modo edición
+        let calEstadoEmpleado = null;      // estado actual del empleado en modo edición
+        let calSeleccionando = 'inicio';   // 'inicio' o 'fin' para selección por clic
 
         // Lista de empleados en vacaciones obtenida desde Razor
         const empleadosVacacionesDatos = [
@@ -1438,20 +1525,67 @@ MODAL NUEVO EMPLEADO
             }
         ];
 
-        function abrirCalendarioDetalle(nombreEmpleado, inicioStr, finStr) {
-            document.getElementById("calModalTitulo").innerText = "Vacaciones de " + nombreEmpleado;
+        // ─── Abrir en modo DETALLE (solo lectura) ───────────────────────────
+        function abrirCalendarioDetalle(nombreEmpleado, inicioStr, finStr, estado) {
+            calModoEdicion = false;
+            calIdEmpleado = null;
+            calEstadoEmpleado = null;
+            const tituloEstado = estado || 'Vacaciones';
+            document.getElementById("calModalTitulo").innerText = tituloEstado + " de " + nombreEmpleado;
             document.getElementById("calModalSubtitulo").innerText = "Periodo programado para el empleado";
             document.getElementById("calListaEmpleadosGeneral").classList.add("hidden");
-
+            calAplicarModo();
             configurarPeriodoCalendario(inicioStr, finStr);
-
             document.getElementById("modalCalendarioVacaciones").classList.remove("hidden");
             document.getElementById("modalCalendarioVacaciones").classList.add("flex");
         }
 
+        // ─── Abrir en modo EDICIÓN (permite guardar fechas) ─────────────────
+        function abrirCalendarioEditar(idEmpleado, nombreEmpleado, estado, inicioStr, finStr) {
+            calModoEdicion = true;
+            calIdEmpleado = idEmpleado;
+            calEstadoEmpleado = estado;
+            calSeleccionando = 'inicio';
+            document.getElementById("calModalTitulo").innerText = "Asignar periodo — " + nombreEmpleado;
+            document.getElementById("calModalSubtitulo").innerText = "Selecciona las fechas de " + estado;
+            document.getElementById("calListaEmpleadosGeneral").classList.add("hidden");
+            // Pre-cargar inputs con fechas actuales si existen
+            document.getElementById("calInputInicio").value = inicioStr || "";
+            document.getElementById("calInputFin").value = finStr || "";
+            document.getElementById("calMsgError").classList.add("hidden");
+            calAplicarModo();
+            configurarPeriodoCalendario(inicioStr || null, finStr || null);
+            document.getElementById("modalCalendarioVacaciones").classList.remove("hidden");
+            document.getElementById("modalCalendarioVacaciones").classList.add("flex");
+        }
+
+        // ─── Mostrar/ocultar elementos según el modo ────────────────────────
+        function calAplicarModo() {
+            const panelEdicion    = document.getElementById("calPanelEdicion");
+            const btnGuardar      = document.getElementById("calBtnGuardar");
+            const btnCerrar       = document.getElementById("calBtnCerrar");
+            const leyendaEdicion  = document.getElementById("calLeyendaEdicion");
+            if (calModoEdicion) {
+                panelEdicion.classList.remove("hidden");
+                btnGuardar.classList.remove("hidden");
+                btnCerrar.classList.add("hidden");
+                leyendaEdicion.classList.remove("hidden");
+                leyendaEdicion.classList.add("flex");
+            } else {
+                panelEdicion.classList.add("hidden");
+                btnGuardar.classList.add("hidden");
+                btnCerrar.classList.remove("hidden");
+                leyendaEdicion.classList.add("hidden");
+            }
+        }
+
+        // ─── Abrir calendario general ───────────────────────────────────────
         function abrirModalCalendarioGeneral() {
+            calModoEdicion = false;
+            calIdEmpleado = null;
             document.getElementById("calModalTitulo").innerText = "Calendario General de Vacaciones";
             document.getElementById("calModalSubtitulo").innerText = "Resumen del personal de CARPINTEC en vacaciones";
+            calAplicarModo();
 
             const contenedorLista = document.getElementById("calContenedorListaEmpleados");
             contenedorLista.innerHTML = '';
@@ -1492,8 +1626,6 @@ MODAL NUEVO EMPLEADO
                     contenedorLista.appendChild(item);
                 });
                 document.getElementById("calListaEmpleadosGeneral").classList.remove("hidden");
-
-                // Configurar con el primer empleado
                 configurarPeriodoCalendario(conFechas[0].inicio, conFechas[0].fin);
             } else {
                 configurarPeriodoCalendario(null, null);
@@ -1504,6 +1636,7 @@ MODAL NUEVO EMPLEADO
             document.getElementById("modalCalendarioVacaciones").classList.add("flex");
         }
 
+        // ─── Actualizar estado resumen desde los valores actuales ────────────
         function configurarPeriodoCalendario(inicioStr, finStr) {
             if (inicioStr && finStr) {
                 calFechaInicioSel = new Date(inicioStr + 'T00:00:00');
@@ -1518,7 +1651,6 @@ MODAL NUEVO EMPLEADO
 
                 const hoy = new Date();
                 hoy.setHours(0, 0, 0, 0);
-
                 if (hoy < calFechaInicioSel) {
                     const faltan = Math.ceil((calFechaInicioSel - hoy) / (1000 * 60 * 60 * 24));
                     document.getElementById("calResumenFaltan").innerText = `Inicia en ${faltan} día(s)`;
@@ -1532,13 +1664,44 @@ MODAL NUEVO EMPLEADO
                 calFechaInicioSel = null;
                 calFechaFinSel = null;
                 calFechaActualVisual = new Date();
-
                 document.getElementById("calResumenInicio").innerText = "-";
                 document.getElementById("calResumenFin").innerText = "-";
                 document.getElementById("calResumenTotal").innerText = "-";
                 document.getElementById("calResumenFaltan").innerText = "-";
             }
+            dibujarCuadriculaCalendario();
+        }
 
+        // ─── Actualizar calendario cuando el usuario edita los inputs ────────
+        function calActualizarDesdeCampos() {
+            const ini = document.getElementById("calInputInicio").value;
+            const fin = document.getElementById("calInputFin").value;
+            const msgError = document.getElementById("calMsgError");
+
+            if (ini && fin && fin < ini) {
+                msgError.classList.remove("hidden");
+                return;
+            }
+            msgError.classList.add("hidden");
+
+            if (ini) calFechaInicioSel = new Date(ini + 'T00:00:00');
+            else calFechaInicioSel = null;
+
+            if (fin) calFechaFinSel = new Date(fin + 'T00:00:00');
+            else calFechaFinSel = null;
+
+            // Actualizar resumen
+            document.getElementById("calResumenInicio").innerText = ini ? formatearFechaLocal(ini) : "-";
+            document.getElementById("calResumenFin").innerText = fin ? formatearFechaLocal(fin) : "-";
+            if (calFechaInicioSel && calFechaFinSel) {
+                const totalDias = Math.round((calFechaFinSel - calFechaInicioSel) / (1000 * 60 * 60 * 24)) + 1;
+                document.getElementById("calResumenTotal").innerText = totalDias + " día(s)";
+            } else {
+                document.getElementById("calResumenTotal").innerText = "-";
+            }
+            document.getElementById("calResumenFaltan").innerText = "-";
+
+            if (ini) calFechaActualVisual = new Date(ini + 'T00:00:00');
             dibujarCuadriculaCalendario();
         }
 
@@ -1578,36 +1741,146 @@ MODAL NUEVO EMPLEADO
                 fechaDia.setHours(0, 0, 0, 0);
 
                 const celda = document.createElement("div");
-                celda.className = "h-9 flex items-center justify-center text-xs font-bold rounded-xl transition cursor-default ";
 
                 const esHoy = fechaDia.getTime() === hoy.getTime();
-                let enRangoVacaciones = false;
+                let enRango = false;
+                let esInicio = false;
+                let esFin = false;
 
                 if (calFechaInicioSel && calFechaFinSel) {
-                    enRangoVacaciones = fechaDia >= calFechaInicioSel && fechaDia <= calFechaFinSel;
+                    enRango = fechaDia >= calFechaInicioSel && fechaDia <= calFechaFinSel;
+                    esInicio = fechaDia.getTime() === calFechaInicioSel.getTime();
+                    esFin = fechaDia.getTime() === calFechaFinSel.getTime();
+                } else if (calFechaInicioSel) {
+                    esInicio = fechaDia.getTime() === calFechaInicioSel.getTime();
                 }
 
-                if (enRangoVacaciones) {
-                    celda.className += "bg-[#D2B48C] text-[#442a22] shadow-sm font-extrabold ";
+                let clases = "h-9 flex items-center justify-center text-xs font-bold rounded-xl transition ";
+                if (calModoEdicion) {
+                    clases += "cursor-pointer ";
                 } else {
-                    celda.className += "hover:bg-gray-100 text-gray-800 ";
+                    clases += "cursor-default ";
                 }
 
-                if (esHoy) {
-                    celda.className += "border-2 border-black ";
+                if (enRango) {
+                    clases += "bg-[#D2B48C] text-[#442a22] shadow-sm font-extrabold ";
+                } else if (esInicio && !calFechaFinSel) {
+                    clases += "bg-[#D2B48C] text-[#442a22] ring-2 ring-[#b07d4b] font-extrabold ";
+                } else {
+                    clases += calModoEdicion ? "hover:bg-[#D2B48C]/30 text-gray-800 " : "hover:bg-gray-100 text-gray-800 ";
                 }
 
+                if (esHoy) clases += "border-2 border-black ";
+
+                celda.className = clases;
                 celda.innerText = dia;
+
+                if (calModoEdicion) {
+                    const fechaStr = `${año}-${String(mes + 1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
+                    celda.addEventListener('click', function() {
+                        calSeleccionarDia(fechaStr);
+                    });
+                }
+
                 cuadricula.appendChild(celda);
             }
+        }
+
+        // ─── Lógica de selección de rango al hacer clic en un día ────────────
+        function calSeleccionarDia(fechaStr) {
+            if (!calModoEdicion) return;
+
+            const inputInicio = document.getElementById("calInputInicio");
+            const inputFin    = document.getElementById("calInputFin");
+
+            if (calSeleccionando === 'inicio') {
+                inputInicio.value = fechaStr;
+                inputFin.value = "";
+                calFechaInicioSel = new Date(fechaStr + 'T00:00:00');
+                calFechaFinSel = null;
+                calSeleccionando = 'fin';
+            } else {
+                if (fechaStr < inputInicio.value) {
+                    // Si fecha fin es anterior al inicio, reiniciar
+                    inputInicio.value = fechaStr;
+                    inputFin.value = "";
+                    calFechaInicioSel = new Date(fechaStr + 'T00:00:00');
+                    calFechaFinSel = null;
+                    calSeleccionando = 'fin';
+                } else {
+                    inputFin.value = fechaStr;
+                    calFechaFinSel = new Date(fechaStr + 'T00:00:00');
+                    calSeleccionando = 'inicio'; // reset para siguiente selección
+                }
+            }
+
+            document.getElementById("calMsgError").classList.add("hidden");
+            // Actualizar resumen
+            document.getElementById("calResumenInicio").innerText = inputInicio.value ? formatearFechaLocal(inputInicio.value) : "-";
+            document.getElementById("calResumenFin").innerText   = inputFin.value   ? formatearFechaLocal(inputFin.value)   : "-";
+            if (calFechaInicioSel && calFechaFinSel) {
+                const totalDias = Math.round((calFechaFinSel - calFechaInicioSel) / (1000 * 60 * 60 * 24)) + 1;
+                document.getElementById("calResumenTotal").innerText = totalDias + " día(s)";
+            } else {
+                document.getElementById("calResumenTotal").innerText = "-";
+            }
+            document.getElementById("calResumenFaltan").innerText = "-";
+            dibujarCuadriculaCalendario();
+        }
+
+        // ─── Guardar fechas al servidor ──────────────────────────────────────
+        function calGuardarFechas() {
+            const ini = document.getElementById("calInputInicio").value;
+            const fin = document.getElementById("calInputFin").value;
+
+            if (!ini || !fin) {
+                alert("Por favor selecciona tanto la fecha de inicio como la fecha de fin.");
+                return;
+            }
+            if (fin < ini) {
+                document.getElementById("calMsgError").classList.remove("hidden");
+                return;
+            }
+
+            const btnGuardar = document.getElementById("calBtnGuardar");
+            btnGuardar.disabled = true;
+            btnGuardar.innerText = "Guardando...";
+
+            const datos = {
+                idEmpleado: calIdEmpleado,
+                estado: calEstadoEmpleado,
+                fechaInicioVacaciones: ini,
+                fechaFinVacaciones: fin,
+                fechaInicioEstado: ini,
+                fechaFinEstado: fin
+            };
+
+            fetch('/Empleados/CambiarEstado', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(datos)
+            })
+            .then(response => {
+                if (response.ok) {
+                    cerrarModalCalendario();
+                    location.reload();
+                } else {
+                    btnGuardar.disabled = false;
+                    btnGuardar.innerText = "Guardar Fechas";
+                    alert("Error al guardar las fechas. Intenta de nuevo.");
+                }
+            })
+            .catch(() => {
+                btnGuardar.disabled = false;
+                btnGuardar.innerText = "Guardar Fechas";
+                alert("Error de conexión. Intenta de nuevo.");
+            });
         }
 
         function formatearFechaLocal(fechaStr) {
             if (!fechaStr) return "-";
             const partes = fechaStr.split('-');
-            if (partes.length === 3) {
-                return `${partes[2]}/${partes[1]}/${partes[0]}`;
-            }
+            if (partes.length === 3) return `${partes[2]}/${partes[1]}/${partes[0]}`;
             return fechaStr;
         }
 
@@ -1616,5 +1889,41 @@ MODAL NUEVO EMPLEADO
             document.getElementById("modalCalendarioVacaciones").classList.remove("flex");
         }
     </script>
+
+        <!-- DataTables buscador únicamente -->
+        <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css">
+
+        <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+
+        <script>
+                document.addEventListener("DOMContentLoaded", function () {
+
+                    new DataTable('#tablaEmpleados', {
+
+                        // Solo buscador
+                        searching: true,
+
+                        // Desactivar paginación de DataTables
+                        paging: false,
+
+                        // Desactivar ordenamiento por columnas
+                        ordering: false,
+
+                        // Ocultar "Mostrando 1 de X registros"
+                        info: false,
+
+                        // Evita que DataTables cambie el ancho de la tabla
+                        autoWidth: false,
+
+                        language: {
+                            search: "Buscar empleado:",
+                            zeroRecords: "No se encontraron empleados",
+                            emptyTable: "No hay empleados registrados"
+                        }
+
+                    });
+
+                });
+        </script>
 </body>
-</html>
+</html>
