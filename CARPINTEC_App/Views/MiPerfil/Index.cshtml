@@ -1,17 +1,29 @@
-﻿@{
+@{
     Layout = null;
+    string nombreCompleto = ViewBag.NombreCompleto ?? "Cliente";
+    string primerNombre = ViewBag.PrimerNombre ?? "Cliente";
+    string apellido = ViewBag.Apellido ?? "";
+    string iniciales = ViewBag.Iniciales ?? "CL";
+    string correo = ViewBag.Correo ?? "";
+    string rol = ViewBag.Rol ?? "Cliente";
+    string estado = ViewBag.Estado ?? "Activo";
+    string tipoCliente = ViewBag.TipoCliente ?? "Natural";
+    string documento = ViewBag.Documento ?? "No registrado";
+    string telefono = ViewBag.Telefono ?? "No registrado";
+    string direccion = ViewBag.Direccion ?? "No registrada";
+    string ciudad = ViewBag.Ciudad ?? "No registrada";
+    string fechaRegistro = ViewBag.FechaRegistro ?? "No disponible";
 }
-<!DOCTYPE html><html lang="es" style=""><head>
+<!DOCTYPE html>
+<html lang="es">
+<head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
-<title>Carpintec - Portal Cliente | Mi Perfil</title>
-<!-- Google Fonts -->
+<title>Carpintec - Mi Perfil</title>
 <link href="https://fonts.googleapis.com" rel="preconnect">
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&amp;family=Plus+Jakarta+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
-<!-- Tailwind CSS v3 with plugins -->
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<!-- Custom Configuration for Theme Colors -->
 <script>
     tailwind.config = {
       theme: {
@@ -36,258 +48,827 @@
         }
       }
     }
-  </script>
-<!-- BEGIN: Custom Styles -->
-<style data-purpose="custom-enhancements">
-    body {
-      font-family: 'Montserrat', sans-serif;
-    }
+</script>
+<style>
+    body { font-family: 'Montserrat', sans-serif; }
     .card-profile {
-      box-shadow: 0 10px 25px -4px rgba(105, 53, 20, 0.08), 0 2px 6px -1px rgba(139, 69, 19, 0.06);
-      transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 10px 25px -4px rgba(105,53,20,0.08), 0 2px 6px -1px rgba(139,69,19,0.06);
+        transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .card-profile:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 16px 32px -6px rgba(105, 53, 20, 0.16), 0 0 0 1px rgba(139, 69, 19, 0.25);
+        transform: translateY(-4px);
+        box-shadow: 0 16px 32px -6px rgba(105,53,20,0.16), 0 0 0 1px rgba(139,69,19,0.25);
     }
-  </style>
-<!-- END: Custom Styles -->
+    /* Modal overlay */
+    .modal-overlay {
+        position: fixed; inset: 0;
+        background: rgba(30, 12, 5, 0.55);
+        backdrop-filter: blur(4px);
+        z-index: 9998;
+        display: none;
+        align-items: center;
+        justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+        background: #fff;
+        border-radius: 24px;
+        box-shadow: 0 24px 64px rgba(78,42,24,0.22);
+        width: 100%;
+        max-width: 520px;
+        margin: 16px;
+        max-height: 92vh;
+        overflow-y: auto;
+        z-index: 9999;
+        animation: modalIn 0.28s cubic-bezier(0.16,1,0.3,1);
+    }
+    .modal-wide { max-width: 660px; }
+    @@keyframes modalIn {
+        from { opacity: 0; transform: scale(0.93) translateY(20px); }
+        to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .field-label { font-size: 11.5px; font-weight: 700; color: #7A695E; letter-spacing: .05em; text-transform: uppercase; margin-bottom: 4px; }
+    .field-value { font-size: 14.5px; font-weight: 600; color: #382114; background: #FAF7F4; border: 1.5px solid #EDE0D6; border-radius: 10px; padding: 9px 14px; }
+    .field-input {
+        width: 100%; font-size: 14px; font-weight: 500; color: #382114;
+        background: #FAF7F4; border: 1.5px solid #DCC7B0; border-radius: 10px;
+        padding: 9px 14px; outline: none; transition: border-color .15s;
+    }
+    .field-input:focus { border-color: #4E2A18; background: #fff; }
+    .field-input[type="password"] { letter-spacing: .05em; }
+    .badge-estado { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; padding: 3px 12px; border-radius: 999px; }
+    .badge-activo { background: #d1fae5; color: #065f46; }
+    .badge-inactivo { background: #fee2e2; color: #991b1b; }
+    .alert-msg { border-radius: 10px; padding: 10px 14px; font-size: 13px; font-weight: 600; display: none; }
+    .alert-success { background: #d1fae5; color: #065f46; border: 1.5px solid #6ee7b7; }
+    .alert-error { background: #fee2e2; color: #991b1b; border: 1.5px solid #fca5a5; }
+    .tag-privacidad { display: inline-flex; align-items: center; gap: 6px; background: #F4ECE4; border-radius: 8px; padding: 7px 14px; font-size: 13px; font-weight: 600; color: #4E2A18; cursor: pointer; transition: background .15s; }
+    .tag-privacidad:hover { background: #EDE0D6; }
+    .toggle-switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #DCC7B0; border-radius: 24px; transition: .3s; }
+    .toggle-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: .3s; }
+    .toggle-switch input:checked + .toggle-slider { background: #4E2A18; }
+    .toggle-switch input:checked + .toggle-slider:before { transform: translateX(20px); }
+    .tarjeta-card { background: linear-gradient(135deg, #4E2A18 0%, #7A3E25 60%, #c99658 100%); border-radius: 16px; padding: 22px 24px; color: white; position: relative; overflow: hidden; }
+    .tarjeta-card::before { content:""; position:absolute; top:-20px; right:-20px; width:80px; height:80px; background: rgba(201,150,88,0.25); border-radius: 50%; }
+</style>
 </head>
 <body class="bg-[#FAF7F4] min-h-screen text-[#382114] flex flex-col antialiased selection:bg-[#c99658] selection:text-white">
-<!-- BEGIN: MainHeader -->
-<!-- Header with rich artisan warm brown / coffee color (#3e1e0e) background -->
-<header class="bg-[#F5EBE1] border-b border-[#DCC7B0] shadow-sm sticky top-0 z-40" data-purpose="top-navigation-bar">
+
+<!-- HEADER -->
+<header class="bg-[#F5EBE1] border-b border-[#DCC7B0] shadow-sm sticky top-0 z-40">
 <div class="max-w-[1440px] mx-auto px-6 lg:px-12 h-20 flex items-center justify-between">
-<!-- Carpintec Brand / Logo -->
-<div class="flex items-center gap-3.5">
-<a aria-label="Ir a página de inicio de Carpintec" class="flex items-center gap-3 group focus:outline-none" href="#">
-<!-- Stylized Woodcraft Logo Badge -->
-<div class="w-11 h-11 rounded-lg bg-gradient-to-br from-[#c99658] to-[#8d4f24] p-[1.5px] shadow-sm">
-<div class="w-full h-full bg-[#3e1e0e] rounded-[7px] flex items-center justify-center">
-<svg class="w-6 h-6 text-[#e8ba80]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24">
-<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-<polyline points="9 22 9 12 15 12 15 22"></polyline>
-</svg>
-</div>
-</div>
-<!-- Logo Text -->
-<div class="flex flex-col">
-<span class="text-xl font-extrabold tracking-wider text-[#382114] uppercase font-sans">Carpintec</span>
-<span class="text-[11px] font-semibold tracking-widest text-[#7A695E] uppercase -mt-1">Portal Cliente</span>
-</div>
-</a>
-</div>
-<!-- Navigation Links -->
-<nav class="hidden md:flex items-center gap-8 text-[14.5px] font-medium" data-purpose="header-links">
-<a class="text-[#54433a] hover:text-[#382114] transition-colors duration-150 py-1" href="#">Inicio</a>
-<a class="text-[#54433a] hover:text-[#382114] transition-colors duration-150 py-1" href="#">Catálogo</a>
-<a class="text-[#54433a] hover:text-[#382114] transition-colors duration-150 py-1" href="#">Mis Pedidos</a>
-<a class="text-[#54433a] hover:text-[#382114] transition-colors duration-150 py-1" href="#">Cotizaciones</a>
-<!-- Active 'Mi Perfil' Pill Button -->
-<a aria-current="page" class="inline-flex items-center gap-2 bg-[#4E2A18] hover:bg-[#3D1E10] text-[#f7ede3] px-4 py-2 rounded-lg border border-[#3e1e0e] text-[14px] font-semibold transition-all shadow-sm" href="#">
-<svg class="w-4 h-4 text-[#e2a866]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-<span class="">Mi Perfil</span>
-</a>
-</nav>
-<!-- User Profile Badge -->
-<div class="flex items-center gap-3 pl-4" data-purpose="user-profile-badge">
-<div class="w-10 h-10 rounded-full bg-[#4E2A18] text-[#FAF7F4] flex items-center justify-center font-bold text-sm shadow-sm ring-2 ring-[#c99658]">
-          CA
+    <div class="flex items-center gap-3.5">
+        <a class="flex items-center gap-3 group focus:outline-none" asp-controller="DashboardCliente" asp-action="Index">
+            <div class="w-11 h-11 rounded-lg bg-gradient-to-br from-[#c99658] to-[#8d4f24] p-[1.5px] shadow-sm">
+                <div class="w-full h-full bg-[#3e1e0e] rounded-[7px] flex items-center justify-center">
+                    <svg class="w-6 h-6 text-[#e8ba80]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24">
+                        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                </div>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-xl font-extrabold tracking-wider text-[#382114] uppercase font-sans">Carpintec</span>
+                <span class="text-[11px] font-semibold tracking-widest text-[#7A695E] uppercase -mt-1">Portal Cliente</span>
+            </div>
+        </a>
+    </div>
+    <nav class="hidden md:flex items-center gap-8 text-[14.5px] font-medium">
+        <a class="text-[#54433a] hover:text-[#382114] transition-colors duration-150 py-1" asp-controller="DashboardCliente" asp-action="Index">Inicio</a>
+        <a class="text-[#54433a] hover:text-[#382114] transition-colors duration-150 py-1" asp-controller="MisProductos" asp-action="Index">Catálogo</a>
+        <a class="text-[#54433a] hover:text-[#382114] transition-colors duration-150 py-1" asp-controller="Mi_Pedido" asp-action="Index">Mis Pedidos</a>
+        <a class="text-[#54433a] hover:text-[#382114] transition-colors duration-150 py-1" asp-controller="MiCotizacion" asp-action="Index">Cotizaciones</a>
+        <a aria-current="page" class="inline-flex items-center gap-2 bg-[#4E2A18] hover:bg-[#3D1E10] text-[#f7ede3] px-4 py-2 rounded-lg border border-[#3e1e0e] text-[14px] font-semibold transition-all shadow-sm" asp-controller="Miperfil" asp-action="Index">
+            <svg class="w-4 h-4 text-[#e2a866]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+            <span>Mi Perfil</span>
+        </a>
+    </nav>
+    <div class="flex items-center gap-3 pl-4">
+        <div class="w-10 h-10 rounded-full bg-[#4E2A18] text-[#FAF7F4] flex items-center justify-center font-bold text-sm shadow-sm ring-2 ring-[#c99658]">@iniciales</div>
+        <div class="hidden sm:flex flex-col text-left">
+            <span class="text-sm font-bold text-[#382114] leading-tight">@primerNombre</span>
+            <span class="text-xs font-medium text-[#7A695E] leading-tight">@apellido</span>
         </div>
-<div class="hidden sm:flex flex-col text-left">
-<span class="text-sm font-bold text-[#382114] leading-tight">Carlos</span>
-<span class="text-xs font-medium text-[#7A695E] leading-tight">Arango</span>
-</div>
-</div>
+    </div>
 </div>
 </header>
-<!-- END: MainHeader -->
-<!-- BEGIN: MainContent -->
-<main class="flex-grow py-12 px-6 lg:px-12 max-w-[1360px] mx-auto w-full flex flex-col justify-center">
-<!-- BEGIN: GridOfOptions -->
-<!-- 3-Column Profile Cards Grid with stylized beige and wood-coffee frames -->
-<section aria-label="Opciones del Portal de Cliente" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-7"><!-- Card 1: Información de tu perfil -->
-<article class="bg-white rounded-[24px] p-7 shadow-[0_4px_24px_rgba(78,42,24,0.06)] hover:shadow-[0_8px_30px_rgba(78,42,24,0.1)] transition-all duration-200 relative overflow-hidden flex flex-col justify-between min-h-[260px] border border-[#F0E6DE]/60 group cursor-pointer">
-  <!-- Esquina decorativa orgánica suave -->
-  <div class="absolute -top-6 -right-6 w-24 h-24 bg-[#EADCCF]/65 rounded-full pointer-events-none transition-transform group-hover:scale-105"></div>
-  
-  <div>
-    <!-- Icono en pastilla redondeada beige -->
-    <div class="w-12 h-12 rounded-2xl bg-[#F4ECE4] text-[#4E2A18] flex items-center justify-center shadow-sm relative z-10">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15A2.25 2.25 0 002.25 6.75v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z" stroke-linecap="round" stroke-linejoin="round"></path>
-      </svg>
-    </div>
-    <!-- Título y descripción -->
-    <div class="mt-5 relative z-10">
-      <h2 class="text-[18px] font-bold text-[#382114] tracking-tight group-hover:text-[#4E2A18] transition-colors">
-        Información de tu perfil
-      </h2>
-      <p class="text-[13.5px] text-[#7A695E] font-normal mt-1.5 leading-snug">
-        Datos personales, documento y de tu cuenta.
-      </p>
-    </div>
-  </div>
-  
-  <!-- Botón tipo cápsula café madera profundo con flecha -->
-  <div class="mt-6 relative z-10">
-    <button type="button" class="w-full py-2.5 px-5 rounded-xl bg-[#4E2A18] hover:bg-[#3D1E10] text-white text-[13.5px] font-semibold flex items-center justify-center gap-2 transition-colors duration-150 shadow-sm">
-      <span class="">Ver perfil</span>
-      <span class="text-xs font-bold">›</span>
-    </button>
-  </div>
-</article>
 
-<!-- Card 2: Seguridad -->
-<article class="bg-white rounded-[24px] p-7 shadow-[0_4px_24px_rgba(78,42,24,0.06)] hover:shadow-[0_8px_30px_rgba(78,42,24,0.1)] transition-all duration-200 relative overflow-hidden flex flex-col justify-between min-h-[260px] border border-[#F0E6DE]/60 group cursor-pointer">
-  <div class="absolute -top-6 -right-6 w-24 h-24 bg-[#EADCCF]/65 rounded-full pointer-events-none transition-transform group-hover:scale-105"></div>
-  
-  <div>
-    <div class="w-12 h-12 rounded-2xl bg-[#F4ECE4] text-[#4E2A18] flex items-center justify-center shadow-sm relative z-10">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" stroke-linecap="round" stroke-linejoin="round"></path>
-      </svg>
+<!-- BANNER PERFIL -->
+<div class="bg-gradient-to-br from-[#4E2A18] to-[#7A3E25] py-10 px-6">
+    <div class="max-w-[1360px] mx-auto flex items-center gap-6">
+        <div class="w-20 h-20 rounded-full bg-[#c99658] text-[#3e1e0e] flex items-center justify-center text-3xl font-black ring-4 ring-white/20 shadow-lg flex-shrink-0">@iniciales</div>
+        <div>
+            <h1 class="text-2xl font-black text-white tracking-tight">@nombreCompleto</h1>
+            <p class="text-[#e8ba80] text-sm font-semibold mt-1">@correo</p>
+            <div class="flex items-center gap-3 mt-2">
+                <span class="text-xs bg-white/15 text-[#e8ba80] font-bold px-3 py-1 rounded-full">@rol</span>
+                <span class="badge-estado @(estado == "Activo" ? "badge-activo" : "badge-inactivo")">
+                    <span class="w-1.5 h-1.5 rounded-full @(estado == "Activo" ? "bg-green-500" : "bg-red-500")"></span>
+                    @estado
+                </span>
+            </div>
+        </div>
     </div>
-    <div class="mt-5 relative z-10">
-      <h2 class="text-[18px] font-bold text-[#382114] tracking-tight group-hover:text-[#4E2A18] transition-colors">
-        Seguridad
-      </h2>
-      <p class="text-[13.5px] text-[#7A695E] font-normal mt-1.5 leading-snug">
-        Tienes configuraciones pendientes o cambio de clave.
-      </p>
-    </div>
-  </div>
-  
-  <div class="mt-6 relative z-10">
-    <button type="button" class="w-full py-2.5 px-5 rounded-xl bg-[#4E2A18] hover:bg-[#3D1E10] text-white text-[13.5px] font-semibold flex items-center justify-center gap-2 transition-colors duration-150 shadow-sm">
-      <span class="">Ver seguridad</span>
-      <span class="text-xs font-bold">›</span>
-    </button>
-  </div>
-</article>
+</div>
 
-<!-- Card 3: Tarjetas -->
-<article class="bg-white rounded-[24px] p-7 shadow-[0_4px_24px_rgba(78,42,24,0.06)] hover:shadow-[0_8px_30px_rgba(78,42,24,0.1)] transition-all duration-200 relative overflow-hidden flex flex-col justify-between min-h-[260px] border border-[#F0E6DE]/60 group cursor-pointer">
-  <div class="absolute -top-6 -right-6 w-24 h-24 bg-[#EADCCF]/65 rounded-full pointer-events-none transition-transform group-hover:scale-105"></div>
-  
-  <div>
-    <div class="w-12 h-12 rounded-2xl bg-[#F4ECE4] text-[#4E2A18] flex items-center justify-center shadow-sm relative z-10">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-6.75 4.5h16.5a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5H3.75A2.25 2.25 0 001.5 6.75v10.5A2.25 2.25 0 003.75 21.75z" stroke-linecap="round" stroke-linejoin="round"></path>
-      </svg>
-    </div>
-    <div class="mt-5 relative z-10">
-      <h2 class="text-[18px] font-bold text-[#382114] tracking-tight group-hover:text-[#4E2A18] transition-colors">
-        Tarjetas
-      </h2>
-      <p class="text-[13.5px] text-[#7A695E] font-normal mt-1.5 leading-snug">
-        Tarjetas guardadas en tu cuenta, PSE y créditos directos.
-      </p>
-    </div>
-  </div>
-  
-  <div class="mt-6 relative z-10">
-    <button type="button" class="w-full py-2.5 px-5 rounded-xl bg-[#4E2A18] hover:bg-[#3D1E10] text-white text-[13.5px] font-semibold flex items-center justify-center gap-2 transition-colors duration-150 shadow-sm">
-      <span class="">Ver tarjetas</span>
-      <span class="text-xs font-bold">›</span>
-    </button>
-  </div>
-</article>
+<!-- GRID DE TARJETAS -->
+<main class="flex-grow py-12 px-6 lg:px-12 max-w-[1360px] mx-auto w-full">
+    @if (ViewBag.Error != null)
+    {
+        <div class="bg-red-50 border border-red-200 text-red-700 px-5 py-3 rounded-xl mb-6 font-semibold text-sm">⚠️ @ViewBag.Error</div>
+    }
+    <section aria-label="Opciones del Portal" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-7">
 
-<!-- Card 4: Direcciones -->
-<article class="bg-white rounded-[24px] p-7 shadow-[0_4px_24px_rgba(78,42,24,0.06)] hover:shadow-[0_8px_30px_rgba(78,42,24,0.1)] transition-all duration-200 relative overflow-hidden flex flex-col justify-between min-h-[260px] border border-[#F0E6DE]/60 group cursor-pointer">
-  <div class="absolute -top-6 -right-6 w-24 h-24 bg-[#EADCCF]/65 rounded-full pointer-events-none transition-transform group-hover:scale-105"></div>
-  
-  <div>
-    <div class="w-12 h-12 rounded-2xl bg-[#F4ECE4] text-[#4E2A18] flex items-center justify-center shadow-sm relative z-10">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
-        <path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"></path>
-      </svg>
-    </div>
-    <div class="mt-5 relative z-10">
-      <h2 class="text-[18px] font-bold text-[#382114] tracking-tight group-hover:text-[#4E2A18] transition-colors">
-        Direcciones
-      </h2>
-      <p class="text-[13.5px] text-[#7A695E] font-normal mt-1.5 leading-snug">
-        Direcciones guardadas en tu cuenta para instalación o flete.
-      </p>
-    </div>
-  </div>
-  
-  <div class="mt-6 relative z-10">
-    <button type="button" class="w-full py-2.5 px-5 rounded-xl bg-[#4E2A18] hover:bg-[#3D1E10] text-white text-[13.5px] font-semibold flex items-center justify-center gap-2 transition-colors duration-150 shadow-sm">
-      <span class="">Ver direcciones</span>
-      <span class="text-xs font-bold">›</span>
-    </button>
-  </div>
-</article>
+        <!-- Card 1: Información de perfil -->
+        <article class="card-profile bg-white rounded-[24px] p-7 border border-[#F0E6DE]/60 relative overflow-hidden flex flex-col justify-between min-h-[260px] group cursor-pointer" onclick="abrirModal('modalPerfil')">
+            <div class="absolute -top-6 -right-6 w-24 h-24 bg-[#EADCCF]/65 rounded-full pointer-events-none transition-transform group-hover:scale-105"></div>
+            <div>
+                <div class="w-12 h-12 rounded-2xl bg-[#F4ECE4] text-[#4E2A18] flex items-center justify-center shadow-sm relative z-10">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15A2.25 2.25 0 002.25 6.75v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </div>
+                <div class="mt-5 relative z-10">
+                    <h2 class="text-[18px] font-bold text-[#382114] tracking-tight group-hover:text-[#4E2A18] transition-colors">Información de tu perfil</h2>
+                    <p class="text-[13.5px] text-[#7A695E] font-normal mt-1.5 leading-snug">Datos personales, documento y de tu cuenta.</p>
+                </div>
+            </div>
+            <div class="mt-6 relative z-10">
+                <button type="button" onclick="abrirModal('modalPerfil')" class="w-full py-2.5 px-5 rounded-xl bg-[#4E2A18] hover:bg-[#3D1E10] text-white text-[13.5px] font-semibold flex items-center justify-center gap-2 transition-colors duration-150 shadow-sm">
+                    <span>Ver perfil</span><span class="text-xs font-bold">›</span>
+                </button>
+            </div>
+        </article>
 
-<!-- Card 5: Privacidad -->
-<article class="bg-white rounded-[24px] p-7 shadow-[0_4px_24px_rgba(78,42,24,0.06)] hover:shadow-[0_8px_30px_rgba(78,42,24,0.1)] transition-all duration-200 relative overflow-hidden flex flex-col justify-between min-h-[260px] border border-[#F0E6DE]/60 group cursor-pointer">
-  <div class="absolute -top-6 -right-6 w-24 h-24 bg-[#EADCCF]/65 rounded-full pointer-events-none transition-transform group-hover:scale-105"></div>
-  
-  <div>
-    <div class="w-12 h-12 rounded-2xl bg-[#F4ECE4] text-[#4E2A18] flex items-center justify-center shadow-sm relative z-10">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" stroke-linecap="round" stroke-linejoin="round"></path>
-      </svg>
-    </div>
-    <div class="mt-5 relative z-10">
-      <h2 class="text-[18px] font-bold text-[#382114] tracking-tight group-hover:text-[#4E2A18] transition-colors">
-        Privacidad
-      </h2>
-      <p class="text-[13.5px] text-[#7A695E] font-normal mt-1.5 leading-snug">
-        Preferencias y control sobre el uso de tus datos y medidas.
-      </p>
-    </div>
-  </div>
-  
-  <div class="mt-6 relative z-10">
-    <button type="button" class="w-full py-2.5 px-5 rounded-xl bg-[#4E2A18] hover:bg-[#3D1E10] text-white text-[13.5px] font-semibold flex items-center justify-center gap-2 transition-colors duration-150 shadow-sm">
-      <span class="">Ver privacidad</span>
-      <span class="text-xs font-bold">›</span>
-    </button>
-  </div>
-</article>
+        <!-- Card 2: Seguridad -->
+        <article class="card-profile bg-white rounded-[24px] p-7 border border-[#F0E6DE]/60 relative overflow-hidden flex flex-col justify-between min-h-[260px] group cursor-pointer" onclick="abrirModal('modalSeguridad')">
+            <div class="absolute -top-6 -right-6 w-24 h-24 bg-[#EADCCF]/65 rounded-full pointer-events-none transition-transform group-hover:scale-105"></div>
+            <div>
+                <div class="w-12 h-12 rounded-2xl bg-[#F4ECE4] text-[#4E2A18] flex items-center justify-center shadow-sm relative z-10">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </div>
+                <div class="mt-5 relative z-10">
+                    <h2 class="text-[18px] font-bold text-[#382114] tracking-tight group-hover:text-[#4E2A18] transition-colors">Seguridad</h2>
+                    <p class="text-[13.5px] text-[#7A695E] font-normal mt-1.5 leading-snug">Cambia tu contraseña y configura opciones de seguridad.</p>
+                </div>
+            </div>
+            <div class="mt-6 relative z-10">
+                <button type="button" onclick="abrirModal('modalSeguridad')" class="w-full py-2.5 px-5 rounded-xl bg-[#4E2A18] hover:bg-[#3D1E10] text-white text-[13.5px] font-semibold flex items-center justify-center gap-2 transition-colors duration-150 shadow-sm">
+                    <span>Ver seguridad</span><span class="text-xs font-bold">›</span>
+                </button>
+            </div>
+        </article>
 
-<!-- Card 6: Comunicaciones -->
-<article class="bg-white rounded-[24px] p-7 shadow-[0_4px_24px_rgba(78,42,24,0.06)] hover:shadow-[0_8px_30px_rgba(78,42,24,0.1)] transition-all duration-200 relative overflow-hidden flex flex-col justify-between min-h-[260px] border border-[#F0E6DE]/60 group cursor-pointer">
-  <div class="absolute -top-6 -right-6 w-24 h-24 bg-[#EADCCF]/65 rounded-full pointer-events-none transition-transform group-hover:scale-105"></div>
-  
-  <div>
-    <div class="w-12 h-12 rounded-2xl bg-[#F4ECE4] text-[#4E2A18] flex items-center justify-center shadow-sm relative z-10">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a.75.75 0 01-.845-.968c.287-.96.48-1.99.568-3.033C3.766 15.65 3 13.914 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" stroke-linecap="round" stroke-linejoin="round"></path>
-      </svg>
-    </div>
-    <div class="mt-5 relative z-10">
-      <h2 class="text-[18px] font-bold text-[#382114] tracking-tight group-hover:text-[#4E2A18] transition-colors">
-        Comunicaciones
-      </h2>
-      <p class="text-[13.5px] text-[#7A695E] font-normal mt-1.5 leading-snug">
-        Elige qué tipo de información quieres recibir y novedades de stock.
-      </p>
-    </div>
-  </div>
-  
-  <div class="mt-6 relative z-10">
-    <button type="button" class="w-full py-2.5 px-5 rounded-xl bg-[#4E2A18] hover:bg-[#3D1E10] text-white text-[13.5px] font-semibold flex items-center justify-center gap-2 transition-colors duration-150 shadow-sm">
-      <span class="">Ver comunicaciones</span>
-      <span class="text-xs font-bold">›</span>
-    </button>
-  </div>
-</article></section>
-<!-- END: GridOfOptions -->
+        <!-- Card 3: Tarjetas -->
+        <article class="card-profile bg-white rounded-[24px] p-7 border border-[#F0E6DE]/60 relative overflow-hidden flex flex-col justify-between min-h-[260px] group cursor-pointer" onclick="abrirModal('modalTarjetas')">
+            <div class="absolute -top-6 -right-6 w-24 h-24 bg-[#EADCCF]/65 rounded-full pointer-events-none transition-transform group-hover:scale-105"></div>
+            <div>
+                <div class="w-12 h-12 rounded-2xl bg-[#F4ECE4] text-[#4E2A18] flex items-center justify-center shadow-sm relative z-10">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-6.75 4.5h16.5a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5H3.75A2.25 2.25 0 001.5 6.75v10.5A2.25 2.25 0 003.75 21.75z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </div>
+                <div class="mt-5 relative z-10">
+                    <h2 class="text-[18px] font-bold text-[#382114] tracking-tight group-hover:text-[#4E2A18] transition-colors">Tarjetas</h2>
+                    <p class="text-[13.5px] text-[#7A695E] font-normal mt-1.5 leading-snug">Tarjetas guardadas, PSE y créditos directos.</p>
+                </div>
+            </div>
+            <div class="mt-6 relative z-10">
+                <button type="button" onclick="abrirModal('modalTarjetas')" class="w-full py-2.5 px-5 rounded-xl bg-[#4E2A18] hover:bg-[#3D1E10] text-white text-[13.5px] font-semibold flex items-center justify-center gap-2 transition-colors duration-150 shadow-sm">
+                    <span>Ver tarjetas</span><span class="text-xs font-bold">›</span>
+                </button>
+            </div>
+        </article>
+
+        <!-- Card 4: Direcciones -->
+        <article class="card-profile bg-white rounded-[24px] p-7 border border-[#F0E6DE]/60 relative overflow-hidden flex flex-col justify-between min-h-[260px] group cursor-pointer" onclick="abrirModal('modalDirecciones')">
+            <div class="absolute -top-6 -right-6 w-24 h-24 bg-[#EADCCF]/65 rounded-full pointer-events-none transition-transform group-hover:scale-105"></div>
+            <div>
+                <div class="w-12 h-12 rounded-2xl bg-[#F4ECE4] text-[#4E2A18] flex items-center justify-center shadow-sm relative z-10">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </div>
+                <div class="mt-5 relative z-10">
+                    <h2 class="text-[18px] font-bold text-[#382114] tracking-tight group-hover:text-[#4E2A18] transition-colors">Direcciones</h2>
+                    <p class="text-[13.5px] text-[#7A695E] font-normal mt-1.5 leading-snug">Direcciones para instalación o flete guardadas.</p>
+                </div>
+            </div>
+            <div class="mt-6 relative z-10">
+                <button type="button" onclick="abrirModal('modalDirecciones')" class="w-full py-2.5 px-5 rounded-xl bg-[#4E2A18] hover:bg-[#3D1E10] text-white text-[13.5px] font-semibold flex items-center justify-center gap-2 transition-colors duration-150 shadow-sm">
+                    <span>Ver direcciones</span><span class="text-xs font-bold">›</span>
+                </button>
+            </div>
+        </article>
+
+        <!-- Card 5: Privacidad -->
+        <article class="card-profile bg-white rounded-[24px] p-7 border border-[#F0E6DE]/60 relative overflow-hidden flex flex-col justify-between min-h-[260px] group cursor-pointer" onclick="abrirModal('modalPrivacidad')">
+            <div class="absolute -top-6 -right-6 w-24 h-24 bg-[#EADCCF]/65 rounded-full pointer-events-none transition-transform group-hover:scale-105"></div>
+            <div>
+                <div class="w-12 h-12 rounded-2xl bg-[#F4ECE4] text-[#4E2A18] flex items-center justify-center shadow-sm relative z-10">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </div>
+                <div class="mt-5 relative z-10">
+                    <h2 class="text-[18px] font-bold text-[#382114] tracking-tight group-hover:text-[#4E2A18] transition-colors">Privacidad</h2>
+                    <p class="text-[13.5px] text-[#7A695E] font-normal mt-1.5 leading-snug">Control sobre el uso de tus datos y preferencias.</p>
+                </div>
+            </div>
+            <div class="mt-6 relative z-10">
+                <button type="button" onclick="abrirModal('modalPrivacidad')" class="w-full py-2.5 px-5 rounded-xl bg-[#4E2A18] hover:bg-[#3D1E10] text-white text-[13.5px] font-semibold flex items-center justify-center gap-2 transition-colors duration-150 shadow-sm">
+                    <span>Ver privacidad</span><span class="text-xs font-bold">›</span>
+                </button>
+            </div>
+        </article>
+
+        <!-- Card 6: Comunicaciones -->
+        <article class="card-profile bg-white rounded-[24px] p-7 border border-[#F0E6DE]/60 relative overflow-hidden flex flex-col justify-between min-h-[260px] group cursor-pointer" onclick="abrirModal('modalComunicaciones')">
+            <div class="absolute -top-6 -right-6 w-24 h-24 bg-[#EADCCF]/65 rounded-full pointer-events-none transition-transform group-hover:scale-105"></div>
+            <div>
+                <div class="w-12 h-12 rounded-2xl bg-[#F4ECE4] text-[#4E2A18] flex items-center justify-center shadow-sm relative z-10">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a.75.75 0 01-.845-.968c.287-.96.48-1.99.568-3.033C3.766 15.65 3 13.914 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </div>
+                <div class="mt-5 relative z-10">
+                    <h2 class="text-[18px] font-bold text-[#382114] tracking-tight group-hover:text-[#4E2A18] transition-colors">Comunicaciones</h2>
+                    <p class="text-[13.5px] text-[#7A695E] font-normal mt-1.5 leading-snug">Elige qué información y novedades quieres recibir.</p>
+                </div>
+            </div>
+            <div class="mt-6 relative z-10">
+                <button type="button" onclick="abrirModal('modalComunicaciones')" class="w-full py-2.5 px-5 rounded-xl bg-[#4E2A18] hover:bg-[#3D1E10] text-white text-[13.5px] font-semibold flex items-center justify-center gap-2 transition-colors duration-150 shadow-sm">
+                    <span>Ver comunicaciones</span><span class="text-xs font-bold">›</span>
+                </button>
+            </div>
+        </article>
+
+    </section>
 </main>
-<!-- END: MainContent -->
-<!-- BEGIN: Footer -->
-<footer class="py-6 text-center text-xs text-stone-400 border-t border-stone-200/60" data-purpose="site-footer">
-<p class="">© 2025 CARPINTEC - Muebles con Alma. Todos los derechos reservados.</p>
+
+<footer class="py-6 text-center text-xs text-stone-400 border-t border-stone-200/60">
+    <p>© 2025 CARPINTEC - Muebles con Alma. Todos los derechos reservados.</p>
 </footer>
-<!-- END: Footer -->
 
+<!-- ==================== MODALES ==================== -->
 
-</body></html>
+<!-- MODAL 1: Información de Perfil -->
+<div id="modalPerfil" class="modal-overlay" onclick="cerrarModalFuera(event, 'modalPerfil')">
+    <div class="modal-box modal-wide">
+        <div class="bg-gradient-to-br from-[#4E2A18] to-[#7A3E25] px-7 py-5 rounded-t-[24px] flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-[#e8ba80]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15A2.25 2.25 0 002.25 6.75v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </div>
+                <h3 class="text-white font-bold text-lg">Información de tu perfil</h3>
+            </div>
+            <button onclick="cerrarModal('modalPerfil')" class="w-8 h-8 bg-white/15 hover:bg-white/25 rounded-full flex items-center justify-center text-white text-lg font-bold transition-colors">×</button>
+        </div>
+        <div class="px-7 py-6">
+            <div id="alertPerfil" class="alert-msg mb-4"></div>
+            <!-- Tabs -->
+            <div class="flex gap-2 mb-6">
+                <button id="tabVerPerfil" onclick="switchTab('ver')" class="px-4 py-2 rounded-lg text-[13px] font-semibold bg-[#4E2A18] text-white transition-colors">Ver datos</button>
+                <button id="tabEditarPerfil" onclick="switchTab('editar')" class="px-4 py-2 rounded-lg text-[13px] font-semibold bg-[#F4ECE4] text-[#4E2A18] hover:bg-[#EDE0D6] transition-colors">Editar datos</button>
+            </div>
+            <!-- Tab Ver -->
+            <div id="panelVer">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <p class="field-label">Nombre</p>
+                        <p class="field-value">@primerNombre</p>
+                    </div>
+                    <div>
+                        <p class="field-label">Apellido</p>
+                        <p class="field-value">@apellido</p>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <p class="field-label">Correo electrónico</p>
+                        <p class="field-value">@correo</p>
+                    </div>
+                    <div>
+                        <p class="field-label">Tipo de cliente</p>
+                        <p class="field-value">@tipoCliente</p>
+                    </div>
+                    <div>
+                        <p class="field-label">Documento</p>
+                        <p class="field-value">@documento</p>
+                    </div>
+                    <div>
+                        <p class="field-label">Teléfono</p>
+                        <p class="field-value">@telefono</p>
+                    </div>
+                    <div>
+                        <p class="field-label">Ciudad</p>
+                        <p class="field-value">@ciudad</p>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <p class="field-label">Dirección</p>
+                        <p class="field-value">@direccion</p>
+                    </div>
+                    <div>
+                        <p class="field-label">Rol</p>
+                        <p class="field-value">@rol</p>
+                    </div>
+                    <div>
+                        <p class="field-label">Fecha de registro</p>
+                        <p class="field-value">@fechaRegistro</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Tab Editar -->
+            <div id="panelEditar" style="display:none">
+                <form id="formPerfil" onsubmit="guardarPerfil(event)">
+                    @Html.AntiForgeryToken()
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <p class="field-label">Nombre</p>
+                            <input type="text" id="editNombre" name="nombre" value="@primerNombre" class="field-input" placeholder="Nombre">
+                        </div>
+                        <div>
+                            <p class="field-label">Apellido</p>
+                            <input type="text" id="editApellido" name="apellido" value="@apellido" class="field-input" placeholder="Apellido">
+                        </div>
+                        <div>
+                            <p class="field-label">Teléfono</p>
+                            <input type="text" id="editTelefono" name="telefono" value="@(telefono == "No registrado" ? "" : telefono)" class="field-input" placeholder="Ej: 300 123 4567">
+                        </div>
+                        <div>
+                            <p class="field-label">Documento</p>
+                            <input type="text" id="editDocumento" name="documento" value="@(documento == "No registrado" ? "" : documento)" class="field-input" placeholder="N° de documento">
+                        </div>
+                        <div>
+                            <p class="field-label">Ciudad</p>
+                            <input type="text" id="editCiudad" name="ciudad" value="@(ciudad == "No registrada" ? "" : ciudad)" class="field-input" placeholder="Ciudad">
+                        </div>
+                        <div>
+                            <p class="field-label">Dirección</p>
+                            <input type="text" id="editDireccion" name="direccion" value="@(direccion == "No registrada" ? "" : direccion)" class="field-input" placeholder="Dirección completa">
+                        </div>
+                    </div>
+                    <div class="flex gap-3 mt-6 justify-end">
+                        <button type="button" onclick="cerrarModal('modalPerfil')" class="px-5 py-2.5 rounded-xl border border-[#DCC7B0] text-[#4E2A18] font-semibold text-sm hover:bg-[#F4ECE4] transition-colors">Cancelar</button>
+                        <button type="submit" id="btnGuardarPerfil" class="px-6 py-2.5 rounded-xl bg-[#4E2A18] hover:bg-[#3D1E10] text-white font-semibold text-sm transition-colors shadow-sm">Guardar cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL 2: Seguridad -->
+<div id="modalSeguridad" class="modal-overlay" onclick="cerrarModalFuera(event, 'modalSeguridad')">
+    <div class="modal-box">
+        <div class="bg-gradient-to-br from-[#4E2A18] to-[#7A3E25] px-7 py-5 rounded-t-[24px] flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-[#e8ba80]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </div>
+                <h3 class="text-white font-bold text-lg">Seguridad de la cuenta</h3>
+            </div>
+            <button onclick="cerrarModal('modalSeguridad')" class="w-8 h-8 bg-white/15 hover:bg-white/25 rounded-full flex items-center justify-center text-white text-lg font-bold transition-colors">×</button>
+        </div>
+        <div class="px-7 py-6">
+            <div id="alertSeguridad" class="alert-msg mb-4"></div>
+            <!-- Estado de seguridad -->
+            <div class="bg-[#FAF7F4] border border-[#EDE0D6] rounded-2xl p-4 mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                    </div>
+                    <div>
+                        <p class="font-bold text-[#382114] text-sm">Cuenta verificada</p>
+                        <p class="text-[#7A695E] text-xs font-medium">Tu correo @correo está activo</p>
+                    </div>
+                </div>
+            </div>
+            <h4 class="font-bold text-[#382114] text-[15px] mb-4">Cambiar contraseña</h4>
+            <form id="formSeguridad" onsubmit="cambiarContrasena(event)">
+                @Html.AntiForgeryToken()
+                <div class="space-y-4">
+                    <div>
+                        <p class="field-label">Contraseña actual</p>
+                        <input type="password" id="contrasenaActual" name="contrasenaActual" class="field-input" placeholder="••••••••" required>
+                    </div>
+                    <div>
+                        <p class="field-label">Nueva contraseña</p>
+                        <input type="password" id="nuevaContrasena" name="nuevaContrasena" class="field-input" placeholder="Mínimo 8 caracteres" required>
+                    </div>
+                    <div>
+                        <p class="field-label">Confirmar nueva contraseña</p>
+                        <input type="password" id="confirmarContrasena" name="confirmarContrasena" class="field-input" placeholder="Repite la nueva contraseña" required>
+                    </div>
+                </div>
+                <div class="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mt-4">
+                    <p class="text-amber-800 text-xs font-semibold">💡 Usa mínimo 8 caracteres con mayúsculas, números y símbolos para mayor seguridad.</p>
+                </div>
+                <div class="flex gap-3 mt-6 justify-end">
+                    <button type="button" onclick="cerrarModal('modalSeguridad')" class="px-5 py-2.5 rounded-xl border border-[#DCC7B0] text-[#4E2A18] font-semibold text-sm hover:bg-[#F4ECE4] transition-colors">Cancelar</button>
+                    <button type="submit" class="px-6 py-2.5 rounded-xl bg-[#4E2A18] hover:bg-[#3D1E10] text-white font-semibold text-sm transition-colors shadow-sm">Cambiar contraseña</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL 3: Tarjetas -->
+<div id="modalTarjetas" class="modal-overlay" onclick="cerrarModalFuera(event, 'modalTarjetas')">
+    <div class="modal-box modal-wide">
+        <div class="bg-gradient-to-br from-[#4E2A18] to-[#7A3E25] px-7 py-5 rounded-t-[24px] flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-[#e8ba80]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-6.75 4.5h16.5a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5H3.75A2.25 2.25 0 001.5 6.75v10.5A2.25 2.25 0 003.75 21.75z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </div>
+                <h3 class="text-white font-bold text-lg">Métodos de pago</h3>
+            </div>
+            <button onclick="cerrarModal('modalTarjetas')" class="w-8 h-8 bg-white/15 hover:bg-white/25 rounded-full flex items-center justify-center text-white text-lg font-bold transition-colors">×</button>
+        </div>
+        <div class="px-7 py-6">
+            <!-- Tarjeta visual -->
+            <div class="tarjeta-card mb-5">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-white/60 text-xs font-semibold uppercase tracking-widest">Tarjeta principal</p>
+                        <p class="text-white font-bold text-lg mt-1 tracking-widest">•••• •••• •••• 4582</p>
+                    </div>
+                    <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-[#e8ba80]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-6.75 4.5h16.5a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5H3.75A2.25 2.25 0 001.5 6.75v10.5A2.25 2.25 0 003.75 21.75z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                    </div>
+                </div>
+                <div class="flex justify-between items-end mt-6">
+                    <div>
+                        <p class="text-white/50 text-xs">Titular</p>
+                        <p class="text-white font-semibold text-sm">@nombreCompleto</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-white/50 text-xs">Vence</p>
+                        <p class="text-white font-semibold text-sm">12/27</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Métodos adicionales -->
+            <div class="space-y-3">
+                <div class="flex items-center justify-between bg-[#FAF7F4] border border-[#EDE0D6] rounded-xl px-4 py-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 bg-blue-100 rounded-lg flex items-center justify-center"><span class="text-blue-700 font-bold text-xs">PSE</span></div>
+                        <div>
+                            <p class="font-semibold text-[#382114] text-sm">PSE – Banco Bogotá</p>
+                            <p class="text-[#7A695E] text-xs">Débito bancario directo</p>
+                        </div>
+                    </div>
+                    <span class="badge-estado badge-activo">Activo</span>
+                </div>
+                <div class="flex items-center justify-between bg-[#FAF7F4] border border-[#EDE0D6] rounded-xl px-4 py-3 opacity-60">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 bg-gray-100 rounded-lg flex items-center justify-center"><span class="text-gray-500 font-bold text-xs">+</span></div>
+                        <div>
+                            <p class="font-semibold text-[#7A695E] text-sm">Agregar método de pago</p>
+                            <p class="text-[#7A695E] text-xs">Tarjeta, PSE o crédito directo</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-xs text-[#7A695E] text-center mt-4 font-medium">Los pagos se procesan de forma segura. Contáctanos para agregar o cambiar métodos.</p>
+            <div class="flex justify-end mt-4">
+                <button onclick="cerrarModal('modalTarjetas')" class="px-6 py-2.5 rounded-xl bg-[#4E2A18] hover:bg-[#3D1E10] text-white font-semibold text-sm transition-colors shadow-sm">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL 4: Direcciones -->
+<div id="modalDirecciones" class="modal-overlay" onclick="cerrarModalFuera(event, 'modalDirecciones')">
+    <div class="modal-box">
+        <div class="bg-gradient-to-br from-[#4E2A18] to-[#7A3E25] px-7 py-5 rounded-t-[24px] flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-[#e8ba80]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </div>
+                <h3 class="text-white font-bold text-lg">Mis direcciones</h3>
+            </div>
+            <button onclick="cerrarModal('modalDirecciones')" class="w-8 h-8 bg-white/15 hover:bg-white/25 rounded-full flex items-center justify-center text-white text-lg font-bold transition-colors">×</button>
+        </div>
+        <div class="px-7 py-6">
+            <div id="alertDirecciones" class="alert-msg mb-4"></div>
+            <!-- Dirección actual -->
+            <div class="bg-[#FAF7F4] border border-[#EDE0D6] rounded-2xl p-4 mb-6">
+                <div class="flex items-start gap-3">
+                    <div class="w-9 h-9 bg-[#F4ECE4] rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <svg class="w-5 h-5 text-[#4E2A18]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                    </div>
+                    <div>
+                        <p class="font-bold text-[#382114] text-sm">Dirección principal</p>
+                        <p class="text-[#7A695E] text-[13px] font-medium mt-0.5">@direccion</p>
+                        <p class="text-[#7A695E] text-[13px] font-medium">@ciudad</p>
+                    </div>
+                </div>
+            </div>
+            <h4 class="font-bold text-[#382114] text-[15px] mb-4">Actualizar dirección</h4>
+            <form id="formDirecciones" onsubmit="guardarDireccion(event)">
+                @Html.AntiForgeryToken()
+                <div class="space-y-4">
+                    <div>
+                        <p class="field-label">Dirección completa</p>
+                        <input type="text" id="nuevaDireccion" name="direccion" value="@(direccion == "No registrada" ? "" : direccion)" class="field-input" placeholder="Ej: Calle 45 # 23-10, Apto 301">
+                    </div>
+                    <div>
+                        <p class="field-label">Ciudad</p>
+                        <input type="text" id="nuevaCiudad" name="ciudad" value="@(ciudad == "No registrada" ? "" : ciudad)" class="field-input" placeholder="Ej: Bogotá">
+                    </div>
+                </div>
+                <div class="flex gap-3 mt-6 justify-end">
+                    <button type="button" onclick="cerrarModal('modalDirecciones')" class="px-5 py-2.5 rounded-xl border border-[#DCC7B0] text-[#4E2A18] font-semibold text-sm hover:bg-[#F4ECE4] transition-colors">Cancelar</button>
+                    <button type="submit" class="px-6 py-2.5 rounded-xl bg-[#4E2A18] hover:bg-[#3D1E10] text-white font-semibold text-sm transition-colors shadow-sm">Guardar dirección</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL 5: Privacidad -->
+<div id="modalPrivacidad" class="modal-overlay" onclick="cerrarModalFuera(event, 'modalPrivacidad')">
+    <div class="modal-box modal-wide">
+        <div class="bg-gradient-to-br from-[#4E2A18] to-[#7A3E25] px-7 py-5 rounded-t-[24px] flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-[#e8ba80]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </div>
+                <h3 class="text-white font-bold text-lg">Privacidad y datos</h3>
+            </div>
+            <button onclick="cerrarModal('modalPrivacidad')" class="w-8 h-8 bg-white/15 hover:bg-white/25 rounded-full flex items-center justify-center text-white text-lg font-bold transition-colors">×</button>
+        </div>
+        <div class="px-7 py-6">
+            <p class="text-[#7A695E] text-sm font-medium mb-5">Controla cómo usamos tu información personal en Carpintec.</p>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between bg-[#FAF7F4] border border-[#EDE0D6] rounded-xl px-4 py-3">
+                    <div>
+                        <p class="font-bold text-[#382114] text-sm">Datos de uso del portal</p>
+                        <p class="text-[#7A695E] text-xs font-medium mt-0.5">Permitir análisis de navegación para mejorar tu experiencia</p>
+                    </div>
+                    <label class="toggle-switch"><input type="checkbox" checked id="toggleUso"><span class="toggle-slider"></span></label>
+                </div>
+                <div class="flex items-center justify-between bg-[#FAF7F4] border border-[#EDE0D6] rounded-xl px-4 py-3">
+                    <div>
+                        <p class="font-bold text-[#382114] text-sm">Historial de pedidos</p>
+                        <p class="text-[#7A695E] text-xs font-medium mt-0.5">Guardar historial para recomendaciones personalizadas</p>
+                    </div>
+                    <label class="toggle-switch"><input type="checkbox" checked id="toggleHistorial"><span class="toggle-slider"></span></label>
+                </div>
+                <div class="flex items-center justify-between bg-[#FAF7F4] border border-[#EDE0D6] rounded-xl px-4 py-3">
+                    <div>
+                        <p class="font-bold text-[#382114] text-sm">Compartir datos con terceros</p>
+                        <p class="text-[#7A695E] text-xs font-medium mt-0.5">No compartir datos personales con socios comerciales</p>
+                    </div>
+                    <label class="toggle-switch"><input type="checkbox" id="toggleTerceros"><span class="toggle-slider"></span></label>
+                </div>
+                <div class="flex items-center justify-between bg-[#FAF7F4] border border-[#EDE0D6] rounded-xl px-4 py-3">
+                    <div>
+                        <p class="font-bold text-[#382114] text-sm">Geolocalización</p>
+                        <p class="text-[#7A695E] text-xs font-medium mt-0.5">Permitir acceso a ubicación para calcular costos de flete</p>
+                    </div>
+                    <label class="toggle-switch"><input type="checkbox" id="toggleGeo"><span class="toggle-slider"></span></label>
+                </div>
+            </div>
+            <div class="bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 mt-5">
+                <p class="text-blue-800 text-xs font-semibold">🔒 Tus datos están protegidos bajo la Ley 1581 de 2012 (Habeas Data) de Colombia. Para ejercer tus derechos, contáctanos en <span class="underline">privacidad@carpintec.com</span></p>
+            </div>
+            <div class="flex justify-end mt-5">
+                <button onclick="cerrarModal('modalPrivacidad')" class="px-6 py-2.5 rounded-xl bg-[#4E2A18] hover:bg-[#3D1E10] text-white font-semibold text-sm transition-colors shadow-sm">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL 6: Comunicaciones -->
+<div id="modalComunicaciones" class="modal-overlay" onclick="cerrarModalFuera(event, 'modalComunicaciones')">
+    <div class="modal-box modal-wide">
+        <div class="bg-gradient-to-br from-[#4E2A18] to-[#7A3E25] px-7 py-5 rounded-t-[24px] flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-[#e8ba80]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a.75.75 0 01-.845-.968c.287-.96.48-1.99.568-3.033C3.766 15.65 3 13.914 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </div>
+                <h3 class="text-white font-bold text-lg">Comunicaciones</h3>
+            </div>
+            <button onclick="cerrarModal('modalComunicaciones')" class="w-8 h-8 bg-white/15 hover:bg-white/25 rounded-full flex items-center justify-center text-white text-lg font-bold transition-colors">×</button>
+        </div>
+        <div class="px-7 py-6">
+            <p class="text-[#7A695E] text-sm font-medium mb-5">Elige qué notificaciones y mensajes quieres recibir de Carpintec.</p>
+            <div class="space-y-3">
+                <div class="flex items-center justify-between bg-[#FAF7F4] border border-[#EDE0D6] rounded-xl px-4 py-3">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">📦</span>
+                        <div>
+                            <p class="font-bold text-[#382114] text-sm">Estado de pedidos</p>
+                            <p class="text-[#7A695E] text-xs font-medium">Actualizaciones por correo y WhatsApp</p>
+                        </div>
+                    </div>
+                    <label class="toggle-switch"><input type="checkbox" checked id="commPedidos"><span class="toggle-slider"></span></label>
+                </div>
+                <div class="flex items-center justify-between bg-[#FAF7F4] border border-[#EDE0D6] rounded-xl px-4 py-3">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">💼</span>
+                        <div>
+                            <p class="font-bold text-[#382114] text-sm">Cotizaciones y ofertas</p>
+                            <p class="text-[#7A695E] text-xs font-medium">Respuestas y actualizaciones de cotizaciones</p>
+                        </div>
+                    </div>
+                    <label class="toggle-switch"><input type="checkbox" checked id="commCotizaciones"><span class="toggle-slider"></span></label>
+                </div>
+                <div class="flex items-center justify-between bg-[#FAF7F4] border border-[#EDE0D6] rounded-xl px-4 py-3">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🛎️</span>
+                        <div>
+                            <p class="font-bold text-[#382114] text-sm">Novedades de stock</p>
+                            <p class="text-[#7A695E] text-xs font-medium">Productos disponibles y reposición</p>
+                        </div>
+                    </div>
+                    <label class="toggle-switch"><input type="checkbox" id="commStock"><span class="toggle-slider"></span></label>
+                </div>
+                <div class="flex items-center justify-between bg-[#FAF7F4] border border-[#EDE0D6] rounded-xl px-4 py-3">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🎁</span>
+                        <div>
+                            <p class="font-bold text-[#382114] text-sm">Promociones y descuentos</p>
+                            <p class="text-[#7A695E] text-xs font-medium">Ofertas exclusivas para clientes</p>
+                        </div>
+                    </div>
+                    <label class="toggle-switch"><input type="checkbox" id="commPromos"><span class="toggle-slider"></span></label>
+                </div>
+                <div class="flex items-center justify-between bg-[#FAF7F4] border border-[#EDE0D6] rounded-xl px-4 py-3">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">📋</span>
+                        <div>
+                            <p class="font-bold text-[#382114] text-sm">Boletín mensual</p>
+                            <p class="text-[#7A695E] text-xs font-medium">Noticias y tips de carpintería y diseño</p>
+                        </div>
+                    </div>
+                    <label class="toggle-switch"><input type="checkbox" id="commBoletin"><span class="toggle-slider"></span></label>
+                </div>
+            </div>
+            <div class="flex gap-3 mt-6 justify-end">
+                <button onclick="cerrarModal('modalComunicaciones')" class="px-5 py-2.5 rounded-xl border border-[#DCC7B0] text-[#4E2A18] font-semibold text-sm hover:bg-[#F4ECE4] transition-colors">Cancelar</button>
+                <button onclick="guardarComunicaciones()" class="px-6 py-2.5 rounded-xl bg-[#4E2A18] hover:bg-[#3D1E10] text-white font-semibold text-sm transition-colors shadow-sm">Guardar preferencias</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SCRIPTS ==================== -->
+<script>
+    // ---- Modal helpers ----
+    function abrirModal(id) {
+        document.getElementById(id).classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    function cerrarModal(id) {
+        document.getElementById(id).classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    function cerrarModalFuera(event, id) {
+        if (event.target === document.getElementById(id)) cerrarModal(id);
+    }
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.modal-overlay.active').forEach(m => {
+                m.classList.remove('active');
+            });
+            document.body.style.overflow = '';
+        }
+    });
+
+    // ---- Tab perfil ----
+    function switchTab(tab) {
+        const panelVer = document.getElementById('panelVer');
+        const panelEditar = document.getElementById('panelEditar');
+        const tabVer = document.getElementById('tabVerPerfil');
+        const tabEditar = document.getElementById('tabEditarPerfil');
+        if (tab === 'ver') {
+            panelVer.style.display = 'block';
+            panelEditar.style.display = 'none';
+            tabVer.className = 'px-4 py-2 rounded-lg text-[13px] font-semibold bg-[#4E2A18] text-white transition-colors';
+            tabEditar.className = 'px-4 py-2 rounded-lg text-[13px] font-semibold bg-[#F4ECE4] text-[#4E2A18] hover:bg-[#EDE0D6] transition-colors';
+        } else {
+            panelVer.style.display = 'none';
+            panelEditar.style.display = 'block';
+            tabEditar.className = 'px-4 py-2 rounded-lg text-[13px] font-semibold bg-[#4E2A18] text-white transition-colors';
+            tabVer.className = 'px-4 py-2 rounded-lg text-[13px] font-semibold bg-[#F4ECE4] text-[#4E2A18] hover:bg-[#EDE0D6] transition-colors';
+        }
+    }
+
+    // ---- Mostrar mensaje ----
+    function mostrarAlerta(id, msg, tipo) {
+        const el = document.getElementById(id);
+        el.textContent = msg;
+        el.className = 'alert-msg mb-4 ' + (tipo === 'success' ? 'alert-success' : 'alert-error');
+        el.style.display = 'block';
+        setTimeout(() => { el.style.display = 'none'; }, 4500);
+    }
+
+    // ---- Guardar perfil ----
+    function guardarPerfil(e) {
+        e.preventDefault();
+        const btn = document.getElementById('btnGuardarPerfil');
+        btn.disabled = true; btn.textContent = 'Guardando...';
+        const form = document.getElementById('formPerfil');
+        const token = form.querySelector('input[name="__RequestVerificationToken"]').value;
+        const data = new URLSearchParams({
+            nombre: document.getElementById('editNombre').value,
+            apellido: document.getElementById('editApellido').value,
+            telefono: document.getElementById('editTelefono').value,
+            direccion: document.getElementById('editDireccion').value,
+            ciudad: document.getElementById('editCiudad').value,
+            documento: document.getElementById('editDocumento').value,
+            __RequestVerificationToken: token
+        });
+        fetch('/MiPerfil/ActualizarPerfil', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: data.toString()
+        })
+        .then(r => r.json())
+        .then(res => {
+            mostrarAlerta('alertPerfil', res.message, res.success ? 'success' : 'error');
+            if (res.success) {
+                switchTab('ver');
+                setTimeout(() => location.reload(), 1500);
+            }
+        })
+        .catch(() => mostrarAlerta('alertPerfil', 'Error de conexión.', 'error'))
+        .finally(() => { btn.disabled = false; btn.textContent = 'Guardar cambios'; });
+    }
+
+    // ---- Cambiar contraseña ----
+    function cambiarContrasena(e) {
+        e.preventDefault();
+        const form = document.getElementById('formSeguridad');
+        const token = form.querySelector('input[name="__RequestVerificationToken"]').value;
+        const data = new URLSearchParams({
+            contrasenaActual: document.getElementById('contrasenaActual').value,
+            nuevaContrasena: document.getElementById('nuevaContrasena').value,
+            confirmarContrasena: document.getElementById('confirmarContrasena').value,
+            __RequestVerificationToken: token
+        });
+        fetch('/MiPerfil/CambiarContrasena', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: data.toString()
+        })
+        .then(r => r.json())
+        .then(res => {
+            mostrarAlerta('alertSeguridad', res.message, res.success ? 'success' : 'error');
+            if (res.success) form.reset();
+        })
+        .catch(() => mostrarAlerta('alertSeguridad', 'Error de conexión.', 'error'));
+    }
+
+    // ---- Guardar dirección ----
+    function guardarDireccion(e) {
+        e.preventDefault();
+        const form = document.getElementById('formDirecciones');
+        const token = form.querySelector('input[name="__RequestVerificationToken"]').value;
+        const data = new URLSearchParams({
+            direccion: document.getElementById('nuevaDireccion').value,
+            ciudad: document.getElementById('nuevaCiudad').value,
+            __RequestVerificationToken: token
+        });
+        fetch('/MiPerfil/ActualizarDireccion', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: data.toString()
+        })
+        .then(r => r.json())
+        .then(res => {
+            mostrarAlerta('alertDirecciones', res.message, res.success ? 'success' : 'error');
+            if (res.success) setTimeout(() => location.reload(), 1500);
+        })
+        .catch(() => mostrarAlerta('alertDirecciones', 'Error de conexión.', 'error'));
+    }
+
+    // ---- Guardar comunicaciones (local) ----
+    function guardarComunicaciones() {
+        const prefs = {
+            pedidos: document.getElementById('commPedidos').checked,
+            cotizaciones: document.getElementById('commCotizaciones').checked,
+            stock: document.getElementById('commStock').checked,
+            promos: document.getElementById('commPromos').checked,
+            boletin: document.getElementById('commBoletin').checked
+        };
+        localStorage.setItem('carpintec_comunicaciones', JSON.stringify(prefs));
+        cerrarModal('modalComunicaciones');
+        // Feedback visual
+        const div = document.createElement('div');
+        div.className = 'fixed bottom-6 right-6 bg-[#4E2A18] text-white px-5 py-3 rounded-xl shadow-xl text-sm font-semibold z-[99999] flex items-center gap-2';
+        div.innerHTML = '✅ Preferencias de comunicación guardadas';
+        document.body.appendChild(div);
+        setTimeout(() => div.remove(), 3500);
+    }
+
+    // Restaurar preferencias comunicaciones al cargar
+    (function() {
+        const saved = localStorage.getItem('carpintec_comunicaciones');
+        if (saved) {
+            const prefs = JSON.parse(saved);
+            if (prefs.pedidos !== undefined) document.getElementById('commPedidos').checked = prefs.pedidos;
+            if (prefs.cotizaciones !== undefined) document.getElementById('commCotizaciones').checked = prefs.cotizaciones;
+            if (prefs.stock !== undefined) document.getElementById('commStock').checked = prefs.stock;
+            if (prefs.promos !== undefined) document.getElementById('commPromos').checked = prefs.promos;
+            if (prefs.boletin !== undefined) document.getElementById('commBoletin').checked = prefs.boletin;
+        }
+    })();
+</script>
+</body>
+</html>

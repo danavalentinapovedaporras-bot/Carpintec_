@@ -82,6 +82,7 @@ namespace CARPINTEC_App.Controllers
                 ViewBag.SaludoPersonalizado = $"{saludo}, {primerNombre}";
                 ViewBag.Iniciales = iniciales;
                 ViewBag.FechaActual = fechaFormateada;
+                ViewBag.CorreoUsuario = HttpContext.Session.GetString("CorreoUsuario") ?? usuario?.Correo ?? "";
 
                 // 7. Cargar métricas reales del cliente si está disponible
                 int idCliente = cliente?.IdCliente ?? 1;

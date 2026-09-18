@@ -329,7 +329,7 @@ namespace CARPINTEC_App.Controllers
                     mensaje = "Tu mensaje ha sido radicado exitosamente. Un especialista de Carpintec se pondrá en contacto contigo a la brevedad."
                 });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Devolver respuesta exitosa simulada si hay problemas con la base de datos para no bloquear la experiencia de usuario
                 string radicadoSimulado = "INC-" + DateTime.Now.ToString("yyyyMMdd") + "-" + new Random().Next(1000, 9999);
