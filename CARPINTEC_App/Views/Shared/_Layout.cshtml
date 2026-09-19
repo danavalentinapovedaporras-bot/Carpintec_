@@ -266,7 +266,7 @@
                     <div style="font-weight:700; font-size:15px; letter-spacing:0.3px;">Asistente CARPINTEC</div>
                     <div style="font-size:12px; opacity:0.9; display:flex; align-items:center; gap:5px;">
                         <span style="width:8px; height:8px; background:#10b981; border-radius:50%; display:inline-block;"></span>
-                        <span>En línea • Base de datos</span>
+                        <span>En línea •&nbsp;<span id="chatbot-vista-label">Base de datos</span></span>
                     </div>
                 </div>
             </div>
@@ -327,10 +327,19 @@
             gap:6px;
             align-items:center;">
 
+            <!-- CHIP CONTEXTUAL: detecta vista actual y explica qué puede hacer el usuario -->
+            <button type="button"
+                    id="chip-contexto"
+                    onclick="preguntarContexto()"
+                    class="btn btn-sm"
+                    style="background: linear-gradient(135deg,#c39d7a,#9a7452); color:white; border-radius:20px; font-size:12px; padding:4px 13px; font-weight:700; white-space:nowrap; border:none; box-shadow:0 2px 6px rgba(0,0,0,0.18); flex-shrink:0;">
+                📍 ¿Qué puedo hacer aquí?
+            </button>
+
             <button type="button"
                     onclick="enviarPregunta('¿Cómo añadir un cliente?')"
                     class="btn btn-sm"
-                    style="background:#442a22; color:white; border-radius:20px; font-size:12px; padding:4px 12px; font-weight:600; white-space:nowrap; border:none; box-shadow:0 1px 4px rgba(0,0,0,0.1);">
+                    style="background:#ffffff; color:#442a22; border:1px solid #d8c6b5; border-radius:20px; font-size:12px; padding:4px 10px; font-weight:500; white-space:nowrap;">
                 ➕ ¿Cómo añadir un cliente?
             </button>
 
@@ -528,14 +537,98 @@
 
     <!-- SCRIPTS DEL CHATBOT -->
     <script>
+        // Mapa de rutas a nombres amigables para mostrar en el header del chatbot
+        var _vistaLabels = {
+            'dashboard':     'Dashboard',
+            'clientes':      'Gestión Clientes',
+            'empleados':     'Gestión Empleados',
+            'usuarios':      'Gestión Usuarios',
+            'ventas':        'Ventas y Facturación',
+            'factura':       'Ventas y Facturación',
+            'pedidos':       'Pedidos',
+            'cotizaciones':  'Cotizaciones',
+            'inventario':    'Inventario',
+            'manoobra':      'Mano de Obra',
+            'mano':          'Mano de Obra',
+            'reportes':      'Reportes',
+            'pqr':           'PQR',
+            'configuracion': 'Configuración',
+            'productos':     'Productos'
+        };
+
+        // Devuelve el nombre amigable de la vista actual basado en la URL
+        function _detectarVistaLabel() {
+            var path = window.location.pathname.toLowerCase();
+            for (var clave in _vistaLabels) {
+                if (path.indexOf(clave) !== -1) return _vistaLabels[clave];
+            }
+            return 'Panel Admin';
+        }
+
+        // ¿Es la primera vez que se abre el chatbot en esta sesión de página?
+        var _chatbotYaAbierto = false;
+
         function abrirChatbot() {
             var box = document.getElementById("chatbot-box");
             box.style.display = "flex";
             document.getElementById("chatbot-float-btn").style.display = "none";
+
+            // Actualizar el label de la vista en el header del chatbot
+            var label = document.getElementById("chatbot-vista-label");
+            if (label) label.textContent = _detectarVistaLabel();
+
             setTimeout(function() {
                 document.getElementById("chat-input").focus();
                 scrollChatFinal();
-            }, 100);
+
+                // Auto-consulta contextual solo la primera vez que se abre en esta página
+                if (!_chatbotYaAbierto) {
+                    _chatbotYaAbierto = true;
+                    // Pequeño delay para que el usuario vea el chatbot antes del mensaje
+                    setTimeout(function() {
+                        enviarMensajeContexto('¿Qué puedo hacer aquí?');
+                    }, 500);
+                }
+            }, 150);
+        }
+
+        // Envía la pregunta de contexto SIN mostrarla como burbuja de usuario (es automática)
+        async function enviarMensajeContexto(pregunta) {
+            var contenedor = document.getElementById("chat-respuestas");
+            var typing = document.getElementById("chat-typing");
+            typing.style.display = "flex";
+            scrollChatFinal();
+
+            try {
+                var respuesta = await fetch('/Chatbot/Preguntar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mensaje: pregunta, contextoVista: window.location.pathname })
+                });
+                var data = await respuesta.json();
+                typing.style.display = "none";
+
+                var botMsgHtml = document.createElement("div");
+                botMsgHtml.style.cssText = "display:flex; gap:10px; align-items:flex-start;";
+                botMsgHtml.innerHTML = `
+                    <div style="width:32px;height:32px;border-radius:50%;background:#c39d7a;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">
+                        🪵
+                    </div>
+                    <div style="background:#fffaf5;border:1px solid #ddc9b8;border-radius:0 14px 14px 14px;padding:12px 14px;color:#333333;font-size:13.5px;line-height:1.55;box-shadow:0 2px 6px rgba(0,0,0,0.06);max-width:88%;word-break:break-word;">
+                        <div style="font-weight:700;color:#5d3a30;margin-bottom:4px;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;">📍 Vista actual: ${_detectarVistaLabel()}</div>
+                        ${formatearTextoMarkdown(data.respuesta)}
+                    </div>
+                `;
+                contenedor.insertBefore(botMsgHtml, typing);
+                scrollChatFinal();
+            } catch (e) {
+                typing.style.display = "none";
+            }
+        }
+
+        // Botón chip: "¿Qué puedo hacer aquí?" — envía con burbuja visible del usuario
+        function preguntarContexto() {
+            enviarPregunta('¿Qué puedo hacer aquí?');
         }
 
         function cerrarChatbot() {
@@ -641,7 +734,7 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ mensaje: mensaje })
+                    body: JSON.stringify({ mensaje: mensaje, contextoVista: window.location.pathname })
                 });
 
                 var data = await respuesta.json();

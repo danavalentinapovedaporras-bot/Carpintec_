@@ -46,7 +46,7 @@ namespace CARPINTEC_App.Controllers
             }
 
             // Procesar respuesta a través del servicio administrativo
-            string respuesta = await _chatbotService.ResponderAsync(mensaje.Mensaje);
+            string respuesta = await _chatbotService.ResponderAsync(mensaje.Mensaje, mensaje.ContextoVista);
 
             // Identificar usuario conectado por JWT o Sesión
             var idUsuarioClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

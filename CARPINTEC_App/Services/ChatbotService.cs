@@ -24,7 +24,7 @@ namespace CARPINTEC_App.Services
         /// <summary>
         /// Procesa la pregunta del usuario en lenguaje natural y genera una respuesta basada en datos de la base de datos o guías paso a paso.
         /// </summary>
-        public async Task<string> ResponderAsync(string mensaje)
+        public async Task<string> ResponderAsync(string mensaje, string? contextoVista = null)
         {
             if (string.IsNullOrWhiteSpace(mensaje))
             {
@@ -43,6 +43,12 @@ namespace CARPINTEC_App.Services
             if (EsAgradecimiento(normalizado))
             {
                 return GenerarAgradecimiento();
+            }
+
+            // 2.5 Consultas sobre el contexto actual (Dónde estoy, qué puedo hacer)
+            if (EsConsultaDeContexto(normalizado))
+            {
+                return GenerarAyudaPorContexto(contextoVista);
             }
 
             // 3. Guías operativas paso a paso (How-To / Diligenciamiento de formularios)
@@ -1215,6 +1221,259 @@ namespace CARPINTEC_App.Services
                    "  • *'¿Cuántos empleados hay en taller?'*\n" +
                    "  • *'¿Hay PQR pendientes?'*\n" +
                    "  • *'Resumen general'* (vista ejecutiva completa)";
+        }
+
+        // =========================================================================
+        // MÉTODOS DE DETECCIÓN Y AYUDA CONTEXTUAL (Chatbot detecta vista actual)
+        // =========================================================================
+
+        /// <summary>
+        /// Detecta si el usuario está preguntando por el contexto actual (dónde está o qué puede hacer en la vista actual).
+        /// </summary>
+        private static bool EsConsultaDeContexto(string normalizado)
+        {
+            var palabrasClave = new[]
+            {
+                "donde estoy", "en que pagina", "en que vista", "que puedo hacer aqui",
+                "que se puede hacer aqui", "que hace esta pantalla", "que es esta seccion",
+                "ayuda de esta vista", "ayuda de esta pagina", "ayuda de esta pantalla",
+                "para que sirve esta", "que hace esta pagina", "que hay aqui",
+                "que funciones hay aqui", "explica esta seccion", "explica esta vista"
+            };
+            return palabrasClave.Any(k => normalizado.Contains(k));
+        }
+
+        /// <summary>
+        /// Genera una respuesta contextual EXACTA según la ruta de la vista actual.
+        /// Cada sección describe las acciones y botones reales que existen en esa vista.
+        /// </summary>
+        private static string GenerarAyudaPorContexto(string? ruta)
+        {
+            if (string.IsNullOrWhiteSpace(ruta))
+            {
+                return "📍 No pude detectar en qué vista estás. Por favor dime en qué sección del sistema te encuentras y te explico qué puedes hacer allí.";
+            }
+
+            string r = ruta.ToLowerInvariant();
+
+            // ── DASHBOARD ──────────────────────────────────────────────────────
+            if (r.Contains("dashboard"))
+                return "📊 **Estás en el Dashboard — Panel Principal**\n\n" +
+                       "Esta es la vista principal de CARPINTEC. Aquí puedes:\n\n" +
+                       "**📈 Tarjetas de resumen en tiempo real:**\n" +
+                       "• Total de clientes registrados\n" +
+                       "• Pedidos activos (En proceso / Pendientes)\n" +
+                       "• Total facturado del mes\n" +
+                       "• Materiales con stock bajo\n\n" +
+                       "**🧭 Navegación rápida:** Desde el menú lateral accedes a todos los módulos del sistema.\n\n" +
+                       "💡 *Prueba preguntarme: 'Resumen general', 'Stock bajo' o 'Pedidos pendientes'.*";
+
+            // ── EMPLEADOS (Gestión de Empleados) ──────────────────────────────
+            if (r.Contains("empleados"))
+                return "👷 **Estás en Gestión de Empleados**\n\n" +
+                       "Esta vista te permite administrar todo el personal del taller. Exactamente puedes:\n\n" +
+                       "**➕ Botón 'Nuevo Empleado'** (arriba a la derecha):\n" +
+                       "• Abre un formulario para registrar: nombre, apellido, documento, cargo, salario, estado y fechas.\n\n" +
+                       "**🔍 Barra de búsqueda:**\n" +
+                       "• Filtra empleados por nombre, documento o estado en tiempo real.\n\n" +
+                       "**📅 Calendario de empleados** (botón en el encabezado):\n" +
+                       "• Ver el calendario general de asistencia, vacaciones y licencias de todos los empleados.\n\n" +
+                       "**En cada fila de empleado tienes 4 botones de acción:**\n" +
+                       "• 👁️ **Ver** — Consultar todos los datos del empleado en un panel de detalle.\n" +
+                       "• ✏️ **Editar** — Modificar nombre, cargo, salario u otros campos del empleado.\n" +
+                       "• 🔄 **Cambiar estado** — Activar, inactivar o cambiar el estado laboral del empleado.\n" +
+                       "• 📅 **Editar calendario** — Asignar fechas de vacaciones, licencias o permisos en el calendario individual.\n\n" +
+                       "**📊 Tarjetas de resumen en la parte superior:**\n" +
+                       "• Total de empleados, activos, inactivos, en vacaciones y en licencia.\n\n" +
+                       "💡 *Pregúntame: '¿Cuántos empleados hay en taller?' para consultar la base de datos.*";
+
+            // ── USUARIOS (Gestión de Usuarios) ────────────────────────────────
+            if (r.Contains("usuarios"))
+                return "👤 **Estás en Gestión de Usuarios**\n\n" +
+                       "Esta vista administra las cuentas de acceso al sistema. Exactamente puedes:\n\n" +
+                       "**➕ Botón 'Crear Usuario'** (arriba a la derecha):\n" +
+                       "• Abre un formulario con los campos: Nombre, Apellido, Correo, Contraseña, Rol (Administrador / Empleado / Cliente) y Estado (se asigna 'Activo' automáticamente).\n\n" +
+                       "**🔍 Barra de búsqueda y filtros:**\n" +
+                       "• Buscar por nombre, apellido, correo o documento.\n" +
+                       "• Filtrar por rol: Todos / Administrador / Empleado / Cliente.\n\n" +
+                       "**📊 Tarjetas de resumen:**\n" +
+                       "• Total de usuarios, Activos, Administradores, Inactivos y Bloqueados.\n\n" +
+                       "**En cada fila de usuario tienes 3 botones:**\n" +
+                       "• 👁️ **Ver** — Consultar los datos completos del usuario.\n" +
+                       "• ✏️ **Editar** — Modificar nombre, correo, rol o contraseña.\n" +
+                       "• 🔄 **Cambiar estado** — Activar, inactivar o desbloquear la cuenta del usuario.\n\n" +
+                       "**📄 Paginación:** Puedes navegar entre páginas si hay muchos usuarios registrados.\n\n" +
+                       "💡 *Pregúntame: '¿Cómo desbloquear un usuario?' para ver la guía paso a paso.*";
+
+            // ── CLIENTES ──────────────────────────────────────────────────────
+            if (r.Contains("clientes"))
+                return "👥 **Estás en Gestión de Clientes**\n\n" +
+                       "Esta vista administra todos los clientes de CARPINTEC. Exactamente puedes:\n\n" +
+                       "**➕ Botón 'Nuevo Cliente'** (arriba a la derecha):\n" +
+                       "• Abre un formulario con: Nombre, Apellido, Tipo de documento, Número de documento, Teléfono, Correo y Dirección.\n\n" +
+                       "**🔍 Barra de búsqueda:**\n" +
+                       "• Buscar clientes por nombre, apellido, correo, documento o teléfono.\n\n" +
+                       "**📊 Tarjetas de resumen en la parte superior:**\n" +
+                       "• Total de clientes, activos e inactivos.\n\n" +
+                       "**En cada fila de cliente tienes 3 botones:**\n" +
+                       "• 👁️ **Ver** — Ver todos los datos del cliente y su historial.\n" +
+                       "• ✏️ **Editar** — Modificar cualquier dato del cliente.\n" +
+                       "• 🔄 **Cambiar estado** — Activar o inactivar el cliente en el sistema.\n\n" +
+                       "**📄 Paginación:** Navega entre páginas de clientes.\n\n" +
+                       "💡 *Pregúntame: '¿Cómo añadir un cliente?' para ver la guía paso a paso.*";
+
+            // ── VENTAS Y FACTURACIÓN ──────────────────────────────────────────
+            if (r.Contains("ventas") || (r.Contains("factura") && !r.Contains("gestionfactura")))
+                return "💰 **Estás en Ventas y Facturación**\n\n" +
+                       "Esta vista gestiona todas las facturas emitidas a clientes. Exactamente puedes:\n\n" +
+                       "**➕ Botón 'Nueva Factura'** (arriba a la derecha):\n" +
+                       "• Abre un formulario para crear una factura vinculando un pedido existente, indicando método de pago y monto.\n\n" +
+                       "**🔍 Barra de búsqueda:**\n" +
+                       "• Buscar por número de factura, nombre del cliente o número de pedido asociado.\n\n" +
+                       "**📋 Tabla de facturas:** Muestra número de factura, cliente, fecha, total y estado del pago.\n\n" +
+                       "**En cada fila tienes:**\n" +
+                       "• 👁️ **Ver detalle** — Abre un panel lateral con el desglose completo de la factura (productos, cantidades, impuestos, total).\n\n" +
+                       "**📄 Paginación:** Navega entre páginas de facturas.\n\n" +
+                       "💡 *Pregúntame: '¿Cuánto se ha facturado?' para consultar el total de ventas.*";
+
+            // ── PEDIDOS ───────────────────────────────────────────────────────
+            if (r.Contains("pedidos"))
+                return "📦 **Estás en Pedidos**\n\n" +
+                       "Esta vista gestiona todos los pedidos del taller. Exactamente puedes:\n\n" +
+                       "**➕ Botón 'Nuevo Pedido'** (arriba a la derecha):\n" +
+                       "• Abre un formulario para registrar: cliente, productos solicitados, cantidades, fecha estimada de entrega y observaciones.\n\n" +
+                       "**🔍 Barra de búsqueda y filtros:**\n" +
+                       "• Buscar por número de pedido (PED-), nombre del cliente, estado o fecha.\n" +
+                       "• Botón **Limpiar filtros** para reiniciar la búsqueda.\n\n" +
+                       "**📤 Botón 'Exportar a Excel':**\n" +
+                       "• Descarga la lista de pedidos en formato Excel (.xlsx).\n\n" +
+                       "**📋 Tabla de pedidos:** Muestra código, cliente, estado, fecha y total de cada pedido.\n\n" +
+                       "**📄 Paginación:** Navega entre páginas de pedidos.\n\n" +
+                       "💡 *Pregúntame: 'Pedidos pendientes' para ver los que aún están en proceso.*";
+
+            // ── COTIZACIONES ──────────────────────────────────────────────────
+            if (r.Contains("cotizaciones") || r.Contains("cotizacion"))
+                return "📄 **Estás en Cotizaciones**\n\n" +
+                       "Esta vista gestiona todas las cotizaciones enviadas a clientes. Exactamente puedes:\n\n" +
+                       "**➕ Botón 'Nueva Cotización'** (arriba a la derecha):\n" +
+                       "• Abre un panel lateral para seleccionar productos del catálogo, ajustar cantidades con botones + / -, agregar medidas especiales y guardar la cotización con el total calculado automáticamente.\n\n" +
+                       "**🔍 Barra de búsqueda y filtros:**\n" +
+                       "• Buscar por folio (COT-), nombre del cliente, estado o fecha.\n" +
+                       "• Filtro por estado: Pendiente, Aprobada, Rechazada.\n" +
+                       "• Botón **Limpiar filtros**.\n\n" +
+                       "**En cada fila tienes 3 botones:**\n" +
+                       "• 👁️ **Ver detalle** — Consultar todos los productos y precios de la cotización.\n" +
+                       "• ✏️ **Editar** — Modificar productos, cantidades o datos del cliente.\n" +
+                       "• 🗑️ **Eliminar** — Borrar la cotización del sistema.\n\n" +
+                       "**📄 Paginación:** Navega entre páginas de cotizaciones.\n\n" +
+                       "💡 *Pregúntame: '¿Cómo crear una cotización?' para ver la guía paso a paso.*";
+
+            // ── INVENTARIO ────────────────────────────────────────────────────
+            if (r.Contains("inventario"))
+                return "📦 **Estás en Inventario**\n\n" +
+                       "Esta vista gestiona las materias primas y materiales del taller. Exactamente puedes:\n\n" +
+                       "**📊 Panel lateral de stock bajo:**\n" +
+                       "• Lista los materiales que están por debajo del nivel mínimo configurado.\n" +
+                       "• **Botón 'Registrar Reposición':** Abre un modal para registrar el ingreso de nuevo stock de ese material (proveedor, cantidad y costo).\n\n" +
+                       "**📋 Tabla de inventario:** Muestra material, categoría, stock actual, stock mínimo, unidad y proveedor.\n\n" +
+                       "**En cada fila tienes 2 botones:**\n" +
+                       "• ✏️ **Editar** — Modificar los datos del material (nombre, categoría, proveedor, stock mínimo).\n" +
+                       "• 🗑️ **Eliminar** — Borrar el material del inventario (solicita confirmación).\n\n" +
+                       "**🔍 Búsqueda:** Filtra materiales por nombre o categoría.\n\n" +
+                       "**📄 Paginación:** Navega entre páginas de materiales.\n\n" +
+                       "💡 *Pregúntame: 'Stock bajo' para ver todos los materiales críticos en este momento.*";
+
+            // ── MANO DE OBRA ──────────────────────────────────────────────────
+            if (r.Contains("manoobra") || r.Contains("mano"))
+                return "🔨 **Estás en Mano de Obra**\n\n" +
+                       "Esta vista registra y gestiona el trabajo asignado a los empleados por orden de producción. Exactamente puedes:\n\n" +
+                       "**➕ Botón 'Nueva Asignación'** (arriba a la derecha):\n" +
+                       "• Abre un formulario para registrar: empleado, código de orden (ej: PED-2026-001), tipo de trabajo, horas trabajadas, tarifa por hora y fecha.\n\n" +
+                       "**🔍 Barra de búsqueda:**\n" +
+                       "• Buscar por nombre del empleado o código de orden.\n\n" +
+                       "**📤 Exportar PDF:** Imprime o guarda como PDF el reporte de mano de obra.\n" +
+                       "**📤 Exportar Excel:** Descarga el reporte completo en formato Excel (.xlsx).\n\n" +
+                       "**En cada fila tienes 3 botones:**\n" +
+                       "• 👁️ **Ver** — Consultar todos los detalles de la asignación (empleado, horas, tarifa, costo total).\n" +
+                       "• ✏️ **Editar** — Modificar las horas, tarifa, tipo de trabajo o fecha de la asignación.\n" +
+                       "• 🗑️ **Eliminar** — Borrar la asignación del sistema (solicita confirmación).\n\n" +
+                       "**📊 Tarjetas de resumen en la parte superior:**\n" +
+                       "• Total de asignaciones, empleados activos en producción y costo total de mano de obra.\n\n" +
+                       "**📄 Paginación:** Navega entre páginas de asignaciones.\n\n" +
+                       "💡 *Pregúntame: '¿Cuántos empleados hay en taller?' para consultar la base de datos.*";
+
+            // ── PQR ───────────────────────────────────────────────────────────
+            if (r.Contains("pqr"))
+                return "📩 **Estás en PQR — Peticiones, Quejas y Reclamos**\n\n" +
+                       "Esta vista gestiona todas las solicitudes enviadas por los clientes. Exactamente puedes:\n\n" +
+                       "**➕ Botón 'Nueva PQR'** (arriba a la derecha):\n" +
+                       "• Abre un formulario para registrar manualmente una PQR indicando: tipo (Petición / Queja / Reclamo), cliente, descripción y prioridad.\n\n" +
+                       "**🔍 Barra de búsqueda y filtros:**\n" +
+                       "• Buscar por radicado (PQR-) o nombre del cliente.\n" +
+                       "• Filtrar por estado: Abierta, En revisión, Cerrada.\n" +
+                       "• Botón **Limpiar filtros**.\n\n" +
+                       "**📋 Tabla de PQR:** Muestra radicado, tipo, cliente, fecha y estado de cada solicitud.\n\n" +
+                       "**En cada fila tienes 2 botones:**\n" +
+                       "• 👁️ **Ver detalle** — Abre un panel lateral con toda la información de la PQR. Desde allí puedes:\n" +
+                       "  - Escribir y **guardar una respuesta oficial** al cliente.\n" +
+                       "  - **Cambiar el estado** de la PQR (Abierta → En revisión → Cerrada).\n" +
+                       "• ✏️ **Editar** — Modificar la descripción, tipo o datos de la PQR.\n\n" +
+                       "**📄 Paginación:** Navega entre páginas de PQR.\n\n" +
+                       "💡 *Pregúntame: 'PQR pendientes' para ver cuántas están sin resolver.*";
+
+            // ── REPORTES ──────────────────────────────────────────────────────
+            if (r.Contains("reportes") || r.Contains("reporte"))
+                return "📊 **Estás en Reportes**\n\n" +
+                       "Esta vista presenta análisis y métricas del negocio. Exactamente puedes:\n\n" +
+                       "**📈 Reportes de Ventas:**\n" +
+                       "• Total facturado por período (diario, mensual, anual).\n" +
+                       "• Clientes con mayor volumen de compras.\n" +
+                       "• Productos más vendidos.\n\n" +
+                       "**🔨 Reportes de Producción:**\n" +
+                       "• Pedidos entregados vs. pendientes.\n" +
+                       "• Costo de mano de obra por período.\n" +
+                       "• Tiempo promedio de entrega.\n\n" +
+                       "**📦 Reportes de Inventario:**\n" +
+                       "• Materiales con mayor rotación.\n" +
+                       "• Valor total del inventario actual.\n" +
+                       "• Reposiciones registradas por período.\n\n" +
+                       "**📤 Exportar:** Puedes descargar los reportes en PDF o Excel.\n\n" +
+                       "💡 *Pregúntame: 'Resumen general' para ver todos los KPIs en este momento.*";
+
+            // ── CONFIGURACIÓN ─────────────────────────────────────────────────
+            if (r.Contains("configuracion") || r.Contains("configuración"))
+                return "⚙️ **Estás en Configuración**\n\n" +
+                       "Esta vista permite personalizar tu cuenta y preferencias del sistema. Exactamente puedes:\n\n" +
+                       "**👤 Sección 'Mi Perfil':**\n" +
+                       "• **Botón 'Editar Perfil'** → Abre un modal para cambiar tu nombre, apellido y correo electrónico.\n\n" +
+                       "**🔒 Sección 'Seguridad':**\n" +
+                       "• **Botón 'Cambiar Contraseña'** → Abre un modal para actualizar tu contraseña actual.\n" +
+                       "  Los campos son: Contraseña actual, Nueva contraseña y Confirmar nueva contraseña.\n\n" +
+                       "**🔔 Sección 'Notificaciones':**\n" +
+                       "• Casilla de verificación: **Avisos de Nuevos Pedidos** (activa o desactiva notificaciones automáticas).\n\n" +
+                       "**Importante:** Los cambios en perfil y contraseña se guardan de forma individual en cada modal.\n\n" +
+                       "💡 *Si tienes problemas para iniciar sesión o necesitas desbloquear un usuario, ve al módulo de Gestión de Usuarios.*";
+
+            // ── PRODUCTOS ─────────────────────────────────────────────────────
+            if (r.Contains("productos") || r.Contains("catalogo"))
+                return "🪑 **Estás en Productos / Catálogo**\n\n" +
+                       "Esta vista gestiona el catálogo de muebles y productos ofrecidos por CARPINTEC. Exactamente puedes:\n\n" +
+                       "**➕ Botón 'Nuevo Producto'** (arriba a la derecha):\n" +
+                       "• Registrar un nuevo producto con: nombre, descripción, categoría, precio, materiales requeridos y tiempo estimado de fabricación.\n\n" +
+                       "**🔍 Barra de búsqueda:**\n" +
+                       "• Buscar productos por nombre, categoría o material.\n\n" +
+                       "**📋 Tabla del catálogo:** Muestra nombre, categoría, precio y disponibilidad.\n\n" +
+                       "**En cada fila tienes botones para:**\n" +
+                       "• ✏️ **Editar** — Modificar precio, descripción o materiales del producto.\n" +
+                       "• 🗑️ **Eliminar** — Retirar el producto del catálogo.\n\n" +
+                       "**📄 Paginación:** Navega entre páginas de productos.\n\n" +
+                       "💡 *Pregúntame: 'Precio de [mueble]' para consultar precios de la base de datos.*";
+
+            // ── Vista no reconocida ────────────────────────────────────────────
+            return $"📍 Estás en: **{ruta}**\n\n" +
+                   "Puedo ayudarte con cualquier consulta sobre la base de datos (clientes, pedidos, inventario, facturas) " +
+                   "o explicarte paso a paso cómo realizar procesos en el sistema.\n\n" +
+                   "💡 *Escribe 'ayuda' para ver todas las preguntas que puedo responder.*";
         }
 
         private static string GenerarRespuestaPorDefecto(string pregunta)
