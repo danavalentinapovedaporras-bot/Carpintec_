@@ -190,7 +190,23 @@
 
     <!-- Main Content Canvas -->
     <main class="pt-4 min-h-screen bg-background">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6"><h1 class="text-headline-xl font-headline-xl font-bold text-black" style="color: #000000;">Inventario</h1></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
+            <h1 class="text-headline-xl font-headline-xl font-bold text-black" style="color: #000000;">Inventario</h1>
+            @if (TempData["Exito"] != null)
+            {
+                <div class="mt-3 p-3 rounded-lg bg-green-100 border border-green-300 text-green-800 text-sm font-bold flex items-center gap-2">
+                    <span class="material-symbols-outlined text-green-600">check_circle</span>
+                    @TempData["Exito"]
+                </div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="mt-3 p-3 rounded-lg bg-red-100 border border-red-300 text-red-800 text-sm font-bold flex items-center gap-2">
+                    <span class="material-symbols-outlined text-red-600">error</span>
+                    @TempData["Error"]
+                </div>
+            }
+        </div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-lg">
             <!-- Summary Stats Bento Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md">
@@ -199,8 +215,8 @@
                         <span class="text-label-md text-on-surface-variant font-bold">Productos Totales</span>
                         <span class="material-symbols-outlined text-black">inventory</span>
                     </div>
-                    <p class="text-headline-lg font-headline-lg text-black font-bold" style="color: #000000;">342</p>
-                    <p class="text-body-sm text-tertiary mt-2 font-bold">↑ 12 nuevos este mes</p>
+                    <p class="text-headline-lg font-headline-lg text-black font-bold" style="color: #000000;">@ViewBag.ProductosTotales</p>
+                    <p class="text-body-sm text-tertiary mt-2 font-bold">Total registrados en inventario</p>
                 </div>
                 <!-- INICIO: Tarjeta estadística Stock Bajo en color beige (#D2B48C) -->
                 <div class="bg-[#D2B48C]/30 p-md rounded-xl wood-shadow border border-[#D2B48C]/50" style="background-color: rgba(210, 180, 140, 0.3);">
@@ -208,7 +224,7 @@
                         <span class="text-label-md text-black font-bold">Stock Bajo</span>
                         <span class="material-symbols-outlined text-[#8b5a2b]">warning</span>
                     </div>
-                    <p class="text-headline-lg font-headline-lg text-black font-bold" style="color: #000000;">18</p>
+                    <p class="text-headline-lg font-headline-lg text-black font-bold" style="color: #000000;">@ViewBag.StockBajoCount</p>
                     <p class="text-body-sm text-black/70 mt-2 font-bold">Requieren atención inmediata</p>
                 </div>
                 <!-- FIN: Tarjeta estadística Stock Bajo en color beige (#D2B48C) -->
@@ -217,7 +233,10 @@
                         <span class="text-label-md text-on-surface-variant font-bold">Valor Inventario</span>
                         <span class="material-symbols-outlined text-black">payments</span>
                     </div>
-                    <p class="text-headline-lg font-headline-lg text-black font-bold" style="color: #000000;">$285.600k</p>
+                    @{
+                        decimal valorInv = ViewBag.ValorInventario ?? 0m;
+                    }
+                    <p class="text-headline-lg font-headline-lg text-black font-bold" style="color: #000000;">@valorInv.ToString("C0")</p>
                     <p class="text-body-sm text-on-surface-variant mt-2 font-bold">Basado en precio de compra</p>
                 </div>
                 <div class="bg-surface-container-lowest p-md rounded-xl wood-shadow border border-outline-variant/20">
@@ -225,7 +244,7 @@
                         <span class="text-label-md text-on-surface-variant font-bold">Movimientos</span>
                         <span class="material-symbols-outlined text-black">sync_alt</span>
                     </div>
-                    <p class="text-headline-lg font-headline-lg text-black font-bold" style="color: #000000;">128</p>
+                    <p class="text-headline-lg font-headline-lg text-black font-bold" style="color: #000000;">@ViewBag.MovimientosCount</p>
                     <p class="text-body-sm text-on-surface-variant mt-2 font-bold">Últimos 30 días</p>
                 </div>
             </div>
@@ -237,13 +256,7 @@
                     <button class="px-6 py-2 hover:bg-surface-container-highest text-on-surface-variant rounded-md text-label-md font-label-md transition-all">Herramientas</button>
                     <button class="px-6 py-2 hover:bg-surface-container-highest text-on-surface-variant rounded-md text-label-md font-label-md transition-all">Químicos</button>
                 </div>
-                <!-- INICIO: Botón Facturas PDF en color beige (#D2B48C) -->
-                <a asp-controller="GestionFacturas"
-                   asp-action="Index"
-                   class="bg-[#D2B48C] hover:brightness-95 px-6 py-3 rounded-full flex items-center gap-2 font-bold shadow-md active:scale-95 transition-all text-black"
-                   style="background-color: #D2B48C; color: #000000; text-decoration: none;">
-                    Facturas PDF
-                </a>
+               
                 <!-- FIN: Botón Facturas PDF en color beige (#D2B48C) -->
             </div>
             <!-- Inventory List Table Card -->
@@ -296,7 +309,11 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4 text-body-sm font-bold">General</td>
+                                        @{
+                                            var catDict = ViewBag.Categorias as Dictionary<int, string>;
+                                            string catNombre = (catDict != null && catDict.ContainsKey(item.IdProducto)) ? catDict[item.IdProducto] : "General";
+                                        }
+                                        <td class="px-6 py-4 text-body-sm font-bold">@catNombre</td>
                                         <td class="px-6 py-4 text-center">
                                             @if (esStockBajo)
                                             {
@@ -324,8 +341,11 @@
                                             }
                                         </td>
                                         <td class="px-6 py-4 text-right">
-                                            <a asp-action="Edit" asp-route-id="@item.IdInventario" class="p-2 text-on-surface-variant hover:text-primary transition-colors inline-block"><span class="material-symbols-outlined">edit</span></a>
-                                            <button class="p-2 text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined">more_vert</span></button>
+                                            <a asp-action="Edit" asp-route-id="@item.IdInventario" class="p-2 text-on-surface-variant hover:text-primary transition-colors inline-block" title="Editar"><span class="material-symbols-outlined">edit</span></a>
+                                            <form asp-action="Delete" asp-route-id="@item.IdInventario" method="post" class="inline-block" onsubmit="return confirm('¿Está seguro de eliminar este registro de inventario?');">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="p-2 text-on-surface-variant hover:text-error transition-colors" title="Eliminar"><span class="material-symbols-outlined">delete</span></button>
+                                            </form>
                                         </td>
                                     </tr>
                                 }
@@ -394,51 +414,42 @@
                         <a class="text-label-md font-bold text-black hover:underline" href="#" style="color: #000000;">Ver reporte completo</a>
                     </div>
                     <div class="space-y-4">
-                        <div class="flex items-center justify-between p-4 bg-surface-container-low rounded-lg border border-outline-variant/10">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-full bg-tertiary/10 text-tertiary flex items-center justify-center">
-                                    <span class="material-symbols-outlined">south_east</span>
+                        @{
+                            var movimientos = ViewBag.HistorialMovimientos as List<CARPINTEC_App.Models.MovimientoInventario>;
+                        }
+                        @if (movimientos != null && movimientos.Any())
+                        {
+                            @foreach (var mov in movimientos)
+                            {
+                                bool esEntrada = mov.Tipo != null && mov.Tipo.ToLower().Contains("entrada");
+                                string iconoMov = esEntrada ? "south_east" : "north_east";
+                                string colorIcono = esEntrada ? "bg-tertiary/10 text-tertiary" : "bg-error/10 text-error";
+                                string colorCantidad = esEntrada ? "text-tertiary" : "text-error";
+                                string prefijo = esEntrada ? "+" : "-";
+
+                                <div class="flex items-center justify-between p-4 bg-surface-container-low rounded-lg border border-outline-variant/10">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-10 h-10 rounded-full @colorIcono flex items-center justify-center">
+                                            <span class="material-symbols-outlined">@iconoMov</span>
+                                        </div>
+                                        <div>
+                                            <p class="text-body-md font-bold text-black" style="color: #000000;">@mov.Tipo: @mov.NombreProducto</p>
+                                            <p class="text-body-sm text-on-surface-variant font-bold">@mov.ReferenciaOProyecto</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-body-md font-bold @colorCantidad">@prefijo@mov.Cantidad @mov.UnidadMedida</p>
+                                        <p class="text-body-sm text-on-surface-variant font-bold">@mov.FechaMovimiento.ToString("dd MMM yyyy, hh:mm tt")</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p class="text-body-md font-bold text-black" style="color: #000000;">Entrada: Madera Roble</p>
-                                    <p class="text-body-sm text-on-surface-variant font-bold">Orden de compra #OC-2024-081</p>
-                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="p-4 text-center text-on-surface-variant text-sm italic font-bold">
+                                No hay movimientos registrados aún.
                             </div>
-                            <div class="text-right">
-                                <p class="text-body-md font-bold text-tertiary">+50 Tablones</p>
-                                <p class="text-body-sm text-on-surface-variant font-bold">Hoy, 09:15 AM</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center justify-between p-4 bg-surface-container-low rounded-lg border border-outline-variant/10">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-full bg-error/10 text-error flex items-center justify-center">
-                                    <span class="material-symbols-outlined">north_east</span>
-                                </div>
-                                <div>
-                                    <p class="text-body-md font-bold text-black" style="color: #000000;">Salida: Pegante PVA</p>
-                                    <p class="text-body-sm text-on-surface-variant font-bold">Proyecto: Cocina Integral #24-01</p>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-body-md font-bold text-error">-2 Galones</p>
-                                <p class="text-body-sm text-on-surface-variant font-bold">Ayer, 04:30 PM</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center justify-between p-4 bg-surface-container-low rounded-lg border border-outline-variant/10">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-full bg-error/10 text-error flex items-center justify-center">
-                                    <span class="material-symbols-outlined">north_east</span>
-                                </div>
-                                <div>
-                                    <p class="text-body-md font-bold text-black" style="color: #000000;">Salida: Madera Cedro</p>
-                                    <p class="text-body-sm text-on-surface-variant font-bold">Mobiliario Oficina "Torre 4"</p>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-body-md font-bold text-error">-12 Tablones</p>
-                                <p class="text-body-sm text-on-surface-variant font-bold">15 Mayo, 11:00 AM</p>
-                            </div>
-                        </div>
+                        }
                     </div>
                 </div>
                 <!-- Custom Material Swatches / Specialty Component -->
@@ -536,13 +547,16 @@
                         <!-- 1. Producto -->
                         <div>
                             <label class="block text-sm font-medium text-on-surface-variant mb-1">Producto</label>
-                            <select name="ProductoId" class="w-full rounded-lg border border-outline-variant/40 p-2.5 bg-surface text-primary text-sm focus:outline-none focus:border-primary" required>
-                                <option value="">Seleccione el producto...</option>
-                                @if (Model != null)
+                            <select name="ProductoId" id="selectProductoReposicion" class="w-full rounded-lg border border-outline-variant/40 p-2.5 bg-surface text-primary text-sm focus:outline-none focus:border-primary" required onchange="actualizarStockModal(this)">
+                                <option value="" data-stock="0" data-unidad="unidades">Seleccione el producto...</option>
+                                @{
+                                    var todosInv = ViewBag.TodosInventario as List<CARPINTEC_App.Models.Inventario>;
+                                }
+                                @if (todosInv != null)
                                 {
-                                    @foreach (var prod in Model)
+                                    @foreach (var prod in todosInv)
                                     {
-                                        <option value="@prod.IdInventario">@prod.NombreProducto (Stock actual: @prod.StockActual)</option>
+                                        <option value="@prod.IdProducto" data-stock="@prod.StockActual" data-unidad="@prod.UnidadMedida">@prod.NombreProducto (Stock actual: @prod.StockActual)</option>
                                     }
                                 }
                             </select>
@@ -552,8 +566,8 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-on-surface-variant mb-1">Stock Actual</label>
-                                <div class="p-2.5 rounded-lg bg-surface-variant/40 border border-outline-variant/30 text-sm text-primary font-semibold flex items-center gap-2">
-                                    <span class="w-2 h-2 rounded-full bg-error animate-pulse"></span> 0 unidades (Agotado)
+                                <div id="stockActualInfo" class="p-2.5 rounded-lg bg-surface-variant/40 border border-outline-variant/30 text-sm text-primary font-semibold flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-error animate-pulse"></span> <span id="stockActualTexto">Seleccione un producto</span>
                                 </div>
                             </div>
 
@@ -638,20 +652,48 @@
             const modal = document.getElementById('modalReposicion');
 
             function abrirModal() {
-                modal.showModal(); // Abre la ventana emergente con efecto oscuro atrás
+                modal.showModal();
             }
 
             function cerrarModal() {
-                modal.close(); // Cierra la ventana
+                modal.close();
             }
-  
-    
+
+            // Actualizar stock actual en el modal cuando se selecciona un producto
+            function actualizarStockModal(selectElem) {
+                var option = selectElem.options[selectElem.selectedIndex];
+                var stock = option.getAttribute('data-stock') || '0';
+                var unidad = option.getAttribute('data-unidad') || 'unidades';
+                var textoElem = document.getElementById('stockActualTexto');
+                var stockNum = parseInt(stock);
+
+                if (selectElem.value === '') {
+                    textoElem.textContent = 'Seleccione un producto';
+                } else if (stockNum === 0) {
+                    textoElem.textContent = '0 ' + unidad + ' (Agotado)';
+                } else if (stockNum <= 10) {
+                    textoElem.textContent = stock + ' ' + unidad + ' (Stock Bajo)';
+                } else {
+                    textoElem.textContent = stock + ' ' + unidad + ' (Disponible)';
+                }
+            }
+
             // Simple micro-interaction for rows
             document.querySelectorAll('.zebra-row').forEach(row => {
                 row.addEventListener('click', () => {
                     row.classList.toggle('bg-primary-fixed/10');
                 });
             });
+
+            // Auto-ocultar notificaciones después de 5 segundos
+            setTimeout(function() {
+                var notifs = document.querySelectorAll('[class*="bg-green-100"], [class*="bg-red-100"]');
+                notifs.forEach(function(el) {
+                    el.style.transition = 'opacity 0.5s';
+                    el.style.opacity = '0';
+                    setTimeout(function() { el.remove(); }, 500);
+                });
+            }, 5000);
     </script>
 
 

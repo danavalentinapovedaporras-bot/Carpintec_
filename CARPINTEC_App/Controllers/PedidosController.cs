@@ -47,10 +47,8 @@ namespace CARPINTEC_App.Controllers
             }
 
             int totalRegistros = await query.CountAsync();
-            var registros = await query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
+            // DataTables pagina en el cliente: se envía el listado filtrado completo.
+            var registros = await query.ToListAsync();
 
             ViewBag.EstadoActual = estado;
             ViewBag.PageCurrent = page;

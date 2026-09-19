@@ -1,4 +1,4 @@
-﻿using CARPINTEC_App.Data;
+using CARPINTEC_App.Data;
 using CARPINTEC_App.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -33,20 +33,36 @@ namespace CARPINTEC_App.Controllers
                 .Take(registrosPorPagina)
                 .ToListAsync<Inventario>();
 
-            // 1. Aquí colocas el fragmento para consultar los productos con stock bajo (1 a 10 unidades)
+            // 1. Productos con stock bajo (1 a 10 unidades)
             var productosBajos = await _context.VistaInventario
                 .Where(p => p.StockActual >= 1 && p.StockActual <= 10)
                 .ToListAsync();
-            // Consultamos el historial de movimientos reales ordenados del más reciente al más antiguo
-            var historialMovimientos = await _context.MovimientosInventario // (O el nombre de la tabla/vista que uses para los movimientos)
+
+            // 2. Historial de movimientos reales ordenados del más reciente al más antiguo
+            var historialMovimientos = await _context.MovimientosInventario
                 .OrderByDescending(m => m.FechaMovimiento)
-                .Take(3)
+                .Take(5)
                 .ToListAsync();
 
             ViewBag.HistorialMovimientos = historialMovimientos;
-
-            // 2. Empaquetas esa lista en el ViewBag para que la vista pueda leerla
             ViewBag.ProductosBajos = productosBajos;
+
+            // === ESTADÍSTICAS DINÁMICAS ===
+
+            // Productos totales
+            ViewBag.ProductosTotales = totalRegistros;
+
+            // Conteo de stock bajo
+            ViewBag.StockBajoCount = productosBajos.Count;
+
+            // Valor total de inventario = Σ(StockActual × PrecioCompra)
+            ViewBag.ValorInventario = await _context.VistaInventario
+                .SumAsync(p => (decimal?)(p.StockActual * p.PrecioCompra)) ?? 0m;
+
+            // Movimientos en los últimos 30 días
+            ViewBag.MovimientosCount = await _context.MovimientosInventario
+                .Where(m => m.FechaMovimiento >= DateTime.Now.AddDays(-30))
+                .CountAsync();
 
             // Datos de paginación existentes
             ViewBag.PaginaActual = pagina;
@@ -54,11 +70,18 @@ namespace CARPINTEC_App.Controllers
             ViewBag.TotalRegistros = totalRegistros;
             ViewBag.RegistrosPorPagina = registrosPorPagina;
 
+            // Cargar diccionario de categorías: IdProducto -> Categoria
+            var listaTodosProductos = listaInventario.Select(i => i.IdProducto).Distinct().ToList();
+            var categorias = await _context.Productos
+                .Where(p => listaTodosProductos.Contains(p.IdProducto))
+                .ToDictionaryAsync(p => p.IdProducto, p => p.Categoria ?? "General");
+            ViewBag.Categorias = categorias;
+
+            // Lista completa de inventario para el select del modal de reposición
+            var todosInventario = await _context.VistaInventario.ToListAsync();
+            ViewBag.TodosInventario = todosInventario;
+
             return View(listaInventario);
-
-
-
-
         }
 
         public IActionResult Rebastecimiento()
@@ -97,23 +120,59 @@ namespace CARPINTEC_App.Controllers
         }
 
         // GET: InventarioController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            return View();
+            var item = await _context.Inventarios
+                .FirstOrDefaultAsync(i => i.IdInventario == id);
+
+            if (item == null)
+            {
+                TempData["Error"] = "El registro de inventario no fue encontrado.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(item);
         }
 
         // POST: InventarioController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> Edit(int id, Inventario inventario)
         {
-            try
+            if (id != inventario.IdInventario)
             {
+                TempData["Error"] = "ID de inventario no coincide.";
                 return RedirectToAction(nameof(Index));
             }
-            catch
+
+            try
             {
-                return View();
+                var itemExistente = await _context.Inventarios
+                    .FirstOrDefaultAsync(i => i.IdInventario == id);
+
+                if (itemExistente == null)
+                {
+                    TempData["Error"] = "El registro de inventario no fue encontrado.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                // Actualizar campos editables
+                itemExistente.StockActual = inventario.StockActual;
+                itemExistente.StockMinimo = inventario.StockMinimo;
+                itemExistente.UnidadMedida = inventario.UnidadMedida;
+                itemExistente.PrecioCompra = inventario.PrecioCompra;
+                itemExistente.Ubicacion = inventario.Ubicacion;
+                itemExistente.Estado = inventario.Estado;
+                itemExistente.FechaActualizacion = DateTime.Now;
+
+                await _context.SaveChangesAsync();
+                TempData["Exito"] = "Registro de inventario actualizado correctamente.";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception)
+            {
+                TempData["Error"] = "Ocurrió un error al actualizar el registro.";
+                return RedirectToAction(nameof(Index));
             }
         }
 
@@ -124,30 +183,39 @@ namespace CARPINTEC_App.Controllers
             solicitud.FechaCreacion = DateTime.Now;
 
             _context.SolicitudesReposicion.Add(solicitud);
-            await _context.SaveChangesAsync(); // <-- Aquí saltará la excepción exacta si algo falla
+            await _context.SaveChangesAsync();
 
+            TempData["Exito"] = "Solicitud de reposición creada correctamente.";
             return RedirectToAction(nameof(Index));
-        
-        }
-        // GET: InventarioController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
         }
 
         // POST: InventarioController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
+                var item = await _context.Inventarios
+                    .FirstOrDefaultAsync(i => i.IdInventario == id);
+
+                if (item == null)
+                {
+                    TempData["Error"] = "El registro de inventario no fue encontrado.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                _context.Inventarios.Remove(item);
+                await _context.SaveChangesAsync();
+                TempData["Exito"] = "Registro de inventario eliminado correctamente.";
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception)
             {
-                return View();
+                TempData["Error"] = "No se pudo eliminar el registro. Puede tener dependencias.";
+                return RedirectToAction(nameof(Index));
             }
         }
     }
 }
+

@@ -1,4 +1,4 @@
-﻿using CARPINTEC_App.Data;
+using CARPINTEC_App.Data;
 using CARPINTEC_App.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,29 +17,54 @@ namespace CARPINTEC_App.Controllers
         }
 
 
-        // LISTAR CLIENTES
-        public IActionResult Index()
+        // LISTAR CLIENTES CON BÚSQUEDA Y PAGINACIÓN
+        public async Task<IActionResult> Index(string? search, int pagina = 1)
         {
-            var clientes = _context.Clientes
-                                   .OrderByDescending(c => c.FechaRegistro)
-                                   .ToList();
+            int pageSize = 6;
 
+            var query = _context.Clientes.AsQueryable();
 
-            ViewBag.ClientesTotales = clientes.Count();
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                string s = search.Trim();
+                query = query.Where(c =>
+                    (c.Nombre != null && c.Nombre.Contains(s)) ||
+                    (c.Apellido != null && c.Apellido.Contains(s)) ||
+                    (c.Documento != null && c.Documento.Contains(s)) ||
+                    (c.Correo != null && c.Correo.Contains(s)) ||
+                    (c.Telefono != null && c.Telefono.Contains(s)) ||
+                    (c.NombreEmpresa != null && c.NombreEmpresa.Contains(s)) ||
+                    (c.Contacto != null && c.Contacto.Contains(s)));
+            }
 
-            ViewBag.ClientesActivos = clientes
-                .Count(c => c.Estado == "Activo");
+            int totalRegistros = await query.CountAsync();
+            int totalPaginas = (int)Math.Ceiling((double)totalRegistros / pageSize);
+            if (totalPaginas == 0) totalPaginas = 1;
+            if (pagina < 1) pagina = 1;
+            if (pagina > totalPaginas) pagina = totalPaginas;
 
+            var clientes = await query
+                .OrderByDescending(c => c.FechaRegistro)
+                .Skip((pagina - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
-            ViewBag.ClientesInactivos = clientes
-                .Count(c => c.Estado == "Inactivo");
+            // Métricas sobre el total general
+            ViewBag.ClientesTotales = await _context.Clientes.CountAsync();
+            ViewBag.ClientesActivos = await _context.Clientes.CountAsync(c => c.Estado == "Activo");
+            ViewBag.ClientesInactivos = await _context.Clientes.CountAsync(c => c.Estado == "Inactivo");
+            ViewBag.NuevosClientes = await _context.Clientes
+                .CountAsync(c => c.FechaRegistro != null &&
+                                 c.FechaRegistro.Value.Month == DateTime.Now.Month &&
+                                 c.FechaRegistro.Value.Year == DateTime.Now.Year);
 
-
-            ViewBag.NuevosClientes = clientes
-     .Count(c => c.FechaRegistro != null &&
-                 c.FechaRegistro.Value.Month == DateTime.Now.Month &&
-                 c.FechaRegistro.Value.Year == DateTime.Now.Year);
-
+            // Datos de paginación y búsqueda
+            ViewBag.Search = search;
+            ViewBag.PaginaActual = pagina;
+            ViewBag.TotalPaginas = totalPaginas;
+            ViewBag.TotalRegistros = totalRegistros;
+            ViewBag.RegistroInicio = totalRegistros == 0 ? 0 : (pagina - 1) * pageSize + 1;
+            ViewBag.RegistroFin = Math.Min(pagina * pageSize, totalRegistros);
 
             return View(clientes);
         }

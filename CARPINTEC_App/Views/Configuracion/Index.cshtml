@@ -1,5 +1,7 @@
+@model CARPINTEC_App.Models.Configuracion
 @{
-    ViewData["Title"] = "Usuarios";
+    ViewData["Title"] = "Configuración";
+    var usuario = (CARPINTEC_App.Models.Usuario?)ViewBag.UsuarioActual;
 }
 
 <!DOCTYPE html>
@@ -9,7 +11,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Configuración - Carpintec</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Hanken+Grotesk:wght@400;500;600&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
     <script id="tailwind-config">
             tailwind.config = {
@@ -17,89 +19,19 @@
                 theme: {
                     extend: {
                         "colors": {
-                            "on-secondary-container": "#636451",
                             "primary-container": "#5d4037",
                             "inverse-primary": "#e7bdb1",
-                            "primary-fixed-dim": "#e7bdb1",
-                            "on-error": "#ffffff",
-                            "tertiary-container": "#334b49",
-                            "on-tertiary": "#ffffff",
-                            "surface-tint": "#77574d",
-                            "surface-bright": "#fcf9f8",
-                            "on-secondary-fixed": "#1b1d0e",
-                            "primary-fixed": "#ffdbd0",
                             "surface-container-lowest": "#ffffff",
                             "surface": "#fcf9f8",
                             "primary": "#2D221B",
-                            "tertiary-fixed": "#cde8e5",
-                            "on-primary-container": "#d4ada1",
                             "surface-container-low": "#f6f3f2",
-                            "on-primary-fixed-variant": "#5d4037",
                             "on-surface-variant": "#504441",
-                            "on-primary": "#ffffff",
-                            "on-secondary-fixed-variant": "#474836",
-                            "secondary-fixed": "#e4e4cc",
-                            "on-tertiary-fixed": "#061f1e",
                             "surface-container": "#f0eded",
-                            "secondary-fixed-dim": "#c8c8b0",
-                            "on-tertiary-fixed-variant": "#334b49",
-                            "outline-variant": "#d4c3be",
                             "surface-container-high": "#eae7e7",
                             "secondary": "#5e604d",
-                            "on-tertiary-container": "#a0bab7",
-                            "on-primary-fixed": "#2c160e",
-                            "error-container": "#ffdad6",
-                            "on-surface": "#1b1c1c",
-                            "inverse-on-surface": "#f3f0ef",
                             "error": "#ba1a1a",
-                            "tertiary": "#1c3433",
-                            "on-error-container": "#93000a",
-                            "on-secondary": "#ffffff",
-                            "inverse-surface": "#303030",
-                            "tertiary-fixed-dim": "#b1ccc9",
-                            "surface-container-highest": "#e5e2e1",
-                            "outline": "#827470",
-                            "surface-variant": "#e5e2e1",
-                            "surface-dim": "#dcd9d9",
-                            "secondary-container": "#e1e1c9",
-                            "on-background": "#1b1c1c",
+                            "on-surface": "#1b1c1c",
                             "background": "#fcf9f8"
-                        },
-                        "borderRadius": {
-                            "DEFAULT": "0.25rem",
-                            "lg": "0.5rem",
-                            "xl": "0.75rem",
-                            "full": "9999px"
-                        },
-                        "spacing": {
-                            "sm": "12px",
-                            "lg": "40px",
-                            "base": "8px",
-                            "gutter": "24px",
-                            "xs": "4px",
-                            "margin": "32px",
-                            "xl": "64px",
-                            "md": "24px"
-                        },
-                        "fontFamily": {
-                            "headline-lg-mobile": ["Manrope"],
-                            "label-md": ["Hanken Grotesk"],
-                            "body-sm": ["Hanken Grotesk"],
-                            "body-lg": ["Hanken Grotesk"],
-                            "body-md": ["Hanken Grotesk"],
-                            "headline-xl": ["Manrope"],
-                            "headline-lg": ["Manrope"],
-                            "headline-md": ["Manrope"]
-                        },
-                        "fontSize": {
-                            "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
-                            "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
-                            "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
-                            "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
-                            "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
-                            "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
-                            "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
-                            "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
                         }
                     },
                 },
@@ -109,6 +41,7 @@
             body {
                 background-color: #fcf9f8;
                 color: #1b1c1c;
+                font-family: 'Work Sans', sans-serif !important;
                 -webkit-font-smoothing: antialiased;
             }
 
@@ -117,11 +50,10 @@
                 border-radius: 1.5rem;
                 box-shadow: 0 4px 12px rgba(45, 34, 27, 0.04);
                 transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                border: 1px solid rgba(45, 34, 27, 0.05);
+                border: 1px solid rgba(45, 34, 27, 0.08);
             }
 
                 .artisanal-card:hover {
-                    transform: translateY(-2px);
                     box-shadow: 0 8px 24px rgba(45, 34, 27, 0.08);
                 }
 
@@ -164,242 +96,363 @@
                 }
 
             input:checked + .slider {
-                background-color: #2D221B;
+                background-color: #D2B48C;
             }
 
                 input:checked + .slider:before {
                     transform: translateX(22px);
                 }
-
-            .settings-row {
-                transition: background-color 0.2s ease;
-            }
-
-                .settings-row:active {
-                    background-color: #f0eded;
-                }
-
-            details summary::-webkit-details-marker {
-                display: none;
-            }
     </style>
 </head>
-<body class="font-body-md text-body-md pb-32">
+<body class="font-body-md text-body-md pb-24">
     <!-- Header -->
-    <header class="w-full top-0 sticky z-40 bg-surface/90 backdrop-blur-md border-b border-outline-variant px-margin py-sm">
-        <div class="max-w-4xl mx-auto flex flex-col items-center">
-            <img alt="Carpintec Logo" class="h-10 w-10 mb-1 object-contain" src="https://lh3.googleusercontent.com/aida/AP1WRLvUaCrJFCALtgbEPf7SexO3dwyQyy9YaZmq9hCOok-uD5opDKpSEW0oRRVraduCqwmn0bsBXebnTFD-Yuh-dmeEwIszpcFY25BjK60KgRDVR0ERxDeS3t_pZDSveomKdxQxUBmvxe4ZFfAkO5pBMzFfchL4LObOQzHri-ET1spGiVhQdy8d3Zvouez1CmVzPchhmPmxeGP8hu_zgQOFsEUPJlfL9hOe45B1R_0uCecqRZf-0K4Q-fmsIfCFIYhW8Y88ZXDRRPCd6g">
-            <h1 class="font-headline-md text-[18px] font-bold text-primary tracking-[0.2em]">CARPINTEC</h1>
+    <header class="w-full top-0 sticky z-40 bg-surface/90 backdrop-blur-md border-b border-outline-variant px-6 py-4">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <a href="/Dashboard/Index" class="flex items-center gap-2 text-black font-bold hover:underline" title="Volver al Dashboard">
+                <span class="material-symbols-outlined">arrow_back</span>
+                <span>Volver</span>
+            </a>
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-2xl text-[#D2B48C]">settings</span>
+                <h1 class="font-bold text-xl text-black tracking-wider">CARPINTEC - AJUSTES</h1>
+            </div>
+            <a href="/Login/CerrarSesion" class="text-sm font-bold text-red-600 hover:underline flex items-center gap-1">
+                <span class="material-symbols-outlined text-base">logout</span>
+                Salir
+            </a>
         </div>
     </header>
-    <main class="max-w-4xl mx-auto px-margin pt-lg">
-        <!-- Introduction -->
-        <div class="mb-lg text-center md:text-left">
-            <h2 class="font-headline-xl text-headline-xl text-primary mb-2">Configuración</h2>
-            <p class="text-on-surface-variant font-body-lg">Personaliza tu experiencia y gestiona la seguridad de tu taller.</p>
-        </div>
-        <div class="flex flex-col gap-gutter">
-            <!-- Cuenta Section -->
-            <section class="artisanal-card overflow-hidden">
-                <div class="p-md bg-surface-container-low/50 border-b border-outline-variant flex items-center gap-md">
-                    <span class="material-symbols-outlined text-primary" data-icon="person">person</span>
-                    <h3 class="font-headline-md text-headline-md text-primary">Cuenta</h3>
+
+    <main class="max-w-4xl mx-auto px-6 pt-8">
+        <!-- Notificaciones de Éxito o Error -->
+        @if (TempData["Exito"] != null)
+        {
+            <div class="mb-6 p-4 rounded-xl bg-green-50 border border-green-300 text-green-800 text-sm font-bold flex items-center justify-between shadow-sm">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-green-600">check_circle</span>
+                    <span>@TempData["Exito"]</span>
                 </div>
-                <div class="p-md">
-                    <div class="flex flex-col md:flex-row items-center gap-md">
-                        <div class="relative">
-                            <div class="w-28 h-28 rounded-full overflow-hidden border-4 border-white shadow-md ring-1 ring-outline-variant"><div class="w-full h-full flex items-center justify-center bg-surface-container-high text-primary"><span class="material-symbols-outlined text-5xl" data-icon="person">person</span></div></div>
-                            <button class="absolute bottom-1 right-1 bg-primary text-white p-2 rounded-full shadow-lg hover:bg-primary/90 transition-all active:scale-90">
-                                <span class="material-symbols-outlined text-[18px]" data-icon="photo_camera">photo_camera</span>
-                            </button>
+                <button type="button" onclick="this.parentElement.remove()" class="text-green-600 hover:text-green-800">
+                    <span class="material-symbols-outlined text-sm">close</span>
+                </button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="mb-6 p-4 rounded-xl bg-red-50 border border-red-300 text-red-800 text-sm font-bold flex items-center justify-between shadow-sm">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-red-600">error</span>
+                    <span>@TempData["Error"]</span>
+                </div>
+                <button type="button" onclick="this.parentElement.remove()" class="text-red-600 hover:text-red-800">
+                    <span class="material-symbols-outlined text-sm">close</span>
+                </button>
+            </div>
+        }
+
+        <!-- Introduction -->
+        <div class="mb-8 text-center md:text-left">
+            <h2 class="text-3xl font-bold text-black mb-1">Configuración del Sistema</h2>
+            <p class="text-black/60 font-semibold">Administra los parámetros de la empresa, datos del taller y seguridad de tu cuenta.</p>
+        </div>
+
+        <div class="flex flex-col gap-6">
+
+            <!-- SECCIÓN 1: DATOS DE LA EMPRESA / TALLER (CONECTADA A LA BASE DE DATOS) -->
+            <section class="artisanal-card overflow-hidden">
+                <div class="p-4 bg-surface-container-low/50 border-b border-outline-variant flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 bg-[#D2B48C] rounded-lg text-black">
+                            <span class="material-symbols-outlined">storefront</span>
                         </div>
-                        <div class="flex-grow text-center md:text-left mt-4 md:mt-0">
-                            <div class="mb-2">
-                                <span class="text-[10px] font-bold text-outline uppercase tracking-widest">Maestra Artesana</span>
-                                <h4 class="font-headline-md text-primary text-2xl">Marta Soler</h4>
+                        <div>
+                            <h3 class="font-bold text-lg text-black">Datos de la Empresa y Facturación</h3>
+                            <p class="text-xs text-black/60 font-medium">Información oficial almacenada en la tabla Configuración de la base de datos.</p>
+                        </div>
+                    </div>
+                    <span class="text-xs text-black/50 font-bold">
+                        Actualizado: @(Model?.FechaActualizacion?.ToString("dd/MM/yyyy HH:mm") ?? "Reciente")
+                    </span>
+                </div>
+
+                <form method="post" action="@Url.Action("GuardarEmpresa", "Configuracion")" class="p-6 space-y-4">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="IdConfiguracion" value="@Model?.IdConfiguracion" />
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-black mb-1">Nombre de la Empresa *</label>
+                            <input type="text" name="NombreEmpresa" required value="@Model?.NombreEmpresa"
+                                   class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-xl font-bold text-black focus:outline-none focus:border-[#D2B48C]" />
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-black mb-1">NIT / Identificación Fiscal *</label>
+                            <input type="text" name="Nit" required value="@Model?.Nit"
+                                   class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-xl font-bold text-black focus:outline-none focus:border-[#D2B48C]" />
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-black mb-1">Dirección *</label>
+                            <input type="text" name="Direccion" required value="@Model?.Direccion"
+                                   class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-xl font-bold text-black focus:outline-none focus:border-[#D2B48C]" />
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-black mb-1">Ciudad *</label>
+                            <input type="text" name="Ciudad" required value="@Model?.Ciudad"
+                                   class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-xl font-bold text-black focus:outline-none focus:border-[#D2B48C]" />
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-black mb-1">Teléfono de Contacto *</label>
+                            <input type="text" name="Telefono" required value="@Model?.Telefono"
+                                   class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-xl font-bold text-black focus:outline-none focus:border-[#D2B48C]" />
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-black mb-1">Correo Electrónico *</label>
+                            <input type="email" name="Correo" required value="@Model?.Correo"
+                                   class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-xl font-bold text-black focus:outline-none focus:border-[#D2B48C]" />
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-black mb-1">Sitio Web</label>
+                            <input type="text" name="SitioWeb" value="@Model?.SitioWeb"
+                                   class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-xl font-bold text-black focus:outline-none focus:border-[#D2B48C]" />
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-black mb-1">IVA (%) *</label>
+                                <input type="number" step="0.01" min="0" name="Iva" required value="@Model?.Iva"
+                                       class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-xl font-bold text-black focus:outline-none focus:border-[#D2B48C]" />
                             </div>
-                            <p class="font-body-md text-on-surface-variant flex items-center justify-center md:justify-start gap-1"><span class="material-symbols-outlined text-sm" data-icon="mail">mail</span> admin@carpintec.com</p>
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-black mb-1">Moneda *</label>
+                                <select name="Moneda" required class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-xl font-bold text-black focus:outline-none focus:border-[#D2B48C]">
+                                    <!option value="COP" @(Model?.Moneda == "COP" ? "selected" : "")>COP ($)</!option>
+                                    <!option value="USD" @(Model?.Moneda == "USD" ? "selected" : "")>USD ($)</!option>
+                                    <!option value="EUR" @(Model?.Moneda == "EUR" ? "selected" : "")>EUR (€)</!option>
+                                </select>
+                            </div>
                         </div>
-                        <button class="w-full md:w-auto bg-primary text-white px-md py-3 rounded-xl font-label-md hover:opacity-90 active:scale-95 transition-all">
-                            EDITAR PERFIL
+                    </div>
+
+                    <div class="flex justify-end pt-3 border-t border-outline-variant/30">
+                        <button type="submit" class="px-6 py-2.5 bg-[#D2B48C] text-black font-bold rounded-xl shadow hover:brightness-95 transition-all">
+                            Guardar Cambios de la Empresa
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- SECCIÓN 2: CUENTA Y PERFIL DEL USUARIO -->
+            <section class="artisanal-card overflow-hidden">
+                <div class="p-4 bg-surface-container-low/50 border-b border-outline-variant flex items-center gap-3">
+                    <div class="p-2 bg-[#D2B48C] rounded-lg text-black">
+                        <span class="material-symbols-outlined">badge</span>
+                    </div>
+                    <h3 class="font-bold text-lg text-black">Perfil del Usuario Activo</h3>
+                </div>
+                <div class="p-6">
+                    <div class="flex flex-col md:flex-row items-center gap-6">
+                        <div class="w-24 h-24 rounded-full bg-[#D2B48C] flex items-center justify-center text-black font-bold text-3xl shadow-inner border-2 border-white">
+                            @(usuario?.Nombre?.Length > 0 ? usuario.Nombre.Substring(0, 1).ToUpper() : "U")
+                        </div>
+                        <div class="flex-grow text-center md:text-left space-y-1">
+                            <span class="text-xs font-bold text-[#D2B48C] uppercase tracking-widest bg-black text-white px-2.5 py-0.5 rounded-full">
+                                @(usuario?.Rol ?? "Administrador")
+                            </span>
+                            <h4 class="text-2xl font-bold text-black">
+                                @(usuario != null ? $"{usuario.Nombre} {usuario.Apellido}" : "Usuario Administrador")
+                            </h4>
+                            <p class="text-sm font-semibold text-black/70 flex items-center justify-center md:justify-start gap-1">
+                                <span class="material-symbols-outlined text-sm">mail</span>
+                                @(usuario?.Correo ?? "admin@carpintec.com")
+                            </p>
+                           <p class="text-xs text-black/50">
+    Usuario: <strong>@(usuario?.Correo ?? "admin@carpintec.com")</strong>
+</p>
+                        </div>
+                        <button type="button" onclick="document.getElementById('modalPerfil').classList.remove('hidden')"
+                                class="w-full md:w-auto bg-black text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-black/80 active:scale-95 transition-all shadow">
+                            Editar Perfil
                         </button>
                     </div>
                 </div>
             </section>
-            <!-- Seguridad Section -->
+
+            <!-- SECCIÓN 3: SEGURIDAD (CAMBIO DE CONTRASEÑA EN LA BD) -->
             <section class="artisanal-card overflow-hidden">
-                <div class="p-md bg-surface-container-low/50 border-b border-outline-variant flex items-center gap-md">
-                    <span class="material-symbols-outlined text-primary" data-icon="shield_lock">shield_lock</span>
-                    <h3 class="font-headline-md text-headline-md text-primary">Seguridad</h3>
+                <div class="p-4 bg-surface-container-low/50 border-b border-outline-variant flex items-center gap-3">
+                    <div class="p-2 bg-[#D2B48C] rounded-lg text-black">
+                        <span class="material-symbols-outlined">shield_lock</span>
+                    </div>
+                    <h3 class="font-bold text-lg text-black">Seguridad y Acceso</h3>
                 </div>
-                <div class="divide-y divide-outline-variant">
-                    <button class="w-full text-left p-md settings-row flex justify-between items-center group">
-                        <div class="flex gap-md items-center">
-                            <span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors" data-icon="lock_reset">lock_reset</span>
-                            <div>
-                                <p class="font-body-md font-semibold text-primary">Cambiar Contraseña</p>
-                                <p class="font-body-sm text-on-surface-variant">Actualizada hace 3 meses</p>
-                            </div>
+                <div class="p-6 space-y-4">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-outline-variant/30">
+                        <div>
+                            <p class="font-bold text-black text-base">Contraseña de Acceso</p>
+                            <p class="text-xs font-medium text-black/60">Actualiza tu clave de acceso encriptada en la base de datos.</p>
                         </div>
-                        <span class="material-symbols-outlined text-outline" data-icon="chevron_right">chevron_right</span>
-                    </button>
-                    <div class="p-md flex justify-between items-center">
-                        <div class="flex gap-md items-center">
-                            <span class="material-symbols-outlined text-on-surface-variant" data-icon="vibration">vibration</span>
-                            <div>
-                                <p class="font-body-md font-semibold text-primary">Autenticación de Dos Factores</p>
-                                <p class="font-body-sm text-on-surface-variant">Protección vía SMS o App</p>
-                            </div>
+                        <button type="button" onclick="document.getElementById('modalPassword').classList.remove('hidden')"
+                                class="px-5 py-2 rounded-xl border border-outline-variant font-bold text-black hover:bg-surface-container transition-all text-sm">
+                            Cambiar Contraseña
+                        </button>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-2">
+                        <div>
+                            <p class="font-bold text-black text-base">Autenticación de Dos Factores</p>
+                            <p class="text-xs font-medium text-black/60">Capa extra de verificación mediante correo electrónico.</p>
                         </div>
                         <label class="custom-toggle">
-                            <input checked="" type="checkbox">
+                            <input checked type="checkbox">
                             <span class="slider"></span>
                         </label>
                     </div>
                 </div>
             </section>
-            <!-- Notificaciones Section -->
+
+            <!-- SECCIÓN 4: PREFERENCIAS DEL SISTEMA Y NOTIFICACIONES -->
             <section class="artisanal-card overflow-hidden">
-                <div class="p-md bg-surface-container-low/50 border-b border-outline-variant flex items-center gap-md">
-                    <span class="material-symbols-outlined text-primary" data-icon="notifications_active">notifications_active</span>
-                    <h3 class="font-headline-md text-headline-md text-primary">Notificaciones</h3>
+                <div class="p-4 bg-surface-container-low/50 border-b border-outline-variant flex items-center gap-3">
+                    <div class="p-2 bg-[#D2B48C] rounded-lg text-black">
+                        <span class="material-symbols-outlined">tune</span>
+                    </div>
+                    <h3 class="font-bold text-lg text-black">Preferencias y Notificaciones</h3>
                 </div>
-                <div class="p-md space-y-md">
-                    <div class="flex items-start gap-md">
-                        <div class="p-2 bg-surface-container-high rounded-lg text-primary">
-                            <span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+                <form method="post" action="@Url.Action("GuardarPreferencias", "Configuracion")" class="p-6 space-y-6">
+                    @Html.AntiForgeryToken()
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pb-4 border-b border-outline-variant/30">
+                        <div class="flex items-center justify-between p-3 bg-surface-container-low rounded-xl border border-outline-variant/30">
+                            <div>
+                                <p class="font-bold text-black text-sm">Alertas de Stock Bajo</p>
+                                <p class="text-xs text-black/60 font-medium">Notificar cuando el material esté por agotarse</p>
+                            </div>
+                            <label class="custom-toggle">
+                                <input type="checkbox" name="alertasStock" value="true" checked>
+                                <span class="slider"></span>
+                            </label>
                         </div>
-                        <div class="flex-grow pt-1">
-                            <p class="font-body-md font-semibold text-primary">Alertas de Stock</p>
-                            <p class="font-body-sm text-on-surface-variant">Avisos de materiales críticos</p>
-                        </div>
-                        <label class="custom-toggle mt-1">
-                            <input checked="" type="checkbox">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    <div class="flex items-start gap-md">
-                        <div class="p-2 bg-surface-container-high rounded-lg text-primary">
-                            <span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
-                        </div>
-                        <div class="flex-grow pt-1">
-                            <p class="font-body-md font-semibold text-primary">Nuevos Pedidos</p>
-                            <p class="font-body-sm text-on-surface-variant">Confirmación inmediata de órdenes</p>
-                        </div>
-                        <label class="custom-toggle mt-1">
-                            <input checked="" type="checkbox">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                </div>
-            </section>
-            <!-- Preferencias del Sistema Section -->
-            <section class="artisanal-card overflow-hidden">
-                <div class="p-md bg-surface-container-low/50 border-b border-outline-variant flex items-center gap-md">
-                    <span class="material-symbols-outlined text-primary" data-icon="settings_suggest">settings_suggest</span>
-                    <h3 class="font-headline-md text-headline-md text-primary">Preferencias del Sistema</h3>
-                </div>
-                <div class="p-md grid grid-cols-1 md:grid-cols-2 gap-md">
-                    <div class="space-y-2">
-                        <label class="block font-label-md text-outline uppercase tracking-wider text-[10px]">Idioma de Interfaz</label>
-                        <select class="w-full bg-surface-container-low border-outline-variant rounded-xl text-primary focus:ring-primary focus:border-primary py-3 px-4">
-                            <option selected="" value="es">Español (Castellano)</option>
-                            <option value="en">English (UK)</option>
-                        </select>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="block font-label-md text-outline uppercase tracking-wider text-[10px]">Tema Visual</label>
-                        <div class="flex p-1 bg-surface-container-low rounded-xl border border-outline-variant">
-                            <button class="flex-1 bg-white shadow-sm text-primary py-2 rounded-lg flex items-center justify-center gap-2 font-semibold">
-                                <span class="material-symbols-outlined text-[18px]" data-icon="light_mode">light_mode</span> Claro
-                            </button>
-                            <button class="flex-1 text-on-surface-variant py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-white/50 transition-colors">
-                                <span class="material-symbols-outlined text-[18px]" data-icon="dark_mode">dark_mode</span> Oscuro
-                            </button>
+
+                        <div class="flex items-center justify-between p-3 bg-surface-container-low rounded-xl border border-outline-variant/30">
+                            <div>
+                                <p class="font-bold text-black text-sm">Avisos de Nuevos Pedidos</p>
+                                <p class="text-xs text-black/60 font-medium">Confirmación inmediata de órdenes registradas</p>
+                            </div>
+                            <label class="custom-toggle">
+                                <input type="checkbox" name="nuevosPedidos" value="true" checked>
+                                <span class="slider"></span>
+                            </label>
                         </div>
                     </div>
-                </div>
-            </section>
-            <!-- Configuración Avanzada -->
-            <details class="artisanal-card overflow-hidden group">
-                <summary class="p-md bg-surface-container-low/30 cursor-pointer flex justify-between items-center hover:bg-surface-container-low/50 transition-colors">
-                    <div class="flex items-center gap-md">
-                        <span class="material-symbols-outlined text-outline group-open:text-primary transition-colors" data-icon="terminal">terminal</span>
-                        <h3 class="font-headline-md text-headline-md text-primary/60 group-open:text-primary">Configuración Avanzada</h3>
-                    </div>
-                    <span class="material-symbols-outlined text-outline group-open:rotate-180 transition-transform" data-icon="expand_more">expand_more</span>
-                </summary>
-                <div class="p-md bg-white divide-y divide-outline-variant/30">
-                    <div class="py-3 flex justify-between items-center">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <p class="font-body-md font-semibold text-primary/80">API Keys</p>
-                            <p class="font-body-sm text-on-surface-variant">Gestión de integraciones externas</p>
+                            <label class="block text-xs font-bold uppercase text-black mb-1">Idioma del Sistema</label>
+                            <select name="idioma" class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-xl font-bold text-black focus:outline-none focus:border-[#D2B48C]">
+                                <option value="es" selected>Español (Colombia)</option>
+                                <option value="en">English (US)</option>
+                            </select>
                         </div>
-                        <button class="text-primary font-bold text-xs uppercase tracking-widest hover:underline">Gestionar</button>
-                    </div>
-                    <div class="py-3 flex justify-between items-center">
                         <div>
-                            <p class="font-body-md font-semibold text-primary/80">Logs del Sistema</p>
-                            <p class="font-body-sm text-on-surface-variant">Registro de actividad técnica</p>
+                            <label class="block text-xs font-bold uppercase text-black mb-1">Tema Visual</label>
+                            <select name="tema" class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-xl font-bold text-black focus:outline-none focus:border-[#D2B48C]">
+                                <option value="claro" selected>Tema Claro (Predeterminado)</option>
+                                <option value="oscuro">Tema Oscuro</option>
+                            </select>
                         </div>
-                        <button class="text-primary font-bold text-xs uppercase tracking-widest hover:underline">Descargar</button>
                     </div>
-                </div>
-            </details>
-            <!-- Logout Action -->
-            <div class="mt-md flex flex-col items-center">
-                <button class="w-full max-w-sm flex items-center justify-center gap-3 text-error border-2 border-error/20 bg-error/5 py-4 rounded-2xl font-bold tracking-widest hover:bg-error/10 transition-all active:scale-95 mb-8">
-                    <span class="material-symbols-outlined" data-icon="logout">logout</span> CERRAR SESIÓN
-                </button>
+
+                    <div class="flex justify-end pt-3">
+                        <button type="submit" class="px-6 py-2 bg-black text-white font-bold rounded-xl text-sm hover:bg-black/80 transition-all shadow">
+                            Guardar Preferencias
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- BOTÓN CERRAR SESIÓN -->
+            <div class="mt-4 flex flex-col items-center">
+                <a href="/Login/CerrarSesion" class="w-full max-w-sm flex items-center justify-center gap-3 text-red-700 border-2 border-red-300 bg-red-50 py-3.5 rounded-xl font-bold hover:bg-red-100 transition-all shadow-sm">
+                    <span class="material-symbols-outlined">logout</span>
+                    Cerrar Sesión
+                </a>
             </div>
         </div>
     </main>
-    <!-- Bottom Navigation Bar -->
-    <nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-surface border-t border-outline-variant shadow-[0_-8px_20px_-10px_rgba(45,34,27,0.1)]">
-        <a class="flex flex-col items-center justify-center text-outline hover:text-primary transition-colors" href="#">
-            <span class="material-symbols-outlined" data-icon="handyman">handyman</span>
-            <span class="font-label-md text-[10px] mt-1">PROYECTOS</span>
-        </a>
-        <a class="flex flex-col items-center justify-center text-outline hover:text-primary transition-colors" href="#">
-            <span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
-            <span class="font-label-md text-[10px] mt-1">INVENTARIO</span>
-        </a>
-        <a class="flex flex-col items-center justify-center text-outline hover:text-primary transition-colors" href="#">
-            <span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
-            <span class="font-label-md text-[10px] mt-1">HORARIO</span>
-        </a>
-        <a class="flex flex-col items-center justify-center text-primary" href="#">
-            <div class="bg-primary-container/20 px-4 py-1.5 rounded-xl flex flex-col items-center">
-                <span class="material-symbols-outlined fill-1" data-icon="settings">settings</span>
-                <span class="font-label-md text-[10px] mt-1 font-bold">AJUSTES</span>
+
+    <!-- MODAL 1: EDITAR PERFIL DE USUARIO -->
+    <div id="modalPerfil" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden border border-outline-variant/30">
+            <div class="px-6 py-4 bg-surface-container border-b border-outline-variant flex justify-between items-center">
+                <h3 class="font-bold text-lg text-black">Editar Perfil</h3>
+                <button type="button" onclick="document.getElementById('modalPerfil').classList.add('hidden')" class="text-black/60 hover:text-black">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
             </div>
-        </a>
-    </nav>
-    <script>
-            // Micro-interactions for buttons
-            document.querySelectorAll('button').forEach(btn => {
-                btn.addEventListener('mousedown', () => {
-                    btn.style.transform = 'scale(0.96)';
-                });
-                btn.addEventListener('mouseup', () => {
-                    btn.style.transform = '';
-                });
-                btn.addEventListener('mouseleave', () => {
-                    btn.style.transform = '';
-                });
-            });
+            <form method="post" action="@Url.Action("GuardarPerfil", "Configuracion")" class="p-6 space-y-4">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="idUsuario" value="@usuario?.IdUsuario" />
 
-            // Handle toggle states
-            document.querySelectorAll('.custom-toggle input').forEach(toggle => {
-                toggle.addEventListener('change', (e) => {
-                    const row = e.target.closest('.artisanal-card');
-                    if (row) {
-                        // Potential feedback or API call simulation
-                        console.log(`Setting updated: ${e.target.checked}`);
-                    }
-                });
-            });
-    </script>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-black mb-1">Nombre *</label>
+                    <input type="text" name="nombre" required value="@usuario?.Nombre" class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-xl font-bold text-black" />
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-black mb-1">Apellido</label>
+                    <input type="text" name="apellido" value="@usuario?.Apellido" class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-xl font-bold text-black" />
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-black mb-1">Correo Electrónico *</label>
+                    <input type="email" name="correo" required value="@usuario?.Correo" class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-xl font-bold text-black" />
+                </div>
 
+                <div class="flex justify-end gap-2 pt-3 border-t border-outline-variant/30">
+                    <button type="button" onclick="document.getElementById('modalPerfil').classList.add('hidden')" class="px-4 py-2 border border-outline-variant font-bold text-black rounded-xl hover:bg-surface-container">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-5 py-2 bg-[#D2B48C] text-black font-bold rounded-xl shadow hover:brightness-95">
+                        Actualizar Perfil
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-</body></html>
+    <!-- MODAL 2: CAMBIAR CONTRASEÑA -->
+    <div id="modalPassword" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden border border-outline-variant/30">
+            <div class="px-6 py-4 bg-surface-container border-b border-outline-variant flex justify-between items-center">
+                <h3 class="font-bold text-lg text-black">Cambiar Contraseña</h3>
+                <button type="button" onclick="document.getElementById('modalPassword').classList.add('hidden')" class="text-black/60 hover:text-black">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <form method="post" action="@Url.Action("GuardarSeguridad", "Configuracion")" class="p-6 space-y-4">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="idUsuario" value="@usuario?.IdUsuario" />
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-black mb-1">Contraseña Actual *</label>
+                    <input type="password" name="passwordActual" required placeholder="Ingresa tu contraseña actual" class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-xl font-bold text-black" />
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-black mb-1">Nueva Contraseña (mínimo 6 caracteres) *</label>
+                    <input type="password" name="nuevaPassword" minlength="6" required placeholder="Mínimo 6 caracteres" class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-xl font-bold text-black" />
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-black mb-1">Confirmar Nueva Contraseña *</label>
+                    <input type="password" name="confirmarPassword" minlength="6" required placeholder="Repite la nueva contraseña" class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-xl font-bold text-black" />
+                </div>
+
+                <div class="flex justify-end gap-2 pt-3 border-t border-outline-variant/30">
+                    <button type="button" onclick="document.getElementById('modalPassword').classList.add('hidden')" class="px-4 py-2 border border-outline-variant font-bold text-black rounded-xl hover:bg-surface-container">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-5 py-2 bg-[#D2B48C] text-black font-bold rounded-xl shadow hover:brightness-95">
+                        Actualizar Contraseña
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

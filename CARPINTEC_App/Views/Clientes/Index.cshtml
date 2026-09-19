@@ -262,16 +262,24 @@
 
             <!-- Customers Table Section -->
             <div class="w-full bg-surface-container-lowest rounded-xl border border-outline-variant/30 shadow-sm overflow-hidden">
-                <div class="px-card-padding py-4 border-b border-outline-variant flex justify-between items-center bg-surface-bright">
+                <div class="px-card-padding py-4 border-b border-outline-variant flex flex-col md:flex-row justify-between items-center gap-4 bg-surface-bright">
                     <h3 class="text-title-md font-title-md text-black">Listado de Clientes</h3>
-                    <div class="flex gap-2">
-                        <button class="p-2 text-black hover:bg-surface-container-low rounded-lg transition-all border border-outline-variant">
-                            <span class="material-symbols-outlined">filter_list</span>
+                    <!-- Barra de Búsqueda Conectada a la Base de Datos -->
+                    <form method="get" action="@Url.Action("Index", "Clientes")" class="flex items-center gap-2 w-full md:w-auto">
+                        <div class="relative w-full md:w-80">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-black/50" data-icon="search">search</span>
+                            <input name="search" value="@ViewBag.Search" class="w-full pl-10 pr-4 py-2 bg-white border border-outline-variant rounded-lg text-body-sm text-black font-bold focus:border-[#D2B48C] focus:ring-1 focus:ring-[#D2B48C] outline-none" placeholder="Buscar por nombre, documento, empresa..." type="text">
+                        </div>
+                        <button type="submit" class="px-4 py-2 bg-[#D2B48C] text-black font-bold rounded-lg hover:brightness-95 transition-all text-sm shadow-sm" style="background-color: #D2B48C !important; color: #000000 !important;">
+                            Buscar
                         </button>
-                        <button class="p-2 text-black hover:bg-surface-container-low rounded-lg transition-all border border-outline-variant">
-                            <span class="material-symbols-outlined">download</span>
-                        </button>
-                    </div>
+                        @if (!string.IsNullOrEmpty((string?)ViewBag.Search))
+                        {
+                            <a href="/Clientes/Index" class="p-2 text-black hover:bg-surface-container rounded-lg transition-all border border-outline-variant" title="Limpiar búsqueda">
+                                <span class="material-symbols-outlined text-sm">filter_alt_off</span>
+                            </a>
+                        }
+                    </form>
                 </div>
                 <div class="overflow-x-auto w-full">
                             <table class="w-full min-w-[1200px] border-collapse">
@@ -427,6 +435,55 @@
                             }
                         </tbody>
                     </table>
+                </div>
+                <!-- Paginación de Clientes Conectada a la Base de Datos -->
+                <div class="px-6 py-4 border-t border-outline-variant/30 bg-surface-container-lowest flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <span class="text-sm font-bold text-black/70">
+                        Mostrando @(ViewBag.RegistroInicio ?? 0) a @(ViewBag.RegistroFin ?? 0) de @(ViewBag.TotalRegistros ?? 0) clientes
+                    </span>
+                    <div class="flex gap-2 items-center">
+                        @if ((ViewBag.PaginaActual ?? 1) > 1)
+                        {
+                            <a href="@Url.Action("Index", new { pagina = ViewBag.PaginaActual - 1, search = ViewBag.Search })" class="px-3 py-1.5 rounded border border-outline-variant font-bold text-black hover:bg-surface-container text-sm transition-colors">
+                                Anterior
+                            </a>
+                        }
+                        else
+                        {
+                            <button class="px-3 py-1.5 rounded border border-outline-variant/40 text-black/40 text-sm cursor-not-allowed" disabled>
+                                Anterior
+                            </button>
+                        }
+
+                        @for (int p = 1; p <= (ViewBag.TotalPaginas ?? 1); p++)
+                        {
+                            if (p == ViewBag.PaginaActual)
+                            {
+                                <button class="w-8 h-8 rounded bg-[#D2B48C] text-black font-bold shadow-sm text-sm" style="background-color: #D2B48C !important; color: #000000 !important;">
+                                    @p
+                                </button>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("Index", new { pagina = p, search = ViewBag.Search })" class="w-8 h-8 rounded text-black hover:bg-surface-container font-bold flex items-center justify-center transition-colors text-sm">
+                                    @p
+                                </a>
+                            }
+                        }
+
+                        @if ((ViewBag.PaginaActual ?? 1) < (ViewBag.TotalPaginas ?? 1))
+                        {
+                            <a href="@Url.Action("Index", new { pagina = ViewBag.PaginaActual + 1, search = ViewBag.Search })" class="px-3 py-1.5 rounded border border-outline-variant font-bold text-black hover:bg-surface-container text-sm transition-colors">
+                                Siguiente
+                            </a>
+                        }
+                        else
+                        {
+                            <button class="px-3 py-1.5 rounded border border-outline-variant/40 text-black/40 text-sm cursor-not-allowed" disabled>
+                                Siguiente
+                            </button>
+                        }
+                    </div>
                 </div>
             </div>
         </div>

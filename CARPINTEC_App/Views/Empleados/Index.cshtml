@@ -36,6 +36,25 @@
                 font-family: 'Work Sans', sans-serif !important;
                 font-weight: 700 !important;
                 color: #000000;
+                overflow-x: hidden;
+            }
+
+            /* Responsive table */
+            #tablaEmpleados {
+                table-layout: auto;
+                word-break: break-word;
+            }
+            #tablaEmpleados td,
+            #tablaEmpleados th {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 200px;
+            }
+            #tablaEmpleados td:last-child,
+            #tablaEmpleados th:last-child {
+                max-width: none;
+                white-space: nowrap;
             }
 
             .soft-wood-shadow {
@@ -143,40 +162,20 @@
     </button>
 
     <!-- Main Content Canvas -->
-    <main class="pt-4 min-h-screen bg-background">
+    <main class="pt-4 min-h-screen bg-background px-4 md:px-8 max-w-full w-full box-border">
         <!-- Header Section -->
         <div class="flex flex-col sm:flex-row justify-between sm:items-end gap-4 mb-8">
             <div>
-           
                 <h2 class="text-headline-lg font-headline-lg text-on-surface text-3xl sm:text-4xl font-bold">Gestión Empleados</h2>
                 <p class="text-body-lg text-on-surface opacity-70 mt-1">Gestión de artesanos, operarios y personal administrativo.</p>
-            <div class="flex flex-col sm:flex-row justify-between sm:items-end gap-4 mb-8">
-    <div>
-        <h2 class="text-headline-lg font-headline-lg text-on-surface text-3xl sm:text-4xl font-bold">Gestión Empleados</h2>
-        <p class="text-body-lg text-on-surface opacity-70 mt-1">Gestión de artesanos, operarios y personal administrativo.</p>
-    </div>
+            </div>
 
-    <!-- INICIO: Botón Nuevo Empleado en beige (#D2B48C) -->
-    <button onclick="abrirModalNuevoEmpleado()"
-            class="flex items-center justify-center gap-2 bg-[#D2B48C] text-black px-6 py-3 rounded-lg font-bold hover:brightness-95 transition-all soft-wood-shadow active:scale-95 shrink-0"
-            style="background-color: #D2B48C;">
-        <span class="material-symbols-outlined">person_add</span>
-        <span class="text-body-md">Nuevo Empleado</span>
-    </button>
-    <!-- FIN: Botón Nuevo Empleado en beige (#D2B48C) -->
             <!-- INICIO: Botón Nuevo Empleado en beige (#D2B48C) -->
             <button onclick="abrirModalNuevoEmpleado()"
                     class="flex items-center justify-center gap-2 bg-[#D2B48C] text-black px-6 py-3 rounded-lg font-bold hover:brightness-95 transition-all soft-wood-shadow active:scale-95 shrink-0"
                     style="background-color: #D2B48C;">
-
-                <span class="material-symbols-outlined">
-                    person_add
-                </span>
-
-                <span class="text-body-md">
-                    Nuevo Empleado
-                </span>
-
+                <span class="material-symbols-outlined">person_add</span>
+                <span class="text-body-md">Nuevo Empleado</span>
             </button>
             <!-- FIN: Botón Nuevo Empleado en beige (#D2B48C) -->
         </div>
@@ -260,18 +259,11 @@
         <div class="bg-surface-container-lowest rounded-xl border border-outline-variant soft-wood-shadow overflow-hidden">
             <div class="px-6 py-4 border-b border-outline-variant flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <h4 class="text-title-md font-title-md text-on-surface font-bold">Listado de Personal</h4>
-                <div class="flex items-center gap-2">
-    <div class="relative w-96">
-        <span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
-        <input class="w-full pl-xl pr-md py-xs bg-surface-container-low border-none rounded-full text-body-sm focus:ring-2 focus:ring-primary" placeholder="Buscar empleado por nombre o cargo..." type="text" id="empleadoSearch" oninput="filtrarEmpleados()" />
-    </div>
-    <button class="p-2 hover:bg-surface-container-low rounded-lg transition-colors border border-outline-variant flex items-center gap-2 text-label-md font-medium text-on-surface">
-        <span class="material-symbols-outlined text-lg">filter_list</span> Filtrar
-    </button>
-    <button class="p-2 hover:bg-surface-container-low rounded-lg transition-colors border border-outline-variant flex items-center gap-2 text-label-md font-medium text-on-surface">
-        <span class="material-symbols-outlined text-lg">download</span> Exportar
-    </button>
-</div>
+                <div class="flex items-center gap-2 flex-wrap">
+                    <div class="relative w-64">
+                        <span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+                        <input class="w-full pl-xl pr-md py-xs bg-surface-container-low border-none rounded-full text-body-sm focus:ring-2 focus:ring-primary" placeholder="Buscar empleado por nombre o cargo..." type="text" id="empleadoSearch" oninput="filtrarEmpleados()" />
+                    </div>
                     <button class="p-2 hover:bg-surface-container-low rounded-lg transition-colors border border-outline-variant flex items-center gap-2 text-label-md font-medium text-on-surface">
                         <span class="material-symbols-outlined text-lg">filter_list</span> Filtrar
                     </button>
@@ -281,7 +273,7 @@
                 </div>
             </div>
             <div class="overflow-x-auto">
-                <table id="tablaEmpleados" class="w-full text-left font-data-table text-data-table">
+                <table id="tablaEmpleados" class="w-full table-auto text-left font-data-table text-data-table text-sm">
                     <thead class="bg-surface-container-low text-on-surface border-b border-outline-variant">
                         <tr>
                             <th class="p-table-cell-padding uppercase tracking-wider font-bold text-xs">Empleado</th>

@@ -266,9 +266,34 @@ Administradores
 
 
 
+<!-- BARRA DE BÚSQUEDA Y FILTRO DE USUARIOS -->
+<div class="bg-white rounded-2xl p-4 shadow mb-6">
+    <form method="get" action="@Url.Action("Index", "Usuarios")" class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="relative w-full md:w-96">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">search</span>
+            <input name="search" value="@ViewBag.Search" class="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm font-semibold text-black focus:border-[#442a22] focus:ring-1 focus:ring-[#442a22] outline-none" placeholder="Buscar por usuario, correo, nombre, documento..." type="text">
+        </div>
+        <div class="flex flex-wrap md:flex-nowrap items-center gap-3 w-full md:w-auto">
+            <select name="rol" onchange="this.form.submit()" class="bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm font-semibold text-black focus:border-[#442a22] outline-none cursor-pointer">
+                <option value="" selected="@(string.IsNullOrEmpty((string?)ViewBag.Rol))">Todos los roles</option>
+                <option value="Administrador" selected="@((string?)ViewBag.Rol == "Administrador")">Administrador</option>
+                <option value="Empleado" selected="@((string?)ViewBag.Rol == "Empleado")">Empleado</option>
+                <option value="Cliente" selected="@((string?)ViewBag.Rol == "Cliente")">Cliente</option>
+            </select>
+            <button type="submit" class="px-5 py-2 bg-[#442a22] text-white font-bold rounded-xl hover:bg-[#5a382d] transition-all text-sm shadow">
+                Buscar
+            </button>
+            @if (!string.IsNullOrEmpty((string?)ViewBag.Search) || !string.IsNullOrEmpty((string?)ViewBag.Rol))
+            {
+                <a href="/Usuarios/Index" class="p-2 text-gray-600 hover:bg-gray-100 rounded-xl transition-all border border-gray-200" title="Limpiar filtros">
+                    <span class="material-symbols-outlined text-sm">filter_alt_off</span>
+                </a>
+            }
+        </div>
+    </form>
+</div>
+
 <!-- TABLA -->
-
-
 <div class="bg-white rounded-3xl shadow overflow-hidden">
 
 
@@ -453,6 +478,55 @@ Acciones
 
             </div>
 
+            <!-- PAGINACIÓN DE USUARIOS -->
+            <div class="px-6 py-4 border-t border-gray-100 bg-white flex flex-col sm:flex-row items-center justify-between gap-4">
+                <span class="text-sm font-semibold text-gray-600">
+                    Mostrando @(ViewBag.RegistroInicio ?? 0) a @(ViewBag.RegistroFin ?? 0) de @(ViewBag.TotalRegistros ?? 0) usuarios
+                </span>
+                <div class="flex gap-2 items-center">
+                    @if ((ViewBag.PaginaActual ?? 1) > 1)
+                    {
+                        <a href="@Url.Action("Index", new { pagina = ViewBag.PaginaActual - 1, search = ViewBag.Search, rol = ViewBag.Rol })" class="px-3 py-1.5 rounded-lg border border-gray-200 font-bold text-gray-700 hover:bg-gray-50 text-sm transition-colors">
+                            Anterior
+                        </a>
+                    }
+                    else
+                    {
+                        <button class="px-3 py-1.5 rounded-lg border border-gray-100 text-gray-400 text-sm cursor-not-allowed" disabled>
+                            Anterior
+                        </button>
+                    }
+
+                    @for (int p = 1; p <= (ViewBag.TotalPaginas ?? 1); p++)
+                    {
+                        if (p == ViewBag.PaginaActual)
+                        {
+                            <button class="w-8 h-8 rounded-lg bg-[#442a22] text-white font-bold text-sm shadow-sm">
+                                @p
+                            </button>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("Index", new { pagina = p, search = ViewBag.Search, rol = ViewBag.Rol })" class="w-8 h-8 rounded-lg text-gray-700 hover:bg-gray-100 font-bold flex items-center justify-center transition-colors text-sm">
+                                @p
+                            </a>
+                        }
+                    }
+
+                    @if ((ViewBag.PaginaActual ?? 1) < (ViewBag.TotalPaginas ?? 1))
+                    {
+                        <a href="@Url.Action("Index", new { pagina = ViewBag.PaginaActual + 1, search = ViewBag.Search, rol = ViewBag.Rol })" class="px-3 py-1.5 rounded-lg border border-gray-200 font-bold text-gray-700 hover:bg-gray-50 text-sm transition-colors">
+                            Siguiente
+                        </a>
+                    }
+                    else
+                    {
+                        <button class="px-3 py-1.5 rounded-lg border border-gray-100 text-gray-400 text-sm cursor-not-allowed" disabled>
+                            Siguiente
+                        </button>
+                    }
+                </div>
+            </div>
         </div>
 
 
@@ -1024,69 +1098,8 @@ MODAL ESTADO
 // ======================
 // DATATABLE USUARIOS
 // ======================
-
-document.addEventListener("DOMContentLoaded", function () {
-
-
-    new DataTable('#tablaUsuarios', {
-
-        columnDefs: [
-            {
-                targets: 4,
-                searchable: false,
-                orderable: false
-            }
-        ],
-
-
-        pageLength: 5,
-
-
-        lengthMenu: [
-            [5,10,15,20],
-            [5,10,15,20]
-        ],
-
-
-        language: {
-
-            search: "Buscar:",
-
-            lengthMenu: "Mostrar _MENU_ usuarios",
-
-            info: "Mostrando _START_ a _END_ de _TOTAL_ usuarios",
-
-            infoEmpty: "Mostrando 0 usuarios",
-
-            zeroRecords: "No se encontraron usuarios",
-
-
-            paginate: {
-
-                first: "Primero",
-
-                last: "Último",
-
-                next: "Siguiente",
-
-                previous: "Anterior"
-
-            }
-
-        }
-
-
-    });
-
-
-});
-
 </script>
-
-
-
 <script>
-    <script>
 
 
                 // ======================

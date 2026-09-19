@@ -1,6 +1,6 @@
+@model CARPINTEC_App.Models.ViewModels.ReportesViewModel
 
 <!DOCTYPE html>
-
 <html class="light" lang="es">
 <head>
     <meta charset="utf-8" />
@@ -151,67 +151,107 @@
                 background: #d1c5b8;
                 border-radius: 10px;
             }
+
+            /* Estilos de impresión para PDF */
+            @@media print {
+                .no-print, header, button, select, .controls-section {
+                    display: none !important;
+                }
+                body, #main-content {
+                    background: #ffffff !important;
+                    padding: 0 !important;
+                }
+                .card-shadow {
+                    box-shadow: none !important;
+                    border: 1px solid #ccc !important;
+                }
+            }
     </style>
     <!-- FIN: Estilos de tipografía Work Sans en negrita y corrección de colores -->
 </head>
 <body class="bg-background text-on-background">
     <!-- MAIN CONTENT AREA -->
-    <div class="w-full" id="main-content">
-        <!-- TOP APP BAR -->
-        <button onclick="history.back()"
-                class="flex items-center gap-2 text-black font-bold hover:underline mb-4" style="color: #000000;">
-            <span class="material-symbols-outlined text-black">arrow_back</span>
-            Volver
-        </button>
+    <div class="w-full p-4 md:p-8 max-w-[1440px] mx-auto" id="main-content">
+        <!-- TOP APP BAR / RETROCESO -->
+        <div class="flex items-center gap-2 mb-4 no-print">
+            <a href="/Dashboard/Index"
+               class="flex items-center gap-2 text-black font-bold hover:underline" style="color: #000000;">
+                <span class="material-symbols-outlined text-black">arrow_back</span>
+                Volver al Dashboard
+            </a>
+        </div>
 
-        <h2 class="text-4xl font-bold text-black" style="color: #000000;">
-            Reportes
+        <h2 class="text-4xl font-bold text-black mb-2" style="color: #000000;">
+            Reportes y Estadísticas
         </h2>
 
         <p class="text-black/80 font-bold mb-6">
-            Consulta y exporta los reportes del sistema.
+            Consulta métricas dinámicas en tiempo real y exporta los reportes actualizados de Carpintec.
         </p>
+
         <!-- DASHBOARD CANVAS -->
-        <div class="p-margin-desktop space-y-gutter flex-1">
+        <div class="space-y-gutter flex-1">
             <!-- CONTROLS & EXPORT -->
-            <section class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <section class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 controls-section no-print">
+                <!-- Selector de período dinámico conectado al controlador -->
                 <div class="flex bg-surface-container-low p-1 rounded-xl border border-outline-variant shadow-sm">
-                    <button class="px-6 py-2 rounded-lg bg-primary text-black font-bold font-title-md text-title-md transition-all">Mes</button>
-                    <button class="px-6 py-2 rounded-lg text-black font-title-md text-title-md hover:bg-surface-container-high transition-all">Trimestre</button>
-                    <button class="px-6 py-2 rounded-lg text-black font-title-md text-title-md hover:bg-surface-container-high transition-all">Año</button>
+                    <a href="@Url.Action("Index", "Reportes", new { periodo = "mes", anio = Model.AnioSeleccionado })"
+                       class="px-6 py-2 rounded-lg font-bold font-title-md text-title-md transition-all @(Model.PeriodoSeleccionado == "mes" ? "bg-primary text-black" : "text-black hover:bg-surface-container-high")">
+                        Mes
+                    </a>
+                    <a href="@Url.Action("Index", "Reportes", new { periodo = "trimestre", anio = Model.AnioSeleccionado })"
+                       class="px-6 py-2 rounded-lg font-bold font-title-md text-title-md transition-all @(Model.PeriodoSeleccionado == "trimestre" ? "bg-primary text-black" : "text-black hover:bg-surface-container-high")">
+                        Trimestre
+                    </a>
+                    <a href="@Url.Action("Index", "Reportes", new { periodo = "anio", anio = Model.AnioSeleccionado })"
+                       class="px-6 py-2 rounded-lg font-bold font-title-md text-title-md transition-all @(Model.PeriodoSeleccionado == "anio" ? "bg-primary text-black" : "text-black hover:bg-surface-container-high")">
+                        Año
+                    </a>
                 </div>
+
                 <div class="flex gap-3 w-full md:w-auto">
-                    <!-- INICIO: Botones de exportación en beige (#D2B48C) con letra en negro -->
-                    <button class="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2 bg-surface-container-lowest border-2 border-[#D2B48C] text-black font-bold rounded-xl font-title-md text-title-md hover:bg-[#D2B48C]/10 transition-all" style="border-color: #D2B48C !important; color: #000000 !important;">
+                    <!-- Botones de exportación funcionales -->
+                    <a href="@Url.Action("ExportarExcel", "Reportes", new { periodo = Model.PeriodoSeleccionado, anio = Model.AnioSeleccionado })"
+                       class="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2 bg-surface-container-lowest border-2 border-[#D2B48C] text-black font-bold rounded-xl font-title-md text-title-md hover:bg-[#D2B48C]/10 transition-all shadow-sm"
+                       style="border-color: #D2B48C !important; color: #000000 !important;">
                         <span class="material-symbols-outlined text-black" data-icon="download">download</span>
                         Exportar Excel
-                    </button>
-                    <button class="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2 bg-[#D2B48C] text-black font-bold rounded-xl font-title-md text-title-md hover:brightness-95 transition-all shadow-md" style="background-color: #D2B48C !important; color: #000000 !important;">
+                    </a>
+
+                    <button type="button"
+                            onclick="window.print()"
+                            class="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2 bg-[#D2B48C] text-black font-bold rounded-xl font-title-md text-title-md hover:brightness-95 transition-all shadow-md"
+                            style="background-color: #D2B48C !important; color: #000000 !important;">
                         <span class="material-symbols-outlined text-black" data-icon="picture_as_pdf">picture_as_pdf</span>
                         Exportar PDF
                     </button>
-                    <!-- FIN: Botones de exportación en beige (#D2B48C) con letra en negro -->
                 </div>
             </section>
-            <!-- KPI GRID -->
+
+            <!-- KPI GRID (MÉTRICAS EN TIEMPO REAL DESDE LA BASE DE DATOS) -->
             <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- KPI 1 -->
+                <!-- KPI 1: Ventas Totales -->
                 <div class="bg-surface-container-lowest p-card-padding rounded-xl border border-outline-variant card-shadow flex flex-col justify-between group hover:-translate-y-1 transition-transform">
                     <div class="flex justify-between items-start">
                         <div class="p-3 bg-primary/20 rounded-lg">
                             <span class="material-symbols-outlined text-black" data-icon="payments">payments</span>
                         </div>
-                        <span class="font-label-md text-label-md flex items-center gap-1 text-emerald-600 font-bold">
-                            <span class="material-symbols-outlined text-sm font-bold" data-icon="trending_up">trending_up</span>
-                            +12%
+                        <span class="font-label-md text-label-md flex items-center gap-1 @(Model.VariacionVentasPositiva ? "text-emerald-600" : "text-rose-600") font-bold">
+                            <span class="material-symbols-outlined text-sm font-bold">
+                                @(Model.VariacionVentasPositiva ? "trending_up" : "trending_down")
+                            </span>
+                            @Model.VariacionVentas
                         </span>
                     </div>
                     <div class="mt-4">
                         <p class="font-label-md text-label-md text-black uppercase tracking-wider opacity-70">Ventas Totales</p>
-                        <h3 class="font-headline-md text-headline-md font-bold mt-1 text-black">$45.280,00</h3>
+                        <h3 class="font-headline-md text-headline-md font-bold mt-1 text-black">
+                            @Model.VentasTotales.ToString("C0", System.Globalization.CultureInfo.CreateSpecificCulture("es-CO"))
+                        </h3>
                     </div>
                 </div>
-                <!-- KPI 2 -->
+
+                <!-- KPI 2: Ganancias Netas -->
                 <div class="bg-surface-container-lowest p-card-padding rounded-xl border border-outline-variant card-shadow flex flex-col justify-between group hover:-translate-y-1 transition-transform">
                     <div class="flex justify-between items-start">
                         <div class="p-3 bg-primary/20 rounded-lg">
@@ -219,28 +259,34 @@
                         </div>
                         <span class="font-label-md text-label-md flex items-center gap-1 text-emerald-600 font-bold">
                             <span class="material-symbols-outlined text-sm font-bold" data-icon="trending_up">trending_up</span>
-                            +8.4%
+                            @Model.VariacionGanancias
                         </span>
                     </div>
                     <div class="mt-4">
                         <p class="font-label-md text-label-md text-black uppercase tracking-wider opacity-70">Ganancias Netas</p>
-                        <h3 class="font-headline-md text-headline-md font-bold mt-1 text-black">$18.450,00</h3>
+                        <h3 class="font-headline-md text-headline-md font-bold mt-1 text-black">
+                            @Model.GananciasNetas.ToString("C0", System.Globalization.CultureInfo.CreateSpecificCulture("es-CO"))
+                        </h3>
                     </div>
                 </div>
-                <!-- KPI 3 -->
+
+                <!-- KPI 3: Pedidos Completados -->
                 <div class="bg-surface-container-lowest p-card-padding rounded-xl border border-outline-variant card-shadow flex flex-col justify-between group hover:-translate-y-1 transition-transform">
                     <div class="flex justify-between items-start">
                         <div class="p-3 bg-primary/20 rounded-lg">
                             <span class="material-symbols-outlined text-black" data-icon="task_alt">task_alt</span>
                         </div>
-                        <span class="font-label-md text-label-md text-black opacity-70">Este mes</span>
+                        <span class="font-label-md text-label-md text-black opacity-70 capitalize">@Model.PeriodoSeleccionado actual</span>
                     </div>
                     <div class="mt-4">
                         <p class="font-label-md text-label-md text-black uppercase tracking-wider opacity-70">Pedidos Completados</p>
-                        <h3 class="font-headline-md text-headline-md font-bold mt-1 text-black">124</h3>
+                        <h3 class="font-headline-md text-headline-md font-bold mt-1 text-black">
+                            @Model.PedidosCompletados
+                        </h3>
                     </div>
                 </div>
-                <!-- KPI 4 -->
+
+                <!-- KPI 4: Cotizaciones Pendientes -->
                 <div class="bg-surface-container-lowest p-card-padding rounded-xl border border-outline-variant card-shadow flex flex-col justify-between group hover:-translate-y-1 transition-transform">
                     <div class="flex justify-between items-start">
                         <div class="p-3 bg-error-container/30 rounded-lg">
@@ -248,190 +294,177 @@
                         </div>
                         <span class="font-label-md text-label-md text-error font-bold flex items-center gap-1">
                             <span class="material-symbols-outlined text-sm" data-icon="priority_high">priority_high</span>
-                            Urgente
+                            Por atender
                         </span>
                     </div>
                     <div class="mt-4">
                         <p class="font-label-md text-label-md text-black uppercase tracking-wider opacity-70">Cotizaciones Pendientes</p>
-                        <h3 class="font-headline-md text-headline-md font-bold mt-1 text-black">18</h3>
+                        <h3 class="font-headline-md text-headline-md font-bold mt-1 text-black">
+                            @Model.CotizacionesPendientes
+                        </h3>
                     </div>
                 </div>
             </section>
+
             <!-- ANALYTICS BENTO GRID -->
             <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Ventas por Mes -->
+                <!-- Gráfica 1: Ventas por Mes (Datos reales de la BD) -->
                 <div class="lg:col-span-2 bg-surface-container-lowest p-card-padding rounded-xl border border-outline-variant card-shadow">
                     <div class="flex justify-between items-center mb-6">
                         <div>
                             <h4 class="font-title-md text-title-md text-black font-bold">Ventas por Mes</h4>
-                            <p class="font-label-md text-label-md text-black opacity-70">Rendimiento de los últimos 6 meses</p>
+                            <p class="font-label-md text-label-md text-black opacity-70">Histórico de facturación de los últimos 6 meses</p>
                         </div>
-                        <select class="bg-transparent border-none font-label-md text-label-md focus:ring-0 text-black font-bold cursor-pointer">
-                            <option>2024</option>
-                            <option>2023</option>
+                        <select onchange="window.location.href='@Url.Action("Index", "Reportes")?periodo=@Model.PeriodoSeleccionado&anio=' + this.value"
+                                class="bg-surface-container-low border border-outline-variant rounded-lg px-3 py-1 font-label-md text-label-md text-black font-bold cursor-pointer">
+                            @foreach (var anio in Model.AniosDisponibles)
+                            {
+                                <option value="@anio" selected="@(anio == Model.AnioSeleccionado)">@anio</option>
+                            }
                         </select>
                     </div>
-                    <div class="h-64 flex items-end justify-between gap-4 px-4">
-                        <!-- Simulated Bar Chart -->
-                        <div class="flex flex-col items-center gap-2 w-full">
-                            <div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-500 hover:bg-primary" style="height: 60%;"></div>
-                            <span class="font-label-md text-label-md text-black">Ene</span>
-                        </div>
-                        <div class="flex flex-col items-center gap-2 w-full">
-                            <div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-500 hover:bg-primary" style="height: 45%;"></div>
-                            <span class="font-label-md text-label-md text-black">Feb</span>
-                        </div>
-                        <div class="flex flex-col items-center gap-2 w-full">
-                            <div class="w-full bg-primary rounded-t-lg transition-all duration-500" style="height: 85%;"></div>
-                            <span class="font-label-md text-label-md text-black">Mar</span>
-                        </div>
-                        <div class="flex flex-col items-center gap-2 w-full">
-                            <div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-500 hover:bg-primary" style="height: 70%;"></div>
-                            <span class="font-label-md text-label-md text-black">Abr</span>
-                        </div>
-                        <div class="flex flex-col items-center gap-2 w-full">
-                            <div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-500 hover:bg-primary" style="height: 95%;"></div>
-                            <span class="font-label-md text-label-md text-black">May</span>
-                        </div>
-                        <div class="flex flex-col items-center gap-2 w-full">
-                            <div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-500 hover:bg-primary" style="height: 75%;"></div>
-                            <span class="font-label-md text-label-md text-black">Jun</span>
-                        </div>
+
+                    <div class="h-64 flex items-end justify-between gap-4 px-4 pt-6">
+                        @if (Model.VentasPorMes != null && Model.VentasPorMes.Any())
+                        {
+                            foreach (var item in Model.VentasPorMes)
+                            {
+                                <div class="flex flex-col items-center gap-2 w-full group relative" title="@item.Mes @item.Anio: @item.Total.ToString("C0", System.Globalization.CultureInfo.CreateSpecificCulture("es-CO"))">
+                                    <!-- Tooltip al pasar el cursor -->
+                                    <div class="absolute -top-10 opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-xs font-bold px-2 py-1 rounded shadow-lg pointer-events-none whitespace-nowrap z-10">
+                                        @item.Total.ToString("C0", System.Globalization.CultureInfo.CreateSpecificCulture("es-CO"))
+                                    </div>
+
+                                    <!-- Barra de altura dinámica -->
+                                    <div class="w-full @(item.EsMesMaximo ? "bg-primary" : "bg-surface-container-highest hover:bg-primary") rounded-t-lg transition-all duration-500 shadow-sm"
+                                         style="height: @(item.PorcentajeAltura)%;">
+                                    </div>
+                                    <span class="font-label-md text-label-md text-black font-bold">@item.Mes</span>
+                                </div>
+                            }
+                        }
                     </div>
                 </div>
-                <!-- Pedidos por Estado -->
+
+                <!-- Gráfica 2: Pedidos por Estado (Datos reales de la BD) -->
                 <div class="bg-surface-container-lowest p-card-padding rounded-xl border border-outline-variant card-shadow flex flex-col">
                     <h4 class="font-title-md text-title-md text-black font-bold mb-6">Pedidos por Estado</h4>
                     <div class="relative flex-1 flex flex-col items-center justify-center">
-                        <svg class="w-48 h-48" viewbox="0 0 100 100">
+                        <svg class="w-48 h-48 -rotate-90 transform" viewBox="0 0 100 100">
+                            <!-- Círculo base de fondo -->
                             <circle cx="50" cy="50" fill="transparent" r="40" stroke="#f0dfd6" stroke-width="12"></circle>
-                            <circle class="transition-all duration-1000" cx="50" cy="50" fill="transparent" r="40" stroke="#D2B48C" stroke-dasharray="251.2" stroke-dashoffset="62.8" stroke-linecap="round" stroke-width="12"></circle>
-                            <circle cx="50" cy="50" fill="transparent" r="40" stroke="#000000" stroke-dasharray="251.2" stroke-dashoffset="188.4" stroke-linecap="round" stroke-width="12"></circle>
+                            
+                            <!-- Segmento 1: Producción -->
+                            <circle class="transition-all duration-1000" cx="50" cy="50" fill="transparent" r="40"
+                                    stroke="#D2B48C" stroke-width="12"
+                                    stroke-dasharray="@((Model.PorcentajeProduccion * 2.512).ToString("0.#", System.Globalization.CultureInfo.InvariantCulture)) 251.2"
+                                    stroke-dashoffset="0"></circle>
+
+                            <!-- Segmento 2: Entregados -->
+                            <circle class="transition-all duration-1000" cx="50" cy="50" fill="transparent" r="40"
+                                    stroke="#000000" stroke-width="12"
+                                    stroke-dasharray="@((Model.PorcentajeEntregados * 2.512).ToString("0.#", System.Globalization.CultureInfo.InvariantCulture)) 251.2"
+                                    stroke-dashoffset="-@((Model.PorcentajeProduccion * 2.512).ToString("0.#", System.Globalization.CultureInfo.InvariantCulture))"></circle>
                         </svg>
+
                         <div class="absolute text-center">
-                            <span class="font-display-lg text-black text-3xl font-bold">124</span>
+                            <span class="font-display-lg text-black text-3xl font-bold">@Model.TotalPedidos</span>
                             <p class="font-label-md text-label-md text-black opacity-70">Totales</p>
                         </div>
                     </div>
+
                     <div class="grid grid-cols-2 gap-4 mt-6">
                         <div class="flex items-center gap-2">
-                            <div class="w-3 h-3 rounded-full bg-primary"></div>
-                            <span class="font-label-md text-label-md text-black">Producción (45%)</span>
+                            <div class="w-3 h-3 rounded-full bg-[#D2B48C]"></div>
+                            <span class="font-label-md text-label-md text-black">Producción (@Model.PorcentajeProduccion%)</span>
                         </div>
                         <div class="flex items-center gap-2">
                             <div class="w-3 h-3 rounded-full bg-black"></div>
-                            <span class="font-label-md text-label-md text-black">Entregados (30%)</span>
+                            <span class="font-label-md text-label-md text-black">Entregados (@Model.PorcentajeEntregados%)</span>
                         </div>
                         <div class="flex items-center gap-2">
                             <div class="w-3 h-3 rounded-full bg-surface-variant"></div>
-                            <span class="font-label-md text-label-md text-black">En espera (20%)</span>
+                            <span class="font-label-md text-label-md text-black">En espera (@Model.PorcentajeEnEspera%)</span>
                         </div>
                         <div class="flex items-center gap-2">
-                            <div class="w-3 h-3 rounded-full bg-error/40"></div>
-                            <span class="font-label-md text-label-md text-black">Cancelado (5%)</span>
+                            <div class="w-3 h-3 rounded-full bg-red-600"></div>
+                            <span class="font-label-md text-label-md text-black">Cancelado (@Model.PorcentajeCancelados%)</span>
                         </div>
                     </div>
                 </div>
-                <!-- Top Productos más Solicitados -->
+
+                <!-- Sección 3: Top de Productos más Solicitados (Datos reales de la BD) -->
                 <div class="lg:col-span-3 bg-surface-container-lowest p-card-padding rounded-xl border border-outline-variant card-shadow">
                     <div class="flex justify-between items-center mb-6">
                         <h4 class="font-title-md text-title-md text-black font-bold">Top de Productos más Solicitados</h4>
-                        <button class="text-black font-bold font-label-md text-label-md flex items-center gap-1 hover:underline">
+                        <a href="@Url.Action("Index", "Productos")" class="text-black font-bold font-label-md text-label-md flex items-center gap-1 hover:underline">
                             Ver catálogo completo
                             <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
-                        </button>
+                        </a>
                     </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <!-- Product Card 1 -->
-                        <div class="group cursor-pointer">
-                            <div class="relative overflow-hidden rounded-xl mb-3 aspect-video">
-                                <img alt="Cocinas Integrales" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXV3EaUPBtiZY2mHA5WgxO3_bUHALimOnMis19ydAdtK-e62SJul3hMyR1ot-Aq52Qin0jVNpw6tr0Z4tuX1L6NKLQvpAW_I3MJeHYhYay04sQcKvB0IN720_1pKXLE8J4F6yMd3xoOq8v3TLw-5U2LGg55MwN5i7_U1VnlE5OoE-TD5mLJfQbOhbgQtsXt0T28OVoFK3pp215_vRVgniesSzLHa_Shv_SEaosgwAYxzWvCi-VKtut7w" />
-                                <div class="absolute top-2 right-2 bg-black text-white font-bold font-label-md text-label-md px-2 py-1 rounded">#1 TOP</div>
-                            </div>
-                            <h5 class="font-title-md text-title-md text-black font-bold">Cocinas Integrales</h5>
-                            <div class="flex justify-between items-center mt-1">
-                                <p class="font-label-md text-label-md text-black opacity-70">42 pedidos este mes</p>
-                                <span class="font-body-md text-body-md font-bold text-black">$4.500+ avg</span>
-                            </div>
-                            <div class="w-full bg-surface-container-highest h-1.5 rounded-full mt-3 overflow-hidden">
-                                <div class="bg-primary h-full w-[85%] rounded-full"></div>
-                            </div>
-                        </div>
-                        <!-- Product Card 2 -->
-                        <div class="group cursor-pointer">
-                            <div class="relative overflow-hidden rounded-xl mb-3 aspect-video">
-                                <img alt="Muebles de TV" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5Ga_UWmn1AZEMf_M9f2Zc58P-Ng2pem_uDlpoWgYUjVlvs1WMr6XINnn24iKj1lz_LWurcjjSlkIcNXhivr5vm9AlMIPb34jMQXnSZ4M4wMwmKni1Uq2O2l1fYWdinmwtQbemDXwV5dDjYZ_07o7pXZvS3H1Jm96zZZEP7Wsn8WDeJ6Qw8z1XOOsvGukLlO5HkNuaJgq8YlaagXm5EM31QuvdVjnPr9iwpNxBGT0BWf5GO3riW4k5_Q" />
-                            </div>
-                            <h5 class="font-title-md text-title-md text-black font-bold">Muebles de TV</h5>
-                            <div class="flex justify-between items-center mt-1">
-                                <p class="font-label-md text-label-md text-black opacity-70">28 pedidos este mes</p>
-                                <span class="font-body-md text-body-md font-bold text-black">$1.200+ avg</span>
-                            </div>
-                            <div class="w-full bg-surface-container-highest h-1.5 rounded-full mt-3 overflow-hidden">
-                                <div class="bg-primary h-full w-[60%] rounded-full"></div>
-                            </div>
-                        </div>
-                        <!-- Product Card 3 -->
-                        <div class="group cursor-pointer">
-                            <div class="relative overflow-hidden rounded-xl mb-3 aspect-video">
-                                <img alt="Bibliotecas" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCd2w_GCjkuVlnlEqXG4-HJQRcdcwGz5Slncuh76FewQkm4KMmqGVg3VdEaS2MP0nwy2ZwreLX-vNXIxBFfGraHOB-e0UqwutoBfOoC-2YtvSq04W2j9Lca5Ga43wxM5rycOu5TO5lQIms52AkAnGuo2415trUGbaF_pRZEriEKT5h7MUECoMaBs31W6J5pOPR9dcAu1o50Esu7rOwCfzl2NmgORfXxMbQKzugEY-2dmOdAlvxnmdS9Wg" />
-                            </div>
-                            <h5 class="font-title-md text-title-md text-black font-bold">Bibliotecas</h5>
-                            <div class="flex justify-between items-center mt-1">
-                                <p class="font-label-md text-label-md text-black opacity-70">15 pedidos este mes</p>
-                                <span class="font-body-md text-body-md font-bold text-black">$2.800+ avg</span>
-                            </div>
-                            <div class="w-full bg-surface-container-highest h-1.5 rounded-full mt-3 overflow-hidden">
-                                <div class="bg-primary h-full w-[40%] rounded-full"></div>
-                            </div>
-                        </div>
-                        <!-- Product Card 4 -->
-                        <div class="group cursor-pointer">
-                            <div class="relative overflow-hidden rounded-xl mb-3 aspect-video">
-                                <img alt="Mesas de Comedor" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAmqnuGf0falSq03p9cM6TeFHuDpMqiZsufMHyzDGTU0PTtIomAmRPzgryv8dMG8LLrFSdqSyCj6EOrgCld4uOBcGl0lu0LOLEMyAQlqROyn57-5WsUuN5l_h7EHojy6XR_3z_5FQsd07AMszVFEpOza9zHEXSclCAY7BCOx3WWqq-Qu06HJfmPd_T-lKMlnwp-QOSV9yqz9aHsdODhJKqHptKujJdX4e9nE6_FRO9dnR2jj4pJrGMcQ" />
-                            </div>
-                            <h5 class="font-title-md text-title-md text-black font-bold">Mesas de Comedor</h5>
-                            <div class="flex justify-between items-center mt-1">
-                                <p class="font-label-md text-label-md text-black opacity-70">12 pedidos este mes</p>
-                                <span class="font-body-md text-body-md font-bold text-black">$1.800+ avg</span>
-                            </div>
-                            <div class="w-full bg-surface-container-highest h-1.5 rounded-full mt-3 overflow-hidden">
-                                <div class="bg-primary h-full w-[35%] rounded-full"></div>
-                            </div>
-                        </div>
+                        @if (Model.TopProductos != null && Model.TopProductos.Any())
+                        {
+                            foreach (var prod in Model.TopProductos)
+                            {
+                                <div class="group cursor-pointer bg-surface p-3 rounded-xl border border-outline-variant/20 hover:border-[#D2B48C] transition-all">
+                                    <div class="relative overflow-hidden rounded-xl mb-3 aspect-video bg-surface-container">
+                                        @if (!string.IsNullOrEmpty(prod.Imagen))
+                                        {
+                                            <img alt="@prod.Nombre" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="@prod.Imagen" onerror="this.onerror=null; this.src='/images/carpintera.jpeg';" />
+                                        }
+                                        else
+                                        {
+                                            <div class="w-full h-full flex items-center justify-center bg-secondary-container text-black">
+                                                <span class="material-symbols-outlined text-4xl">chair</span>
+                                            </div>
+                                        }
+                                        <div class="absolute top-2 right-2 bg-black text-white font-bold font-label-md text-xs px-2 py-1 rounded shadow">
+                                            #@prod.Ranking TOP
+                                        </div>
+                                    </div>
+                                    <h5 class="font-title-md text-base text-black font-bold truncate" title="@prod.Nombre">@prod.Nombre</h5>
+                                    <div class="flex justify-between items-center mt-1">
+                                        <p class="font-label-md text-xs text-black opacity-70">@prod.TotalPedidos pedidos</p>
+                                        <span class="font-body-md text-sm font-bold text-black">
+                                            @prod.PrecioPromedio.ToString("C0", System.Globalization.CultureInfo.CreateSpecificCulture("es-CO"))
+                                        </span>
+                                    </div>
+                                    <div class="w-full bg-surface-container-highest h-2 rounded-full mt-3 overflow-hidden">
+                                        <div class="bg-[#D2B48C] h-full rounded-full transition-all duration-700" style="width: @(prod.PorcentajeBarra)%;"></div>
+                                    </div>
+                                </div>
+                            }
+                        }
                     </div>
                 </div>
             </section>
         </div>
+
         <!-- FOOTER INFO -->
-        <footer class="mt-auto p-margin-desktop flex justify-between items-center text-black border-t border-outline-variant bg-surface-container-lowest">
-            <p class="font-label-md text-label-md opacity-60">© 2024 Carpintec. Todos los derechos reservados.</p>
-            <div class="flex gap-6">
-                <a class="font-label-md text-label-md opacity-60 hover:text-black hover:opacity-100 transition-colors" href="#">Términos</a>
-                <a class="font-label-md text-label-md opacity-60 hover:text-black hover:opacity-100 transition-colors" href="#">Privacidad</a>
+        <footer class="mt-12 p-4 flex flex-col sm:flex-row justify-between items-center text-black border-t border-outline-variant bg-surface-container-lowest rounded-xl no-print">
+            <p class="font-label-md text-label-md opacity-60">© @DateTime.Now.Year Carpintec. Todos los derechos reservados.</p>
+            <div class="flex gap-6 mt-2 sm:mt-0">
+                <span class="font-label-md text-label-md opacity-60">Reportes Generados con Datos Oficiales de Base de Datos</span>
             </div>
         </footer>
     </div>
+
     <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                const bars = document.querySelectorAll('.bg-surface-container-highest');
-                bars.forEach((bar, index) => {
-                    const targetHeight = bar.style.height;
+        document.addEventListener('DOMContentLoaded', () => {
+            // Animación interactiva de las barras del gráfico mensual
+            const bars = document.querySelectorAll('.bg-surface-container-highest, .bg-primary');
+            bars.forEach((bar, index) => {
+                const targetHeight = bar.style.height;
+                if (targetHeight && targetHeight !== '0%') {
                     bar.style.height = '0%';
                     setTimeout(() => {
                         bar.style.height = targetHeight;
-                    }, 200 + (index * 100));
-                });
-
-                const buttons = document.querySelectorAll('button');
-                buttons.forEach(btn => {
-                    btn.addEventListener('mousedown', () => {
-                        btn.classList.add('scale-[0.98]');
-                    });
-                    btn.addEventListener('mouseup', () => {
-                        btn.classList.remove('scale-[0.98]');
-                    });
-                });
+                    }, 150 + (index * 80));
+                }
             });
+        });
     </script>
-</body></html>
+</body>
+</html>

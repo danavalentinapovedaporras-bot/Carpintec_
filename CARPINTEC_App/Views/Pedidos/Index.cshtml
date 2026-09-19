@@ -13,6 +13,11 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+
+    <!-- DATATABLES -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
     
     <!-- INICIO: Estilos de tipografía Work Sans en negrita y corrección de colores -->
     <style>
@@ -83,6 +88,16 @@
                 background-image: url("https://www.transparenttextures.com/patterns/wood-pattern-with-holes.png");
                 opacity: 0.03;
                 pointer-events: none !important; /* Asegura que la textura no bloquee clics */
+            }
+
+            div.dt-container .dt-search {
+                display: none !important;
+            }
+
+            div.dt-container .dt-paging .dt-paging-button.current {
+                background: #D2B48C !important;
+                border-color: #D2B48C !important;
+                color: #000 !important;
             }
     </style>
     <!-- FIN: Estilos de tipografía Work Sans en negrita y corrección de colores -->
@@ -273,6 +288,65 @@
                 <!-- FIN: Stat Card 4: Valor Total en Curso (fondo blanco y letras en negro) -->
 
             </div>
+
+            <!-- Buscador superior estilo PQR -->
+            <div class="relative w-full max-w-xl">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-black/50">search</span>
+                <input id="buscadorPedidos"
+                       type="text"
+                       placeholder="Buscar número de pedido, cliente, estado o fecha..."
+                       class="w-full pl-10 pr-4 py-2.5 bg-[#f5f3ee] border-none rounded-full text-sm text-black focus:ring-2 focus:ring-[#D2B48C] focus:outline-none"
+                       oninput="aplicarFiltrosPedidos()" />
+            </div>
+
+            <!-- Filtros de búsqueda estilo PQR -->
+            <div class="bg-surface-container-lowest rounded-xl shadow-sm p-6 border border-surface-container-highest">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+                    <div class="lg:col-span-1">
+                        <label class="block text-xs text-on-surface/70 mb-1">Pedido / Cliente</label>
+                        <input id="filtroPedidoCliente"
+                               type="text"
+                               class="w-full rounded-lg bg-[#fcf9f8] border border-outline-variant text-sm"
+                               placeholder="Ej: P-2026-007"
+                               onkeydown="if(event.key==='Enter'){event.preventDefault(); aplicarFiltrosPedidos();}" />
+                    </div>
+                    <div>
+                        <label class="block text-xs text-on-surface/70 mb-1">Estado</label>
+                        <select id="filtroEstadoPed"
+                                class="w-full rounded-lg bg-[#fcf9f8] border border-outline-variant text-sm">
+                            <option value="">Cualquier estado</option>
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="Diseño">Diseño</option>
+                            <option value="Corte">Corte</option>
+                            <option value="Ensamble">Ensamble</option>
+                            <option value="Pintura">Pintura</option>
+                            <option value="Producción">Producción</option>
+                            <option value="Completado">Completado</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-on-surface/70 mb-1">Fecha</label>
+                        <input id="filtroFechaPed"
+                               type="date"
+                               class="w-full rounded-lg bg-[#fcf9f8] border border-outline-variant text-sm" />
+                    </div>
+                    <div class="flex gap-2 lg:col-span-2">
+                        <button type="button"
+                                onclick="aplicarFiltrosPedidos()"
+                                class="flex-1 bg-[#D2B48C] text-black font-bold py-2 px-4 rounded-lg hover:brightness-95 transition-all shadow-sm"
+                                style="background-color: #D2B48C; color: #000000;">
+                            Buscar
+                        </button>
+                        <button type="button"
+                                onclick="limpiarFiltrosPedidos()"
+                                class="bg-[#e4e2e1] text-black font-bold py-2 px-4 rounded-lg hover:bg-[#d1c5b8] transition-colors"
+                                style="color: #000000;">
+                            Limpiar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Main Table Section -->
             <div class="bg-surface-container-lowest rounded-xl border border-surface-container-highest shadow-soft-wood overflow-hidden">
                 <!-- Table Filters -->
@@ -325,7 +399,7 @@
 
                 <!-- Responsive Table Wrapper -->
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse font-data-table">
+                    <table id="tablaPedidos" class="w-full text-left border-collapse font-data-table">
                         <thead>
                             <tr class="bg-surface-container-low border-b border-outline-variant">
                                 <th class="p-table-cell-padding font-label-md text-on-surface uppercase tracking-widest text-[11px] font-bold">ID Pedido</th>
@@ -377,10 +451,10 @@
                                 <td class="p-table-cell-padding">@item.Producto</td>
 
                                         <!-- Fecha de Registro -->
-                                        <td class="p-table-cell-padding text-on-surface/70">@item.FechaSolicitud.ToString("dd MMM yyyy")</td>
+                                        <td class="p-table-cell-padding text-on-surface/70" data-search="@item.FechaSolicitud.ToString("yyyy-MM-dd") @item.FechaSolicitud.ToString("dd/MM/yyyy") @item.FechaSolicitud.ToString("dd MMM yyyy")">@item.FechaSolicitud.ToString("dd MMM yyyy")</td>
 
                                         <!-- Fecha de Compromiso -->
-                                        <td class="p-table-cell-padding text-on-surface/70">@item.FechaEntrega.ToString("dd MMM yyyy")</td>
+                                        <td class="p-table-cell-padding text-on-surface/70" data-search="@item.FechaEntrega.ToString("yyyy-MM-dd") @item.FechaEntrega.ToString("dd/MM/yyyy") @item.FechaEntrega.ToString("dd MMM yyyy")">@item.FechaEntrega.ToString("dd MMM yyyy")</td>
 
                                         <!-- Estado con Insignias Condicionales -->
                                         <td class="p-table-cell-padding">
@@ -588,6 +662,96 @@ function cerrarNuevoPedido(){
     }
 
 }
+
+DataTable.ext.search.push(function (settings, data) {
+    if (!settings.nTable || settings.nTable.id !== 'tablaPedidos') {
+        return true;
+    }
+
+    const pedidoCliente = (document.getElementById('filtroPedidoCliente')?.value || '').toLowerCase().trim();
+    const estado = (document.getElementById('filtroEstadoPed')?.value || '').toLowerCase().trim();
+    const fecha = document.getElementById('filtroFechaPed')?.value || '';
+
+    const codigo = (data[0] || '').toLowerCase();
+    const cliente = (data[1] || '').toLowerCase();
+    const fechaRegistro = (data[3] || '').toLowerCase();
+    const fechaCompromiso = (data[4] || '').toLowerCase();
+    const estadoCelda = (data[5] || '').toLowerCase();
+    if (pedidoCliente && !(codigo.includes(pedidoCliente) || cliente.includes(pedidoCliente))) return false;
+    if (estado && !estadoCelda.includes(estado)) return false;
+    if (fecha) {
+        const partes = fecha.split('-');
+        const dmy = partes.length === 3 ? (partes[2] + '/' + partes[1] + '/' + partes[0]) : fecha;
+        const fechas = (fechaRegistro + ' ' + fechaCompromiso).toLowerCase();
+        if (!fechas.includes(fecha.toLowerCase()) && !fechas.includes(dmy.toLowerCase())) {
+            return false;
+        }
+    }
+
+    return true;
+});
+
+function aplicarFiltrosPedidos() {
+    if (window.tablaPedidos) {
+        const texto = document.getElementById('buscadorPedidos')?.value || '';
+        window.tablaPedidos.search(texto).draw();
+    }
+}
+
+function limpiarFiltrosPedidos() {
+    const buscador = document.getElementById('buscadorPedidos');
+    const pedidoCliente = document.getElementById('filtroPedidoCliente');
+    const estado = document.getElementById('filtroEstadoPed');
+    const fecha = document.getElementById('filtroFechaPed');
+    if (buscador) buscador.value = '';
+    if (pedidoCliente) pedidoCliente.value = '';
+    if (estado) estado.value = '';
+    if (fecha) fecha.value = '';
+    aplicarFiltrosPedidos();
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    window.tablaPedidos = new DataTable('#tablaPedidos', {
+        searching: true,
+        paging: true,
+        ordering: true,
+        pageLength: 5,
+        lengthMenu: [
+            [5, 10, 15, 20],
+            [5, 10, 15, 20]
+        ],
+        pagingType: "simple_numbers",
+        autoWidth: false,
+        layout: {
+            topStart: 'pageLength',
+            topEnd: null,
+            bottomStart: 'info',
+            bottomEnd: 'paging'
+        },
+        columnDefs: [
+            {
+                targets: -1,
+                searchable: false,
+                orderable: false
+            }
+        ],
+        language: {
+            search: "Buscar:",
+            lengthMenu: "Mostrar _MENU_ pedidos",
+            info: "Mostrando _START_ a _END_ de _TOTAL_ pedidos",
+            infoEmpty: "Mostrando 0 pedidos",
+            infoFiltered: "(filtrado de _MAX_ pedidos)",
+            zeroRecords: "No se encontraron pedidos",
+            emptyTable: "No hay pedidos registrados",
+            paginate: {
+                first: "Primero",
+                last: "Último",
+                next: "Siguiente",
+                previous: "Anterior"
+            }
+        }
+    });
+});
 
 </script>
 </body>
