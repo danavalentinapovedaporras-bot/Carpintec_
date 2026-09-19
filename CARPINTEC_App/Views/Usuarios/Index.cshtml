@@ -18,7 +18,7 @@
 <title>CARPINTEC - Gestión de Usuarios</title>
 
 
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Hanken+Grotesk:wght@400;600&display=swap"
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&amp;display=swap"
       rel="stylesheet">
 
 
@@ -27,6 +27,33 @@
 
 
 <script src="https://cdn.tailwindcss.com"></script>
+
+<!-- DATATABLES -->
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css">
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+
+
+<!-- INICIO: Tipografía Work Sans en negrita -->
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&display=swap');
+
+    button[onclick="history.back()"],
+    main,
+    main *:not(.material-symbols-outlined) {
+        font-family: 'Work Sans', sans-serif !important;
+        font-weight: 700 !important;
+    }
+
+    .material-symbols-outlined {
+        font-family: 'Material Symbols Outlined' !important;
+        font-weight: normal !important;
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+</style>
+<!-- FIN: Tipografía Work Sans en negrita -->
 
 
 </head>
@@ -63,23 +90,23 @@
 
 
 
-<!-- HEADER -->
+<!-- INICIO: Cuadro beige estilo Dashboard para encabezado -->
+<div class="mb-8 bg-[#D2B48C] text-[#442a22] rounded-2xl p-6 shadow-md" style="background-color: #D2B48C;">
 
-
-<div class="flex flex-col md:flex-row md:items-center justify-between mb-8">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
 
 
 <div>
 
 
-<h1 class="text-3xl font-bold text-[#442a22]">
+<h1 class="text-3xl font-bold text-black">
 
 Gestión de Usuarios
 
 </h1>
 
 
-<p class="text-gray-600">
+<p class="mt-2 opacity-90 text-black">
 
 Administra los accesos y roles del equipo de Carpintec
 
@@ -96,8 +123,10 @@ Administra los accesos y roles del equipo de Carpintec
 
 <button type="button"
         onclick="abrirModalUsuario()"
-        class="px-6 py-3 rounded-xl shadow-md"
-        style="background-color:rgb(210,180,140);">
+        class="px-6 py-3 rounded-xl shadow-md text-white flex items-center gap-2 transition"
+        style="background-color: #442a22;"
+        onmouseover="this.style.backgroundColor='#5a382d'"
+        onmouseout="this.style.backgroundColor='#442a22'">
 
 
 <span class="material-symbols-outlined align-middle">
@@ -115,6 +144,9 @@ Crear Usuario
 
 
 </div>
+
+</div>
+<!-- FIN: Cuadro beige estilo Dashboard para encabezado -->
 
 
 
@@ -234,9 +266,34 @@ Administradores
 
 
 
+<!-- BARRA DE BÚSQUEDA Y FILTRO DE USUARIOS -->
+<div class="bg-white rounded-2xl p-4 shadow mb-6">
+    <form method="get" action="@Url.Action("Index", "Usuarios")" class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="relative w-full md:w-96">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">search</span>
+            <input name="search" value="@ViewBag.Search" class="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm font-semibold text-black focus:border-[#442a22] focus:ring-1 focus:ring-[#442a22] outline-none" placeholder="Buscar por usuario, correo, nombre, documento..." type="text">
+        </div>
+        <div class="flex flex-wrap md:flex-nowrap items-center gap-3 w-full md:w-auto">
+            <select name="rol" onchange="this.form.submit()" class="bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm font-semibold text-black focus:border-[#442a22] outline-none cursor-pointer">
+                <option value="" selected="@(string.IsNullOrEmpty((string?)ViewBag.Rol))">Todos los roles</option>
+                <option value="Administrador" selected="@((string?)ViewBag.Rol == "Administrador")">Administrador</option>
+                <option value="Empleado" selected="@((string?)ViewBag.Rol == "Empleado")">Empleado</option>
+                <option value="Cliente" selected="@((string?)ViewBag.Rol == "Cliente")">Cliente</option>
+            </select>
+            <button type="submit" class="px-5 py-2 bg-[#442a22] text-white font-bold rounded-xl hover:bg-[#5a382d] transition-all text-sm shadow">
+                Buscar
+            </button>
+            @if (!string.IsNullOrEmpty((string?)ViewBag.Search) || !string.IsNullOrEmpty((string?)ViewBag.Rol))
+            {
+                <a href="/Usuarios/Index" class="p-2 text-gray-600 hover:bg-gray-100 rounded-xl transition-all border border-gray-200" title="Limpiar filtros">
+                    <span class="material-symbols-outlined text-sm">filter_alt_off</span>
+                </a>
+            }
+        </div>
+    </form>
+</div>
+
 <!-- TABLA -->
-
-
 <div class="bg-white rounded-3xl shadow overflow-hidden">
 
 
@@ -244,8 +301,7 @@ Administradores
 <div class="overflow-x-auto">
 
 
-<table class="w-full text-left">
-
+<table id="tablaUsuarios" class="w-full text-left">
 
 <thead class="bg-[#f0eded]">
 
@@ -404,7 +460,7 @@ Acciones
 
                                                 </span>
 
-                                      </button>
+                                            </button>
 
                               </div>
 
@@ -422,6 +478,55 @@ Acciones
 
             </div>
 
+            <!-- PAGINACIÓN DE USUARIOS -->
+            <div class="px-6 py-4 border-t border-gray-100 bg-white flex flex-col sm:flex-row items-center justify-between gap-4">
+                <span class="text-sm font-semibold text-gray-600">
+                    Mostrando @(ViewBag.RegistroInicio ?? 0) a @(ViewBag.RegistroFin ?? 0) de @(ViewBag.TotalRegistros ?? 0) usuarios
+                </span>
+                <div class="flex gap-2 items-center">
+                    @if ((ViewBag.PaginaActual ?? 1) > 1)
+                    {
+                        <a href="@Url.Action("Index", new { pagina = ViewBag.PaginaActual - 1, search = ViewBag.Search, rol = ViewBag.Rol })" class="px-3 py-1.5 rounded-lg border border-gray-200 font-bold text-gray-700 hover:bg-gray-50 text-sm transition-colors">
+                            Anterior
+                        </a>
+                    }
+                    else
+                    {
+                        <button class="px-3 py-1.5 rounded-lg border border-gray-100 text-gray-400 text-sm cursor-not-allowed" disabled>
+                            Anterior
+                        </button>
+                    }
+
+                    @for (int p = 1; p <= (ViewBag.TotalPaginas ?? 1); p++)
+                    {
+                        if (p == ViewBag.PaginaActual)
+                        {
+                            <button class="w-8 h-8 rounded-lg bg-[#442a22] text-white font-bold text-sm shadow-sm">
+                                @p
+                            </button>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("Index", new { pagina = p, search = ViewBag.Search, rol = ViewBag.Rol })" class="w-8 h-8 rounded-lg text-gray-700 hover:bg-gray-100 font-bold flex items-center justify-center transition-colors text-sm">
+                                @p
+                            </a>
+                        }
+                    }
+
+                    @if ((ViewBag.PaginaActual ?? 1) < (ViewBag.TotalPaginas ?? 1))
+                    {
+                        <a href="@Url.Action("Index", new { pagina = ViewBag.PaginaActual + 1, search = ViewBag.Search, rol = ViewBag.Rol })" class="px-3 py-1.5 rounded-lg border border-gray-200 font-bold text-gray-700 hover:bg-gray-50 text-sm transition-colors">
+                            Siguiente
+                        </a>
+                    }
+                    else
+                    {
+                        <button class="px-3 py-1.5 rounded-lg border border-gray-100 text-gray-400 text-sm cursor-not-allowed" disabled>
+                            Siguiente
+                        </button>
+                    }
+                </div>
+            </div>
         </div>
 
 
@@ -539,6 +644,7 @@ Acciones
 
 
                             </div>
+
 
 
 
@@ -984,10 +1090,16 @@ MODAL ESTADO
 
 
     
-
 </main>
-    
-    <script>
+
+
+<script>
+
+// ======================
+// DATATABLE USUARIOS
+// ======================
+</script>
+<script>
 
 
                 // ======================

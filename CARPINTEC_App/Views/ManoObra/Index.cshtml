@@ -1,14 +1,19 @@
+@* ==========================================================================
+   CAMBIO REALIZADO: Declaración del modelo fuertemente tipado conectado a la BD.
+   Ahora la vista recibe directamente la colección de ManoObra desde Entity Framework.
+   ========================================================================== *@
+@model IEnumerable<CARPINTEC_App.Models.ManoObra>
 
 <!DOCTYPE html>
-
 <html class="h-full" lang="es">
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title> Mano de Obra - Carpintec</title>
-    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600&amp;family=Manrope:wght@600;700&amp;display=swap" rel="stylesheet" />
+    <title>Mano de Obra - Carpintec</title>
+    <!-- INICIO: Fuentes de Google - Work Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
+    <!-- FIN: Fuentes de Google - Work Sans -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script id="tailwind-config">
             tailwind.config = {
@@ -80,16 +85,18 @@
                             "sm": "12px",
                             "lg": "40px"
                         },
+                        /* INICIO: Configuración Work Sans en Tailwind */
                         "fontFamily": {
-                            "headline-xl": ["Manrope"],
-                            "headline-md": ["Manrope"],
-                            "headline-lg-mobile": ["Manrope"],
-                            "body-lg": ["Hanken Grotesk"],
-                            "label-md": ["Hanken Grotesk"],
-                            "body-md": ["Hanken Grotesk"],
-                            "headline-lg": ["Manrope"],
-                            "body-sm": ["Hanken Grotesk"]
+                            "headline-xl": ["Work Sans", "sans-serif"],
+                            "headline-md": ["Work Sans", "sans-serif"],
+                            "headline-lg-mobile": ["Work Sans", "sans-serif"],
+                            "body-lg": ["Work Sans", "sans-serif"],
+                            "label-md": ["Work Sans", "sans-serif"],
+                            "body-md": ["Work Sans", "sans-serif"],
+                            "headline-lg": ["Work Sans", "sans-serif"],
+                            "body-sm": ["Work Sans", "sans-serif"]
                         },
+                        /* FIN: Configuración Work Sans en Tailwind */
                         "fontSize": {
                             "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
                             "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
@@ -104,10 +111,46 @@
                 }
             }
     </script>
+    <!-- INICIO: Estilos de tipografía Work Sans en negrita y corrección de colores -->
     <style>
-            .material-symbols-outlined {
-                font-family: 'Material Symbols Outlined';
+            @@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&display=swap');
+
+            body,
+            header,
+            main,
+            header *:not(.material-symbols-outlined):not([class*="fa-"]):not(i),
+            main *:not(.material-symbols-outlined):not([class*="fa-"]):not(i) {
+                font-family: 'Work Sans', sans-serif !important;
+                font-weight: 700 !important;
             }
+
+            .material-symbols-outlined {
+                font-family: 'Material Symbols Outlined' !important;
+                font-weight: normal !important;
+                font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+                vertical-align: middle;
+            }
+
+            body {
+                background-color: #fcf9f8;
+                font-family: 'Work Sans', sans-serif !important;
+                font-weight: 700 !important;
+                color: #000000;
+            }
+
+            /* Corrección de azul de Bootstrap a beige (#D2B48C) y negro */
+            .bg-primary {
+                background-color: #D2B48C !important;
+            }
+
+            .text-primary {
+                color: #000000 !important;
+            }
+
+            .border-primary {
+                border-color: #D2B48C !important;
+            }
+
             /* Tonal layering & Ambient shadows */
             .card-shadow {
                 box-shadow: 0 4px 12px rgba(93, 64, 55, 0.05);
@@ -117,7 +160,24 @@
                 transform: translateY(-2px);
                 box-shadow: 0 8px 16px rgba(93, 64, 55, 0.1);
             }
+
+            /* Estilos para impresión y exportación a PDF */
+            @@media print {
+                header, .no-print, form, .modal {
+                    display: none !important;
+                }
+                main {
+                    padding: 0 !important;
+                    margin: 0 !important;
+                    max-width: 100% !important;
+                }
+                .card-shadow {
+                    box-shadow: none !important;
+                    border: 1px solid #ccc !important;
+                }
+            }
     </style>
+    <!-- FIN: Estilos de tipografía Work Sans en negrita y corrección de colores -->
 </head>
 <body class="bg-background text-on-surface h-full font-body-md antialiased">
     <!-- Main Layout -->
@@ -125,58 +185,119 @@
         <!-- TopAppBar -->
         <header class="w-full top-0 sticky shadow-sm bg-surface dark:bg-surface-container-low flex justify-between items-center px-margin h-20 w-full z-40">
             <div class="flex items-center gap-4">
-                <button class="text-primary dark:text-primary-fixed hover:bg-secondary-container/50 transition-colors p-2 rounded-full md:hidden">
-                    <span class="material-symbols-outlined" data-icon="menu">menu</span>
-                </button>
-                <div class="font-headline-lg text-headline-lg font-bold text-primary dark:text-primary-fixed">Carpintec</div>
+                @* CAMBIO: Enlace de retroceso al Dashboard *@
+                <a href="/Dashboard/Index" class="text-black hover:bg-secondary-container/50 transition-colors p-2 rounded-full" title="Volver al Dashboard" style="color: #000000;">
+                    <span class="material-symbols-outlined text-black" data-icon="arrow_back">arrow_back</span>
+                </a>
+                <div class="font-headline-lg text-headline-lg font-bold text-black" style="color: #000000;">Carpintec</div>
             </div>
             <div class="flex items-center gap-4">
                 <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-outline-variant cursor-pointer scale-95 active:opacity-80 transition-all">
-                    <img alt="Profile picture of the administrator" class="w-full h-full object-cover" data-alt="A professional headshot of a carpentry workshop manager in a brightly lit office setting, warm natural lighting emphasizing reliability and craftsmanship, subtle depth of field." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEI7Y1OzFUJOm_9SlmHUwD3EThBny2Tbzt16lW7tKB5dxYrPxrETIb1cCPGdlW-qi303NCc97NPM9I1K65fsV4E1OMyG_qrIpCrCYF4B_lzKpjXJ1a5W9W3et7wlV5yEkzQLIXSm7bhmF6nyA-5_HPZuFOjj-nvbJyuUadY9fBWNbCd9jy2KofRIzIeZ_kTw56sLHfYbNs8Km6YWV7zxXjK4uW1tRsIVyhq4BgJKTbgj27yOzVbDm7" />
+                    <img alt="Profile picture of the administrator" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEI7Y1OzFUJOm_9SlmHUwD3EThBny2Tbzt16lW7tKB5dxYrPxrETIb1cCPGdlW-qi303NCc97NPM9I1K65fsV4E1OMyG_qrIpCrCYF4B_lzKpjXJ1a5W9W3et7wlV5yEkzQLIXSm7bhmF6nyA-5_HPZuFOjj-nvbJyuUadY9fBWNbCd9jy2KofRIzIeZ_kTw56sLHfYbNs8Km6YWV7zxXjK4uW1tRsIVyhq4BgJKTbgj27yOzVbDm7" />
                 </div>
             </div>
         </header>
+
         <!-- Main Content Area -->
         <main class="flex-1 w-full max-w-[1440px] mx-auto px-margin py-lg md:px-margin md:py-lg grid grid-cols-4 md:grid-cols-12 gap-gutter">
-            <!-- Header Section -->
-            <div class="col-span-4 md:col-span-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-md">
-                <h1 class="font-headline-xl text-headline-xl text-primary">Mano de Obra</h1>
-                <div class="flex flex-wrap items-center gap-4 w-full md:w-auto">
-                    <!-- Search -->
-                    <div class="relative w-full md:w-64">
-                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
-                        <input class="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors font-body-md text-on-surface" placeholder="Buscar empleado o ID..." type="text" />
+            
+            @* ==========================================================================
+               CAMBIO REALIZADO: Notificaciones emergentes dinámicas (TempData["Exito"] / TempData["Error"])
+               procedentes de operaciones en la base de datos (Crear, Editar, Eliminar).
+               ========================================================================== *@
+            @if (TempData["Exito"] != null)
+            {
+                <div class="col-span-4 md:col-span-12 p-4 rounded-xl bg-green-50 border border-green-300 text-green-800 text-sm font-bold flex items-center justify-between shadow-sm">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-green-600">check_circle</span>
+                        <span>@TempData["Exito"]</span>
                     </div>
-                    <!-- Filters -->
-                    <select class="bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2 focus:outline-none focus:border-primary font-body-md text-on-surface cursor-pointer">
-                        <option value="">Todos los estados</option>
-                        <option value="pendiente">Pendiente</option>
-                        <option value="en_proceso">En Proceso</option>
-                        <option value="finalizado">Finalizado</option>
-                    </select>
-                    <!-- New Assignment Button -->
-                    <button class="bg-primary text-on-primary hover:bg-primary/90 px-6 py-2 rounded-lg font-label-md text-label-md flex items-center gap-2 transition-colors active:bg-primary/80 focus:ring-2 focus:ring-primary-container focus:outline-none shadow-sm">
-                        <span class="material-symbols-outlined" data-icon="add">add</span>
-                        Nueva asignación
+                    <button type="button" onclick="this.parentElement.remove()" class="text-green-600 hover:text-green-800">
+                        <span class="material-symbols-outlined text-sm">close</span>
                     </button>
                 </div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="col-span-4 md:col-span-12 p-4 rounded-xl bg-red-50 border border-red-300 text-red-800 text-sm font-bold flex items-center justify-between shadow-sm">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-red-600">error</span>
+                        <span>@TempData["Error"]</span>
+                    </div>
+                    <button type="button" onclick="this.parentElement.remove()" class="text-red-600 hover:text-red-800">
+                        <span class="material-symbols-outlined text-sm">close</span>
+                    </button>
+                </div>
+            }
+
+            <!-- Header Section -->
+            <div class="col-span-4 md:col-span-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-md">
+                <h1 class="font-headline-xl text-headline-xl text-black font-bold" style="color: #000000;">Mano de Obra</h1>
+                
+                @* ==========================================================================
+                   CAMBIO REALIZADO: Formulario de búsqueda y filtros conectado al controlador.
+                   Filtra por texto en nombre de empleado, código de orden, proceso o producto,
+                   y por estado (Pendiente, En proceso, Finalizado) ejecutando consulta en la BD.
+                   ========================================================================== *@
+                <form method="get" asp-action="Index" class="flex flex-wrap items-center gap-4 w-full md:w-auto">
+                    <!-- Search Input funcional con BD -->
+                    <div class="relative w-full md:w-64">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+                        <input name="search" value="@ViewBag.Search" class="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg focus:outline-none focus:border-[#D2B48C] focus:ring-1 focus:ring-[#D2B48C] transition-colors font-body-md text-black font-bold" placeholder="Buscar empleado, orden..." type="text" />
+                    </div>
+
+                    <!-- Filters select funcional con BD -->
+                    <select name="estado" onchange="this.form.submit()" class="bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2 focus:outline-none focus:border-[#D2B48C] font-body-md text-black font-bold cursor-pointer">
+                        <option value="" selected="@(string.IsNullOrEmpty((string?)ViewBag.Estado))">Todos los estados</option>
+                        <option value="Pendiente" selected="@((string?)ViewBag.Estado == "Pendiente")">Pendiente</option>
+                        <option value="En proceso" selected="@((string?)ViewBag.Estado == "En proceso" || (string?)ViewBag.Estado == "En Proceso")">En Proceso</option>
+                        <option value="Finalizado" selected="@((string?)ViewBag.Estado == "Finalizado")">Finalizado</option>
+                    </select>
+
+                    @* Si hay filtros aplicados, botón para limpiar *@
+                    @if (!string.IsNullOrEmpty((string?)ViewBag.Search) || !string.IsNullOrEmpty((string?)ViewBag.Estado))
+                    {
+                        <a href="/ManoObra/Index" class="px-3 py-2 bg-surface-container border border-outline-variant rounded-lg text-black font-bold hover:bg-surface-container-high transition-colors" title="Limpiar filtros">
+                            <span class="material-symbols-outlined text-sm">filter_alt_off</span>
+                        </a>
+                    }
+
+                    @* ==========================================================================
+                       CAMBIO REALIZADO: Botón Nueva Asignación ahora invoca modal interactivo abrirModalCrear()
+                       para insertar un nuevo registro en la tabla ManoObra de la BD.
+                       ========================================================================== *@
+                    <button type="button" onclick="abrirModalCrear()" class="bg-[#D2B48C] text-black hover:brightness-95 px-6 py-2 rounded-lg font-bold flex items-center gap-2 transition-all active:scale-95 shadow-sm" style="background-color: #D2B48C !important; color: #000000 !important;">
+                        <span class="material-symbols-outlined text-black" data-icon="add">add</span>
+                        Nueva asignación
+                    </button>
+                </form>
             </div>
+
             <!-- Summary Cards (Bento Grid Style) -->
             <div class="col-span-4 md:col-span-12 grid grid-cols-1 md:grid-cols-4 gap-gutter mb-lg">
-                <!-- Card 1 -->
+                @* ==========================================================================
+                   CAMBIO REALIZADO: Card 1 - Total de Empleados Trabajando calculado dinámicamente desde la BD
+                   (conteo de empleados únicos con labores en estado 'En proceso').
+                   ========================================================================== *@
                 <div class="bg-surface-container-lowest p-md rounded-xl card-shadow card-hover transition-all flex flex-col gap-4 relative overflow-hidden border border-outline-variant/30">
                     <div class="absolute top-0 right-0 p-4 opacity-10">
                         <span class="material-symbols-outlined text-[64px]" data-icon="group">group</span>
                     </div>
                     <div class="flex items-center gap-3">
-                        <div class="p-3 bg-secondary-container rounded-lg text-primary">
-                            <span class="material-symbols-outlined" data-icon="group">group</span>
+                        <div class="p-3 bg-secondary-container rounded-lg text-black">
+                            <span class="material-symbols-outlined text-black" data-icon="group">group</span>
                         </div>
-                        <h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Empleados Trabajando</h3>
+                        <h3 class="font-label-md text-label-md text-black font-bold uppercase tracking-wider">Empleados Trabajando</h3>
                     </div>
-                    <div class="font-headline-xl text-headline-xl text-on-surface">24</div>
+                    <div class="font-headline-xl text-headline-xl text-black font-bold" style="color: #000000;">
+                        @(ViewBag.EmpleadosTrabajando ?? 0)
+                    </div>
                 </div>
-                <!-- Card 2 -->
+
+                @* ==========================================================================
+                   CAMBIO REALIZADO: Card 2 - Trabajos Pendientes calculado dinámicamente desde la BD
+                   (conteo de registros en ManoObra con Estado = 'Pendiente').
+                   ========================================================================== *@
                 <div class="bg-surface-container-lowest p-md rounded-xl card-shadow card-hover transition-all flex flex-col gap-4 relative overflow-hidden border border-outline-variant/30">
                     <div class="absolute top-0 right-0 p-4 opacity-10">
                         <span class="material-symbols-outlined text-[64px]" data-icon="pending_actions">pending_actions</span>
@@ -185,11 +306,17 @@
                         <div class="p-3 bg-error-container rounded-lg text-error">
                             <span class="material-symbols-outlined" data-icon="pending_actions">pending_actions</span>
                         </div>
-                        <h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Trabajos Pendientes</h3>
+                        <h3 class="font-label-md text-label-md text-black font-bold uppercase tracking-wider">Trabajos Pendientes</h3>
                     </div>
-                    <div class="font-headline-xl text-headline-xl text-on-surface">12</div>
+                    <div class="font-headline-xl text-headline-xl text-black font-bold" style="color: #000000;">
+                        @(ViewBag.TrabajosPendientes ?? 0)
+                    </div>
                 </div>
-                <!-- Card 3 -->
+
+                @* ==========================================================================
+                   CAMBIO REALIZADO: Card 3 - Trabajos Finalizados calculado dinámicamente desde la BD
+                   (conteo de registros en ManoObra con Estado = 'Finalizado').
+                   ========================================================================== *@
                 <div class="bg-surface-container-lowest p-md rounded-xl card-shadow card-hover transition-all flex flex-col gap-4 relative overflow-hidden border border-outline-variant/30">
                     <div class="absolute top-0 right-0 p-4 opacity-10">
                         <span class="material-symbols-outlined text-[64px]" data-icon="check_circle">check_circle</span>
@@ -198,180 +325,730 @@
                         <div class="p-3 bg-tertiary-fixed rounded-lg text-tertiary">
                             <span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
                         </div>
-                        <h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Trabajos Finalizados</h3>
+                        <h3 class="font-label-md text-label-md text-black font-bold uppercase tracking-wider">Trabajos Finalizados</h3>
                     </div>
-                    <div class="font-headline-xl text-headline-xl text-on-surface">45</div>
+                    <div class="font-headline-xl text-headline-xl text-black font-bold" style="color: #000000;">
+                        @(ViewBag.TrabajosFinalizados ?? 0)
+                    </div>
                 </div>
-                <!-- Card 4 -->
+
+                @* ==========================================================================
+                   CAMBIO REALIZADO: Card 4 - Costo Total Mano de Obra calculado dinámicamente desde la BD
+                   (suma acumulada de horas * costoHora de todos los registros en ManoObra).
+                   ========================================================================== *@
                 <div class="bg-surface-container-lowest p-md rounded-xl card-shadow card-hover transition-all flex flex-col gap-4 relative overflow-hidden border border-outline-variant/30">
                     <div class="absolute top-0 right-0 p-4 opacity-10">
                         <span class="material-symbols-outlined text-[64px]" data-icon="payments">payments</span>
                     </div>
                     <div class="flex items-center gap-3">
-                        <div class="p-3 bg-primary-fixed rounded-lg text-primary">
-                            <span class="material-symbols-outlined" data-icon="payments">payments</span>
+                        <div class="p-3 bg-[#D2B48C]/30 rounded-lg text-black">
+                            <span class="material-symbols-outlined text-black" data-icon="payments">payments</span>
                         </div>
-                        <h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Costo Total Mano Obra</h3>
+                        <h3 class="font-label-md text-label-md text-black font-bold uppercase tracking-wider">Costo Total Mano Obra</h3>
                     </div>
-                    <div class="font-headline-xl text-headline-xl text-on-surface">$14,500</div>
+                    <div class="font-headline-xl text-headline-xl text-black font-bold" style="color: #000000;">
+                        @(ViewBag.CostoTotalFormatted ?? "$0")
+                    </div>
                 </div>
             </div>
-            <!-- Table Controls -->
-            <div class="col-span-4 md:col-span-12 flex justify-end gap-3 mb-4">
-                <button class="flex items-center gap-2 px-4 py-2 bg-surface-container border border-outline-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-high transition-colors text-on-surface">
-                    <span class="material-symbols-outlined text-sm" data-icon="picture_as_pdf">picture_as_pdf</span>
+
+            @* ==========================================================================
+               CAMBIO REALIZADO: Botones de control de exportación funcionales.
+               - Exportar PDF: activa ventana de impresión optimizada para PDF.
+               - Excel: descarga archivo .xlsx real generado por ClosedXML desde la BD.
+               - Imprimir: envía el documento a imprimir.
+               ========================================================================== *@
+            <div class="col-span-4 md:col-span-12 flex justify-end gap-3 mb-4 no-print">
+                <button type="button" onclick="window.print()" class="flex items-center gap-2 px-4 py-2 bg-surface-container border border-outline-variant rounded-lg font-bold hover:bg-surface-container-high transition-colors text-black" style="color: #000000;">
+                    <span class="material-symbols-outlined text-sm text-black" data-icon="picture_as_pdf">picture_as_pdf</span>
                     Exportar PDF
                 </button>
-                <button class="flex items-center gap-2 px-4 py-2 bg-surface-container border border-outline-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-high transition-colors text-on-surface">
-                    <span class="material-symbols-outlined text-sm" data-icon="table_view">table_view</span>
+                <a href="@Url.Action("ExportarExcel", "ManoObra")" class="flex items-center gap-2 px-4 py-2 bg-surface-container border border-outline-variant rounded-lg font-bold hover:bg-surface-container-high transition-colors text-black" style="color: #000000;">
+                    <span class="material-symbols-outlined text-sm text-black" data-icon="table_view">table_view</span>
                     Excel
-                </button>
-                <button class="flex items-center gap-2 px-4 py-2 bg-surface-container border border-outline-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-high transition-colors text-on-surface">
-                    <span class="material-symbols-outlined text-sm" data-icon="print">print</span>
+                </a>
+                <button type="button" onclick="window.print()" class="flex items-center gap-2 px-4 py-2 bg-surface-container border border-outline-variant rounded-lg font-bold hover:bg-surface-container-high transition-colors text-black" style="color: #000000;">
+                    <span class="material-symbols-outlined text-sm text-black" data-icon="print">print</span>
                     Imprimir
                 </button>
             </div>
+
             <!-- Administrative Table -->
             <div class="col-span-4 md:col-span-12 bg-surface-container-lowest rounded-xl card-shadow overflow-hidden border border-outline-variant/30">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
-                        <thead class="bg-surface-container-low border-b border-outline-variant/50 font-label-md text-label-md text-on-surface-variant">
+                        <thead class="bg-surface-container-low border-b border-outline-variant/50 font-label-md text-label-md text-black font-bold">
                             <tr>
-                                <th class="p-4 py-3 font-semibold">ID</th>
-                                <th class="p-4 py-3 font-semibold">Pedido</th>
-                                <th class="p-4 py-3 font-semibold">Empleado</th>
-                                <th class="p-4 py-3 font-semibold">Cargo</th>
-                                <th class="p-4 py-3 font-semibold">Actividad</th>
-                                <th class="p-4 py-3 font-semibold text-right">Horas</th>
-                                <th class="p-4 py-3 font-semibold text-right">Costo</th>
-                                <th class="p-4 py-3 font-semibold text-center">Estado</th>
-                                <th class="p-4 py-3 font-semibold text-center">Acciones</th>
+                                <th class="p-4 py-3 font-bold text-black">ID</th>
+                                <th class="p-4 py-3 font-bold text-black">Pedido</th>
+                                <th class="p-4 py-3 font-bold text-black">Empleado</th>
+                                <th class="p-4 py-3 font-bold text-black">Cargo</th>
+                                <th class="p-4 py-3 font-bold text-black">Actividad</th>
+                                <th class="p-4 py-3 font-bold text-black text-right">Horas</th>
+                                <th class="p-4 py-3 font-bold text-black text-right">Costo</th>
+                                <th class="p-4 py-3 font-bold text-black text-center">Estado</th>
+                                <th class="p-4 py-3 font-bold text-black text-center no-print">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody class="font-body-sm text-body-sm text-on-surface">
-                            <!-- Row 1 (En proceso) -->
-                            <tr class="border-b border-outline-variant/20 hover:bg-surface-container-low/50 transition-colors">
-                                <td class="p-4 font-medium text-primary">#MO-1042</td>
-                                <td class="p-4">Mesa Comedor Roble</td>
-                                <td class="p-4 flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-primary font-bold text-xs">JC</div>
-                                    Juan Carlos
-                                </td>
-                                <td class="p-4 text-on-surface-variant">Ebanista Senior</td>
-                                <td class="p-4">Ensamblaje y Lijado</td>
-                                <td class="p-4 text-right">18h</td>
-                                <td class="p-4 text-right">$450.00</td>
-                                <td class="p-4 text-center">
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-container/50 text-secondary font-label-md text-[12px]">
-                                        <span class="w-2 h-2 rounded-full bg-secondary"></span>
-                                        En proceso
-                                    </span>
-                                </td>
-                                <td class="p-4 text-center">
-                                    <div class="flex items-center justify-center gap-2 text-outline">
-                                        <button class="hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]" data-icon="visibility">visibility</span></button>
-                                        <button class="hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span></button>
-                                        <button class="hover:text-error transition-colors"><span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span></button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <!-- Row 2 (Finalizado) - Zebra Striping -->
-                            <tr class="border-b border-outline-variant/20 bg-surface-container-low/30 hover:bg-surface-container-low/70 transition-colors">
-                                <td class="p-4 font-medium text-primary">#MO-1041</td>
-                                <td class="p-4">Sillas Comedor (x6)</td>
-                                <td class="p-4 flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-container font-bold text-xs">MR</div>
-                                    María Rodríguez
-                                </td>
-                                <td class="p-4 text-on-surface-variant">Especialista Barniz</td>
-                                <td class="p-4">Acabado y Barnizado</td>
-                                <td class="p-4 text-right">12h</td>
-                                <td class="p-4 text-right">$280.00</td>
-                                <td class="p-4 text-center">
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-tertiary-fixed text-tertiary font-label-md text-[12px]">
-                                        <span class="w-2 h-2 rounded-full bg-tertiary"></span>
-                                        Finalizado
-                                    </span>
-                                </td>
-                                <td class="p-4 text-center">
-                                    <div class="flex items-center justify-center gap-2 text-outline">
-                                        <button class="hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]" data-icon="visibility">visibility</span></button>
-                                        <button class="hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span></button>
-                                        <button class="hover:text-error transition-colors"><span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span></button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <!-- Row 3 (Pendiente) -->
-                            <tr class="border-b border-outline-variant/20 hover:bg-surface-container-low/50 transition-colors">
-                                <td class="p-4 font-medium text-primary">#MO-1045</td>
-                                <td class="p-4">Estantería Biblioteca</td>
-                                <td class="p-4 flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold text-xs">LG</div>
-                                    Luis Gómez
-                                </td>
-                                <td class="p-4 text-on-surface-variant">Carpintero Junior</td>
-                                <td class="p-4">Corte de Piezas</td>
-                                <td class="p-4 text-right">0h</td>
-                                <td class="p-4 text-right">$0.00</td>
-                                <td class="p-4 text-center">
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-error-container text-error font-label-md text-[12px]">
-                                        <span class="w-2 h-2 rounded-full bg-error"></span>
-                                        Pendiente
-                                    </span>
-                                </td>
-                                <td class="p-4 text-center">
-                                    <div class="flex items-center justify-center gap-2 text-outline">
-                                        <button class="hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]" data-icon="visibility">visibility</span></button>
-                                        <button class="hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span></button>
-                                        <button class="hover:text-error transition-colors"><span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span></button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <!-- Row 4 (En proceso) - Zebra Striping -->
-                            <tr class="border-b border-outline-variant/20 bg-surface-container-low/30 hover:bg-surface-container-low/70 transition-colors">
-                                <td class="p-4 font-medium text-primary">#MO-1046</td>
-                                <td class="p-4">Puerta Principal Caoba</td>
-                                <td class="p-4 flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-primary font-bold text-xs">AS</div>
-                                    Ana Silva
-                                </td>
-                                <td class="p-4 text-on-surface-variant">Ebanista Senior</td>
-                                <td class="p-4">Tallado a Mano</td>
-                                <td class="p-4 text-right">24h</td>
-                                <td class="p-4 text-right">$720.00</td>
-                                <td class="p-4 text-center">
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-container/50 text-secondary font-label-md text-[12px]">
-                                        <span class="w-2 h-2 rounded-full bg-secondary"></span>
-                                        En proceso
-                                    </span>
-                                </td>
-                                <td class="p-4 text-center">
-                                    <div class="flex items-center justify-center gap-2 text-outline">
-                                        <button class="hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]" data-icon="visibility">visibility</span></button>
-                                        <button class="hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span></button>
-                                        <button class="hover:text-error transition-colors"><span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span></button>
-                                    </div>
-                                </td>
-                            </tr>
+                        <tbody class="font-body-sm text-body-sm text-black font-bold">
+                            @* ==========================================================================
+                               CAMBIO REALIZADO: La tabla ya no contiene filas estáticas quemadas en código HTML.
+                               Ahora itera dinámicamente sobre la lista real `Model` traída de la Base de Datos.
+                               ========================================================================== *@
+                            @if (Model != null && Model.Any())
+                            {
+                                int rowIdx = 0;
+                                foreach (var item in Model)
+                                {
+                                    rowIdx++;
+                                    // Cálculo de iniciales del empleado
+                                    string iniciales = "EM";
+                                    if (item.IdEmpleadoNavigation != null && !string.IsNullOrWhiteSpace(item.IdEmpleadoNavigation.Nombre))
+                                    {
+                                        iniciales = item.IdEmpleadoNavigation.Nombre.Substring(0, 1);
+                                        if (!string.IsNullOrWhiteSpace(item.IdEmpleadoNavigation.Apellido))
+                                        {
+                                            iniciales += item.IdEmpleadoNavigation.Apellido.Substring(0, 1);
+                                        }
+                                    }
+                                    iniciales = iniciales.ToUpper();
+
+                                    // Horas y costo real/estimado
+                                    var horasMostrar = item.HorasReales ?? item.HorasEstimadas;
+                                    var costoTotal = horasMostrar * item.CostoHora;
+
+                                    // Alternancia de filas (Zebra striping)
+                                    string bgFila = (rowIdx % 2 == 0) ? "bg-surface-container-low/30" : "";
+
+                                    <tr class="border-b border-outline-variant/20 @bgFila hover:bg-surface-container-low/70 transition-colors">
+                                        @* Columna ID (CodigoOrden de la BD) *@
+                                        <td class="p-4 font-bold text-black" style="color: #000000;">
+                                            #@(item.CodigoOrden ?? ("MO-" + item.IdManoObra))
+                                        </td>
+
+                                        @* Columna Pedido y Producto relacionado *@
+                                        <td class="p-4 text-black font-bold">
+                                            <div>@(item.IdProductoNavigation?.Nombre ?? item.IdPedidoNavigation?.Producto ?? "Mueble a medida")</div>
+                                            <div class="text-xs text-outline font-normal">
+                                                @(item.IdPedidoNavigation?.CodigoPedido ?? ("Pedido #" + item.IdPedido))
+                                            </div>
+                                        </td>
+
+                                        @* Columna Empleado con avatar e iniciales *@
+                                        <td class="p-4 flex items-center gap-3">
+                                            <div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-black font-bold text-xs">
+                                                @iniciales
+                                            </div>
+                                            <span class="text-black font-bold">
+                                                @(item.IdEmpleadoNavigation != null ? $"{item.IdEmpleadoNavigation.Nombre} {item.IdEmpleadoNavigation.Apellido}" : "Sin Asignar")
+                                            </span>
+                                        </td>
+
+                                        @* Columna Cargo *@
+                                        <td class="p-4 text-black/80 font-bold">
+                                            @(item.IdEmpleadoNavigation?.Cargo ?? "Operario")
+                                        </td>
+
+                                        @* Columna Actividad / Proceso *@
+                                        <td class="p-4 text-black font-bold">
+                                            @item.Proceso
+                                        </td>
+
+                                        @* Columna Horas *@
+                                        <td class="p-4 text-right text-black font-bold">
+                                            @(horasMostrar.ToString("0.##"))h
+                                        </td>
+
+                                        @* Columna Costo calculado *@
+                                        <td class="p-4 text-right text-black font-bold">
+                                            @costoTotal.ToString("C0", System.Globalization.CultureInfo.CreateSpecificCulture("es-CO"))
+                                        </td>
+
+                                        @* Columna Estado con badge dinámico según valor de la BD *@
+                                        <td class="p-4 text-center">
+                                            @if (item.Estado == "Finalizado")
+                                            {
+                                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-tertiary-fixed text-tertiary font-bold text-[12px]">
+                                                    <span class="w-2 h-2 rounded-full bg-tertiary"></span>
+                                                    Finalizado
+                                                </span>
+                                            }
+                                            else if (item.Estado == "En proceso" || item.Estado == "En Proceso")
+                                            {
+                                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-container/50 text-secondary font-bold text-[12px]">
+                                                    <span class="w-2 h-2 rounded-full bg-secondary"></span>
+                                                    En proceso
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-error-container text-error font-bold text-[12px]">
+                                                    <span class="w-2 h-2 rounded-full bg-error"></span>
+                                                    Pendiente
+                                                </span>
+                                            }
+                                        </td>
+
+                                        @* ==========================================================================
+                                           CAMBIO REALIZADO: Acciones funcionales (Ver, Editar, Eliminar)
+                                           conectadas mediante JavaScript y AJAX con la Base de Datos.
+                                           ========================================================================== *@
+                                        <td class="p-4 text-center no-print">
+                                            <div class="flex items-center justify-center gap-2 text-outline">
+                                                <button type="button" onclick="abrirModalVer(@item.IdManoObra)" class="hover:text-black transition-colors" title="Ver detalles">
+                                                    <span class="material-symbols-outlined text-[20px]" data-icon="visibility">visibility</span>
+                                                </button>
+                                                <button type="button" onclick="abrirModalEditar(@item.IdManoObra)" class="hover:text-black transition-colors" title="Editar asignación">
+                                                    <span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span>
+                                                </button>
+                                                <button type="button" onclick="abrirModalEliminar(@item.IdManoObra, '@item.CodigoOrden')" class="hover:text-error transition-colors" title="Eliminar asignación">
+                                                    <span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                @* Mensaje si no hay registros en la BD *@
+                                <tr>
+                                    <td colspan="9" class="p-8 text-center text-black/60 font-bold">
+                                        <div class="flex flex-col items-center justify-center gap-2">
+                                            <span class="material-symbols-outlined text-4xl text-outline">engineering</span>
+                                            <p>No se encontraron asignaciones de mano de obra en la base de datos.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </div>
-                <!-- Pagination -->
-                <div class="px-4 py-3 border-t border-outline-variant/30 bg-surface-container-lowest flex items-center justify-between">
-                    <span class="font-body-sm text-body-sm text-on-surface-variant">Mostrando 1 a 4 de 24 registros</span>
-                    <div class="flex gap-2">
-                        <button class="p-1 rounded text-outline hover:bg-surface-container-high disabled:opacity-50" disabled="">
-                            <span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span>
-                        </button>
-                        <button class="w-8 h-8 rounded bg-primary text-on-primary font-label-md text-label-md">1</button>
-                        <button class="w-8 h-8 rounded text-on-surface-variant hover:bg-surface-container-high font-label-md text-label-md">2</button>
-                        <button class="w-8 h-8 rounded text-on-surface-variant hover:bg-surface-container-high font-label-md text-label-md">3</button>
-                        <button class="p-1 rounded text-outline hover:bg-surface-container-high">
-                            <span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
-                        </button>
+
+                @* ==========================================================================
+                   CAMBIO REALIZADO: Paginación dinámica según los registros reales devueltos por la BD.
+                   Preserva los parámetros de búsqueda y estado en los enlaces.
+                   ========================================================================== *@
+                <div class="px-4 py-3 border-t border-outline-variant/30 bg-surface-container-lowest flex flex-col md:flex-row items-center justify-between gap-4 no-print">
+                    <span class="font-body-sm text-body-sm text-black font-bold">
+                        Mostrando @(ViewBag.RegistroInicio ?? 0) a @(ViewBag.RegistroFin ?? 0) de @(ViewBag.TotalRegistros ?? 0) registros
+                    </span>
+                    <div class="flex gap-2 items-center">
+                        @* Botón Anterior *@
+                        @if (ViewBag.PaginaActual > 1)
+                        {
+                            <a href="@Url.Action("Index", new { pagina = ViewBag.PaginaActual - 1, search = ViewBag.Search, estado = ViewBag.Estado })" class="p-1.5 rounded text-black hover:bg-surface-container-high transition-colors" title="Página anterior">
+                                <span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span>
+                            </a>
+                        }
+                        else
+                        {
+                            <button class="p-1.5 rounded text-outline opacity-40 cursor-not-allowed" disabled>
+                                <span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span>
+                            </button>
+                        }
+
+                        @* Botones de números de página *@
+                        @for (int p = 1; p <= (ViewBag.TotalPaginas ?? 1); p++)
+                        {
+                            if (p == ViewBag.PaginaActual)
+                            {
+                                <button class="w-8 h-8 rounded bg-[#D2B48C] text-black font-bold shadow-sm" style="background-color: #D2B48C !important; color: #000000 !important;">
+                                    @p
+                                </button>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("Index", new { pagina = p, search = ViewBag.Search, estado = ViewBag.Estado })" class="w-8 h-8 rounded text-black hover:bg-surface-container-high font-bold flex items-center justify-center transition-colors">
+                                    @p
+                                </a>
+                            }
+                        }
+
+                        @* Botón Siguiente *@
+                        @if (ViewBag.PaginaActual < ViewBag.TotalPaginas)
+                        {
+                            <a href="@Url.Action("Index", new { pagina = ViewBag.PaginaActual + 1, search = ViewBag.Search, estado = ViewBag.Estado })" class="p-1.5 rounded text-black hover:bg-surface-container-high transition-colors" title="Página siguiente">
+                                <span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+                            </a>
+                        }
+                        else
+                        {
+                            <button class="p-1.5 rounded text-outline opacity-40 cursor-not-allowed" disabled>
+                                <span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+                            </button>
+                        }
                     </div>
                 </div>
             </div>
         </main>
     </div>
-</body></html>
+
+    @* ==========================================================================
+       CAMBIO REALIZADO: MODAL 1 - NUEVA ASIGNACIÓN DE MANO DE OBRA
+       Envía petición POST al controlador para guardar en la base de datos.
+       ========================================================================== *@
+    <div id="modalNuevaAsignacion" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-surface-container-lowest w-full max-w-2xl rounded-2xl shadow-2xl border border-outline-variant/30 overflow-hidden animate-fadeIn">
+            <!-- Modal Header -->
+            <div class="bg-surface-container px-6 py-4 border-b border-outline-variant/30 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-[#D2B48C] rounded-lg text-black">
+                        <span class="material-symbols-outlined">add_task</span>
+                    </div>
+                    <h2 class="font-headline-md text-xl text-black font-bold">Nueva Asignación de Mano de Obra</h2>
+                </div>
+                <button type="button" onclick="cerrarModalCrear()" class="text-outline hover:text-black transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <!-- Modal Form -->
+            <form method="post" asp-action="Crear" class="p-6 space-y-4">
+                @Html.AntiForgeryToken()
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Código de Orden -->
+                    <div>
+                        <label class="block font-label-md text-xs text-black font-bold uppercase mb-1">Código de Orden</label>
+                        <input type="text" name="CodigoOrden" placeholder="Dejar vacío para autogenerar" class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-bold text-black focus:outline-none focus:border-[#D2B48C]" />
+                    </div>
+
+                    <!-- Estado -->
+                    <div>
+                        <label class="block font-label-md text-xs text-black font-bold uppercase mb-1">Estado *</label>
+                        <select name="Estado" required class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-bold text-black focus:outline-none focus:border-[#D2B48C]">
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="En proceso" selected>En proceso</option>
+                            <option value="Finalizado">Finalizado</option>
+                        </select>
+                    </div>
+
+                    <!-- Pedido Relacionado -->
+                    <div>
+                        <label class="block font-label-md text-xs text-black font-bold uppercase mb-1">Pedido Relacionado *</label>
+                        <select name="IdPedido" required class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-bold text-black focus:outline-none focus:border-[#D2B48C]">
+                            <option value="">Seleccione un pedido...</option>
+                            @if (ViewBag.ListaPedidos != null)
+                            {
+                                foreach (var p in (IEnumerable<CARPINTEC_App.Models.Pedido>)ViewBag.ListaPedidos)
+                                {
+                                    <option value="@p.IdPedido">@p.CodigoPedido @(!string.IsNullOrEmpty(p.Producto) ? $"({p.Producto})" : "")</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Producto Relacionado -->
+                    <div>
+                        <label class="block font-label-md text-xs text-black font-bold uppercase mb-1">Producto *</label>
+                        <select name="IdProducto" required class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-bold text-black focus:outline-none focus:border-[#D2B48C]">
+                            <option value="">Seleccione un producto...</option>
+                            @if (ViewBag.ListaProductos != null)
+                            {
+                                foreach (var pr in (IEnumerable<CARPINTEC_App.Models.Producto>)ViewBag.ListaProductos)
+                                {
+                                    <option value="@pr.IdProducto">@pr.Nombre</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Empleado Asignado -->
+                    <div>
+                        <label class="block font-label-md text-xs text-black font-bold uppercase mb-1">Empleado Asignado *</label>
+                        <select name="IdEmpleado" required class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-bold text-black focus:outline-none focus:border-[#D2B48C]">
+                            <option value="">Seleccione un empleado...</option>
+                            @if (ViewBag.ListaEmpleados != null)
+                            {
+                                foreach (var emp in (IEnumerable<CARPINTEC_App.Models.Empleado>)ViewBag.ListaEmpleados)
+                                {
+                                    <option value="@emp.IdEmpleado">@emp.Nombre @emp.Apellido (@emp.Cargo)</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Proceso / Actividad -->
+                    <div>
+                        <label class="block font-label-md text-xs text-black font-bold uppercase mb-1">Actividad / Proceso *</label>
+                        <input type="text" name="Proceso" required placeholder="Ej: Corte de precisión, Barnizado..." class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-bold text-black focus:outline-none focus:border-[#D2B48C]" />
+                    </div>
+
+                    <!-- Horas Estimadas -->
+                    <div>
+                        <label class="block font-label-md text-xs text-black font-bold uppercase mb-1">Horas Estimadas *</label>
+                        <input type="number" step="0.5" min="0.5" name="HorasEstimadas" required value="8" class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-bold text-black focus:outline-none focus:border-[#D2B48C]" />
+                    </div>
+
+                    <!-- Costo por Hora (COP) -->
+                    <div>
+                        <label class="block font-label-md text-xs text-black font-bold uppercase mb-1">Costo por Hora (COP) *</label>
+                        <input type="number" step="100" min="0" name="CostoHora" required value="25000" class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-bold text-black focus:outline-none focus:border-[#D2B48C]" />
+                    </div>
+
+                    <!-- Fecha Inicio -->
+                    <div>
+                        <label class="block font-label-md text-xs text-black font-bold uppercase mb-1">Fecha de Inicio</label>
+                        <input type="date" name="FechaInicio" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-bold text-black focus:outline-none focus:border-[#D2B48C]" />
+                    </div>
+
+                    <!-- Fecha Fin -->
+                    <div>
+                        <label class="block font-label-md text-xs text-black font-bold uppercase mb-1">Fecha de Finalización</label>
+                        <input type="date" name="FechaFin" class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-bold text-black focus:outline-none focus:border-[#D2B48C]" />
+                    </div>
+                </div>
+
+                <!-- Observaciones -->
+                <div>
+                    <label class="block font-label-md text-xs text-black font-bold uppercase mb-1">Observaciones</label>
+                    <textarea name="Observaciones" rows="2" placeholder="Notas sobre el trabajo, materiales requeridos, etc." class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-bold text-black focus:outline-none focus:border-[#D2B48C]"></textarea>
+                </div>
+
+                <!-- Modal Footer Buttons -->
+                <div class="flex justify-end gap-3 pt-3 border-t border-outline-variant/30">
+                    <button type="button" onclick="cerrarModalCrear()" class="px-5 py-2 rounded-lg border border-outline-variant font-bold text-black hover:bg-surface-container transition-colors">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-6 py-2 rounded-lg bg-[#D2B48C] text-black font-bold hover:brightness-95 transition-all shadow-sm">
+                        Guardar Asignación
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @* ==========================================================================
+       CAMBIO REALIZADO: MODAL 2 - VER DETALLES DE ASIGNACIÓN
+       Carga los datos en tiempo real desde la BD mediante AJAX (ObtenerManoObra).
+       ========================================================================== *@
+    <div id="modalVerDetalle" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-surface-container-lowest w-full max-w-2xl rounded-2xl shadow-2xl border border-outline-variant/30 overflow-hidden animate-fadeIn">
+            <div class="bg-surface-container px-6 py-4 border-b border-outline-variant/30 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-[#D2B48C] rounded-lg text-black">
+                        <span class="material-symbols-outlined">visibility</span>
+                    </div>
+                    <div>
+                        <h2 class="font-headline-md text-xl text-black font-bold">Detalle de Mano de Obra</h2>
+                        <span id="verCodigoOrden" class="text-xs text-outline font-bold">#MO-</span>
+                    </div>
+                </div>
+                <button type="button" onclick="cerrarModalVer()" class="text-outline hover:text-black transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <div class="p-6 space-y-4">
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div class="p-3 bg-surface-container-low rounded-xl border border-outline-variant/20">
+                        <span class="text-xs text-outline uppercase font-bold block">Estado</span>
+                        <span id="verEstado" class="text-base font-bold text-black">--</span>
+                    </div>
+                    <div class="p-3 bg-surface-container-low rounded-xl border border-outline-variant/20">
+                        <span class="text-xs text-outline uppercase font-bold block">Horas Estimadas / Reales</span>
+                        <span id="verHoras" class="text-base font-bold text-black">--</span>
+                    </div>
+                    <div class="p-3 bg-surface-container-low rounded-xl border border-outline-variant/20">
+                        <span class="text-xs text-outline uppercase font-bold block">Costo Total</span>
+                        <span id="verCostoTotal" class="text-base font-bold text-black text-green-700">--</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <span class="text-xs text-outline uppercase font-bold block">Empleado Asignado</span>
+                        <p id="verEmpleado" class="text-base font-bold text-black">--</p>
+                        <p id="verCargo" class="text-xs text-black/70">--</p>
+                    </div>
+                    <div>
+                        <span class="text-xs text-outline uppercase font-bold block">Pedido &amp; Producto</span>
+                        <p id="verProducto" class="text-base font-bold text-black">--</p>
+                        <p id="verPedido" class="text-xs text-black/70">--</p>
+                    </div>
+                    <div>
+                        <span class="text-xs text-outline uppercase font-bold block">Actividad / Proceso</span>
+                        <p id="verProceso" class="text-base font-bold text-black">--</p>
+                    </div>
+                    <div>
+                        <span class="text-xs text-outline uppercase font-bold block">Costo por Hora</span>
+                        <p id="verCostoHora" class="text-base font-bold text-black">--</p>
+                    </div>
+                    <div>
+                        <span class="text-xs text-outline uppercase font-bold block">Fecha de Inicio</span>
+                        <p id="verFechaInicio" class="text-base font-bold text-black">--</p>
+                    </div>
+                    <div>
+                        <span class="text-xs text-outline uppercase font-bold block">Fecha de Finalización</span>
+                        <p id="verFechaFin" class="text-base font-bold text-black">--</p>
+                    </div>
+                </div>
+
+                <div>
+                    <span class="text-xs text-outline uppercase font-bold block">Observaciones</span>
+                    <p id="verObservaciones" class="text-sm font-bold text-black/80 bg-surface p-3 rounded-lg border border-outline-variant/20 mt-1 min-h-[50px]">
+                        --
+                    </p>
+                </div>
+
+                <div class="flex justify-end pt-3 border-t border-outline-variant/30">
+                    <button type="button" onclick="cerrarModalVer()" class="px-6 py-2 rounded-lg bg-[#D2B48C] text-black font-bold hover:brightness-95 transition-all shadow-sm">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* ==========================================================================
+       CAMBIO REALIZADO: MODAL 3 - EDITAR ASIGNACIÓN DE MANO DE OBRA
+       Carga datos actuales de la BD mediante AJAX y envía POST para actualizar.
+       ========================================================================== *@
+    <div id="modalEditarAsignacion" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-surface-container-lowest w-full max-w-2xl rounded-2xl shadow-2xl border border-outline-variant/30 overflow-hidden animate-fadeIn">
+            <div class="bg-surface-container px-6 py-4 border-b border-outline-variant/30 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-[#D2B48C] rounded-lg text-black">
+                        <span class="material-symbols-outlined">edit</span>
+                    </div>
+                    <h2 class="font-headline-md text-xl text-black font-bold">Editar Asignación de Mano de Obra</h2>
+                </div>
+                <button type="button" onclick="cerrarModalEditar()" class="text-outline hover:text-black transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <form method="post" asp-action="Editar" class="p-6 space-y-4">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="editIdManoObra" name="IdManoObra" />
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-label-md text-xs text-black font-bold uppercase mb-1">Código de Orden</label>
+                        <input type="text" id="editCodigoOrden" name="CodigoOrden" readonly class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg font-bold text-black/70 cursor-not-allowed" />
+                    </div>
+
+                    <div>
+                        <label class="block font-label-md text-xs text-black font-bold uppercase mb-1">Estado *</label>
+                        <select id="editEstado" name="Estado" required class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-bold text-black focus:outline-none focus:border-[#D2B48C]">
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="En proceso">En proceso</option>
+                            <option value="Finalizado">Finalizado</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-label-md text-xs text-black font-bold uppercase mb-1">Pedido *</label>
+                        <select id="editIdPedido" name="IdPedido" required class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-bold text-black focus:outline-none focus:border-[#D2B48C]">
+                            @if (ViewBag.ListaPedidos != null)
+                            {
+                                foreach (var p in (IEnumerable<CARPINTEC_App.Models.Pedido>)ViewBag.ListaPedidos)
+                                {
+                                    <option value="@p.IdPedido">@p.CodigoPedido @(!string.IsNullOrEmpty(p.Producto) ? $"({p.Producto})" : "")</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-label-md text-xs text-black font-bold uppercase mb-1">Producto *</label>
+                        <select id="editIdProducto" name="IdProducto" required class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-bold text-black focus:outline-none focus:border-[#D2B48C]">
+                            @if (ViewBag.ListaProductos != null)
+                            {
+                                foreach (var pr in (IEnumerable<CARPINTEC_App.Models.Producto>)ViewBag.ListaProductos)
+                                {
+                                    <option value="@pr.IdProducto">@pr.Nombre</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-label-md text-xs text-black font-bold uppercase mb-1">Empleado Asignado *</label>
+                        <select id="editIdEmpleado" name="IdEmpleado" required class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-bold text-black focus:outline-none focus:border-[#D2B48C]">
+                            @if (ViewBag.ListaEmpleados != null)
+                            {
+                                foreach (var emp in (IEnumerable<CARPINTEC_App.Models.Empleado>)ViewBag.ListaEmpleados)
+                                {
+                                    <option value="@emp.IdEmpleado">@emp.Nombre @emp.Apellido (@emp.Cargo)</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-label-md text-xs text-black font-bold uppercase mb-1">Actividad / Proceso *</label>
+                        <input type="text" id="editProceso" name="Proceso" required class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-bold text-black focus:outline-none focus:border-[#D2B48C]" />
+                    </div>
+
+                    <div>
+                        <label class="block font-label-md text-xs text-black font-bold uppercase mb-1">Horas Estimadas *</label>
+                        <input type="number" step="0.5" min="0" id="editHorasEstimadas" name="HorasEstimadas" required class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-bold text-black focus:outline-none focus:border-[#D2B48C]" />
+                    </div>
+
+                    <div>
+                        <label class="block font-label-md text-xs text-black font-bold uppercase mb-1">Horas Reales (Ejecutadas)</label>
+                        <input type="number" step="0.5" min="0" id="editHorasReales" name="HorasReales" class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-bold text-black focus:outline-none focus:border-[#D2B48C]" />
+                    </div>
+
+                    <div>
+                        <label class="block font-label-md text-xs text-black font-bold uppercase mb-1">Costo por Hora (COP) *</label>
+                        <input type="number" step="100" min="0" id="editCostoHora" name="CostoHora" required class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-bold text-black focus:outline-none focus:border-[#D2B48C]" />
+                    </div>
+
+                    <div>
+                        <label class="block font-label-md text-xs text-black font-bold uppercase mb-1">Fecha Inicio</label>
+                        <input type="date" id="editFechaInicio" name="FechaInicio" class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-bold text-black focus:outline-none focus:border-[#D2B48C]" />
+                    </div>
+
+                    <div>
+                        <label class="block font-label-md text-xs text-black font-bold uppercase mb-1">Fecha Fin</label>
+                        <input type="date" id="editFechaFin" name="FechaFin" class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-bold text-black focus:outline-none focus:border-[#D2B48C]" />
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-label-md text-xs text-black font-bold uppercase mb-1">Observaciones</label>
+                    <textarea id="editObservaciones" name="Observaciones" rows="2" class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-bold text-black focus:outline-none focus:border-[#D2B48C]"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-3 border-t border-outline-variant/30">
+                    <button type="button" onclick="cerrarModalEditar()" class="px-5 py-2 rounded-lg border border-outline-variant font-bold text-black hover:bg-surface-container transition-colors">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-6 py-2 rounded-lg bg-[#D2B48C] text-black font-bold hover:brightness-95 transition-all shadow-sm">
+                        Actualizar Asignación
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @* ==========================================================================
+       CAMBIO REALIZADO: MODAL 4 - CONFIRMAR ELIMINACIÓN
+       Ejecuta petición POST al controlador para eliminar el registro de la base de datos.
+       ========================================================================== *@
+    <div id="modalEliminar" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl border border-outline-variant/30 overflow-hidden animate-fadeIn">
+            <div class="p-6 text-center space-y-4">
+                <div class="w-16 h-16 rounded-full bg-error-container text-error flex items-center justify-center mx-auto">
+                    <span class="material-symbols-outlined text-3xl">delete_forever</span>
+                </div>
+                <h3 class="font-headline-md text-xl text-black font-bold">¿Eliminar Asignación?</h3>
+                <p class="text-sm font-bold text-black/70">
+                    ¿Estás seguro de que deseas eliminar permanentemente la asignación <span id="delCodigoOrden" class="text-black font-bold"></span> de la base de datos? Esta acción no se puede deshacer.
+                </p>
+
+                <form method="post" asp-action="Eliminar">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="delIdManoObra" name="id" />
+
+                    <div class="flex justify-center gap-3 pt-4">
+                        <button type="button" onclick="cerrarModalEliminar()" class="px-5 py-2 rounded-lg border border-outline-variant font-bold text-black hover:bg-surface-container transition-colors">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="px-6 py-2 rounded-lg bg-red-600 text-white font-bold hover:bg-red-700 transition-colors shadow-sm">
+                            Sí, Eliminar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    @* ==========================================================================
+       CAMBIO REALIZADO: Funciones JavaScript para apertura, cierre y llamadas AJAX
+       hacia las rutas del ManoObraController conectadas a la base de datos.
+       ========================================================================== *@
+    <script>
+        // Funciones Modal Crear
+        function abrirModalCrear() {
+            document.getElementById('modalNuevaAsignacion').classList.remove('hidden');
+        }
+        function cerrarModalCrear() {
+            document.getElementById('modalNuevaAsignacion').classList.add('hidden');
+        }
+
+        // Funciones Modal Ver Detalle (AJAX hacia ObtenerManoObra)
+        async function abrirModalVer(id) {
+            try {
+                const response = await fetch(`/ManoObra/ObtenerManoObra?id=${id}`);
+                if (!response.ok) throw new Error('No se pudo cargar la información');
+                const data = await response.json();
+
+                document.getElementById('verCodigoOrden').textContent = '#' + (data.codigoOrden || 'MO-' + data.idManoObra);
+                document.getElementById('verEstado').textContent = data.estado;
+                document.getElementById('verHoras').textContent = (data.horasReales ? data.horasReales + 'h real' : data.horasEstimadas + 'h est.');
+                document.getElementById('verCostoTotal').textContent = data.costoTotal;
+                document.getElementById('verEmpleado').textContent = data.empleadoNombre;
+                document.getElementById('verCargo').textContent = data.empleadoCargo;
+                document.getElementById('verProducto').textContent = data.productoNombre;
+                document.getElementById('verPedido').textContent = data.pedidoCodigo;
+                document.getElementById('verProceso').textContent = data.proceso;
+                document.getElementById('verCostoHora').textContent = '$' + Number(data.costoHora).toLocaleString('es-CO') + ' / hora';
+                document.getElementById('verFechaInicio').textContent = data.fechaInicio || 'No asignada';
+                document.getElementById('verFechaFin').textContent = data.fechaFin || 'No asignada';
+                document.getElementById('verObservaciones').textContent = data.observaciones || 'Sin observaciones adicionales.';
+
+                document.getElementById('modalVerDetalle').classList.remove('hidden');
+            } catch (err) {
+                alert('Error al consultar el detalle: ' + err.message);
+            }
+        }
+        function cerrarModalVer() {
+            document.getElementById('modalVerDetalle').classList.add('hidden');
+        }
+
+        // Funciones Modal Editar (AJAX hacia ObtenerManoObra)
+        async function abrirModalEditar(id) {
+            try {
+                const response = await fetch(`/ManoObra/ObtenerManoObra?id=${id}`);
+                if (!response.ok) throw new Error('No se pudo cargar la información');
+                const data = await response.json();
+
+                document.getElementById('editIdManoObra').value = data.idManoObra;
+                document.getElementById('editCodigoOrden').value = data.codigoOrden || '';
+                document.getElementById('editEstado').value = data.estado;
+                document.getElementById('editIdPedido').value = data.idPedido;
+                document.getElementById('editIdProducto').value = data.idProducto;
+                document.getElementById('editIdEmpleado').value = data.idEmpleado;
+                document.getElementById('editProceso').value = data.proceso;
+                document.getElementById('editHorasEstimadas').value = data.horasEstimadas;
+                document.getElementById('editHorasReales').value = data.horasReales !== null ? data.horasReales : '';
+                document.getElementById('editCostoHora').value = data.costoHora;
+                document.getElementById('editFechaInicio').value = data.fechaInicio || '';
+                document.getElementById('editFechaFin').value = data.fechaFin || '';
+                document.getElementById('editObservaciones').value = data.observaciones || '';
+
+                document.getElementById('modalEditarAsignacion').classList.remove('hidden');
+            } catch (err) {
+                alert('Error al abrir la edición: ' + err.message);
+            }
+        }
+        function cerrarModalEditar() {
+            document.getElementById('modalEditarAsignacion').classList.add('hidden');
+        }
+
+        // Funciones Modal Eliminar
+        function abrirModalEliminar(id, codigo) {
+            document.getElementById('delIdManoObra').value = id;
+            document.getElementById('delCodigoOrden').textContent = codigo ? ('#' + codigo) : ('ID #' + id);
+            document.getElementById('modalEliminar').classList.remove('hidden');
+        }
+        function cerrarModalEliminar() {
+            document.getElementById('modalEliminar').classList.add('hidden');
+        }
+
+        // Cierre con tecla Escape
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                cerrarModalCrear();
+                cerrarModalVer();
+                cerrarModalEditar();
+                cerrarModalEliminar();
+            }
+        });
+    </script>
+</body>
+</html>

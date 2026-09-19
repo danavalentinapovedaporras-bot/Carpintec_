@@ -1,4 +1,4 @@
-﻿@{
+@{
     Layout = null;
     ViewData["Title"] = "Nueva Contraseña";
 }
@@ -6,142 +6,192 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-
     <meta charset="utf-8" />
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Nueva Contraseña - Carpintec</title>
 
+    <!-- Tipografía Work Sans del Dashboard -->
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Work Sans', Arial, Helvetica, sans-serif;
+        }
 
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-                font-family: Arial;
-            }
+        body {
+            background: linear-gradient(rgba(20, 14, 10, 0.45), rgba(20, 14, 10, 0.65)), url('/images/carpintera.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-            body {
-                background: url('/img/fondoLogin.jpg');
-                background-size: cover;
-                background-position: center;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100vh;
-            }
+        /* Cuadro en color beige con efecto glassmorphism */
+        .card {
+            width: 440px;
+            max-width: 100%;
+            background: rgba(250, 246, 240, 0.97); /* Beige cálido */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 38px 34px;
+            border-radius: 18px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+            border: 1.5px solid rgba(195, 157, 122, 0.55);
+        }
 
-            .card {
-                width: 430px;
-                background: white;
-                padding: 35px;
-                border-radius: 12px;
-                box-shadow: 0 0 20px rgba(0,0,0,.3);
-            }
+        /* Título con color beige y tipo de letra del Dashboard */
+        h2 {
+            font-family: 'Work Sans', sans-serif;
+            text-align: center;
+            color: #c39d7a; /* Color beige característico de Carpintec */
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            margin-bottom: 10px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+        }
 
-            h2 {
-                text-align: center;
-                color: #8b4513;
-                margin-bottom: 10px;
-            }
+        p.subtitulo {
+            font-family: 'Work Sans', sans-serif;
+            text-align: center;
+            color: #6b5547;
+            font-size: 14px;
+            line-height: 1.45;
+            margin-bottom: 22px;
+        }
 
-            p {
-                text-align: center;
-                color: gray;
-                margin-bottom: 25px;
-            }
+        label {
+            font-family: 'Work Sans', sans-serif;
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #3f2a22;
+            display: block;
+            margin-bottom: 6px;
+        }
 
-            label {
-                font-weight: bold;
-                display: block;
-                margin-bottom: 6px;
-            }
+        /* Contenedor de Contraseña */
+        .password-wrapper {
+            position: relative;
+            width: 100%;
+            margin-bottom: 16px;
+        }
 
-            /* =========================
-                       CONTENEDOR DE CONTRASEÑA
-                       ========================= */
+        .password-wrapper input {
+            font-family: 'Work Sans', sans-serif;
+            width: 100%;
+            padding: 12px 45px 12px 14px;
+            border-radius: 8px;
+            border: 1px solid #d8c6b5;
+            background: #ffffff;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            color: #333;
+        }
 
-            .password-wrapper {
-                position: relative;
-                width: 100%;
-                margin-bottom: 18px;
-            }
+        .password-wrapper input:focus {
+            border-color: #c39d7a;
+            box-shadow: 0 0 0 3px rgba(195, 157, 122, 0.25);
+        }
 
-                .password-wrapper input {
-                    width: 100%;
-                    padding: 12px 45px 12px 12px;
-                    border: 1px solid #ccc;
-                    border-radius: 6px;
-                    margin-bottom: 0;
-                }
+        /* Botón del ojo */
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: auto;
+            padding: 4px;
+            background: transparent;
+            color: #777;
+            border: none;
+            border-radius: 0;
+            font-size: 18px;
+            cursor: pointer;
+        }
 
-            /* =========================
-                       BOTÓN DEL OJO
-                       ========================= */
+        .toggle-password:hover {
+            background: transparent;
+            color: #c39d7a;
+        }
 
-            .toggle-password {
-                position: absolute;
-                right: 10px;
-                top: 50%;
-                transform: translateY(-50%);
-                width: auto;
-                padding: 5px;
-                background: transparent;
-                color: #777;
-                border: none;
-                border-radius: 0;
-                font-size: 20px;
-                cursor: pointer;
-            }
+        /* Botón Cambiar Contraseña */
+        .btn-cambiar {
+            font-family: 'Work Sans', sans-serif;
+            width: 100%;
+            padding: 14px;
+            background: #c39d7a; /* Color beige */
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16.5px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 8px;
+            box-shadow: 0 4px 14px rgba(195, 157, 122, 0.4);
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+        }
 
-                .toggle-password:hover {
-                    background: transparent;
-                    color: #8b4513;
-                }
+        .btn-cambiar:hover {
+            background: #a98260;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(195, 157, 122, 0.5);
+        }
 
-            /* =========================
-                       BOTÓN CAMBIAR CONTRASEÑA
-                       ========================= */
+        .btn-cambiar:active {
+            transform: translateY(0);
+        }
 
-            .btn-cambiar {
-                width: 100%;
-                padding: 14px;
-                background: #8b4513;
-                color: white;
-                border: none;
-                border-radius: 6px;
-                font-size: 17px;
-                cursor: pointer;
-            }
+        /* Mensajes de feedback */
+        .mensajeError {
+            background: #ffdad6;
+            color: #ba1a1a;
+            padding: 10px 12px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 18px;
+        }
 
-                .btn-cambiar:hover {
-                    background: #6d3510;
-                }
+        .mensajeOk {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 10px 12px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 18px;
+        }
 
-            /* =========================
-                       MENSAJES
-                       ========================= */
+        .volver {
+            font-family: 'Work Sans', sans-serif;
+            text-align: center;
+            margin-top: 24px;
+            font-size: 13.5px;
+        }
 
-            .mensajeError {
-                background: #ffd6d6;
-                color: #b30000;
-                padding: 12px;
-                border-radius: 6px;
-                text-align: center;
-                margin-bottom: 20px;
-            }
+        .volver a {
+            text-decoration: none;
+            color: #c39d7a;
+            font-weight: 700;
+            transition: color 0.2s;
+        }
 
-            .mensajeOk {
-                background: #d9ffe2;
-                color: green;
-                padding: 12px;
-                border-radius: 6px;
-                text-align: center;
-                margin-bottom: 20px;
-            }
-
+        .volver a:hover {
+            color: #8b4513;
+            text-decoration: underline;
+        }
     </style>
 
 </head>
@@ -150,10 +200,15 @@
 
     <div class="card">
 
+        <!-- Logo / Ícono de Carpintería -->
+        <div style="text-align:center; margin-bottom:10px;">
+            <img src="~/images/logo.png" alt="Logo CARPINTEC" style="width:58px; height:58px; object-fit:contain; display:inline-block;" onerror="this.style.display='none'">
+        </div>
+
         <h2>Nueva Contraseña</h2>
 
-        <p>
-            Ingrese una nueva contraseña para su cuenta.
+        <p class="subtitulo">
+            Ingresa y confirma la nueva contraseña para restablecer el acceso a tu cuenta.
         </p>
 
         @if (TempData["Error"] != null)
@@ -174,19 +229,15 @@
               asp-action="GuardarNuevaContraseña"
               method="post">
 
-            <!-- =========================
-                 NUEVA CONTRASEÑA
-                 ========================= -->
-
-            <label>Nueva contraseña</label>
+            <!-- NUEVA CONTRASEÑA -->
+            <label for="password">Nueva contraseña</label>
 
             <div class="password-wrapper">
-
                 <input type="password"
                        id="password"
                        name="password"
                        minlength="8"
-                       placeholder="Ingrese la nueva contraseña"
+                       placeholder="Mínimo 8 caracteres"
                        required />
 
                 <button type="button"
@@ -195,23 +246,17 @@
                         aria-label="Mostrar contraseña">
                     👁
                 </button>
-
             </div>
 
-
-            <!-- =========================
-                 CONFIRMAR CONTRASEÑA
-                 ========================= -->
-
-            <label>Confirmar contraseña</label>
+            <!-- CONFIRMAR CONTRASEÑA -->
+            <label for="confirmarPassword">Confirmar contraseña</label>
 
             <div class="password-wrapper">
-
                 <input type="password"
                        id="confirmarPassword"
                        name="confirmarPassword"
                        minlength="8"
-                       placeholder="Confirme la contraseña"
+                       placeholder="Confirma la nueva contraseña"
                        required />
 
                 <button type="button"
@@ -220,14 +265,9 @@
                         aria-label="Mostrar contraseña">
                     👁
                 </button>
-
             </div>
 
-
-            <!-- =========================
-                 BOTÓN
-                 ========================= -->
-
+            <!-- BOTÓN -->
             <button type="submit"
                     class="btn-cambiar">
                 Cambiar Contraseña
@@ -235,44 +275,29 @@
 
         </form>
 
+        <div class="volver">
+            <a asp-controller="Login"
+               asp-action="Index">
+                ← Cancelar y volver al inicio de sesión
+            </a>
+        </div>
+
     </div>
 
-
-    <!-- =========================
-         JAVASCRIPT
-         ========================= -->
-
+    <!-- JAVASCRIPT -->
     <script>
-
-            function togglePassword(inputId, button) {
-
-                const input =
-                    document.getElementById(inputId);
-
-                if (input.type === "password") {
-
-                    input.type = "text";
-
-                    button.textContent = "🙈";
-
-                    button.setAttribute(
-                        "aria-label",
-                        "Ocultar contraseña"
-                    );
-
-                } else {
-
-                    input.type = "password";
-
-                    button.textContent = "👁";
-
-                    button.setAttribute(
-                        "aria-label",
-                        "Mostrar contraseña"
-                    );
-                }
+        function togglePassword(inputId, button) {
+            const input = document.getElementById(inputId);
+            if (input.type === "password") {
+                input.type = "text";
+                button.textContent = "🙈";
+                button.setAttribute("aria-label", "Ocultar contraseña");
+            } else {
+                input.type = "password";
+                button.textContent = "👁";
+                button.setAttribute("aria-label", "Mostrar contraseña");
             }
-
+        }
     </script>
 
 </body>

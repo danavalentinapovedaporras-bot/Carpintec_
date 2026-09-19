@@ -1,4 +1,4 @@
-﻿using CARPINTEC_App.Data;
+using CARPINTEC_App.Data;
 using CARPINTEC_App.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,10 +17,56 @@ namespace CARPINTEC_App.Controllers
             _context = context;
         }
 
-        // GET: Usuarios
-        public async Task<IActionResult> Index()
+        // GET: Usuarios con búsqueda, filtro de rol y paginación
+        public async Task<IActionResult> Index(string? search, string? rol, int pagina = 1)
         {
-            var usuarios = await _context.Usuarios.ToListAsync();
+            int pageSize = 6;
+
+            var query = _context.Usuarios.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                string s = search.Trim();
+                query = query.Where(u =>
+     (u.Correo != null && u.Correo.Contains(s)) ||
+     (u.Nombre != null && u.Nombre.Contains(s)) ||
+     (u.Apellido != null && u.Apellido.Contains(s)));
+            }
+
+            if (!string.IsNullOrWhiteSpace(rol) && rol != "Todos los roles" && rol != "Todos")
+            {
+                query = query.Where(u => u.Rol == rol);
+            }
+
+            int totalRegistros = await query.CountAsync();
+            int totalPaginas = (int)Math.Ceiling((double)totalRegistros / pageSize);
+            if (totalPaginas == 0) totalPaginas = 1;
+            if (pagina < 1) pagina = 1;
+            if (pagina > totalPaginas) pagina = totalPaginas;
+
+            var usuarios = await query
+                .OrderByDescending(u => u.IdUsuario)
+                .Skip((pagina - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            // Métricas sobre el total general
+            var todos = await _context.Usuarios.ToListAsync();
+            ViewBag.TotalUsuarios = todos.Count;
+            ViewBag.TotalAdministradores = todos.Count(x => x.Rol == "Administrador");
+            ViewBag.TotalEmpleados = todos.Count(x => x.Rol == "Empleado");
+            ViewBag.TotalInactivos = todos.Count(x => x.Estado == "Inactivo");
+            ViewBag.TotalBloqueados = todos.Count(x => x.Estado == "Bloqueado");
+
+            // Datos de búsqueda y paginación
+            ViewBag.Search = search;
+            ViewBag.Rol = rol;
+            ViewBag.PaginaActual = pagina;
+            ViewBag.TotalPaginas = totalPaginas;
+            ViewBag.TotalRegistros = totalRegistros;
+            ViewBag.RegistroInicio = totalRegistros == 0 ? 0 : (pagina - 1) * pageSize + 1;
+            ViewBag.RegistroFin = Math.Min(pagina * pageSize, totalRegistros);
+
             return View(usuarios);
         }
 

@@ -1,73 +1,72 @@
-@{
-    ViewData["Title"] = "Usuarios";
-}
-<!DOCTYPE html>
+@* ============================================================
+   Vista: Productos/Index.cshtml
+   Descripción: Catálogo de productos con CRUD completo
+   - Muestra tarjetas de productos desde la base de datos
+   - Modal para crear nuevo producto
+   - Modal para editar producto existente
+   - Modal para ver detalles del producto
+   - Búsqueda en tiempo real por nombre o código
+   ============================================================ *@
 
-<html class="light" lang="es"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>CARPINTEC - Catálogo de Productos</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
+@* Modelo: lista de productos desde la base de datos *@
+@model IEnumerable<CARPINTEC_App.Models.Producto>
+
+@{
+    ViewData["Title"] = "Catálogo de Productos";
+}
+
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>CARPINTEC - Catálogo de Productos</title>
+
+    @* --- CDN de Tailwind CSS con plugins de formularios --- *@
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    @* --- Fuentes Google: Work Sans y Material Symbols --- *@
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+
+    @* --- Configuración de Tailwind personalizada --- *@
+    <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
+                    /* Paleta de colores personalizada para Carpintec */
                     "colors": {
                         "text-main": "#222222",
                         "tertiary": "#005562",
                         "error-container": "#ffdad6",
-                        "tertiary-fixed": "#abedfc",
                         "secondary": "#5e604d",
-                        "on-tertiary-fixed": "#001f25",
                         "outline": "#837469",
-                        "on-primary-fixed": "#2e1500",
-                        "tertiary-fixed-dim": "#8fd1df",
-                        "on-primary-container": "#ffddc2",
                         "primary": "#6f4315",
                         "timber-tan": "#D2B48C",
                         "surface-tint": "#835425",
-                        "on-primary-fixed-variant": "#683d0f",
                         "surface": "#f9f9f9",
                         "surface-dim": "#dadada",
                         "border-subtle": "#EAEAEA",
-                        "on-secondary-fixed-variant": "#474836",
                         "surface-container-low": "#f3f3f3",
                         "on-primary": "#ffffff",
-                        "inverse-on-surface": "#f1f1f1",
-                        "on-error-container": "#93000a",
-                        "on-tertiary-fixed-variant": "#004e5a",
                         "outline-variant": "#d5c3b6",
                         "on-surface-variant": "#51443a",
                         "primary-container": "#8b5a2b",
-                        "secondary-fixed-dim": "#c8c8b0",
                         "surface-container-highest": "#e2e2e2",
-                        "on-tertiary-container": "#abeefd",
                         "on-error": "#ffffff",
                         "surface-container-high": "#e8e8e8",
-                        "primary-fixed": "#ffdcc1",
                         "tertiary-container": "#276e7b",
                         "surface-container": "#eeeeee",
                         "surface-container-lowest": "#ffffff",
-                        "on-secondary-fixed": "#1b1d0e",
                         "secondary-container": "#e1e1c9",
                         "surface-bright": "#f9f9f9",
                         "error": "#ba1a1a",
-                        "secondary-fixed": "#e4e4cc",
-                        "on-tertiary": "#ffffff",
                         "surface-variant": "#e2e2e2",
                         "background": "#f9f9f9",
-                        "on-secondary-container": "#636451",
                         "on-surface": "#1a1c1c",
                         "surface-gray": "#FAFAFA",
-                        "on-secondary": "#ffffff",
-                        "inverse-surface": "#2f3131",
-                        "inverse-primary": "#f9ba82",
                         "wood-dark": "#5D3A1A",
-                        "primary-fixed-dim": "#f9ba82",
                         "on-background": "#1a1c1c"
                     },
                     "borderRadius": {
@@ -83,14 +82,15 @@
                         "margin-mobile": "16px",
                         "sidebar-width": "260px"
                     },
+                    /* Configuración Work Sans en Tailwind */
                     "fontFamily": {
-                        "headline-md": ["Manrope"],
-                        "body-md": ["Inter"],
-                        "label-xs": ["Inter"],
-                        "label-sm": ["Inter"],
-                        "body-lg": ["Inter"],
-                        "headline-lg": ["Manrope"],
-                        "display": ["Manrope"]
+                        "headline-md": ["Work Sans", "sans-serif"],
+                        "body-md": ["Work Sans", "sans-serif"],
+                        "label-xs": ["Work Sans", "sans-serif"],
+                        "label-sm": ["Work Sans", "sans-serif"],
+                        "body-lg": ["Work Sans", "sans-serif"],
+                        "headline-lg": ["Work Sans", "sans-serif"],
+                        "display": ["Work Sans", "sans-serif"]
                     },
                     "fontSize": {
                         "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
@@ -108,244 +108,727 @@
         };
     </script>
 
-<style>
+    @* --- Estilos personalizados: Work Sans en negrita y corrección de colores --- *@
+    <style>
+        @@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&display=swap');
+
+        /* Aplicar Work Sans en negrita a todo el contenido principal */
+        button[onclick="history.back()"],
+        main,
+        main *:not(.material-symbols-outlined):not([class*="fa-"]):not(i),
+        #modal-producto,
+        #modal-producto *:not(.material-symbols-outlined):not([class*="fa-"]):not(i),
+        #modal-editar,
+        #modal-editar *:not(.material-symbols-outlined):not([class*="fa-"]):not(i),
+        #modal-detalles,
+        #modal-detalles *:not(.material-symbols-outlined):not([class*="fa-"]):not(i) {
+            font-family: 'Work Sans', sans-serif !important;
+            font-weight: 700 !important;
+        }
+
+        /* Asegurar que Material Symbols use su fuente correcta */
         .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined' !important;
+            font-weight: normal !important;
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
+
+        /* Estilos base del body */
+        body {
+            background-color: #f9f9f9;
+            font-family: 'Work Sans', sans-serif !important;
+            font-weight: 700 !important;
+            color: #000000;
+        }
+
+        /* Corrección de colores azules de Bootstrap a beige (#D2B48C) */
+        .bg-primary { background-color: #D2B48C !important; }
+        .text-primary { color: #000000 !important; }
+        .border-primary { border-color: #D2B48C !important; }
+
+        /* Scrollbar personalizado */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #d5c3b6; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #8b5a2b; }
+
+        /* Sombra suave para tarjetas de producto */
         .product-card-shadow { box-shadow: 0px 4px 20px rgba(0,0,0,0.04); }
-        .sidebar-overlay { background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); }
-        .drawer-transition { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
     </style>
 </head>
+
 <body class="bg-background text-text-main font-body-md selection:bg-primary/20">
-    <!-- TopAppBar -->
+
+    @* --- Botón Volver (navegación hacia atrás) --- *@
     <button onclick="history.back()"
-            class="flex items-center gap-2 text-primary hover:underline mb-4">
-        <span class="material-symbols-outlined">arrow_back</span>
+            class="flex items-center gap-2 text-black font-bold hover:underline mb-4" style="color: #000000;">
+        <span class="material-symbols-outlined text-black">arrow_back</span>
         Volver
     </button>
 
-    <!-- Main Content Canvas -->
-    <main class="pt-4 min-h-screen bg-background">
-<!-- Page Header -->
-<div class="py-6 space-y-4">
-<div>
-<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-wood-dark">Catálogo de Productos</h1>
-<p class="text-on-surface-variant font-body-md">Administre y gestione el catálogo de productos de Carpintec.</p>
-</div>
-<div class="flex gap-2">
-<button class="flex-1 bg-surface-container-lowest border border-outline-variant py-2.5 rounded-xl font-label-sm flex items-center justify-center gap-2 hover:bg-surface-container transition-all">
-<span class="material-symbols-outlined text-[18px]">download</span>
+    @* --- Contenido principal de la página --- *@
+    <main class="pt-4 min-h-screen bg-background px-4 md:px-8 max-w-full w-full box-border">
+
+        @* ============================================================
+           SECCIÓN: Encabezado de página + Botón Nuevo Producto
+           ============================================================ *@
+        <div class="py-6 space-y-4">
+            <div>
+                <h1 class="font-headline-lg-mobile text-headline-lg-mobile text-wood-dark">Catálogo de Productos</h1>
+                <p class="text-on-surface-variant font-body-md">Administre y gestione el catálogo de productos de Carpintec.</p>
+            </div>
+            <div class="flex gap-2">
+                @* Botón Exportar *@
+                <button class="flex-1 bg-surface-container-lowest border border-outline-variant py-2.5 rounded-xl font-label-sm flex items-center justify-center gap-2 hover:bg-surface-container transition-all">
+                    <span class="material-symbols-outlined text-[18px]">download</span>
                     Exportar
                 </button>
-<button onclick="document.getElementById('modal-producto').classList.remove('hidden')" 
-        class="flex-[1.5] bg-primary text-on-primary py-2.5 rounded-xl font-label-sm flex items-center justify-center gap-2 shadow-md active:scale-95 transition-all">
-    <span class="material-symbols-outlined text-[18px]">add</span>
-    Nuevo Producto
-</button>
-</div>
-</div>
-<!-- Statistics Grid -->
-<div class="grid grid-cols-2 gap-3 mb-6">
-<div class="bg-surface-container-lowest p-4 rounded-xl border border-border-subtle shadow-sm">
-<p class="text-on-surface-variant font-label-sm mb-1 uppercase tracking-wider text-[10px]">Total</p>
-<p class="font-headline-md text-primary font-bold">128</p>
-</div>
-<div class="bg-surface-container-lowest p-4 rounded-xl border border-border-subtle shadow-sm">
-<p class="text-on-surface-variant font-label-sm mb-1 uppercase tracking-wider text-[10px]">Activos</p>
-<p class="font-headline-md text-tertiary font-bold">94</p>
-</div>
-<div class="bg-surface-container-lowest p-4 rounded-xl border border-border-subtle shadow-sm">
-<p class="text-on-surface-variant font-label-sm mb-1 uppercase tracking-wider text-[10px]">Inactivos</p>
-<p class="font-headline-md text-error font-bold">12</p>
-</div>
-<div class="bg-surface-container-lowest p-4 rounded-xl border border-border-subtle shadow-sm">
-<p class="text-on-surface-variant font-label-sm mb-1 uppercase tracking-wider text-[10px]">Categorías</p>
-<p class="font-headline-md text-secondary font-bold">8</p>
-</div>
-</div>
-<!-- Search & Filter Row -->
-<div class="space-y-3 mb-6">
-<div class="relative group">
-<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
-<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-xl pl-10 pr-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm" placeholder="Buscar por código o nombre..." type="text"/>
-</div>
-<div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-<button class="shrink-0 flex items-center gap-1.5 px-4 py-2 bg-primary text-on-primary rounded-full text-xs font-medium">
-<span class="material-symbols-outlined text-[16px]">filter_list</span> Categoría
+
+                @* Botón Nuevo Producto - Abre el modal de creación *@
+                <button onclick="document.getElementById('modal-producto').classList.remove('hidden')"
+                        class="flex-[1.5] bg-[#D2B48C] hover:brightness-95 text-black font-bold py-2.5 rounded-xl font-label-sm flex items-center justify-center gap-2 shadow-md active:scale-95 transition-all"
+                        style="background-color: #D2B48C; color: #000000;">
+                    <span class="material-symbols-outlined text-[18px] text-black">add</span>
+                    Nuevo Producto
                 </button>
-<button class="shrink-0 flex items-center gap-1.5 px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-full text-xs font-medium">
+            </div>
+        </div>
+
+        @* ============================================================
+           SECCIÓN: Tarjetas de estadísticas (datos dinámicos de ViewBag)
+           ============================================================ *@
+        <div class="grid grid-cols-2 gap-3 mb-6">
+            @* Tarjeta: Total de productos *@
+            <div class="bg-surface-container-lowest p-4 rounded-xl border border-border-subtle shadow-sm">
+                <p class="text-on-surface-variant font-label-sm mb-1 uppercase tracking-wider text-[10px]">Total</p>
+                <p class="font-headline-md text-primary font-bold">@ViewBag.TotalProductos</p>
+            </div>
+
+            @* Tarjeta: Productos activos *@
+            <div class="bg-surface-container-lowest p-4 rounded-xl border border-border-subtle shadow-sm">
+                <p class="text-on-surface-variant font-label-sm mb-1 uppercase tracking-wider text-[10px]">Activos</p>
+                <p class="font-headline-md text-tertiary font-bold">@ViewBag.ProductosActivos</p>
+            </div>
+
+            @* Tarjeta: Productos inactivos *@
+            <div class="bg-surface-container-lowest p-4 rounded-xl border border-border-subtle shadow-sm">
+                <p class="text-on-surface-variant font-label-sm mb-1 uppercase tracking-wider text-[10px]">Inactivos</p>
+                <p class="font-headline-md text-error font-bold">@ViewBag.ProductosInactivos</p>
+            </div>
+
+            @* Tarjeta: Categorías únicas *@
+            <div class="bg-surface-container-lowest p-4 rounded-xl border border-border-subtle shadow-sm">
+                <p class="text-on-surface-variant font-label-sm mb-1 uppercase tracking-wider text-[10px]">Categorías</p>
+                <p class="font-headline-md text-secondary font-bold">@ViewBag.TotalCategorias</p>
+            </div>
+        </div>
+
+        @* ============================================================
+           SECCIÓN: Barra de búsqueda y filtros
+           ============================================================ *@
+        <div class="space-y-3 mb-6">
+            @* Campo de búsqueda en tiempo real *@
+            <div class="relative group">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+                <input class="w-full bg-surface-container-lowest border border-outline-variant rounded-xl pl-10 pr-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm"
+                       placeholder="Buscar por código o nombre..."
+                       type="text"
+                       id="buscarProducto"
+                       oninput="filtrarProductos()" />
+            </div>
+            <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                @* Botón filtro por categoría *@
+                <button class="shrink-0 flex items-center gap-1.5 px-4 py-2 bg-white text-black font-bold border border-outline-variant rounded-full text-xs shadow-sm"
+                        style="background-color: #ffffff; color: #000000;">
+                    <span class="material-symbols-outlined text-[16px] text-black">filter_list</span> Categoría
+                </button>
+                @* Botón filtro por estado *@
+                <button class="shrink-0 flex items-center gap-1.5 px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-full text-xs font-medium">
                     Estado
                 </button>
-<div class="ml-auto flex border border-outline-variant rounded-full p-1 bg-surface-container-lowest">
-<button class="p-1.5 bg-primary-container text-white rounded-full">
-<span class="material-symbols-outlined text-[18px]">grid_view</span>
-</button>
-<button class="p-1.5 text-on-surface-variant">
-<span class="material-symbols-outlined text-[18px]">list</span>
-</button>
-</div>
-</div>
-</div>
-<!-- Main Product Grid -->
-<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-    <!-- Product 1 --><div class="bg-surface-container-lowest rounded-xl overflow-hidden product-card-shadow border border-border-subtle"><div class="h-32 relative"><img alt="Silla Ergonómica Roble" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPIx_JUlQfuF0CavdQ30gAjjjF4_fr5FyebWbHjW0bY29xaFGPw8iqSiQrDOGgaycoPBAX8a2RgQooxUS0D9UzHUT1YQn8K3YgkeWgNEEsllxG_p_klZMyc4tZpjzzf_-HA7Nz24EtH0recAq5XQDK5P1FbQ7DXteRRhjxmmcD7bw132R5h1BpLlVqKnA7vU9uZQPnXmkSt_gpBYLkjhfRjh8oSRIoo5t5V00aVoywCqjKL64l8RQC"/><div class="absolute top-2 right-2"><span class="bg-tertiary text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">Activo</span></div></div><div class="p-3 space-y-2"><div><p class="text-primary font-bold text-[10px] mb-0.5">CP-001</p><h3 class="font-semibold text-sm line-clamp-1">Silla Nórdica Roble</h3></div><div class="space-y-1 text-[11px] text-on-surface-variant"><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">category</span> Sillas</div><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">texture</span> Roble Macizo</div><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">straighten</span> 45x45x90 cm</div></div><div class="flex gap-1.5 pt-1">
-            <button class="flex-1 py-1.5 text-primary border border-primary/20 bg-primary/5 rounded text-[10px] font-bold">Editar</button> 
-    <button class="flex-1 py-1.5 text-on-surface-variant bg-surface-container rounded text-[10px] font-bold">Detalles</button></div></div></div>
-    <!-- Product 2 --><div class="bg-surface-container-lowest rounded-xl overflow-hidden product-card-shadow border border-border-subtle"><div class="h-32 relative"><img alt="Escritorio Nogal" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7abahi2F5XhkJiidnfPnNZ-E8N0UzNMZsjzOrvNcCTrqD2yqPJebHddTobTY8x5Exp2f8kCvMrhYXrtV8ksOPr_pxyTk9wwDXJ-kvggvKkSNJU7ufxI8AVKTnh6JzRVr769MDKh5H5WGiCT_l6XutepXmDXY6D5V7N2iKLYIwG_6wjccn9Q0cMP-Jk5DrBdMRZlHB-QWUXi2Nc2rRGLBR8TeHqSkm52UgWLM1C3-Ydely8yuQ_Ug_"/><div class="absolute top-2 right-2"><span class="bg-timber-tan text-wood-dark text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">Bajo pedido</span></div></div><div class="p-3 space-y-2"><div><p class="text-primary font-bold text-[10px] mb-0.5">CP-002</p><h3 class="font-semibold text-sm line-clamp-1">Escritorio Ejecutivo</h3></div><div class="space-y-1 text-[11px] text-on-surface-variant"><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">category</span> Oficina</div><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">texture</span> Nogal Americano</div><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">straighten</span> 140x70x75 cm</div></div><div class="flex gap-1.5 pt-1">
-        <button class="flex-1 py-1.5 text-primary border border-primary/20 bg-primary/5 rounded text-[10px] font-bold">Editar</button><button class="flex-1 py-1.5 text-on-surface-variant bg-surface-container rounded text-[10px] font-bold">Detalles</button></div></div></div>
-        <!-- Product 3 --><div class="bg-surface-container-lowest rounded-xl overflow-hidden product-card-shadow border border-border-subtle"><div class="h-32 relative"><img alt="Cama King Cedro" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdPNR6NnnyrT8h8AxIZJDPVr5Emg5POhYKVX__hFtJDjB0kBlOT2Y4lBNlxLy4trpRpQbOfG9Hkiz4O496YZP5LPobIGBp9kiZw1cFExZfAGw-hj8F-NGO2P2xlAXxTBAWkrN0KK1GLOpfcWNxG_6N-4QPAGPzjMINIskjZuOHX50Bhj16UMmMkmdLoFhla9LFNvuGglgWrqvh2nom71cGFJlN4Mj0qQsGsNiGXSk3hpz4MEN0JeKL"/><div class="absolute top-2 right-2"><span class="bg-tertiary text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">Activo</span></div></div><div class="p-3 space-y-2"><div><p class="text-primary font-bold text-[10px] mb-0.5">CP-003</p><h3 class="font-semibold text-sm line-clamp-1">Cama King Size</h3></div><div class="space-y-1 text-[11px] text-on-surface-variant"><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">category</span> Dormitorio</div><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">texture</span> Cedro Rojo</div><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">straighten</span> 200x200x40 cm</div></div><div class="flex gap-1.5 pt-1">
-            <button class="flex-1 py-1.5 text-primary border border-primary/20 bg-primary/5 rounded text-[10px] font-bold">Editar</button><button class="flex-1 py-1.5 text-on-surface-variant bg-surface-container rounded text-[10px] font-bold">Detalles</button></div></div></div>
-            <!-- Product 4 --><div class="bg-surface-container-lowest rounded-xl overflow-hidden product-card-shadow border border-border-subtle"><div class="h-32 relative"><img alt="Closet Empotrado" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRCLPRvS3I5r-3nS8E_2ZoTkha-fWkQCa-MiePHmNfIcq30trsIZMHhAgg3g7zgTfRfaRmtXYaHvjJkmCysELa69BDyLY4rs_LLXfvzEQ3_-6S8fz_dqL-dW-0gYWM1gQVkNFGzyagTsP_KCpsRfWPEi0u_ZcXKsD9KNIpMpfdGsuaheaNtFy2TxPDcwqVkBz2vMYXVYsM4T_beb9tDLTxq6ewnj3QYZhHS5E57U6DFe9v_cTa2IXC"/><div class="absolute top-2 right-2"><span class="bg-tertiary text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">Activo</span></div></div><div class="p-3 space-y-2"><div><p class="text-primary font-bold text-[10px] mb-0.5">CP-004</p><h3 class="font-semibold text-sm line-clamp-1">Closet Modular</h3></div><div class="space-y-1 text-[11px] text-on-surface-variant"><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">category</span> Almacenaje</div><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">texture</span> Pino Tratado</div><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">straighten</span> 240x60x220 cm</div></div><div class="flex gap-1.5 pt-1">
-                <button class="flex-1 py-1.5 text-primary border border-primary/20 bg-primary/5 rounded text-[10px] font-bold">Editar</button><button class="flex-1 py-1.5 text-on-surface-variant bg-surface-container rounded text-[10px] font-bold">Detalles</button></div></div></div>
-                <!-- Product 5 --><div class="bg-surface-container-lowest rounded-xl overflow-hidden product-card-shadow border border-border-subtle"><div class="h-32 relative"><img alt="Mesa de Centro" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuADd975cgIj0bNwo3u7AntbdvVx90AGUsePdFib_OKSm22_jZUMXPhzYE8v5XSw7dRGL5F1WEaVHrgTBBAE6drj-f9t956HYhkU9HRm1RV4tgGs2bgtY1NANrMWd19yRPc_zFp88y9hNjJPDc1lre0AcYinJM9pkWiZMxp0Qe1Mkg2F-06SEFnirguUdZvW0DBpEDhikTX8ywJeZXzPb1ZmOmIJeNGd1phdMR_XJ2SOGtUZK_c7BNKF"/><div class="absolute top-2 right-2"><span class="bg-timber-tan text-wood-dark text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">Bajo pedido</span></div></div><div class="p-3 space-y-2"><div><p class="text-primary font-bold text-[10px] mb-0.5">CP-005</p><h3 class="font-semibold text-sm line-clamp-1">Mesa Centro Zen</h3></div><div class="space-y-1 text-[11px] text-on-surface-variant"><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">category</span> Sala</div><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">texture</span> Fresno</div><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">straighten</span> 90x90x35 cm</div></div><div class="flex gap-1.5 pt-1"><button class="flex-1 py-1.5 text-primary border border-primary/20 bg-primary/5 rounded text-[10px] font-bold">Editar</button><button class="flex-1 py-1.5 text-on-surface-variant bg-surface-container rounded text-[10px] font-bold">Detalles</button></div></div></div>
-                    <!-- Product 6 --><div class="bg-surface-container-lowest rounded-xl overflow-hidden product-card-shadow border border-border-subtle"><div class="h-32 relative"><img alt="Estantería Libros" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUL6ERklIH_0QIocQdGo-Cz6YB7zz5FbwfMb112lSDSye3gbytuYVQbqhZ95IZonaQtCGhEr5CCl8tP3ds-UOZ1WwiKO_Y3qTBYO_LiUPC-QCpzxapewNkOX3VPa3Q6McdqJ0B8GPR9GCw9D4H-1IaW7cfnyd_0oc_Y3w54U_AmOaZI3lFwRbTWiZG2Qy-Se8GTBvtPWYU_TBHh8eGswWj-6DoHIRNj9oFjYCYjovSJEwQMM4H50XW"/><div class="absolute top-2 right-2"><span class="bg-tertiary text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">Activo</span></div></div><div class="p-3 space-y-2"><div><p class="text-primary font-bold text-[10px] mb-0.5">CP-006</p><h3 class="font-semibold text-sm line-clamp-1">Librero Industrial</h3></div><div class="space-y-1 text-[11px] text-on-surface-variant"><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">category</span> Biblioteca</div><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">texture</span> Roble y Acero</div><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">straighten</span> 120x30x180 cm</div></div><div class="flex gap-1.5 pt-1">
-                        <button class="flex-1 py-1.5 text-primary border border-primary/20 bg-primary/5 rounded text-[10px] font-bold">Editar</button><button class="flex-1 py-1.5 text-on-surface-variant bg-surface-container rounded text-[10px] font-bold">Detalles</button></div></div></div>
-                        <!-- Product 7 --><div class="bg-surface-container-lowest rounded-xl overflow-hidden product-card-shadow border border-border-subtle"><div class="h-32 relative"><img alt="Cómoda Dormitorio" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVJV_npGL7xyA9edygaW11MUw0vE6uqFqLtC4sbLZKVxuZYwWFHzF6hmA-35L-geXB3Ntrl8sN2ctFZ_NBNOvQtxoOuPhTmAWF75O5x22ESGcxIkkRKRzZREAbrE344TTrA37JfM432M944uEST3Iz26IvuiR-yfBMLlviDDA4Q1l5iOZfmHSCEuvyp3-K-OwvE-EJNkqizwF6en1UPZ-qs9Krx2htlxNwUMv3GfqQSDgvqfnstERk"/><div class="absolute top-2 right-2"><span class="bg-tertiary text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">Activo</span></div></div><div class="p-3 space-y-2"><div><p class="text-primary font-bold text-[10px] mb-0.5">CP-007</p><h3 class="font-semibold text-sm line-clamp-1">Cómoda 6 Cajones</h3></div><div class="space-y-1 text-[11px] text-on-surface-variant"><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">category</span> Dormitorio</div><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">texture</span> Caoba</div><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">straighten</span> 150x45x85 cm</div></div><div class="flex gap-1.5 pt-1">
-                            <button class="flex-1 py-1.5 text-primary border border-primary/20 bg-primary/5 rounded text-[10px] font-bold">Editar</button><button class="flex-1 py-1.5 text-on-surface-variant bg-surface-container rounded text-[10px] font-bold">Detalles</button></div></div></div>
-                            <!-- Product 8 --><div class="bg-surface-container-lowest rounded-xl overflow-hidden product-card-shadow border border-border-subtle"><div class="h-32 relative"><img alt="Mesa Comedor" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBc4r5HRggqzcvub9R-o31YUHMdJ5YaVSZndbpSIiI_51LLTnl9ICBW39Q_tTzihLR0CkqD6XxxAKT6N03DX4abfo-LFV8Jme6gzsIZjfirvVmlpcJgPT6FcpBu832LZ7EOWAajfXfCx62SPrS2a88av91d9r2LuRwud7JTZAXIfa7FxMMk42MQocS3P_Ec99LIxfFlo4ITPHYbxYCiODHzCptoAku_kTPH0IK0sglJbxAss06GxnGj"/><div class="absolute top-2 right-2"><span class="bg-timber-tan text-wood-dark text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">Bajo pedido</span></div></div><div class="p-3 space-y-2"><div><p class="text-primary font-bold text-[10px] mb-0.5">CP-008</p><h3 class="font-semibold text-sm line-clamp-1">Mesa Comedor Oval</h3></div><div class="space-y-1 text-[11px] text-on-surface-variant"><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">category</span> Comedor</div><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">texture</span> Nogal Macizo</div><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">straighten</span> 220x110x75 cm</div></div><div class="flex gap-1.5 pt-1"><button class="flex-1 py-1.5 text-primary border border-primary/20 bg-primary/5 rounded text-[10px] font-bold">Editar</button><button class="flex-1 py-1.5 text-on-surface-variant bg-surface-container rounded text-[10px] font-bold">Detalles</button></div></div></div>
-                            <!-- Product 9 --><div class="bg-surface-container-lowest rounded-xl overflow-hidden product-card-shadow border border-border-subtle"><div class="h-32 relative"><img alt="Banco Bar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpDJxBuPpyhXUMWcmkRxnT_RU2hbdu92d9LbxNUp2b4lJuv7Nc5W6LTVEzMdjjRIX_5fQAzMO1necepNzwlGRDb4OaUsHx9IicX7oHbJaJ3kr8jkfxnPYaWWLtqPKpN7Mcy47oFOjz_7CZ5ZYGEfsbezj19TrBW238pwMfjjeTNtWMRA3zq4oda4lZl04yTuf3llrSuzFXOhLz7Z3SdLDLMHhYopKf15SG7hu-1PB8KaTXAkhoB-nv"/><div class="absolute top-2 right-2"><span class="bg-tertiary text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">Activo</span></div></div><div class="p-3 space-y-2"><div><p class="text-primary font-bold text-[10px] mb-0.5">CP-009</p><h3 class="font-semibold text-sm line-clamp-1">Taburete Minimal</h3></div><div class="space-y-1 text-[11px] text-on-surface-variant"><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">category</span> Bar</div><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">texture</span> Haya Clara</div><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">straighten</span> 40x40x75 cm</div></div><div class="flex gap-1.5 pt-1">
-                                <button class="flex-1 py-1.5 text-primary border border-primary/20 bg-primary/5 rounded text-[10px] font-bold">Editar</button><button class="flex-1 py-1.5 text-on-surface-variant bg-surface-container rounded text-[10px] font-bold">Detalles</button></div></div></div>
-                                <!-- Product 10 --><div class="bg-surface-container-lowest rounded-xl overflow-hidden product-card-shadow border border-border-subtle"><div class="h-32 relative"><img alt="Aparador Salon" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmKahPLgttPUfFG4tOs78iE5BINsC9ptIT6_4CgfBRBoc3NKzJQO6-3-VO8Nj3iZ1O7DxOiGPLMJ3E8L0gd7joBP2xaM1KSXn831-xVYDzIMnGkhzq0AUYFvzbnRO5EfC63vYyFKlNrDLNWNlJL-1KsvUMujXayTXPquezQ_ixvUpOKZEB9UXpZZfdf8ZqjqRyo0GJozKJcWNUcS13hcAfVqsb9XLVtEbFKkBFSx_173iR1OTVHtfl"/><div class="absolute top-2 right-2"><span class="bg-tertiary text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">Activo</span></div></div><div class="p-3 space-y-2"><div><p class="text-primary font-bold text-[10px] mb-0.5">CP-010</p><h3 class="font-semibold text-sm line-clamp-1">Aparador Nórdico</h3></div><div class="space-y-1 text-[11px] text-on-surface-variant"><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">category</span> Sala</div><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">texture</span> Roble Blanqueado</div><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">straighten</span> 180x40x70 cm</div></div><div class="flex gap-1.5 pt-1">
-                                    <button class="flex-1 py-1.5 text-primary border border-primary/20 bg-primary/5 rounded text-[10px] font-bold">Editar</button><button class="flex-1 py-1.5 text-on-surface-variant bg-surface-container rounded text-[10px] font-bold">Detalles</button></div></div></div><!-- Product 11 --><div class="bg-surface-container-lowest rounded-xl overflow-hidden product-card-shadow border border-border-subtle"><div class="h-32 relative"><img alt="Perchero Madera" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBLZL_n0D5tvcU_aUyDcTJog4wzzEexqXB7QeOwGz5WEkfKfdItZ5yhkKnZNhz5dQqYQ_962Py91PMYB-Ycmf-4GMvqrTl3JzATGJfuYfo_TQmHdIrpyrpk-JLr78cFfq-fVhucKBPsvvKVf_mrXQMLFWEEtUaZp99aP7OI6w91tfoQWP3IL1l1cPz6pukgCylTH5Fxq9-rYfWpV_WjiW7MocZUiyQ3Qx6ALFp5siBVWmQ1QP4xa4i"/><div class="absolute top-2 right-2"><span class="bg-tertiary text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">Activo</span></div></div><div class="p-3 space-y-2"><div><p class="text-primary font-bold text-[10px] mb-0.5">CP-011</p><h3 class="font-semibold text-sm line-clamp-1">Perchero de Pie</h3></div><div class="space-y-1 text-[11px] text-on-surface-variant"><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">category</span> Accesorios</div><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">texture</span> Bambú</div><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">straighten</span> 40x40x175 cm</div></div><div class="flex gap-1.5 pt-1"><button class="flex-1 py-1.5 text-primary border border-primary/20 bg-primary/5 rounded text-[10px] font-bold">Editar</button><button class="flex-1 py-1.5 text-on-surface-variant bg-surface-container rounded text-[10px] font-bold">Detalles</button></div></div></div><!-- Product 12 --><div class="bg-surface-container-lowest rounded-xl overflow-hidden product-card-shadow border border-border-subtle"><div class="h-32 relative"><img alt="Escritorio Infantil" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuArW5rm1hB0xL1yD3pY3D3Jd2IGHat0nKkbTTNR54dYGxc_Ib7hWy9WIHgfNy05KZ30jYD8QKhzhBFOfgQJM9HJpjFrhS5MEasUaKg3LsDUkwaeSjPUdSHXmVmQ01A8bzaItQ5xUn6f6qJYgXS759Q4h31Q_wGRuhQMZGL6gDeGgpT2jOaSfHgPSBEVwbjei55mwPtLkKLcA9edYMYZ40EquHHLzB9b996rApkaD7C2jmtFWuXWgz__"/><div class="absolute top-2 right-2"><span class="bg-timber-tan text-wood-dark text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">Bajo pedido</span></div></div><div class="p-3 space-y-2"><div><p class="text-primary font-bold text-[10px] mb-0.5">CP-012</p><h3 class="font-semibold text-sm line-clamp-1">Escritorio Junior</h3></div><div class="space-y-1 text-[11px] text-on-surface-variant"><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">category</span> Infantil</div><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">texture</span> Abedul</div><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">straighten</span> 100x50x65 cm</div></div><div class="flex gap-1.5 pt-1"><button class="flex-1 py-1.5 text-primary border border-primary/20 bg-primary/5 rounded text-[10px] font-bold">Editar</button><button class="flex-1 py-1.5 text-on-surface-variant bg-surface-container rounded text-[10px] font-bold">Detalles</button></div></div></div></div>
-</main>
-<!-- Bottom Navigation Bar (Mobile) -->
-<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center py-2 px-margin-mobile md:hidden bg-surface-container-lowest border-t border-border-subtle z-50 shadow-[0px_-4px_20px_rgba(0,0,0,0.04)]">
-<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1.5" href="#">
-<span class="material-symbols-outlined text-[24px]">dashboard</span>
-<span class="font-label-sm text-label-sm">Dashboard</span>
-</a>
-<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1.5" href="#">
-<span class="material-symbols-outlined text-[24px]">inventory_2</span>
-<span class="font-label-sm text-label-sm">Inventory</span>
-</a>
-<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-1.5 scale-95 duration-200" href="#">
-<span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">handyman</span>
-<span class="font-label-sm text-label-sm">Products</span>
-</a>
-<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1.5" href="#">
-<span class="material-symbols-outlined text-[24px]">settings</span>
-<span class="font-label-sm text-label-sm">Settings</span>
-</a>
-</nav>
-    <!-- Botón para abrir el modal -->
-    <button onclick="document.getElementById('modal-producto').classList.remove('hidden')"
-            class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-lg shadow-sm transition">
-        Nuevo Producto
-    </button>
+            </div>
+        </div>
 
-    <!-- Fondo oscuro y contenedor de la ventana emergente -->
+        @* ============================================================
+           SECCIÓN: Grilla de productos (datos dinámicos del Model)
+           ============================================================ *@
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="grilla-productos">
+
+            @* Si no hay productos, mostrar mensaje *@
+            @if (!Model.Any())
+            {
+                <div class="col-span-full text-center py-16">
+                    <span class="material-symbols-outlined text-6xl text-outline-variant mb-4">inventory_2</span>
+                    <p class="text-on-surface-variant text-lg">No hay productos registrados.</p>
+                    <p class="text-on-surface-variant text-sm mt-1">Haz clic en "Nuevo Producto" para agregar el primero.</p>
+                </div>
+            }
+
+            @* Iterar sobre cada producto del modelo *@
+            @foreach (var producto in Model)
+            {
+                @* Determinar las clases CSS del badge según el estado *@
+                var badgeClass = producto.Estado == "Activo"
+                    ? "bg-tertiary text-white"
+                    : "bg-red-100 text-red-800";
+
+                <div class="bg-surface-container-lowest rounded-xl overflow-hidden product-card-shadow border border-border-subtle producto-card"
+                     data-nombre="@producto.Nombre?.ToLower()"
+                     data-codigo="@producto.Codigo?.ToLower()">
+
+                    @* --- Imagen del producto --- *@
+                    <div class="h-32 relative bg-surface-container">
+                        @if (!string.IsNullOrEmpty(producto.Imagen))
+                        {
+                            @* Imagen cargada por el usuario *@
+                            <img alt="@producto.Nombre"
+                                 class="w-full h-full object-cover"
+                                 src="@producto.Imagen" />
+                        }
+                        else
+                        {
+                            @* Placeholder cuando no hay imagen *@
+                            <div class="w-full h-full flex items-center justify-center">
+                                <span class="material-symbols-outlined text-4xl text-outline-variant">image</span>
+                            </div>
+                        }
+                        @* Badge de estado (Activo/Inactivo) *@
+                        <div class="absolute top-2 right-2">
+                            <span class="@badgeClass text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">
+                                @producto.Estado
+                            </span>
+                        </div>
+                    </div>
+
+                    @* --- Información del producto --- *@
+                    <div class="p-3 space-y-2">
+                        <div>
+                            @* Código del producto *@
+                            <p class="text-primary font-bold text-[10px] mb-0.5">@producto.Codigo</p>
+                            @* Nombre del producto *@
+                            <h3 class="font-semibold text-sm line-clamp-1">@producto.Nombre</h3>
+                        </div>
+
+                        @* Detalles: categoría, material, medidas *@
+                        <div class="space-y-1 text-[11px] text-on-surface-variant">
+                            @if (!string.IsNullOrEmpty(producto.Categoria))
+                            {
+                                <div class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[12px]">category</span>
+                                    @producto.Categoria
+                                </div>
+                            }
+                            @if (!string.IsNullOrEmpty(producto.Material))
+                            {
+                                <div class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[12px]">texture</span>
+                                    @producto.Material
+                                </div>
+                            }
+                            @if (!string.IsNullOrEmpty(producto.Medidas))
+                            {
+                                <div class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[12px]">straighten</span>
+                                    @producto.Medidas
+                                </div>
+                            }
+                            @if (producto.Precio.HasValue)
+                            {
+                                <div class="flex items-center gap-1 font-bold text-wood-dark">
+                                    <span class="material-symbols-outlined text-[12px]">payments</span>
+                                    $@producto.Precio.Value.ToString("N0")
+                                </div>
+                            }
+                        </div>
+
+                        @* --- Botones de acción por producto --- *@
+                        <div class="flex gap-1.5 pt-1">
+                            @* Botón Editar: abre modal de edición cargando datos por AJAX *@
+                            <button onclick="abrirModalEditar(@producto.IdProducto)"
+                                    class="flex-1 py-1.5 text-primary border border-primary/20 bg-primary/5 rounded text-[10px] font-bold">
+                                Editar
+                            </button>
+                            @* Botón Detalles: abre modal con info completa *@
+                            <button onclick="abrirModalDetalles(@producto.IdProducto)"
+                                    class="flex-1 py-1.5 text-on-surface-variant bg-surface-container rounded text-[10px] font-bold">
+                                Detalles
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+    </main>
+
+    @* ============================================================
+       MODAL: Crear Nuevo Producto
+       Se muestra al hacer clic en "Nuevo Producto"
+       Formulario conectado a /Productos/Crear (POST)
+       ============================================================ *@
     <div id="modal-producto" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 p-4 overflow-y-auto">
         <div class="bg-white rounded-xl shadow-xl w-full max-w-xl p-6 relative my-8">
 
-            <!-- Botón para cerrar (X) -->
+            @* Botón cerrar (X) *@
             <button onclick="document.getElementById('modal-producto').classList.add('hidden')"
                     class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 font-bold text-xl">
                 &times;
             </button>
 
-            <!-- Título -->
+            @* Título del modal *@
             <h3 class="text-xl font-bold text-gray-800 mb-4">Agregar Nuevo Producto</h3>
 
-            <!-- Formulario (ajusta el action y el method según tu controlador, recuerda usar enctype si subes archivos) -->
-            <form action="/Productos/Crear" method="POST" enctype="multipart/form-data" class="space-y-4">
+            @* Formulario de creación - apunta al controlador Productos, acción Crear *@
+            <form asp-controller="Productos" asp-action="Crear" method="post" enctype="multipart/form-data" class="space-y-4">
+                @Html.AntiForgeryToken()
 
-                <!-- Nombre del Producto -->
+                @* Campo: Nombre del producto (obligatorio) *@
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Nombre del Producto</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nombre del Producto *</label>
                     <input type="text" name="Nombre" required
-                           class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                           class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#D2B48C]">
                 </div>
 
-                <!-- Carga de Foto -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Fotografía del Producto</label>
-                    <div class="flex items-center space-x-4">
-                        <input type="file" name="Foto" accept="image/*" onchange="previsualizarImagen(event)"
-                               class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                    </div>
-                    <!-- Vista previa de la imagen -->
-                    <div class="mt-2">
-                        <img id="preview-img" src="#" alt="Vista previa" class="hidden h-24 w-24 object-cover rounded-lg border border-gray-200">
-                    </div>
-                </div>
-
-                <!-- Colores Disponibles y Madera Disponible (en 2 columnas) -->
+                @* Campos en 2 columnas: Código y Precio *@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Colores Disponibles</label>
-                        <input type="text" name="ColoresDisponibles" placeholder="Ej. Nogal, Blanco, Natural"
-                               class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Código</label>
+                        <input type="text" name="Codigo" placeholder="Ej. CP-001"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#D2B48C]">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Maderas Disponibles</label>
-                        <input type="text" name="MaderasDisponibles" placeholder="Ej. Roble, Pino, Cedro"
-                               class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Precio</label>
+                        <input type="number" name="Precio" step="0.01" min="0" placeholder="0.00"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#D2B48C]">
                     </div>
                 </div>
 
-                <!-- Descripción -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
-                    <textarea name="Descripcion" rows="3" placeholder="Detalles de las dimensiones, acabados, etc."
-                              class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                @* Campos en 2 columnas: Categoría y Material *@
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Categoría</label>
+                        <select name="Categoria"
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#D2B48C]">
+                            <option value="">Seleccione categoría</option>
+                            <option value="Sillas">Sillas</option>
+                            <option value="Mesas">Mesas</option>
+                            <option value="Escritorios">Escritorios</option>
+                            <option value="Camas">Camas</option>
+                            <option value="Closets">Closets</option>
+                            <option value="Estantes">Estantes</option>
+                            <option value="Comedores">Comedores</option>
+                            <option value="Accesorios">Accesorios</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Material</label>
+                        <input type="text" name="Material" placeholder="Ej. Roble Macizo"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#D2B48C]">
+                    </div>
                 </div>
 
-                <!-- Botones de Acción -->
+                @* Campo: Medidas *@
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Medidas</label>
+                    <input type="text" name="Medidas" placeholder="Ej. 45x45x90 cm"
+                           class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#D2B48C]">
+                </div>
+
+                @* Campo: Imagen del producto (subida de archivo) *@
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Fotografía del Producto</label>
+                    <input type="file" name="Imagen" accept="image/*" onchange="previsualizarImagen(event, 'preview-img-crear')"
+                           class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#D2B48C]/20 file:text-wood-dark hover:file:bg-[#D2B48C]/30">
+                    @* Vista previa de la imagen seleccionada *@
+                    <div class="mt-2">
+                        <img id="preview-img-crear" src="#" alt="Vista previa" class="hidden h-24 w-24 object-cover rounded-lg border border-gray-200">
+                    </div>
+                </div>
+
+                @* Campo: Descripción *@
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                    <textarea name="Descripcion" rows="3" placeholder="Detalles de acabados, características especiales, etc."
+                              class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#D2B48C]"></textarea>
+                </div>
+
+                @* Botones del formulario: Cancelar y Guardar *@
                 <div class="flex justify-end space-x-3 pt-2">
                     <button type="button" onclick="document.getElementById('modal-producto').classList.add('hidden')"
                             class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition">
                         Cancelar
                     </button>
                     <button type="submit"
-                            class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition">
+                            class="px-4 py-2 bg-[#D2B48C] hover:brightness-95 text-black font-bold rounded-lg transition shadow-sm"
+                            style="background-color: #D2B48C; color: #000000;">
                         Guardar Producto
                     </button>
                 </div>
-
             </form>
         </div>
     </div>
 
-   
-  
+    @* ============================================================
+       MODAL: Editar Producto
+       Se carga dinámicamente con datos del producto vía fetch/AJAX
+       Formulario conectado a /Productos/Editar (POST)
+       ============================================================ *@
+    <div id="modal-editar" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 p-4 overflow-y-auto">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-xl p-6 relative my-8">
 
-<!-- Side Sheet / Drawer (Mobile Overlay) -->
-<script>
-        function toggleDetails() {
-            const sheet = document.getElementById('detailsSheet');
-            const overlay = sheet.querySelector('.sidebar-overlay');
-            const drawer = sheet.querySelector('.drawer-transition');
-            
-            if (sheet.classList.contains('invisible')) {
-                sheet.classList.remove('invisible');
-                setTimeout(() => {
-                    overlay.classList.replace('opacity-0', 'opacity-100');
-                    drawer.classList.replace('translate-x-full', 'translate-x-0');
-                }, 10);
-            } else {
-                overlay.classList.replace('opacity-100', 'opacity-0');
-                drawer.classList.replace('translate-x-0', 'translate-x-full');
-                setTimeout(() => {
-                    sheet.classList.add('invisible');
-                }, 300);
-            }
+            @* Botón cerrar (X) *@
+            <button onclick="document.getElementById('modal-editar').classList.add('hidden')"
+                    class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 font-bold text-xl">
+                &times;
+            </button>
+
+            @* Título del modal *@
+            <h3 class="text-xl font-bold text-gray-800 mb-4">Editar Producto</h3>
+
+            @* Formulario de edición - apunta al controlador Productos, acción Editar *@
+            <form asp-controller="Productos" asp-action="Editar" method="post" enctype="multipart/form-data" class="space-y-4">
+                @Html.AntiForgeryToken()
+
+                @* Campo oculto: ID del producto (necesario para identificar qué producto actualizar) *@
+                <input type="hidden" name="IdProducto" id="edit-id" />
+
+                @* Campo: Nombre *@
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nombre del Producto *</label>
+                    <input type="text" name="Nombre" id="edit-nombre" required
+                           class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#D2B48C]">
+                </div>
+
+                @* Campos en 2 columnas: Código y Precio *@
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Código</label>
+                        <input type="text" name="Codigo" id="edit-codigo"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#D2B48C]">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Precio</label>
+                        <input type="number" name="Precio" id="edit-precio" step="0.01" min="0"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#D2B48C]">
+                    </div>
+                </div>
+
+                @* Campos en 2 columnas: Categoría y Material *@
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Categoría</label>
+                        <select name="Categoria" id="edit-categoria"
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#D2B48C]">
+                            <option value="">Seleccione categoría</option>
+                            <option value="Sillas">Sillas</option>
+                            <option value="Mesas">Mesas</option>
+                            <option value="Escritorios">Escritorios</option>
+                            <option value="Camas">Camas</option>
+                            <option value="Closets">Closets</option>
+                            <option value="Estantes">Estantes</option>
+                            <option value="Comedores">Comedores</option>
+                            <option value="Accesorios">Accesorios</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Material</label>
+                        <input type="text" name="Material" id="edit-material"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#D2B48C]">
+                    </div>
+                </div>
+
+                @* Campo: Medidas *@
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Medidas</label>
+                    <input type="text" name="Medidas" id="edit-medidas"
+                           class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#D2B48C]">
+                </div>
+
+                @* Campo: Estado (select Activo/Inactivo) *@
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+                    <select name="Estado" id="edit-estado"
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#D2B48C]">
+                        <option value="Activo">Activo</option>
+                        <option value="Inactivo">Inactivo</option>
+                    </select>
+                </div>
+
+                @* Campo: Nueva imagen (opcional, solo si quiere cambiarla) *@
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Cambiar Imagen (opcional)</label>
+                    @* Imagen actual *@
+                    <img id="edit-imagen-actual" src="" alt="Imagen actual" class="hidden h-20 w-20 object-cover rounded-lg border border-gray-200 mb-2">
+                    <input type="file" name="Imagen" accept="image/*" onchange="previsualizarImagen(event, 'edit-preview-img')"
+                           class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#D2B48C]/20 file:text-wood-dark hover:file:bg-[#D2B48C]/30">
+                    <div class="mt-2">
+                        <img id="edit-preview-img" src="#" alt="Vista previa" class="hidden h-24 w-24 object-cover rounded-lg border border-gray-200">
+                    </div>
+                </div>
+
+                @* Campo: Descripción *@
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                    <textarea name="Descripcion" id="edit-descripcion" rows="3"
+                              class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#D2B48C]"></textarea>
+                </div>
+
+                @* Botones: Cancelar y Guardar Cambios *@
+                <div class="flex justify-end space-x-3 pt-2">
+                    <button type="button" onclick="document.getElementById('modal-editar').classList.add('hidden')"
+                            class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition">
+                        Cancelar
+                    </button>
+                    <button type="submit"
+                            class="px-4 py-2 bg-[#D2B48C] hover:brightness-95 text-black font-bold rounded-lg transition shadow-sm"
+                            style="background-color: #D2B48C; color: #000000;">
+                        Guardar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @* ============================================================
+       MODAL: Detalles del Producto
+       Muestra toda la información del producto seleccionado
+       ============================================================ *@
+    <div id="modal-detalles" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 p-4 overflow-y-auto">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-lg p-6 relative my-8">
+
+            @* Botón cerrar (X) *@
+            <button onclick="document.getElementById('modal-detalles').classList.add('hidden')"
+                    class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 font-bold text-xl">
+                &times;
+            </button>
+
+            @* Título del modal *@
+            <h3 class="text-xl font-bold text-gray-800 mb-4">Detalles del Producto</h3>
+
+            @* Imagen del producto *@
+            <div class="mb-4">
+                <img id="detalle-imagen" src="" alt="Producto" class="hidden w-full h-48 object-cover rounded-lg border border-gray-200">
+                <div id="detalle-sin-imagen" class="w-full h-48 bg-surface-container rounded-lg flex items-center justify-center hidden">
+                    <span class="material-symbols-outlined text-5xl text-outline-variant">image</span>
+                </div>
+            </div>
+
+            @* Información detallada del producto *@
+            <div class="space-y-3">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs text-on-surface-variant" id="detalle-codigo"></p>
+                        <h4 class="text-lg font-bold" id="detalle-nombre"></h4>
+                    </div>
+                    <span id="detalle-estado" class="text-[10px] font-bold px-3 py-1 rounded-full uppercase"></span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 text-sm">
+                    <div class="bg-surface-gray p-3 rounded-lg">
+                        <p class="text-on-surface-variant text-xs mb-1">Categoría</p>
+                        <p class="font-bold" id="detalle-categoria">—</p>
+                    </div>
+                    <div class="bg-surface-gray p-3 rounded-lg">
+                        <p class="text-on-surface-variant text-xs mb-1">Material</p>
+                        <p class="font-bold" id="detalle-material">—</p>
+                    </div>
+                    <div class="bg-surface-gray p-3 rounded-lg">
+                        <p class="text-on-surface-variant text-xs mb-1">Medidas</p>
+                        <p class="font-bold" id="detalle-medidas">—</p>
+                    </div>
+                    <div class="bg-surface-gray p-3 rounded-lg">
+                        <p class="text-on-surface-variant text-xs mb-1">Precio</p>
+                        <p class="font-bold text-wood-dark" id="detalle-precio">—</p>
+                    </div>
+                </div>
+
+                <div class="bg-surface-gray p-3 rounded-lg">
+                    <p class="text-on-surface-variant text-xs mb-1">Descripción</p>
+                    <p class="text-sm" id="detalle-descripcion">Sin descripción.</p>
+                </div>
+            </div>
+
+            @* Botones de acción: Editar y Eliminar *@
+            <div class="flex justify-end gap-2 mt-4">
+                @* Botón eliminar producto (formulario con POST) *@
+                <form asp-controller="Productos" asp-action="Eliminar" method="post" class="inline"
+                      onsubmit="return confirm('¿Está seguro de eliminar este producto? Esta acción no se puede deshacer.')">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="detalle-eliminar-id" />
+                    <button type="submit"
+                            class="px-4 py-2 bg-red-50 text-red-700 font-bold rounded-lg hover:bg-red-100 transition text-sm">
+                        Eliminar
+                    </button>
+                </form>
+
+                @* Botón editar (abre modal de edición) *@
+                <button id="detalle-btn-editar"
+                        class="px-4 py-2 bg-[#D2B48C] hover:brightness-95 text-black font-bold rounded-lg transition shadow-sm text-sm"
+                        style="background-color: #D2B48C; color: #000000;">
+                    Editar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    @* ============================================================
+       SCRIPTS JavaScript
+       ============================================================ *@
+    <script>
+        // ============================================================
+        // Función: previsualizarImagen
+        // Muestra una vista previa de la imagen seleccionada en el input file
+        // Parámetros:
+        //   event - evento del input file
+        //   previewId - ID del elemento <img> donde mostrar la vista previa
+        // ============================================================
+        function previsualizarImagen(event, previewId) {
+            var reader = new FileReader();
+            reader.onload = function () {
+                var img = document.getElementById(previewId);
+                img.src = reader.result;
+                img.classList.remove('hidden');
+            };
+            reader.readAsDataURL(event.target.files[0]);
         }
 
-        // Search highlight micro-interaction
-        const searchInput = document.querySelector('input[type="text"]');
-        searchInput.addEventListener('focus', () => {
-            searchInput.parentElement.classList.add('scale-[1.02]');
-        });
-        searchInput.addEventListener('blur', () => {
-            searchInput.parentElement.classList.remove('scale-[1.02]');
-        });
+        // ============================================================
+        // Función: filtrarProductos
+        // Filtra las tarjetas de productos en tiempo real según el texto
+        // de búsqueda (por nombre o código)
+        // ============================================================
+        function filtrarProductos() {
+            // Obtener el texto de búsqueda en minúsculas
+            var texto = document.getElementById('buscarProducto').value.toLowerCase();
+            // Obtener todas las tarjetas de productos
+            var tarjetas = document.querySelectorAll('.producto-card');
 
-                   
-           
+            tarjetas.forEach(function (tarjeta) {
+                // Obtener nombre y código del data attribute
+                var nombre = tarjeta.getAttribute('data-nombre') || '';
+                var codigo = tarjeta.getAttribute('data-codigo') || '';
+
+                // Mostrar u ocultar según coincidencia
+                if (nombre.includes(texto) || codigo.includes(texto)) {
+                    tarjeta.style.display = '';
+                } else {
+                    tarjeta.style.display = 'none';
+                }
+            });
+        }
+
+        // ============================================================
+        // Función: abrirModalEditar
+        // Carga los datos del producto por AJAX (fetch) y abre el modal
+        // de edición con los campos pre-llenados
+        // Parámetro: id - ID del producto a editar
+        // ============================================================
+        function abrirModalEditar(id) {
+            // Cerrar modal de detalles si está abierto
+            document.getElementById('modal-detalles').classList.add('hidden');
+
+            // Hacer petición GET al servidor para obtener datos del producto
+            fetch('/Productos/Editar/' + id)
+                .then(function (response) { return response.json(); })
+                .then(function (data) {
+                    // Llenar cada campo del formulario de edición con los datos recibidos
+                    document.getElementById('edit-id').value = data.idProducto;
+                    document.getElementById('edit-nombre').value = data.nombre || '';
+                    document.getElementById('edit-codigo').value = data.codigo || '';
+                    document.getElementById('edit-precio').value = data.precio || '';
+                    document.getElementById('edit-categoria').value = data.categoria || '';
+                    document.getElementById('edit-material').value = data.material || '';
+                    document.getElementById('edit-medidas').value = data.medidas || '';
+                    document.getElementById('edit-estado').value = data.estado || 'Activo';
+                    document.getElementById('edit-descripcion').value = data.descripcion || '';
+
+                    // Mostrar imagen actual si existe
+                    var imgActual = document.getElementById('edit-imagen-actual');
+                    if (data.imagen) {
+                        imgActual.src = data.imagen;
+                        imgActual.classList.remove('hidden');
+                    } else {
+                        imgActual.classList.add('hidden');
+                    }
+
+                    // Ocultar vista previa de nueva imagen
+                    document.getElementById('edit-preview-img').classList.add('hidden');
+
+                    // Mostrar el modal de edición
+                    document.getElementById('modal-editar').classList.remove('hidden');
+                })
+                .catch(function (error) {
+                    console.error('Error al cargar producto:', error);
+                    alert('Error al cargar los datos del producto.');
+                });
+        }
+
+        // ============================================================
+        // Función: abrirModalDetalles
+        // Carga los datos del producto por AJAX y abre el modal
+        // de detalles con toda la información
+        // Parámetro: id - ID del producto a consultar
+        // ============================================================
+        function abrirModalDetalles(id) {
+            // Hacer petición GET al servidor
+            fetch('/Productos/Editar/' + id)
+                .then(function (response) { return response.json(); })
+                .then(function (data) {
+                    // Llenar los campos del modal de detalles
+                    document.getElementById('detalle-codigo').textContent = data.codigo || 'Sin código';
+                    document.getElementById('detalle-nombre').textContent = data.nombre || '';
+                    document.getElementById('detalle-categoria').textContent = data.categoria || '—';
+                    document.getElementById('detalle-material').textContent = data.material || '—';
+                    document.getElementById('detalle-medidas').textContent = data.medidas || '—';
+                    document.getElementById('detalle-descripcion').textContent = data.descripcion || 'Sin descripción.';
+
+                    // Formatear precio
+                    if (data.precio) {
+                        document.getElementById('detalle-precio').textContent = '$' + Number(data.precio).toLocaleString('es-CO');
+                    } else {
+                        document.getElementById('detalle-precio').textContent = '—';
+                    }
+
+                    // Mostrar badge de estado con colores apropiados
+                    var estadoSpan = document.getElementById('detalle-estado');
+                    estadoSpan.textContent = data.estado || 'Activo';
+                    if (data.estado === 'Activo') {
+                        estadoSpan.className = 'text-[10px] font-bold px-3 py-1 rounded-full uppercase bg-teal-100 text-teal-800';
+                    } else {
+                        estadoSpan.className = 'text-[10px] font-bold px-3 py-1 rounded-full uppercase bg-red-100 text-red-800';
+                    }
+
+                    // Mostrar imagen o placeholder
+                    var imgDetalle = document.getElementById('detalle-imagen');
+                    var sinImagen = document.getElementById('detalle-sin-imagen');
+                    if (data.imagen) {
+                        imgDetalle.src = data.imagen;
+                        imgDetalle.classList.remove('hidden');
+                        sinImagen.classList.add('hidden');
+                    } else {
+                        imgDetalle.classList.add('hidden');
+                        sinImagen.classList.remove('hidden');
+                    }
+
+                    // Configurar botón eliminar con el ID del producto
+                    document.getElementById('detalle-eliminar-id').value = data.idProducto;
+
+                    // Configurar botón editar para abrir el modal de edición
+                    document.getElementById('detalle-btn-editar').onclick = function () {
+                        abrirModalEditar(data.idProducto);
+                    };
+
+                    // Mostrar el modal de detalles
+                    document.getElementById('modal-detalles').classList.remove('hidden');
+                })
+                .catch(function (error) {
+                    console.error('Error al cargar detalles:', error);
+                    alert('Error al cargar los detalles del producto.');
+                });
+        }
     </script>
-</body></html>
+
+</body>
+</html>
