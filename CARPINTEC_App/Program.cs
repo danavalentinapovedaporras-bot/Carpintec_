@@ -26,8 +26,11 @@ builder.Services.AddDbContext<CarpintecContext>(options =>
 // =========================
 builder.Services.AddScoped<TokenService>();
 
-// Servicio del Chatbot
+// Servicio del Chatbot Administrativo (ERP y Base de Datos)
 builder.Services.AddScoped<ChatbotService>();
+
+// Servicio del Chatbot Público (Visitantes de la Página Web)
+builder.Services.AddScoped<ChatbotPublicoService>();
 // =========================
 // Configuración JWT
 // =========================
@@ -109,6 +112,37 @@ builder.Services.AddSession(options =>
 // Construir aplicación
 // =========================
 var app = builder.Build();
+
+// =========================
+// Inicialización segura de esquema para vacaciones
+// =========================
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<CarpintecContext>();
+    db.Database.ExecuteSqlRaw(@"
+        IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('Empleado') AND name = 'FechaInicioVacaciones')
+        BEGIN
+            ALTER TABLE Empleado ADD FechaInicioVacaciones DATE NULL;
+        END
+        IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('Empleado') AND name = 'FechaFinVacaciones')
+        BEGIN
+            ALTER TABLE Empleado ADD FechaFinVacaciones DATE NULL;
+        END
+        IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('Empleado') AND name = 'FechaInicioEstado')
+        BEGIN
+            ALTER TABLE Empleado ADD FechaInicioEstado DATE NULL;
+        END
+        IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('Empleado') AND name = 'FechaFinEstado')
+        BEGIN
+            ALTER TABLE Empleado ADD FechaFinEstado DATE NULL;
+        END
+    ");
+}
+catch
+{
+    // Se ignora si la base de datos aún no está inicializada o se ejecuta offline
+}
 
 // =========================
 // Pipeline HTTP

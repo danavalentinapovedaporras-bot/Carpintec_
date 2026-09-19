@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace CARPINTEC_App.Models;
@@ -34,6 +34,16 @@ public partial class Empleado
     public string Estado { get; set; } = "Activo";
 
     public string? Foto { get; set; }
+
+    // Periodo de vacaciones (opcional)
+    public DateOnly? FechaInicioVacaciones { get; set; }
+
+    public DateOnly? FechaFinVacaciones { get; set; }
+
+    // Periodo de estado (Incapacidad, Permiso, Suspendido, Vacaciones, etc.)
+    public DateOnly? FechaInicioEstado { get; set; }
+
+    public DateOnly? FechaFinEstado { get; set; }
 
 
     // Relaciones

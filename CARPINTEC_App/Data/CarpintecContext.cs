@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using CARPINTEC_App.Models;
 using Microsoft.EntityFrameworkCore;
@@ -201,6 +201,10 @@ public partial class CarpintecContext : DbContext
             entity.Property(e => e.Nombre).HasMaxLength(100).IsUnicode(false);
             entity.Property(e => e.Salario).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.Telefono).HasMaxLength(20).IsUnicode(false);
+            entity.Property(e => e.FechaInicioVacaciones).HasColumnType("date");
+            entity.Property(e => e.FechaFinVacaciones).HasColumnType("date");
+            entity.Property(e => e.FechaInicioEstado).HasColumnType("date");
+            entity.Property(e => e.FechaFinEstado).HasColumnType("date");
 
             entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Empleados)
                 .HasForeignKey(d => d.IdUsuario)

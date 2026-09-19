@@ -1,4 +1,4 @@
-﻿@model CARPINTEC_App.Models.Usuario
+@model CARPINTEC_App.Models.Usuario
 
 @{
     Layout = null;
@@ -17,57 +17,88 @@
 
     <title>Crear Cuenta - Carpintec</title>
 
+    <!-- Tipografía Work Sans del Dashboard -->
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
     <style>
 
             * {
                 margin: 0;
                 padding: 0;
                 box-sizing: border-box;
-                font-family: Arial, Helvetica, sans-serif;
+                font-family: 'Work Sans', Arial, Helvetica, sans-serif;
             }
 
             body {
-                background: url('/img/fondoLogin.jpg');
+                background: linear-gradient(rgba(20, 14, 10, 0.45), rgba(20, 14, 10, 0.65)), url('/images/carpintera.jpeg');
                 background-size: cover;
                 background-position: center;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 min-height: 100vh;
+                padding: 20px;
             }
 
             .contenedor {
-                width: 430px;
-                background: white;
-                padding: 35px;
-                border-radius: 12px;
-                box-shadow: 0 0 20px rgba(0,0,0,.3);
+                width: 440px;
+                max-width: 100%;
+                background: rgba(255, 255, 255, 0.96);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                padding: 38px 34px;
+                border-radius: 18px;
+                box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+                border: 1px solid rgba(195, 157, 122, 0.35);
             }
 
+            /* Título Crear Cuenta con color beige y tipo de letra del Dashboard */
             h2 {
+                font-family: 'Work Sans', sans-serif;
                 text-align: center;
-                color: #8b4513;
-                margin-bottom: 25px;
+                color: #c39d7a; /* Color beige característico de Carpintec */
+                font-size: 28px;
+                font-weight: 800;
+                letter-spacing: -0.3px;
+                margin-bottom: 22px;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
             }
 
             label {
-                font-weight: bold;
+                font-family: 'Work Sans', sans-serif;
+                font-size: 13.5px;
+                font-weight: 600;
+                color: #3f2a22;
                 display: block;
                 margin-top: 10px;
+                margin-bottom: 4px;
             }
 
             input {
+                font-family: 'Work Sans', sans-serif;
                 width: 100%;
-                padding: 12px;
-                margin-top: 5px;
-                margin-bottom: 15px;
-                border-radius: 6px;
-                border: 1px solid #ccc;
+                padding: 12px 14px;
+                margin-top: 2px;
+                margin-bottom: 12px;
+                border-radius: 8px;
+                border: 1px solid #d8c6b5;
+                background: #fdfbf9;
+                font-size: 14px;
+                outline: none;
+                transition: border-color 0.2s, box-shadow 0.2s;
+            }
+
+            input:focus {
+                border-color: #c39d7a;
+                box-shadow: 0 0 0 3px rgba(195, 157, 122, 0.25);
+                background: #ffffff;
             }
 
             /* =========================
-                       CONTENEDOR CONTRASEÑA
-                       ========================= */
+               CONTENEDOR CONTRASEÑA
+               ========================= */
 
             .password-wrapper {
                 position: relative;
@@ -80,70 +111,97 @@
                 }
 
             /* =========================
-                       BOTÓN OJO
-                       ========================= */
+               BOTÓN OJO
+               ========================= */
 
             .toggle-password {
                 position: absolute;
-                right: 10px;
-                top: 50%;
+                right: 12px;
+                top: calc(50% - 6px);
                 transform: translateY(-50%);
                 width: auto;
-                padding: 5px;
+                padding: 4px;
                 background: transparent;
                 color: #777;
                 border: none;
                 border-radius: 0;
-                font-size: 20px;
+                font-size: 18px;
                 cursor: pointer;
             }
 
                 .toggle-password:hover {
                     background: transparent;
-                    color: #8b4513;
+                    color: #c39d7a;
                 }
 
             /* =========================
-                       BOTÓN CREAR CUENTA
-                       ========================= */
+               BOTÓN CREAR CUENTA
+               ========================= */
 
             .btn-crear {
+                font-family: 'Work Sans', sans-serif;
                 width: 100%;
                 padding: 14px;
-                background: #8b4513;
-                color: white;
+                background: #c39d7a; /* Color beige */
+                color: #ffffff;
                 border: none;
-                border-radius: 6px;
+                border-radius: 8px;
                 cursor: pointer;
-                font-size: 18px;
-                margin-top: 5px;
+                font-size: 16.5px;
+                font-weight: 700;
+                margin-top: 10px;
+                box-shadow: 0 4px 14px rgba(195, 157, 122, 0.4);
+                transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
             }
 
                 .btn-crear:hover {
-                    background: #6d3510;
+                    background: #a98260;
+                    transform: translateY(-1px);
+                    box-shadow: 0 6px 18px rgba(195, 157, 122, 0.5);
+                }
+
+                .btn-crear:active {
+                    transform: translateY(0);
                 }
 
             .mensaje {
-                color: red;
+                color: #ba1a1a;
+                background: #ffdad6;
+                padding: 8px 12px;
+                border-radius: 6px;
+                font-size: 13px;
                 text-align: center;
                 margin-bottom: 15px;
             }
 
             .ok {
-                color: green;
+                color: #065f46;
+                background: #d1fae5;
+                padding: 8px 12px;
+                border-radius: 6px;
+                font-size: 13px;
                 text-align: center;
                 margin-bottom: 15px;
             }
 
             .login {
+                font-family: 'Work Sans', sans-serif;
                 text-align: center;
-                margin-top: 20px;
+                margin-top: 22px;
+                font-size: 13.5px;
+                color: #666;
             }
 
                 .login a {
-                    color: #8b4513;
+                    color: #c39d7a;
                     text-decoration: none;
-                    font-weight: bold;
+                    font-weight: 700;
+                    transition: color 0.2s;
+                }
+
+                .login a:hover {
+                    color: #8b4513;
+                    text-decoration: underline;
                 }
 
     </style>
@@ -153,6 +211,11 @@
 <body>
 
     <div class="contenedor">
+
+        <!-- Logo / Ícono de Carpintería -->
+        <div style="text-align:center; margin-bottom:8px;">
+            <img src="~/images/logo.png" alt="Logo CARPINTEC" style="width:58px; height:58px; object-fit:contain; display:inline-block;" onerror="this.style.display='none'">
+        </div>
 
         <h2>Crear Cuenta</h2>
 

@@ -9,9 +9,10 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Gestión de PQR | Carpintec</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Hanken+Grotesk:wght@400;600&amp;display=swap" rel="stylesheet">
+    <!-- INICIO: Fuentes de Google - Work Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    <!-- FIN: Fuentes de Google - Work Sans -->
     <script id="tailwind-config">
             tailwind.config = {
                 darkMode: "class",
@@ -82,23 +83,66 @@
                             "margin": "32px",
                             "gutter": "24px"
                         },
+                        /* INICIO: Configuración Work Sans en Tailwind */
                         "fontFamily": {
-                            "headline-lg": ["Manrope"],
-                            "body-lg": ["Hanken Grotesk"],
-                            "body-md": ["Hanken Grotesk"],
-                            "headline-md": ["Manrope"],
-                            "label-md": ["Hanken Grotesk"],
-                            "headline-xl": ["Manrope"],
-                            "body-sm": ["Hanken Grotesk"],
-                            "headline-lg-mobile": ["Manrope"]
+                            "headline-lg": ["Work Sans", "sans-serif"],
+                            "body-lg": ["Work Sans", "sans-serif"],
+                            "body-md": ["Work Sans", "sans-serif"],
+                            "headline-md": ["Work Sans", "sans-serif"],
+                            "label-md": ["Work Sans", "sans-serif"],
+                            "headline-xl": ["Work Sans", "sans-serif"],
+                            "body-sm": ["Work Sans", "sans-serif"],
+                            "headline-lg-mobile": ["Work Sans", "sans-serif"]
                         }
+                        /* FIN: Configuración Work Sans en Tailwind */
                     },
                 },
             }
     </script>
+    <!-- INICIO: Estilos de tipografía Work Sans en negrita y corrección de colores -->
     <style>
+            @@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&display=swap');
+
+            body,
+            header,
+            main,
+            #detailPanel,
+            #modalPQR,
+            #modalEditarPQR,
+            header *:not(.material-symbols-outlined):not([class*="fa-"]):not(i),
+            main *:not(.material-symbols-outlined):not([class*="fa-"]):not(i),
+            #detailPanel *:not(.material-symbols-outlined):not([class*="fa-"]):not(i),
+            #modalPQR *:not(.material-symbols-outlined):not([class*="fa-"]):not(i),
+            #modalEditarPQR *:not(.material-symbols-outlined):not([class*="fa-"]):not(i) {
+                font-family: 'Work Sans', sans-serif !important;
+                font-weight: 700 !important;
+            }
+
             .material-symbols-outlined {
+                font-family: 'Material Symbols Outlined' !important;
+                font-weight: normal !important;
                 font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+                vertical-align: middle;
+            }
+
+            body {
+                background-color: #fcf9f8;
+                font-family: 'Work Sans', sans-serif !important;
+                font-weight: 700 !important;
+                color: #000000;
+            }
+
+            /* Corrección de azul de Bootstrap a beige (#D2B48C) y negro */
+            .bg-primary {
+                background-color: #D2B48C !important;
+            }
+
+            .text-primary {
+                color: #000000 !important;
+            }
+
+            .border-primary {
+                border-color: #D2B48C !important;
             }
 
             .custom-scrollbar::-webkit-scrollbar {
@@ -119,11 +163,11 @@
             }
 
             .side-nav-active {
-    background-color: #5d4037;
-    color:white;
-}
-              
+                background-color: #5d4037;
+                color: white;
+            }
     </style>
+    <!-- FIN: Estilos de tipografía Work Sans en negrita y corrección de colores -->
 </head>
 <body class="bg-background text-on-background font-body-md min-h-screen flex">
     <!-- SideNavBar -->
@@ -139,16 +183,16 @@
             </div>
             <div class="flex items-center gap-md">
                 <button class="w-10 h-10 rounded-full hover:bg-surface-container-low flex items-center justify-center transition-colors">
-                    <span class="material-symbols-outlined text-primary">notifications</span>
+                    <span class="material-symbols-outlined text-black">notifications</span>
                 </button>
                 <button class="w-10 h-10 rounded-full hover:bg-surface-container-low flex items-center justify-center transition-colors">
-                    <span class="material-symbols-outlined text-primary">settings</span>
+                    <span class="material-symbols-outlined text-black">settings</span>
                 </button>
                 <div class="h-8 w-[1px] bg-outline-variant mx-xs"></div>
                 <div class="flex items-center gap-sm">
                     <div class="text-right">
-                        <p class="font-bold text-sm text-primary">Admin Principal</p>
-                        <p class="text-[10px] text-on-surface-variant uppercase tracking-tighter">Gestion de Calidad</p>
+                        <p class="font-bold text-sm text-black" style="color: #000000;">Admin Principal</p>
+                        <p class="text-[10px] text-black/70 font-bold uppercase tracking-tighter">Gestion de Calidad</p>
                     </div>
                     <img class="w-10 h-10 rounded-full object-cover border-2 border-primary-fixed" data-alt="A professional headshot of a mature corporate administrator with silvering hair, wearing a high-quality tailored brown blazer. The background is a clean, bright architectural space with soft daylighting and minimal furniture. The aesthetic is sophisticated, trustworthy, and aligned with luxury craftsmanship." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyn54J2vqfkw_pVo92FfxNkvs0CSxzW9-gBaFatkchi2f0Yyfvfa6BZXBdRznL1NVnkbfzgFCLeYZU8xuoSSl9i_HbOXqodYgUVSdY0AiNB-F3_6QDTWRyoESAHn2vS2PKifDtyyv8bX0h7ha0kSlQbC8aQ7TlpQRSjfkW2A6PIRUwAaGTC0f-6DG2hbT1QDKinfFugvkBr-m31FPhJjlGK7k_j1rhu60YcLnoglokkIBB4QLbdisd">
                 </div>
@@ -160,28 +204,28 @@
 <div class="mb-lg flex justify-between items-center">
 
     <div>
-        <h2 class="font-headline-lg text-headline-lg text-primary mb-xs">
+        <h2 class="font-headline-lg text-headline-lg text-black font-bold mb-xs" style="color: #000000;">
             Gestión de PQR
         </h2>
 
-        <p class="text-on-surface-variant font-body-md">
+        <p class="text-black/80 font-body-md font-bold">
             Administra las peticiones, quejas, reclamos y sugerencias enviadas por los clientes de forma centralizada.
         </p>
     </div>
 
-  <!-- Botón Nueva PQR -->
+  <!-- INICIO: Botón Nueva PQR en color beige (#D2B48C) con letra en negro -->
 <button onclick="abrirModalPQR()"
-        class="bg-primary text-on-primary px-md py-sm rounded-lg font-bold flex items-center gap-sm">
+        class="bg-[#D2B48C] text-black px-md py-sm rounded-lg font-bold flex items-center gap-sm shadow-sm hover:brightness-95 transition-all"
+        style="background-color: #D2B48C !important; color: #000000 !important;">
 
-    <span class="material-symbols-outlined">
+    <span class="material-symbols-outlined text-black">
         add
     </span>
 
     Nueva PQR
 
 </button>
-
-        
+<!-- FIN: Botón Nueva PQR en color beige (#D2B48C) con letra en negro -->
 
 </div>
             </div>
@@ -190,32 +234,34 @@
                 <div class="bg-surface-container-lowest p-md rounded-xl shadow-sm border-l-4 border-yellow-500 hover:-translate-y-1 transition-transform">
                     <div class="flex items-center justify-between">
                         <span class="material-symbols-outlined text-yellow-600 bg-yellow-50 p-sm rounded-lg">pending_actions</span>
-                        <span class="text-headline-md font-headline-md text-primary">@ViewBag.Pendientes</span>
+                        <span class="text-headline-md font-headline-md text-black font-bold" style="color: #000000;">@ViewBag.Pendientes</span>
                     </div>
-                    <p class="mt-sm text-label-md text-on-surface-variant">PQR Pendientes</p>
+                    <p class="mt-sm text-label-md text-black font-bold">PQR Pendientes</p>
                 </div>
-                <div class="bg-surface-container-lowest p-md rounded-xl shadow-sm border-l-4 border-blue-500 hover:-translate-y-1 transition-transform">
+                <!-- INICIO: Tarjeta En proceso con borde beige (#D2B48C) en lugar de azul -->
+                <div class="bg-surface-container-lowest p-md rounded-xl shadow-sm border-l-4 border-[#D2B48C] hover:-translate-y-1 transition-transform" style="border-left-color: #D2B48C;">
                     <div class="flex items-center justify-between">
-                        <span class="material-symbols-outlined text-blue-600 bg-blue-50 p-sm rounded-lg">sync</span>
-                        <span class="text-headline-md font-headline-md text-primary">@ViewBag.EnProceso</span>
+                        <span class="material-symbols-outlined text-black bg-[#D2B48C]/30 p-sm rounded-lg">sync</span>
+                        <span class="text-headline-md font-headline-md text-black font-bold" style="color: #000000;">@ViewBag.EnProceso</span>
                     </div>
-                    <p class="mt-sm text-label-md text-on-surface-variant">En proceso</p>
+                    <p class="mt-sm text-label-md text-black font-bold">En proceso</p>
                 </div>
+                <!-- FIN: Tarjeta En proceso con borde beige (#D2B48C) en lugar de azul -->
                 <div class="bg-surface-container-lowest p-md rounded-xl shadow-sm border-l-4 border-green-500 hover:-translate-y-1 transition-transform">
                     <div class="flex items-center justify-between">
                         <span class="material-symbols-outlined text-green-600 bg-green-50 p-sm rounded-lg">verified</span>
-                        <span class="text-headline-md font-headline-md text-primary">@ViewBag.Respondidas</span>
+                        <span class="text-headline-md font-headline-md text-black font-bold" style="color: #000000;">@ViewBag.Respondidas</span>
                     </div>
-                    <p class="mt-sm text-label-md text-on-surface-variant">Respondidas</p>
+                    <p class="mt-sm text-label-md text-black font-bold">Respondidas</p>
                 </div>
                 <div class="bg-surface-container-lowest p-md rounded-xl shadow-sm border-l-4 border-gray-400 hover:-translate-y-1 transition-transform">
                     <div class="flex items-center justify-between">
                         <span class="material-symbols-outlined text-gray-600 bg-gray-50 p-sm rounded-lg">inventory_2</span>
-                        <span class="text-headline-md font-headline-md text-primary">
+                        <span class="text-headline-md font-headline-md text-black font-bold" style="color: #000000;">
     @ViewBag.Cerradas
 </span>
                     </div>
-                    <p class="mt-sm text-label-md text-on-surface-variant">Cerradas</p>
+                    <p class="mt-sm text-label-md text-black font-bold">Cerradas</p>
                 </div>
             </div>
             <!-- Filtros Section -->
@@ -287,16 +333,20 @@
                 <!-- Botones -->
                 <div class="flex gap-sm">
 
+                    <!-- INICIO: Botón Buscar en color beige (#D2B48C) con letra en negro -->
                     <button onclick="buscarPQR()"
-                            class="flex-1 bg-primary text-on-primary py-sm px-md rounded-lg font-label-md hover:bg-primary-container transition-colors shadow-sm">
+                            class="flex-1 bg-[#D2B48C] text-black font-bold py-sm px-md rounded-lg hover:brightness-95 transition-all shadow-sm"
+                            style="background-color: #D2B48C !important; color: #000000 !important;">
 
                         Buscar
 
                     </button>
+                    <!-- FIN: Botón Buscar en color beige (#D2B48C) con letra en negro -->
 
 
                     <button onclick="limpiarFiltros()"
-                            class="bg-secondary-container text-primary py-sm px-md rounded-lg font-label-md hover:bg-outline-variant transition-colors">
+                            class="bg-secondary-container text-black font-bold py-sm px-md rounded-lg hover:bg-outline-variant transition-colors"
+                            style="color: #000000 !important;">
 
                         Limpiar
 
@@ -312,49 +362,49 @@
                     <table class="w-full text-left border-collapse zebra-table">
                         <thead class="bg-surface-container-low border-b border-outline-variant">
                             <tr>
-                                <th class="px-md py-sm font-label-md text-on-surface-variant uppercase text-xs">Radicado</th>
-                                <th class="px-md py-sm font-label-md text-on-surface-variant uppercase text-xs">Cliente</th>
-                                <th class="px-md py-sm font-label-md text-on-surface-variant uppercase text-xs">Tipo</th>
-                                <th class="px-md py-sm font-label-md text-on-surface-variant uppercase text-xs">Asunto</th>
-                                <th class="px-md py-sm font-label-md text-on-surface-variant uppercase text-xs">Fecha</th>
-                                <th class="px-md py-sm font-label-md text-on-surface-variant uppercase text-xs">Estado</th>
-                                <th class="px-md py-sm font-label-md text-on-surface-variant uppercase text-xs">Prioridad</th>
-                                <th class="px-md py-sm font-label-md text-on-surface-variant uppercase text-xs text-center">Acciones</th>
+                                <th class="px-md py-sm font-bold text-black uppercase text-xs">Radicado</th>
+                                <th class="px-md py-sm font-bold text-black uppercase text-xs">Cliente</th>
+                                <th class="px-md py-sm font-bold text-black uppercase text-xs">Tipo</th>
+                                <th class="px-md py-sm font-bold text-black uppercase text-xs">Asunto</th>
+                                <th class="px-md py-sm font-bold text-black uppercase text-xs">Fecha</th>
+                                <th class="px-md py-sm font-bold text-black uppercase text-xs">Estado</th>
+                                <th class="px-md py-sm font-bold text-black uppercase text-xs">Prioridad</th>
+                                <th class="px-md py-sm font-bold text-black uppercase text-xs text-center">Acciones</th>
                             </tr>
                         </thead>
-                    <tbody id="tablaPQR" class="text-body-sm divide-y divide-outline-variant/30">
+                    <tbody id="tablaPQR" class="text-body-sm divide-y divide-outline-variant/30 text-black font-bold">
 
                             @foreach (var item in Model)
                             {
                                 <tr class="hover:bg-primary-fixed-variant/5 transition-colors group">
 
-                                    <td class="px-md py-md font-bold text-primary">
+                                    <td class="px-md py-md font-bold text-black" style="color: #000000;">
                                         @item.CodigoPqr
                                     </td>
 
-                                    <td class="px-md py-md">
+                                    <td class="px-md py-md text-black font-bold">
                                        @(item.IdClienteNavigation != null 
     ? item.IdClienteNavigation.Nombre + " " + item.IdClienteNavigation.Apellido 
     : "Cliente no encontrado")
                                     </td>
 
-                                    <td class="px-md py-md">
+                                    <td class="px-md py-md text-black font-bold">
                                         @item.Tipo
                                     </td>
 
-                                    <td class="px-md py-md">
+                                    <td class="px-md py-md text-black font-bold">
                                         @item.Asunto
                                     </td>
 
-                                    <td class="px-md py-md">
+                                    <td class="px-md py-md text-black font-bold">
                                         @item.FechaRegistro.ToString("dd/MM/yyyy")
                                     </td>
 
-                                    <td class="px-md py-md">
+                                    <td class="px-md py-md text-black font-bold">
                                         @item.Estado
                                     </td>
 
-                                    <td class="px-md py-md">
+                                    <td class="px-md py-md text-black font-bold">
                                         -
                                     </td>
 
@@ -363,26 +413,26 @@
                                         <div class="flex justify-center gap-sm">
 
                                         <button onclick="abrirDetallePQR(@item.IdPqr)"
-                                                class="text-primary hover:scale-110 transition-transform">
+                                                class="text-black hover:scale-110 transition-transform" style="color: #000000;">
 
-                                            <span class="material-symbols-outlined">
+                                            <span class="material-symbols-outlined text-black">
                                                 visibility
                                             </span>
 
                                         </button>
                                         <button onclick="abrirDetallePQR(@item.IdPqr)"
-                                                class="text-primary hover:scale-110 transition-transform">
+                                                class="text-black hover:scale-110 transition-transform" style="color: #000000;">
 
-                                            <span class="material-symbols-outlined">
+                                            <span class="material-symbols-outlined text-black">
                                                 reply
                                             </span>
 
                                         </button>
 
                                         <button onclick="abrirEditarPQR(@item.IdPqr)"
-                                                class="text-primary hover:scale-110 transition-transform">
+                                                class="text-black hover:scale-110 transition-transform" style="color: #000000;">
 
-                                            <span class="material-symbols-outlined">
+                                            <span class="material-symbols-outlined text-black">
                                                 edit_note
                                             </span>
 
@@ -399,13 +449,15 @@
                     </table>
                 </div>
                 <div class="px-md py-sm border-t border-outline-variant bg-surface-bright flex items-center justify-between">
-                    <p class="text-body-sm text-on-surface-variant">Mostrando 3 de 185 resultados</p>
+                    <p class="text-body-sm text-black font-bold">Mostrando 3 de 185 resultados</p>
                     <div class="flex gap-xs">
-                        <button class="p-xs hover:bg-surface-container-low rounded"><span class="material-symbols-outlined">chevron_left</span></button>
-                        <button class="px-sm py-xs bg-primary text-on-primary rounded font-bold">1</button>
-                        <button class="px-sm py-xs hover:bg-surface-container-low rounded">2</button>
-                        <button class="px-sm py-xs hover:bg-surface-container-low rounded">3</button>
-                        <button class="p-xs hover:bg-surface-container-low rounded"><span class="material-symbols-outlined">chevron_right</span></button>
+                        <button class="p-xs hover:bg-surface-container-low rounded text-black"><span class="material-symbols-outlined text-black">chevron_left</span></button>
+                        <!-- INICIO: Paginación activa en color beige (#D2B48C) con letra en negro -->
+                        <button class="px-sm py-xs bg-[#D2B48C] text-black rounded font-bold shadow-sm" style="background-color: #D2B48C !important; color: #000000 !important;">1</button>
+                        <!-- FIN: Paginación activa en color beige (#D2B48C) con letra en negro -->
+                        <button class="px-sm py-xs hover:bg-surface-container-low rounded text-black font-bold">2</button>
+                        <button class="px-sm py-xs hover:bg-surface-container-low rounded text-black font-bold">3</button>
+                        <button class="p-xs hover:bg-surface-container-low rounded text-black"><span class="material-symbols-outlined text-black">chevron_right</span></button>
                     </div>
                 </div>
             </div>
@@ -413,14 +465,14 @@
     </main>
     <!-- Side Detail Panel (Modal Behavior) -->
     <div class="fixed inset-y-0 right-0 w-full md:w-[600px] bg-white shadow-2xl z-[60] transform translate-x-full transition-transform duration-500 flex flex-col border-l border-outline-variant" id="detailPanel">
-        <!-- Header -->
-        <div class="bg-primary p-md flex justify-between items-center text-on-primary">
+        <!-- Header en color beige (#D2B48C) con texto en negro -->
+        <div class="bg-[#D2B48C] p-md flex justify-between items-center text-black font-bold" style="background-color: #D2B48C !important; color: #000000 !important;">
             <div>
-                <h3 class="font-headline-md text-headline-md">Detalle de Radicado</h3>
-                <p class="text-body-sm text-on-primary/70">Expediente PQR-24-012</p>
+                <h3 class="font-headline-md text-headline-md text-black font-bold">Detalle de Radicado</h3>
+                <p class="text-body-sm text-black/80 font-bold">Expediente PQR-24-012</p>
             </div>
-            <button class="w-10 h-10 flex items-center justify-center hover:bg-white/10 rounded-full" onclick="toggleDetail()">
-                <span class="material-symbols-outlined">close</span>
+            <button class="w-10 h-10 flex items-center justify-center hover:bg-black/10 rounded-full text-black" onclick="toggleDetail()">
+                <span class="material-symbols-outlined text-black">close</span>
             </button>
         </div>
         <!-- Scrollable Content -->
@@ -428,59 +480,59 @@
             <!-- Cliente Section -->
             <div class="mb-lg">
                 <div class="flex items-center gap-sm mb-md pb-xs border-b border-outline-variant">
-                    <span class="material-symbols-outlined text-primary">person</span>
-                    <h4 class="font-bold text-primary uppercase text-xs tracking-wider">Información del Cliente</h4>
+                    <span class="material-symbols-outlined text-black">person</span>
+                    <h4 class="font-bold text-black uppercase text-xs tracking-wider">Información del Cliente</h4>
                 </div>
                 <div class="grid grid-cols-2 gap-md">
                     <div>
-                        <p class="text-xs text-on-surface-variant">Nombre Completo</p>
-                        <p id="detalleCliente" class="font-semibold"></p>
+                        <p class="text-xs text-on-surface-variant font-bold">Nombre Completo</p>
+                        <p id="detalleCliente" class="font-bold text-black"></p>
                     </div>
                     <div>
-                        <p class="text-xs text-on-surface-variant">Documento</p>
-                        <p id="detalleDocumento" class="font-semibold"></p>
+                        <p class="text-xs text-on-surface-variant font-bold">Documento</p>
+                        <p id="detalleDocumento" class="font-bold text-black"></p>
                     </div>
                     <div>
-                        <p class="text-xs text-on-surface-variant">Correo Electrónico</p>
-                        <p id="detalleCorreo" class="font-semibold"></p>
+                        <p class="text-xs text-on-surface-variant font-bold">Correo Electrónico</p>
+                        <p id="detalleCorreo" class="font-bold text-black"></p>
                     </div>
                     <div>
-                        <p class="text-xs text-on-surface-variant">Teléfono</p>
-                        <p id="detalleTelefono" class="font-semibold"></p>
+                        <p class="text-xs text-on-surface-variant font-bold">Teléfono</p>
+                        <p id="detalleTelefono" class="font-bold text-black"></p>
                     </div>
                 </div>
             </div>
             <!-- Solicitud Section -->
             <div class="mb-lg">
                 <div class="flex items-center gap-sm mb-md pb-xs border-b border-outline-variant">
-                    <span class="material-symbols-outlined text-primary">description</span>
-                    <h4 class="font-bold text-primary uppercase text-xs tracking-wider">Información de la Solicitud</h4>
+                    <span class="material-symbols-outlined text-black">description</span>
+                    <h4 class="font-bold text-black uppercase text-xs tracking-wider">Información de la Solicitud</h4>
                 </div>
                 <div class="space-y-md">
                     <div class="grid grid-cols-2 gap-md">
                         <div>
-                            <p class="text-xs text-on-surface-variant">Tipo de Solicitud</p>
-                            <p id="detalleTipo" class="font-semibold"></p>
+                            <p class="text-xs text-on-surface-variant font-bold">Tipo de Solicitud</p>
+                            <p id="detalleTipo" class="font-bold text-black"></p>
                         </div>
                         <div>
-                            <p class="text-xs text-on-surface-variant">Fecha Radicación</p>
-                            <p id="detalleFecha" class="font-semibold"></p>
+                            <p class="text-xs text-on-surface-variant font-bold">Fecha Radicación</p>
+                            <p id="detalleFecha" class="font-bold text-black"></p>
                         </div>
                     </div>
                     <div>
-                        <p class="text-xs text-on-surface-variant">Asunto</p>
-                        <p id="detalleAsunto" class="font-semibold text-lg"></p>
+                        <p class="text-xs text-on-surface-variant font-bold">Asunto</p>
+                        <p id="detalleAsunto" class="font-bold text-black text-lg"></p>
                     </div>
                     <div id="detalleDescripcion"
-                         class="p-md bg-surface-container rounded-lg border border-outline-variant/20 italic text-body-sm">
+                         class="p-md bg-surface-container rounded-lg border border-outline-variant/20 italic text-body-sm text-black font-bold">
                     </div>
                 </div>
             </div>
             <!-- Evidencias -->
             <div class="mb-lg">
                 <div class="flex items-center gap-sm mb-md pb-xs border-b border-outline-variant">
-                    <span class="material-symbols-outlined text-primary">attachment</span>
-                    <h4 class="font-bold text-primary uppercase text-xs tracking-wider">Evidencias (2)</h4>
+                    <span class="material-symbols-outlined text-black">attachment</span>
+                    <h4 class="font-bold text-black uppercase text-xs tracking-wider">Evidencias (2)</h4>
                 </div>
                 <div class="grid grid-cols-3 gap-sm">
                     <div class="aspect-square bg-surface-container rounded-lg overflow-hidden border border-outline-variant relative group cursor-pointer">
@@ -491,8 +543,8 @@
                     </div>
                     <div class="aspect-square bg-surface-container rounded-lg overflow-hidden border border-outline-variant flex items-center justify-center">
                         <div class="text-center">
-                            <span class="material-symbols-outlined text-primary-fixed-variant text-4xl">picture_as_pdf</span>
-                            <p class="text-[10px] mt-xs">Recibo_Caja.pdf</p>
+                            <span class="material-symbols-outlined text-black text-4xl">picture_as_pdf</span>
+                            <p class="text-[10px] mt-xs text-black font-bold">Recibo_Caja.pdf</p>
                         </div>
                     </div>
                 </div>
@@ -509,8 +561,8 @@
                     @Html.AntiForgeryToken()
 
                     <div class="flex items-center gap-sm mb-md">
-                        <span class="material-symbols-outlined text-primary">chat_bubble</span>
-                        <h4 class="font-bold text-primary uppercase text-xs tracking-wider">
+                        <span class="material-symbols-outlined text-black">chat_bubble</span>
+                        <h4 class="font-bold text-black uppercase text-xs tracking-wider">
                             Emitir Respuesta
                         </h4>
                     </div>
@@ -544,22 +596,28 @@
 
                         <div class="flex flex-wrap gap-sm">
 
+                            <!-- INICIO: Botón Guardar Respuesta en beige (#D2B48C) con letra en negro -->
                             <button type="button"
                                     onclick="guardarRespuesta()"
-                                    class="flex-1 bg-primary text-on-primary py-sm px-md rounded-lg">
+                                    class="flex-1 bg-[#D2B48C] text-black font-bold py-sm px-md rounded-lg hover:brightness-95 transition-all shadow-sm"
+                                    style="background-color: #D2B48C !important; color: #000000 !important;">
 
                                 Guardar Respuesta
 
                             </button>
+                            <!-- FIN: Botón Guardar Respuesta en beige (#D2B48C) con letra en negro -->
 
 
+                            <!-- INICIO: Botón Actualizar Estado con borde beige (#D2B48C) y letra en negro -->
                             <button type="button"
                                     onclick="actualizarEstado()"
-                                    class="flex-1 border-2 border-primary text-primary py-sm px-md rounded-lg">
+                                    class="flex-1 border-2 border-[#D2B48C] text-black font-bold py-sm px-md rounded-lg hover:bg-[#D2B48C]/10 transition-colors"
+                                    style="border-color: #D2B48C !important; color: #000000 !important;">
 
                                 Actualizar Estado
 
                             </button>
+                            <!-- FIN: Botón Actualizar Estado con borde beige (#D2B48C) y letra en negro -->
 
                         </div>
 
@@ -689,15 +747,18 @@
 
                 <button type="button"
                         onclick="cerrarModalPQR()"
-                        class="bg-gray-300 px-4 py-2 rounded-lg">
+                        class="bg-gray-300 text-black font-bold px-4 py-2 rounded-lg">
                     Cancelar
                 </button>
 
 
+                <!-- INICIO: Botón Guardar en color beige (#D2B48C) con letra en negro -->
                 <button type="submit"
-                        class="bg-primary text-white px-4 py-2 rounded-lg">
+                        class="bg-[#D2B48C] text-black font-bold px-4 py-2 rounded-lg hover:brightness-95 transition-all shadow-sm"
+                        style="background-color: #D2B48C !important; color: #000000 !important;">
                     Guardar
                 </button>
+                <!-- FIN: Botón Guardar en color beige (#D2B48C) con letra en negro -->
 
             </div>
 
@@ -807,15 +868,18 @@
 
                     <button type="button"
                             onclick="cerrarEditarPQR()"
-                            class="bg-gray-300 px-4 py-2 rounded-lg">
+                            class="bg-gray-300 text-black font-bold px-4 py-2 rounded-lg">
                         Cancelar
                     </button>
 
 
+                    <!-- INICIO: Botón Guardar Cambios en color beige (#D2B48C) con letra en negro -->
                     <button type="submit"
-                            class="bg-primary text-white px-4 py-2 rounded-lg">
+                            class="bg-[#D2B48C] text-black font-bold px-4 py-2 rounded-lg hover:brightness-95 transition-all shadow-sm"
+                            style="background-color: #D2B48C !important; color: #000000 !important;">
                         Guardar Cambios
                     </button>
+                    <!-- FIN: Botón Guardar Cambios en color beige (#D2B48C) con letra en negro -->
 
 
                 </div>

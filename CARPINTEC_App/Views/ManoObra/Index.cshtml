@@ -1,15 +1,15 @@
 @model IEnumerable<CARPINTEC_App.Models.ManoObra>
 
 <!DOCTYPE html>
-
 <html class="h-full" lang="es">
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title> Mano de Obra - Carpintec</title>
-    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600&amp;family=Manrope:wght@600;700&amp;display=swap" rel="stylesheet" />
+    <title>Mano de Obra - Carpintec</title>
+    <!-- INICIO: Fuentes de Google - Work Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
+    <!-- FIN: Fuentes de Google - Work Sans -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script id="tailwind-config">
             tailwind.config = {
@@ -81,16 +81,18 @@
                             "sm": "12px",
                             "lg": "40px"
                         },
+                        /* INICIO: Configuración Work Sans en Tailwind */
                         "fontFamily": {
-                            "headline-xl": ["Manrope"],
-                            "headline-md": ["Manrope"],
-                            "headline-lg-mobile": ["Manrope"],
-                            "body-lg": ["Hanken Grotesk"],
-                            "label-md": ["Hanken Grotesk"],
-                            "body-md": ["Hanken Grotesk"],
-                            "headline-lg": ["Manrope"],
-                            "body-sm": ["Hanken Grotesk"]
+                            "headline-xl": ["Work Sans", "sans-serif"],
+                            "headline-md": ["Work Sans", "sans-serif"],
+                            "headline-lg-mobile": ["Work Sans", "sans-serif"],
+                            "body-lg": ["Work Sans", "sans-serif"],
+                            "label-md": ["Work Sans", "sans-serif"],
+                            "body-md": ["Work Sans", "sans-serif"],
+                            "headline-lg": ["Work Sans", "sans-serif"],
+                            "body-sm": ["Work Sans", "sans-serif"]
                         },
+                        /* FIN: Configuración Work Sans en Tailwind */
                         "fontSize": {
                             "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
                             "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
@@ -105,10 +107,46 @@
                 }
             }
     </script>
+    <!-- INICIO: Estilos de tipografía Work Sans en negrita y corrección de colores -->
     <style>
-            .material-symbols-outlined {
-                font-family: 'Material Symbols Outlined';
+            @@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&display=swap');
+
+            body,
+            header,
+            main,
+            header *:not(.material-symbols-outlined):not([class*="fa-"]):not(i),
+            main *:not(.material-symbols-outlined):not([class*="fa-"]):not(i) {
+                font-family: 'Work Sans', sans-serif !important;
+                font-weight: 700 !important;
             }
+
+            .material-symbols-outlined {
+                font-family: 'Material Symbols Outlined' !important;
+                font-weight: normal !important;
+                font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+                vertical-align: middle;
+            }
+
+            body {
+                background-color: #fcf9f8;
+                font-family: 'Work Sans', sans-serif !important;
+                font-weight: 700 !important;
+                color: #000000;
+            }
+
+            /* Corrección de azul de Bootstrap a beige (#D2B48C) y negro */
+            .bg-primary {
+                background-color: #D2B48C !important;
+            }
+
+            .text-primary {
+                color: #000000 !important;
+            }
+
+            .border-primary {
+                border-color: #D2B48C !important;
+            }
+
             /* Tonal layering & Ambient shadows */
             .card-shadow {
                 box-shadow: 0 4px 12px rgba(93, 64, 55, 0.05);
@@ -118,7 +156,24 @@
                 transform: translateY(-2px);
                 box-shadow: 0 8px 16px rgba(93, 64, 55, 0.1);
             }
+
+            /* Estilos para impresión y exportación a PDF */
+            @@media print {
+                header, .no-print, form, .modal {
+                    display: none !important;
+                }
+                main {
+                    padding: 0 !important;
+                    margin: 0 !important;
+                    max-width: 100% !important;
+                }
+                .card-shadow {
+                    box-shadow: none !important;
+                    border: 1px solid #ccc !important;
+                }
+            }
     </style>
+    <!-- FIN: Estilos de tipografía Work Sans en negrita y corrección de colores -->
 </head>
 <body class="bg-background text-on-surface h-full font-body-md antialiased">
     <!-- Main Layout -->
@@ -126,58 +181,107 @@
         <!-- TopAppBar -->
         <header class="w-full top-0 sticky shadow-sm bg-surface dark:bg-surface-container-low flex justify-between items-center px-margin h-20 w-full z-40">
             <div class="flex items-center gap-4">
-                <button class="text-primary dark:text-primary-fixed hover:bg-secondary-container/50 transition-colors p-2 rounded-full md:hidden">
-                    <span class="material-symbols-outlined" data-icon="menu">menu</span>
-                </button>
-                <div class="font-headline-lg text-headline-lg font-bold text-primary dark:text-primary-fixed">Carpintec</div>
+                @* CAMBIO: Enlace de retroceso al Dashboard *@
+                <a href="/Dashboard/Index" class="text-black hover:bg-secondary-container/50 transition-colors p-2 rounded-full" title="Volver al Dashboard" style="color: #000000;">
+                    <span class="material-symbols-outlined text-black" data-icon="arrow_back">arrow_back</span>
+                </a>
+                <div class="font-headline-lg text-headline-lg font-bold text-black" style="color: #000000;">Carpintec</div>
             </div>
             <div class="flex items-center gap-4">
                 <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-outline-variant cursor-pointer scale-95 active:opacity-80 transition-all">
-                    <img alt="Profile picture of the administrator" class="w-full h-full object-cover" data-alt="A professional headshot of a carpentry workshop manager in a brightly lit office setting, warm natural lighting emphasizing reliability and craftsmanship, subtle depth of field." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEI7Y1OzFUJOm_9SlmHUwD3EThBny2Tbzt16lW7tKB5dxYrPxrETIb1cCPGdlW-qi303NCc97NPM9I1K65fsV4E1OMyG_qrIpCrCYF4B_lzKpjXJ1a5W9W3et7wlV5yEkzQLIXSm7bhmF6nyA-5_HPZuFOjj-nvbJyuUadY9fBWNbCd9jy2KofRIzIeZ_kTw56sLHfYbNs8Km6YWV7zxXjK4uW1tRsIVyhq4BgJKTbgj27yOzVbDm7" />
+                    <img alt="Profile picture of the administrator" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEI7Y1OzFUJOm_9SlmHUwD3EThBny2Tbzt16lW7tKB5dxYrPxrETIb1cCPGdlW-qi303NCc97NPM9I1K65fsV4E1OMyG_qrIpCrCYF4B_lzKpjXJ1a5W9W3et7wlV5yEkzQLIXSm7bhmF6nyA-5_HPZuFOjj-nvbJyuUadY9fBWNbCd9jy2KofRIzIeZ_kTw56sLHfYbNs8Km6YWV7zxXjK4uW1tRsIVyhq4BgJKTbgj27yOzVbDm7" />
                 </div>
             </div>
         </header>
+
         <!-- Main Content Area -->
         <main class="flex-1 w-full max-w-[1440px] mx-auto px-margin py-lg md:px-margin md:py-lg grid grid-cols-4 md:grid-cols-12 gap-gutter">
+            
+            @* ==========================================================================
+               CAMBIO REALIZADO: Notificaciones emergentes dinámicas (TempData["Exito"] / TempData["Error"])
+               procedentes de operaciones en la base de datos (Crear, Editar, Eliminar).
+               ========================================================================== *@
+            @if (TempData["Exito"] != null)
+            {
+                <div class="col-span-4 md:col-span-12 p-4 rounded-xl bg-green-50 border border-green-300 text-green-800 text-sm font-bold flex items-center justify-between shadow-sm">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-green-600">check_circle</span>
+                        <span>@TempData["Exito"]</span>
+                    </div>
+                    <button type="button" onclick="this.parentElement.remove()" class="text-green-600 hover:text-green-800">
+                        <span class="material-symbols-outlined text-sm">close</span>
+                    </button>
+                </div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="col-span-4 md:col-span-12 p-4 rounded-xl bg-red-50 border border-red-300 text-red-800 text-sm font-bold flex items-center justify-between shadow-sm">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-red-600">error</span>
+                        <span>@TempData["Error"]</span>
+                    </div>
+                    <button type="button" onclick="this.parentElement.remove()" class="text-red-600 hover:text-red-800">
+                        <span class="material-symbols-outlined text-sm">close</span>
+                    </button>
+                </div>
+            }
+
             <!-- Header Section -->
             <div class="col-span-4 md:col-span-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-md">
-                <h1 class="font-headline-xl text-headline-xl text-primary">Mano de Obra</h1>
-                <div class="flex flex-wrap items-center gap-4 w-full md:w-auto">
-                    <!-- Search -->
+                <h1 class="font-headline-xl text-headline-xl text-black font-bold" style="color: #000000;">Mano de Obra</h1>
+                
+                @* ==========================================================================
+                   CAMBIO REALIZADO: Formulario de búsqueda y filtros conectado al controlador.
+                   Filtra por texto en nombre de empleado, código de orden, proceso o producto,
+                   y por estado (Pendiente, En proceso, Finalizado) ejecutando consulta en la BD.
+                   ========================================================================== *@
+                <form method="get" asp-action="Index" class="flex flex-wrap items-center gap-4 w-full md:w-auto">
+                    <!-- Search Input funcional con BD -->
                     <div class="relative w-full md:w-64">
                         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
-                        <input class="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors font-body-md text-on-surface" placeholder="Buscar empleado o ID..." type="text" />
+                        <input name="search" value="@ViewBag.Search" class="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg focus:outline-none focus:border-[#D2B48C] focus:ring-1 focus:ring-[#D2B48C] transition-colors font-body-md text-black font-bold" placeholder="Buscar empleado, orden..." type="text" />
                     </div>
-                    <!-- Filters -->
-                    <select class="bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2 focus:outline-none focus:border-primary font-body-md text-on-surface cursor-pointer">
-                        <option value="">Todos los estados</option>
-                        <option value="pendiente">Pendiente</option>
-                        <option value="en_proceso">En Proceso</option>
-                        <option value="finalizado">Finalizado</option>
+
+                    <!-- Filters select funcional con BD -->
+                    <select name="estado" onchange="this.form.submit()" class="bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2 focus:outline-none focus:border-[#D2B48C] font-body-md text-black font-bold cursor-pointer">
+                        <option value="" selected="@(string.IsNullOrEmpty((string?)ViewBag.Estado))">Todos los estados</option>
+                        <option value="Pendiente" selected="@((string?)ViewBag.Estado == "Pendiente")">Pendiente</option>
+                        <option value="En proceso" selected="@((string?)ViewBag.Estado == "En proceso" || (string?)ViewBag.Estado == "En Proceso")">En Proceso</option>
+                        <option value="Finalizado" selected="@((string?)ViewBag.Estado == "Finalizado")">Finalizado</option>
                     </select>
                     <!-- New Assignment Button -->
                     <button type="button" onclick="abrirModalAsignacion()" class="bg-primary text-on-primary hover:bg-primary/90 px-6 py-2 rounded-lg font-label-md text-label-md flex items-center gap-2 transition-colors active:bg-primary/80 focus:ring-2 focus:ring-primary-container focus:outline-none shadow-sm">
                         <span class="material-symbols-outlined" data-icon="add">add</span>
                         Nueva asignación
                     </button>
-                </div>
+                </form>
             </div>
+
             <!-- Summary Cards (Bento Grid Style) -->
             <div class="col-span-4 md:col-span-12 grid grid-cols-1 md:grid-cols-4 gap-gutter mb-lg">
-                <!-- Card 1 -->
+                @* ==========================================================================
+                   CAMBIO REALIZADO: Card 1 - Total de Empleados Trabajando calculado dinámicamente desde la BD
+                   (conteo de empleados únicos con labores en estado 'En proceso').
+                   ========================================================================== *@
                 <div class="bg-surface-container-lowest p-md rounded-xl card-shadow card-hover transition-all flex flex-col gap-4 relative overflow-hidden border border-outline-variant/30">
                     <div class="absolute top-0 right-0 p-4 opacity-10">
                         <span class="material-symbols-outlined text-[64px]" data-icon="group">group</span>
                     </div>
                     <div class="flex items-center gap-3">
-                        <div class="p-3 bg-secondary-container rounded-lg text-primary">
-                            <span class="material-symbols-outlined" data-icon="group">group</span>
+                        <div class="p-3 bg-secondary-container rounded-lg text-black">
+                            <span class="material-symbols-outlined text-black" data-icon="group">group</span>
                         </div>
-                        <h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Empleados Trabajando</h3>
+                        <h3 class="font-label-md text-label-md text-black font-bold uppercase tracking-wider">Empleados Trabajando</h3>
                     </div>
-                    <div class="font-headline-xl text-headline-xl text-on-surface">24</div>
+                    <div class="font-headline-xl text-headline-xl text-black font-bold" style="color: #000000;">
+                        @(ViewBag.EmpleadosTrabajando ?? 0)
+                    </div>
                 </div>
-                <!-- Card 2 -->
+
+                @* ==========================================================================
+                   CAMBIO REALIZADO: Card 2 - Trabajos Pendientes calculado dinámicamente desde la BD
+                   (conteo de registros en ManoObra con Estado = 'Pendiente').
+                   ========================================================================== *@
                 <div class="bg-surface-container-lowest p-md rounded-xl card-shadow card-hover transition-all flex flex-col gap-4 relative overflow-hidden border border-outline-variant/30">
                     <div class="absolute top-0 right-0 p-4 opacity-10">
                         <span class="material-symbols-outlined text-[64px]" data-icon="pending_actions">pending_actions</span>
@@ -186,11 +290,17 @@
                         <div class="p-3 bg-error-container rounded-lg text-error">
                             <span class="material-symbols-outlined" data-icon="pending_actions">pending_actions</span>
                         </div>
-                        <h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Trabajos Pendientes</h3>
+                        <h3 class="font-label-md text-label-md text-black font-bold uppercase tracking-wider">Trabajos Pendientes</h3>
                     </div>
-                    <div class="font-headline-xl text-headline-xl text-on-surface">12</div>
+                    <div class="font-headline-xl text-headline-xl text-black font-bold" style="color: #000000;">
+                        @(ViewBag.TrabajosPendientes ?? 0)
+                    </div>
                 </div>
-                <!-- Card 3 -->
+
+                @* ==========================================================================
+                   CAMBIO REALIZADO: Card 3 - Trabajos Finalizados calculado dinámicamente desde la BD
+                   (conteo de registros en ManoObra con Estado = 'Finalizado').
+                   ========================================================================== *@
                 <div class="bg-surface-container-lowest p-md rounded-xl card-shadow card-hover transition-all flex flex-col gap-4 relative overflow-hidden border border-outline-variant/30">
                     <div class="absolute top-0 right-0 p-4 opacity-10">
                         <span class="material-symbols-outlined text-[64px]" data-icon="check_circle">check_circle</span>
@@ -199,54 +309,69 @@
                         <div class="p-3 bg-tertiary-fixed rounded-lg text-tertiary">
                             <span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
                         </div>
-                        <h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Trabajos Finalizados</h3>
+                        <h3 class="font-label-md text-label-md text-black font-bold uppercase tracking-wider">Trabajos Finalizados</h3>
                     </div>
-                    <div class="font-headline-xl text-headline-xl text-on-surface">45</div>
+                    <div class="font-headline-xl text-headline-xl text-black font-bold" style="color: #000000;">
+                        @(ViewBag.TrabajosFinalizados ?? 0)
+                    </div>
                 </div>
-                <!-- Card 4 -->
+
+                @* ==========================================================================
+                   CAMBIO REALIZADO: Card 4 - Costo Total Mano de Obra calculado dinámicamente desde la BD
+                   (suma acumulada de horas * costoHora de todos los registros en ManoObra).
+                   ========================================================================== *@
                 <div class="bg-surface-container-lowest p-md rounded-xl card-shadow card-hover transition-all flex flex-col gap-4 relative overflow-hidden border border-outline-variant/30">
                     <div class="absolute top-0 right-0 p-4 opacity-10">
                         <span class="material-symbols-outlined text-[64px]" data-icon="payments">payments</span>
                     </div>
                     <div class="flex items-center gap-3">
-                        <div class="p-3 bg-primary-fixed rounded-lg text-primary">
-                            <span class="material-symbols-outlined" data-icon="payments">payments</span>
+                        <div class="p-3 bg-[#D2B48C]/30 rounded-lg text-black">
+                            <span class="material-symbols-outlined text-black" data-icon="payments">payments</span>
                         </div>
-                        <h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Costo Total Mano Obra</h3>
+                        <h3 class="font-label-md text-label-md text-black font-bold uppercase tracking-wider">Costo Total Mano Obra</h3>
                     </div>
-                    <div class="font-headline-xl text-headline-xl text-on-surface">$14,500</div>
+                    <div class="font-headline-xl text-headline-xl text-black font-bold" style="color: #000000;">
+                        @(ViewBag.CostoTotalFormatted ?? "$0")
+                    </div>
                 </div>
             </div>
-            <!-- Table Controls -->
-            <div class="col-span-4 md:col-span-12 flex justify-end gap-3 mb-4">
-                <button class="flex items-center gap-2 px-4 py-2 bg-surface-container border border-outline-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-high transition-colors text-on-surface">
-                    <span class="material-symbols-outlined text-sm" data-icon="picture_as_pdf">picture_as_pdf</span>
+
+            @* ==========================================================================
+               CAMBIO REALIZADO: Botones de control de exportación funcionales.
+               - Exportar PDF: activa ventana de impresión optimizada para PDF.
+               - Excel: descarga archivo .xlsx real generado por ClosedXML desde la BD.
+               - Imprimir: envía el documento a imprimir.
+               ========================================================================== *@
+            <div class="col-span-4 md:col-span-12 flex justify-end gap-3 mb-4 no-print">
+                <button type="button" onclick="window.print()" class="flex items-center gap-2 px-4 py-2 bg-surface-container border border-outline-variant rounded-lg font-bold hover:bg-surface-container-high transition-colors text-black" style="color: #000000;">
+                    <span class="material-symbols-outlined text-sm text-black" data-icon="picture_as_pdf">picture_as_pdf</span>
                     Exportar PDF
                 </button>
-                <button class="flex items-center gap-2 px-4 py-2 bg-surface-container border border-outline-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-high transition-colors text-on-surface">
-                    <span class="material-symbols-outlined text-sm" data-icon="table_view">table_view</span>
+                <a href="@Url.Action("ExportarExcel", "ManoObra")" class="flex items-center gap-2 px-4 py-2 bg-surface-container border border-outline-variant rounded-lg font-bold hover:bg-surface-container-high transition-colors text-black" style="color: #000000;">
+                    <span class="material-symbols-outlined text-sm text-black" data-icon="table_view">table_view</span>
                     Excel
-                </button>
-                <button class="flex items-center gap-2 px-4 py-2 bg-surface-container border border-outline-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-high transition-colors text-on-surface">
-                    <span class="material-symbols-outlined text-sm" data-icon="print">print</span>
+                </a>
+                <button type="button" onclick="window.print()" class="flex items-center gap-2 px-4 py-2 bg-surface-container border border-outline-variant rounded-lg font-bold hover:bg-surface-container-high transition-colors text-black" style="color: #000000;">
+                    <span class="material-symbols-outlined text-sm text-black" data-icon="print">print</span>
                     Imprimir
                 </button>
             </div>
+
             <!-- Administrative Table -->
             <div class="col-span-4 md:col-span-12 bg-surface-container-lowest rounded-xl card-shadow overflow-hidden border border-outline-variant/30">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
-                        <thead class="bg-surface-container-low border-b border-outline-variant/50 font-label-md text-label-md text-on-surface-variant">
+                        <thead class="bg-surface-container-low border-b border-outline-variant/50 font-label-md text-label-md text-black font-bold">
                             <tr>
-                                <th class="p-4 py-3 font-semibold">ID</th>
-                                <th class="p-4 py-3 font-semibold">Pedido</th>
-                                <th class="p-4 py-3 font-semibold">Empleado</th>
-                                <th class="p-4 py-3 font-semibold">Cargo</th>
-                                <th class="p-4 py-3 font-semibold">Actividad</th>
-                                <th class="p-4 py-3 font-semibold text-right">Horas</th>
-                                <th class="p-4 py-3 font-semibold text-right">Costo</th>
-                                <th class="p-4 py-3 font-semibold text-center">Estado</th>
-                                <th class="p-4 py-3 font-semibold text-center">Acciones</th>
+                                <th class="p-4 py-3 font-bold text-black">ID</th>
+                                <th class="p-4 py-3 font-bold text-black">Pedido</th>
+                                <th class="p-4 py-3 font-bold text-black">Empleado</th>
+                                <th class="p-4 py-3 font-bold text-black">Cargo</th>
+                                <th class="p-4 py-3 font-bold text-black">Actividad</th>
+                                <th class="p-4 py-3 font-bold text-black text-right">Horas</th>
+                                <th class="p-4 py-3 font-bold text-black text-right">Costo</th>
+                                <th class="p-4 py-3 font-bold text-black text-center">Estado</th>
+                                <th class="p-4 py-3 font-bold text-black text-center no-print">Acciones</th>
                             </tr>
                         </thead>
                         <tbody class="font-body-sm text-body-sm text-on-surface">
@@ -301,19 +426,60 @@
                         
                     </table>
                 </div>
-                <!-- Pagination -->
-                <div class="px-4 py-3 border-t border-outline-variant/30 bg-surface-container-lowest flex items-center justify-between">
-                    <span class="font-body-sm text-body-sm text-on-surface-variant">Mostrando 1 a 4 de 24 registros</span>
-                    <div class="flex gap-2">
-                        <button class="p-1 rounded text-outline hover:bg-surface-container-high disabled:opacity-50" disabled="">
-                            <span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span>
-                        </button>
-                        <button class="w-8 h-8 rounded bg-primary text-on-primary font-label-md text-label-md">1</button>
-                        <button class="w-8 h-8 rounded text-on-surface-variant hover:bg-surface-container-high font-label-md text-label-md">2</button>
-                        <button class="w-8 h-8 rounded text-on-surface-variant hover:bg-surface-container-high font-label-md text-label-md">3</button>
-                        <button class="p-1 rounded text-outline hover:bg-surface-container-high">
-                            <span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
-                        </button>
+
+                @* ==========================================================================
+                   CAMBIO REALIZADO: Paginación dinámica según los registros reales devueltos por la BD.
+                   Preserva los parámetros de búsqueda y estado en los enlaces.
+                   ========================================================================== *@
+                <div class="px-4 py-3 border-t border-outline-variant/30 bg-surface-container-lowest flex flex-col md:flex-row items-center justify-between gap-4 no-print">
+                    <span class="font-body-sm text-body-sm text-black font-bold">
+                        Mostrando @(ViewBag.RegistroInicio ?? 0) a @(ViewBag.RegistroFin ?? 0) de @(ViewBag.TotalRegistros ?? 0) registros
+                    </span>
+                    <div class="flex gap-2 items-center">
+                        @* Botón Anterior *@
+                        @if (ViewBag.PaginaActual > 1)
+                        {
+                            <a href="@Url.Action("Index", new { pagina = ViewBag.PaginaActual - 1, search = ViewBag.Search, estado = ViewBag.Estado })" class="p-1.5 rounded text-black hover:bg-surface-container-high transition-colors" title="Página anterior">
+                                <span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span>
+                            </a>
+                        }
+                        else
+                        {
+                            <button class="p-1.5 rounded text-outline opacity-40 cursor-not-allowed" disabled>
+                                <span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span>
+                            </button>
+                        }
+
+                        @* Botones de números de página *@
+                        @for (int p = 1; p <= (ViewBag.TotalPaginas ?? 1); p++)
+                        {
+                            if (p == ViewBag.PaginaActual)
+                            {
+                                <button class="w-8 h-8 rounded bg-[#D2B48C] text-black font-bold shadow-sm" style="background-color: #D2B48C !important; color: #000000 !important;">
+                                    @p
+                                </button>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("Index", new { pagina = p, search = ViewBag.Search, estado = ViewBag.Estado })" class="w-8 h-8 rounded text-black hover:bg-surface-container-high font-bold flex items-center justify-center transition-colors">
+                                    @p
+                                </a>
+                            }
+                        }
+
+                        @* Botón Siguiente *@
+                        @if (ViewBag.PaginaActual < ViewBag.TotalPaginas)
+                        {
+                            <a href="@Url.Action("Index", new { pagina = ViewBag.PaginaActual + 1, search = ViewBag.Search, estado = ViewBag.Estado })" class="p-1.5 rounded text-black hover:bg-surface-container-high transition-colors" title="Página siguiente">
+                                <span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+                            </a>
+                        }
+                        else
+                        {
+                            <button class="p-1.5 rounded text-outline opacity-40 cursor-not-allowed" disabled>
+                                <span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+                            </button>
+                        }
                     </div>
                 </div>
             </div>

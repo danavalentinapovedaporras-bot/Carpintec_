@@ -9,9 +9,30 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Carpintec - Gestión de Cotizaciones</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Work+Sans:wght@400;500;600&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300,0,0&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+
+    <!-- DATATABLES -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+    
+    <!-- INICIO: Estilos de tipografía Work Sans en negrita y corrección de colores azules a beige (#D2B48C) -->
     <style>
+            @@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&display=swap');
+
+            button[onclick="history.back()"],
+            main,
+            main *:not(.material-symbols-outlined):not([class*="fa-"]):not(i),
+            #modalNuevaCotizacion,
+            #modalNuevaCotizacion *:not(.material-symbols-outlined):not([class*="fa-"]):not(i) {
+                font-family: 'Work Sans', sans-serif !important;
+                font-weight: 700 !important;
+            }
+
             .material-symbols-outlined {
+                font-family: 'Material Symbols Outlined' !important;
+                font-weight: normal !important;
                 vertical-align: middle;
             }
 
@@ -22,6 +43,22 @@
             body {
                 background-color: #fbf9f4;
                 overflow-x: hidden;
+                font-family: 'Work Sans', sans-serif !important;
+                font-weight: 700 !important;
+                color: #000000;
+            }
+
+            /* Corrección de azul de Bootstrap a beige (#D2B48C / #b57a55) */
+            .bg-primary {
+                background-color: #D2B48C !important;
+            }
+
+            .text-primary {
+                color: #b57a55 !important;
+            }
+
+            .border-primary {
+                border-color: #D2B48C !important;
             }
 
             .custom-shadow-level-1 {
@@ -40,7 +77,18 @@
                 background: #d1c5b8;
                 border-radius: 10px;
             }
+
+            div.dt-container .dt-search {
+                display: none !important;
+            }
+
+            div.dt-container .dt-paging .dt-paging-button.current {
+                background: #D2B48C !important;
+                border-color: #D2B48C !important;
+                color: #000 !important;
+            }
     </style>
+    <!-- FIN: Estilos de tipografía Work Sans en negrita y corrección de colores azules a beige (#D2B48C) -->
     <script id="tailwind-config">
             tailwind.config = {
                 darkMode: "class",
@@ -101,12 +149,14 @@
                             "xl": "0.75rem",
                             "full": "9999px"
                         },
+                        /* INICIO: Configuración Work Sans en Tailwind */
                         "fontFamily": {
                             "body-md": ["Work Sans", "sans-serif"],
                             "body-sm": ["Work Sans", "sans-serif"],
-                            "headline-lg": ["Manrope", "sans-serif"],
-                            "headline-md": ["Manrope", "sans-serif"]
+                            "headline-lg": ["Work Sans", "sans-serif"],
+                            "headline-md": ["Work Sans", "sans-serif"]
                         },
+                        /* FIN: Configuración Work Sans en Tailwind */
                         "fontSize": {
                             "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
                             "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
@@ -146,9 +196,11 @@
                         Instructivos
                     </a>
                 </button>
-                <button type="button" onclick="abrirModalCotizacion()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-3 rounded-xl shadow-md transition-colors flex items-center gap-2">
+                <!-- INICIO: Botón Nueva Cotización en color beige (#D2B48C) -->
+                <button type="button" onclick="abrirModalCotizacion()" class="bg-[#D2B48C] hover:brightness-95 text-black font-bold px-5 py-3 rounded-xl shadow-md transition-all flex items-center gap-2" style="background-color: #D2B48C;">
                     <i class="fa-solid fa-plus"></i> Nueva Cotización
                 </button>
+                <!-- FIN: Botón Nueva Cotización en color beige (#D2B48C) -->
             </div>
         </div>
         
@@ -165,9 +217,11 @@
                             <span class="material-symbols-outlined text-[16px]">trending_up</span> +12% este mes
                         </p>
                     </div>
-                    <div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
+                    <!-- INICIO: Contenedor de icono en beige -->
+                    <div class="w-12 h-12 bg-[#D2B48C] rounded-lg flex items-center justify-center" style="background-color: #D2B48C;">
                         <span class="material-symbols-outlined text-black">analytics</span>
                     </div>
+                    <!-- FIN: Contenedor de icono en beige -->
                 </div>
             </div>
 
@@ -196,46 +250,105 @@
                         <p class="text-label-md text-black/60 font-bold uppercase tracking-wider mb-1">Tasa de Conversión</p>
                         <h3 class="text-headline-md text-black">@ViewBag.TasaConversion%</h3>
                         <div class="w-full bg-surface-container-low h-2 rounded-full mt-3 overflow-hidden">
-                            <div class="bg-primary h-full rounded-full" style="width: @ViewBag.TasaConversion%;"></div>
+                            <!-- INICIO: Barra de progreso en beige -->
+                            <div class="bg-[#D2B48C] h-full rounded-full" style="width: @ViewBag.TasaConversion%; background-color: #D2B48C;"></div>
+                            <!-- FIN: Barra de progreso en beige -->
                         </div>
                     </div>
-                    <div class="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center">
+                    <!-- INICIO: Contenedor de icono en beige -->
+                    <div class="w-12 h-12 bg-[#D2B48C]/30 rounded-lg flex items-center justify-center">
                         <span class="material-symbols-outlined text-black">moving</span>
                     </div>
+                    <!-- FIN: Contenedor de icono en beige -->
                 </div>
             </div>
         </div> <!-- AQUÍ SE CIERRA CORRECTAMENTE EL GRID DE LAS 3 TARJETAS -->
         <!-- 2. Filter Bar (Ahora está fuera del grid y abarca el 100% de ancho) -->
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 w-full">
             <!-- Filtros por Estado -->
+            <!-- INICIO: Filtros con estado activo en beige (#D2B48C) -->
             <div class="flex items-center gap-2 mb-4 sm:mb-0">
                 <a href="@Url.Action("Index", new { estado = "Todas" })"
-                   class="px-4 py-2 rounded-full text-sm font-semibold transition-colors @(ViewBag.EstadoActual == "Todas" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200")">
+                   class="px-4 py-2 rounded-full text-sm font-semibold transition-colors @(ViewBag.EstadoActual == "Todas" ? "bg-[#D2B48C] text-black font-bold" : "bg-gray-100 text-gray-700 hover:bg-gray-200")" @(ViewBag.EstadoActual == "Todas" ? "style=\"background-color: #D2B48C; color: #000;\"" : "")>
                     Todas
                 </a>
                 <a href="@Url.Action("Index", new { estado = "Pendiente" })"
-                   class="px-4 py-2 rounded-full text-sm font-semibold transition-colors @(ViewBag.EstadoActual == "Pendiente" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200")">
+                   class="px-4 py-2 rounded-full text-sm font-semibold transition-colors @(ViewBag.EstadoActual == "Pendiente" ? "bg-[#D2B48C] text-black font-bold" : "bg-gray-100 text-gray-700 hover:bg-gray-200")" @(ViewBag.EstadoActual == "Pendiente" ? "style=\"background-color: #D2B48C; color: #000;\"" : "")>
                     Pendientes
                 </a>
                 <a href="@Url.Action("Index", new { estado = "Aprobada" })"
-                   class="px-4 py-2 rounded-full text-sm font-semibold transition-colors @(ViewBag.EstadoActual == "Aprobada" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200")">
+                   class="px-4 py-2 rounded-full text-sm font-semibold transition-colors @(ViewBag.EstadoActual == "Aprobada" ? "bg-[#D2B48C] text-black font-bold" : "bg-gray-100 text-gray-700 hover:bg-gray-200")" @(ViewBag.EstadoActual == "Aprobada" ? "style=\"background-color: #D2B48C; color: #000;\"" : "")>
                     Aprobadas
                 </a>
                 <a href="@Url.Action("Index", new { estado = "Rechazada" })"
-                   class="px-4 py-2 rounded-full text-sm font-semibold transition-colors @(ViewBag.EstadoActual == "Rechazada" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200")">
+                   class="px-4 py-2 rounded-full text-sm font-semibold transition-colors @(ViewBag.EstadoActual == "Rechazada" ? "bg-[#D2B48C] text-black font-bold" : "bg-gray-100 text-gray-700 hover:bg-gray-200")" @(ViewBag.EstadoActual == "Rechazada" ? "style=\"background-color: #D2B48C; color: #000;\"" : "")>
                     Rechazadas
                 </a>
             </div>
+            <!-- FIN: Filtros con estado activo en beige (#D2B48C) -->
             <button class="flex items-center gap-2 text-black hover:text-primary transition-colors font-bold uppercase tracking-wider text-xs">
                 <span class="material-symbols-outlined text-[20px]">filter_list</span>
                 <span>Filtros Avanzados</span>
             </button>
         </div>
 
+        <!-- Buscador superior estilo PQR -->
+        <div class="relative w-full max-w-xl mb-4">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-black/50">search</span>
+            <input id="buscadorCotizaciones"
+                   type="text"
+                   placeholder="Buscar folio, cliente, estado o fecha..."
+                   class="w-full pl-10 pr-4 py-2.5 bg-[#f5f3ee] border-none rounded-full text-sm text-black focus:ring-2 focus:ring-[#D2B48C] focus:outline-none"
+                   oninput="aplicarFiltrosCotizaciones()" />
+        </div>
+
+        <!-- Filtros de búsqueda estilo PQR -->
+        <div class="bg-surface-container-lowest rounded-xl shadow-sm p-6 mb-6 border border-outline-variant w-full">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+                <div class="lg:col-span-1">
+                    <label class="block text-xs text-black/60 mb-1">Folio / Cliente</label>
+                    <input id="filtroFolioCliente"
+                           type="text"
+                           class="w-full rounded-lg bg-[#fcf9f8] border border-outline-variant text-sm"
+                           placeholder="Ej: COT-2024-001"
+                           onkeydown="if(event.key==='Enter'){event.preventDefault(); aplicarFiltrosCotizaciones();}" />
+                </div>
+                <div>
+                    <label class="block text-xs text-black/60 mb-1">Estado</label>
+                    <select id="filtroEstadoCot"
+                            class="w-full rounded-lg bg-[#fcf9f8] border border-outline-variant text-sm">
+                        <option value="">Cualquier estado</option>
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Aprobada">Aprobada</option>
+                        <option value="Rechazada">Rechazada</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs text-black/60 mb-1">Fecha</label>
+                    <input id="filtroFechaCot"
+                           type="date"
+                           class="w-full rounded-lg bg-[#fcf9f8] border border-outline-variant text-sm" />
+                </div>
+                <div class="flex gap-2 lg:col-span-2">
+                    <button type="button"
+                            onclick="aplicarFiltrosCotizaciones()"
+                            class="flex-1 bg-[#D2B48C] text-black font-bold py-2 px-4 rounded-lg hover:brightness-95 transition-all shadow-sm"
+                            style="background-color: #D2B48C; color: #000;">
+                        Buscar
+                    </button>
+                    <button type="button"
+                            onclick="limpiarFiltrosCotizaciones()"
+                            class="bg-[#e4e2e1] text-black font-bold py-2 px-4 rounded-lg hover:bg-[#d1c5b8] transition-colors"
+                            style="color: #000;">
+                        Limpiar
+                    </button>
+                </div>
+            </div>
+        </div>
 
         <!-- 3. Data Table Section (Bloque independiente con ancho del 100%) -->
         <div class="bg-surface-container-lowest rounded-xl border border-outline-variant custom-shadow-level-1 overflow-x-auto w-full mb-8">
-            <table class="w-full border-collapse text-left min-w-[700px]">
+            <table id="tablaCotizaciones" class="w-full border-collapse text-left min-w-[700px]">
                 <thead class="bg-surface-container">
                     <tr>
                         <th class="px-6 py-4 text-label-md font-bold text-black uppercase tracking-wider">Folio</th>
@@ -251,8 +364,8 @@
                     {
                         <tr class="hover:bg-surface-container-low/50 transition-colors">
                             <td class="px-6 py-5">@item.Folio</td>
-                            <td class="px-6 py-5">@item.IdClienteNavigation.Nombre</td>
-                            <td class="px-6 py-5">@item.Fecha</td>
+                            <td class="px-6 py-5">@(item.IdClienteNavigation != null ? item.IdClienteNavigation.Nombre : "")</td>
+                            <td class="px-6 py-5" data-search="@item.Fecha.ToString("yyyy-MM-dd") @item.Fecha.ToString("dd/MM/yyyy")">@item.Fecha.ToString("dd/MM/yyyy")</td>
                             <td class="px-6 py-5">@item.Total</td>
                             <td class="px-6 py-5">@item.Estado</td>
                             <td class="px-6 py-5 text-right">
@@ -273,8 +386,8 @@
                 </tbody>
             </table>
         </div>
-            <!-- Table Pagination -->
-            <div class="bg-surface-container/30 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-outline-variant">
+            <!-- Table Pagination (oculta: la paginación la gestiona DataTables) -->
+            <div class="bg-surface-container/30 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-outline-variant" style="display: none;">
                 <p class="text-label-md text-black/60 font-bold">
                     Mostrando @Model.Count() de @ViewBag.TotalRegistros cotizaciones
                 </p>
@@ -418,11 +531,13 @@
                             <!-- Quantity -->
                             <section class="card-container flex flex-col justify-between" data-purpose="quantity">
                                 <h3 class="section-title"><i class="fa-solid fa-boxes-stacked section-icon text-sm"></i> CANTIDAD</h3>
+                                <!-- INICIO: Botones de cantidad con iconos en beige (#b57a55) -->
                                 <div class="flex items-center">
-                                    <button type="button" onclick="cambiarCantidad(-1)" class="w-12 h-10 bg-[#f4e6de] text-primary flex items-center justify-center rounded-l-lg hover:bg-[#ebd5c8] transition-colors"><i class="fa-solid fa-minus text-sm"></i></button>
+                                    <button type="button" onclick="cambiarCantidad(-1)" class="w-12 h-10 bg-[#f4e6de] text-[#b57a55] flex items-center justify-center rounded-l-lg hover:bg-[#ebd5c8] transition-colors"><i class="fa-solid fa-minus text-sm"></i></button>
                                     <input id="inputCantidad" class="w-16 h-10 text-center border-y border-[#f4e6de] font-bold text-lg focus:outline-none" type="number" value="1">
-                                    <button type="button" onclick="cambiarCantidad(1)" class="w-12 h-10 bg-[#f4e6de] text-primary flex items-center justify-center rounded-r-lg hover:bg-[#ebd5c8] transition-colors"><i class="fa-solid fa-plus text-sm"></i></button>
+                                    <button type="button" onclick="cambiarCantidad(1)" class="w-12 h-10 bg-[#f4e6de] text-[#b57a55] flex items-center justify-center rounded-r-lg hover:bg-[#ebd5c8] transition-colors"><i class="fa-solid fa-plus text-sm"></i></button>
                                 </div>
+                                <!-- FIN: Botones de cantidad con iconos en beige (#b57a55) -->
                             </section>
                         </div>
 
@@ -486,9 +601,11 @@
                                     <img id="previewFoto" class="absolute inset-0 w-full h-full object-cover hidden" alt="Vista previa del lugar">
 
                                     <div id="uploadPlaceholder" class="flex flex-col items-center">
-                                        <div class="w-12 h-12 rounded-full bg-[#f4e6de] text-primary flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                        <!-- INICIO: Icono nube en beige (#b57a55) -->
+                                        <div class="w-12 h-12 rounded-full bg-[#f4e6de] text-[#b57a55] flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                                             <i class="fa-solid fa-cloud-arrow-up text-lg"></i>
                                         </div>
+                                        <!-- FIN: Icono nube en beige (#b57a55) -->
                                         <h4 class="font-bold text-xs mb-1 text-on-surface">Sube una foto del espacio</h4>
                                         <p class="text-[0.65rem] text-on-surface-variant">Arrastra o haz clic para cargar (PNG, JPG)</p>
                                     </div>
@@ -505,9 +622,11 @@
                         <!-- Sección de Asesoría de Medidas -->
                         <section class="card-container bg-[#fff9f5] border-[#f0e4db] p-5" data-purpose="measure-assistance">
                             <div class="flex items-start gap-3">
-                                <div class="w-10 h-10 rounded-full bg-[#f4e6de] text-primary flex items-center justify-center flex-shrink-0 mt-1">
+                                <!-- INICIO: Icono de regla en beige (#b57a55) -->
+                                <div class="w-10 h-10 rounded-full bg-[#f4e6de] text-[#b57a55] flex items-center justify-center flex-shrink-0 mt-1">
                                     <i class="fa-solid fa-ruler text-sm"></i>
                                 </div>
+                                <!-- FIN: Icono de regla en beige (#b57a55) -->
                                 <div>
                                     <h4 class="font-bold text-sm text-on-surface mb-1">¿No conozco alguna medida o necesito asesoría para medir?</h4>
                                     <p class="text-xs text-on-surface-variant leading-relaxed mb-3">
@@ -718,11 +837,104 @@
                 if (confirm("¿Estás seguro de quitar esta cotización de la vista?")) {
                     // Encuentra la fila (tr) más cercana al botón y la borra de la pantalla al instante
                     const fila = boton.closest('tr');
-                    if (fila) {
+                    if (fila && window.tablaCotizaciones) {
+                        window.tablaCotizaciones.row(fila).remove().draw();
+                    } else if (fila) {
                         fila.remove();
                     }
                 }
             }
+
+            DataTable.ext.search.push(function (settings, data) {
+                if (!settings.nTable || settings.nTable.id !== 'tablaCotizaciones') {
+                    return true;
+                }
+
+                const texto = (document.getElementById('buscadorCotizaciones')?.value || '').toLowerCase().trim();
+                const folioCliente = (document.getElementById('filtroFolioCliente')?.value || '').toLowerCase().trim();
+                const estado = (document.getElementById('filtroEstadoCot')?.value || '').toLowerCase().trim();
+                const fecha = document.getElementById('filtroFechaCot')?.value || '';
+
+                const folio = (data[0] || '').toLowerCase();
+                const cliente = (data[1] || '').toLowerCase();
+                const fechaCelda = (data[2] || '').toLowerCase();
+                const estadoCelda = (data[4] || '').toLowerCase();
+                const todo = data.join(' ').toLowerCase();
+
+                if (texto && !todo.includes(texto)) return false;
+                if (folioCliente && !(folio.includes(folioCliente) || cliente.includes(folioCliente))) return false;
+                if (estado && !estadoCelda.includes(estado)) return false;
+                if (fecha) {
+                    const partes = fecha.split('-');
+                    const dmy = partes.length === 3 ? (partes[2] + '/' + partes[1] + '/' + partes[0]) : fecha;
+                    if (!fechaCelda.includes(fecha.toLowerCase()) && !fechaCelda.includes(dmy.toLowerCase())) {
+                        return false;
+                    }
+                }
+
+                return true;
+            });
+
+            function aplicarFiltrosCotizaciones() {
+                if (window.tablaCotizaciones) {
+                    window.tablaCotizaciones.draw();
+                }
+            }
+
+            function limpiarFiltrosCotizaciones() {
+                const buscador = document.getElementById('buscadorCotizaciones');
+                const folioCliente = document.getElementById('filtroFolioCliente');
+                const estado = document.getElementById('filtroEstadoCot');
+                const fecha = document.getElementById('filtroFechaCot');
+                if (buscador) buscador.value = '';
+                if (folioCliente) folioCliente.value = '';
+                if (estado) estado.value = '';
+                if (fecha) fecha.value = '';
+                aplicarFiltrosCotizaciones();
+            }
+
+            document.addEventListener("DOMContentLoaded", function () {
+                window.tablaCotizaciones = new DataTable('#tablaCotizaciones', {
+                    searching: true,
+                    paging: true,
+                    ordering: true,
+                    pageLength: 5,
+                    lengthMenu: [
+                        [5, 10, 15, 20],
+                        [5, 10, 15, 20]
+                    ],
+                    pagingType: "simple_numbers",
+                    autoWidth: false,
+                    layout: {
+                        topStart: 'pageLength',
+                        topEnd: null,
+                        bottomStart: 'info',
+                        bottomEnd: 'paging'
+                    },
+                    columnDefs: [
+                        {
+                            targets: -1,
+                            searchable: false,
+                            orderable: false
+                        }
+                    ],
+                    language: {
+                        search: "Buscar:",
+                        lengthMenu: "Mostrar _MENU_ cotizaciones",
+                        info: "Mostrando _START_ a _END_ de _TOTAL_ cotizaciones",
+                        infoEmpty: "Mostrando 0 cotizaciones",
+                        infoFiltered: "(filtrado de _MAX_ cotizaciones)",
+                        zeroRecords: "No se encontraron cotizaciones",
+                        emptyTable: "No hay cotizaciones registradas",
+                        paginate: {
+                            first: "Primero",
+                            last: "Último",
+                            next: "Siguiente",
+                            previous: "Anterior"
+                        }
+                    }
+                });
+            });
     </script>
 </body>
 </html>

@@ -9,6 +9,39 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <!-- Tipografía Work Sans idéntica a la del Dashboard -->
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <style>
+        /* Tipografía Work Sans aplicada al Sidebar */
+        .sidebar-carpintec,
+        .sidebar-carpintec *:not(i):not(.bi) {
+            font-family: 'Work Sans', sans-serif !important;
+        }
+
+        .sidebar-carpintec i.bi {
+            font-family: 'bootstrap-icons' !important;
+        }
+
+        .sidebar-carpintec .nav-link {
+            font-weight: 600;
+            letter-spacing: -0.2px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-carpintec .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: #ffffff !important;
+        }
+
+        .sidebar-carpintec small {
+            font-weight: 800 !important;
+            letter-spacing: 0.5px;
+            font-size: 0.75rem;
+        }
+    </style>
 </head>
 
 <body>
@@ -16,7 +49,7 @@
     <div class="d-flex">
 
         <!-- Sidebar -->
-        <div class="p-3 text-white" style="width:270px; min-height:100vh; background-color:#c39d7a;">
+        <div class="sidebar-carpintec p-3 text-white" style="width:270px; min-height:100vh; background-color:#c39d7a;">
 
             <!-- Logo -->
             <div class="flex flex-col items-center justify-center py-6">
@@ -127,9 +160,12 @@
 
                 <hr />
 
-                <a class="btn btn-danger w-100"
+                <a class="btn text-white w-100"
+                   style="background-color: #442a22;"
                    asp-controller="Login"
-                   asp-action="CerrarSesion">
+                   asp-action="CerrarSesion"
+                   onmouseover="this.style.backgroundColor='#5a382d'"
+                   onmouseout="this.style.backgroundColor='#442a22'">
                     <i class="bi bi-box-arrow-right"></i>
                     Cerrar sesión
                 </a>
@@ -163,7 +199,10 @@
 
                         <a asp-controller="Login"
                            asp-action="CerrarSesion"
-                           class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg">
+                           class="text-white px-4 py-2 rounded-lg"
+                           style="background-color: #442a22; text-decoration: none;"
+                           onmouseover="this.style.backgroundColor='#5a382d'"
+                           onmouseout="this.style.backgroundColor='#442a22'">
                             Cerrar sesión
                         </a>
 
@@ -181,230 +220,575 @@
     </div>
 
     <!-- CHATBOT CARPINTEC -->
-
     <div id="chatbot-box"
-         class="hidden"
          style="
         position:fixed;
-        bottom:90px;
-        right:20px;
-        width:350px;
-        background:white;
-        border-radius:15px;
-        box-shadow:0 5px 20px rgba(0,0,0,0.3);
-        z-index:9999;">
+        bottom:92px;
+        right:24px;
+        width:420px;
+        max-width:calc(100vw - 32px);
+        height:590px;
+        max-height:calc(100vh - 120px);
+        background:#ffffff;
+        border-radius:18px;
+        box-shadow:0 12px 36px rgba(0,0,0,0.22);
+        z-index:9999;
+        display:none;
+        flex-direction:column;
+        overflow:hidden;
+        border:1px solid #e5dbcf;
+        font-family: inherit;">
 
-        <!-- Encabezado -->
+        <!-- Encabezado con identidad CARPINTEC -->
         <div style="
-            background:#c39d7a;
-            color:white;
-            padding:15px;
-            border-radius:15px 15px 0 0;">
+            background: linear-gradient(135deg, #442a22 0%, #5d3a30 100%);
+            color: white;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
 
-            <b>🤖 Asistente CARPINTEC</b>
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div style="
+                    width:38px;
+                    height:38px;
+                    border-radius:50%;
+                    background:#c39d7a;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    font-size:20px;
+                    box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+                    🪵
+                </div>
+                <div>
+                    <div style="font-weight:700; font-size:15px; letter-spacing:0.3px;">Asistente CARPINTEC</div>
+                    <div style="font-size:12px; opacity:0.9; display:flex; align-items:center; gap:5px;">
+                        <span style="width:8px; height:8px; background:#10b981; border-radius:50%; display:inline-block;"></span>
+                        <span>En línea •&nbsp;<span id="chatbot-vista-label">Base de datos</span></span>
+                    </div>
+                </div>
+            </div>
 
-            <button onclick="cerrarChatbot()"
-                    style="
-                float:right;
-                background:none;
-                border:none;
-                color:white;
-                font-size:18px;">
-                ✖
-            </button>
+            <div style="display:flex; align-items:center; gap:6px;">
+                <button type="button"
+                        onclick="reiniciarChatbot()"
+                        title="Limpiar conversación"
+                        style="
+                    background:rgba(255,255,255,0.12);
+                    border:none;
+                    color:white;
+                    width:32px;
+                    height:32px;
+                    border-radius:50%;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    cursor:pointer;
+                    transition:background 0.2s;"
+                        onmouseover="this.style.background='rgba(255,255,255,0.25)'"
+                        onmouseout="this.style.background='rgba(255,255,255,0.12)'">
+                    <i class="bi bi-arrow-clockwise" style="font-size:15px;"></i>
+                </button>
 
+                <button type="button"
+                        onclick="cerrarChatbot()"
+                        title="Cerrar chat"
+                        style="
+                    background:rgba(255,255,255,0.12);
+                    border:none;
+                    color:white;
+                    width:32px;
+                    height:32px;
+                    border-radius:50%;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    cursor:pointer;
+                    transition:background 0.2s;
+                    font-size:16px;"
+                        onmouseover="this.style.background='rgba(255,255,255,0.25)'"
+                        onmouseout="this.style.background='rgba(255,255,255,0.12)'">
+                    ✕
+                </button>
+            </div>
         </div>
 
-        <!-- MENU CHATBOT -->
-
+        <!-- Barra de Sugerencias Rápidas / Chips -->
         <div style="
-            padding:10px;
-            background:#f8f5f2;
-            border-bottom:1px solid #ddd;">
+            background:#fbf8f5;
+            padding:10px 14px;
+            border-bottom:1px solid #ebdcd0;
+            overflow-x:auto;
+            white-space:nowrap;
+            scrollbar-width:none;
+            display:flex;
+            gap:6px;
+            align-items:center;">
 
-            <p style="margin:0 0 8px 0;">
-                👋 Hola, soy el asistente de CARPINTEC.
-            </p>
+            <!-- CHIP CONTEXTUAL: detecta vista actual y explica qué puede hacer el usuario -->
+            <button type="button"
+                    id="chip-contexto"
+                    onclick="preguntarContexto()"
+                    class="btn btn-sm"
+                    style="background: linear-gradient(135deg,#c39d7a,#9a7452); color:white; border-radius:20px; font-size:12px; padding:4px 13px; font-weight:700; white-space:nowrap; border:none; box-shadow:0 2px 6px rgba(0,0,0,0.18); flex-shrink:0;">
+                📍 ¿Qué puedo hacer aquí?
+            </button>
 
-            <small>
-                Selecciona una opción:
-            </small>
+            <button type="button"
+                    onclick="enviarPregunta('¿Cómo añadir un cliente?')"
+                    class="btn btn-sm"
+                    style="background:#ffffff; color:#442a22; border:1px solid #d8c6b5; border-radius:20px; font-size:12px; padding:4px 10px; font-weight:500; white-space:nowrap;">
+                ➕ ¿Cómo añadir un cliente?
+            </button>
 
-            <div style="margin-top:10px;">
+            <button type="button"
+                    onclick="enviarPregunta('Resumen general')"
+                    class="btn btn-sm"
+                    style="background:#ffffff; color:#442a22; border:1px solid #d8c6b5; border-radius:20px; font-size:12px; padding:4px 10px; font-weight:500; white-space:nowrap;">
+                📊 Resumen general
+            </button>
 
-                <button onclick="enviarPregunta('productos')"
-                        class="btn btn-sm text-white m-1"
-                        style="background:#c39d7a;">
-                    🪑 Productos
-                </button>
+            <button type="button"
+                    onclick="enviarPregunta('Stock bajo')"
+                    class="btn btn-sm"
+                    style="background:#ffffff; color:#442a22; border:1px solid #d8c6b5; border-radius:20px; font-size:12px; padding:4px 10px; font-weight:500; white-space:nowrap;">
+                ⚠️ Stock bajo
+            </button>
 
+            <button type="button"
+                    onclick="enviarPregunta('Pedidos pendientes')"
+                    class="btn btn-sm"
+                    style="background:#ffffff; color:#442a22; border:1px solid #d8c6b5; border-radius:20px; font-size:12px; padding:4px 10px; font-weight:500; white-space:nowrap;">
+                📦 Pedidos pendientes
+            </button>
 
-                <button onclick="enviarPregunta('clientes')"
-                        class="btn btn-sm text-white m-1"
-                        style="background:#c39d7a;">
-                    👥 Clientes
-                </button>
+            <button type="button"
+                    onclick="enviarPregunta('Clientes registrados')"
+                    class="btn btn-sm"
+                    style="background:#ffffff; color:#442a22; border:1px solid #d8c6b5; border-radius:20px; font-size:12px; padding:4px 10px; font-weight:500; white-space:nowrap;">
+                👥 Clientes
+            </button>
 
+            <button type="button"
+                    onclick="enviarPregunta('Total facturado')"
+                    class="btn btn-sm"
+                    style="background:#ffffff; color:#442a22; border:1px solid #d8c6b5; border-radius:20px; font-size:12px; padding:4px 10px; font-weight:500; white-space:nowrap;">
+                💰 Facturación
+            </button>
 
-                <button onclick="enviarPregunta('cotizaciones')"
-                        class="btn btn-sm text-white m-1"
-                        style="background:#c39d7a;">
-                    📄 Cotizaciones
-                </button>
+            <button type="button"
+                    onclick="enviarPregunta('¿Qué puedo preguntar?')"
+                    class="btn btn-sm"
+                    style="background:#ffffff; color:#442a22; border:1px solid #d8c6b5; border-radius:20px; font-size:12px; padding:4px 10px; font-weight:500; white-space:nowrap;">
+                ❓ Ayuda
+            </button>
+        </div>
 
+        <!-- Área de Conversación / Mensajes -->
+        <div id="chat-respuestas"
+             style="
+            flex:1;
+            overflow-y:auto;
+            padding:16px;
+            background:#fdfcfb;
+            display:flex;
+            flex-direction:column;
+            gap:14px;">
 
-                <button onclick="enviarPregunta('pedidos')"
-                        class="btn btn-sm text-white m-1"
-                        style="background:#c39d7a;">
-                    📦 Pedidos
-                </button>
+            <!-- Mensaje de bienvenida inicial -->
+            <div style="display:flex; gap:10px; align-items:flex-start;">
+                <div style="
+                    width:32px;
+                    height:32px;
+                    border-radius:50%;
+                    background:#c39d7a;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    font-size:16px;
+                    flex-shrink:0;">
+                    🪵
+                </div>
+                <div style="
+                    background:#ffffff;
+                    border:1px solid #ebdcd0;
+                    border-radius:0 14px 14px 14px;
+                    padding:12px 14px;
+                    color:#333333;
+                    font-size:13.5px;
+                    line-height:1.55;
+                    box-shadow:0 2px 6px rgba(0,0,0,0.04);
+                    max-width:88%;">
+                    <div style="font-weight:700; color:#5d3a30; margin-bottom:4px; font-size:12px;">Asistente CARPINTEC</div>
+                    👋 ¡Hola! Soy tu asistente virtual conectado en tiempo real a la base de datos de <b>CARPINTEC</b>.<br><br>
+                    Puedo responder cualquier duda sobre <b>clientes, inventario, pedidos, cotizaciones, facturas, empleados</b> o explicarte paso a paso <b>cómo llenar los campos</b> para registrar información en el sistema.<br><br>
+                    💡 <i>Prueba escribiendo "¿Cómo añadir un cliente?" o seleccionando un botón de arriba.</i>
+                </div>
+            </div>
 
-
-                <button onclick="enviarPregunta('inventario')"
-                        class="btn btn-sm text-white m-1"
-                        style="background:#c39d7a;">
-                    📊 Inventario
-                </button>
-
-
-                <button onclick="enviarPregunta('facturas')"
-                        class="btn btn-sm text-white m-1"
-                        style="background:#c39d7a;">
-                    💰 Facturas
-                </button>
-
+            <!-- Indicador de escritura dinámico -->
+            <div id="chat-typing" style="display:none; gap:10px; align-items:flex-start;">
+                <div style="
+                    width:32px;
+                    height:32px;
+                    border-radius:50%;
+                    background:#c39d7a;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    font-size:16px;
+                    flex-shrink:0;">
+                    🪵
+                </div>
+                <div style="
+                    background:#ffffff;
+                    border:1px solid #ebdcd0;
+                    border-radius:0 14px 14px 14px;
+                    padding:10px 14px;
+                    color:#666666;
+                    font-size:12.5px;
+                    display:flex;
+                    align-items:center;
+                    gap:8px;">
+                    <span class="spinner-border spinner-border-sm text-secondary" role="status" style="width:14px; height:14px;"></span>
+                    <span>Consultando base de datos...</span>
+                </div>
             </div>
 
         </div>
 
-        <!-- Mensajes -->
-        <div id="chat-respuestas"
-             style="
-            height:250px;
-            overflow-y:auto;
-            padding:15px;">
-        </div>
-
-
-        <!-- Entrada -->
+        <!-- Entrada de Texto / Footer -->
         <div style="
+            padding:12px 14px;
+            background:#ffffff;
+            border-top:1px solid #ebdcd0;
             display:flex;
-            padding:10px;">
+            align-items:center;
+            gap:8px;">
 
             <input id="chat-input"
+                   type="text"
                    class="form-control"
-                   placeholder="Escribe un mensaje..."
-                   style="margin-right:5px;">
+                   placeholder="Escribe tu pregunta o pide una guía..."
+                   autocomplete="off"
+                   style="
+                border-radius:24px;
+                padding:9px 16px;
+                border:1px solid #d8c6b5;
+                font-size:13.5px;
+                box-shadow:none;
+                outline:none;"
+                   onkeydown="if(event.key === 'Enter' && !event.shiftKey){ event.preventDefault(); enviarMensaje(); }">
 
-
-            <button onclick="enviarMensaje()"
+            <button type="button"
+                    onclick="enviarMensaje()"
+                    title="Enviar mensaje"
                     class="btn text-white"
-                    style="background:#c39d7a;">
-                Enviar
+                    style="
+                background: linear-gradient(135deg, #442a22 0%, #5d3a30 100%);
+                border-radius:50%;
+                width:42px;
+                height:42px;
+                padding:0;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                flex-shrink:0;
+                border:none;
+                box-shadow:0 2px 6px rgba(0,0,0,0.15);
+                transition:transform 0.15s;"
+                    onmouseover="this.style.transform='scale(1.05)'"
+                    onmouseout="this.style.transform='scale(1)'">
+                <i class="bi bi-send-fill" style="font-size:15px; margin-left:2px;"></i>
             </button>
-
         </div>
 
     </div>
 
-
-    <!-- BOTÓN FLOTANTE -->
-
-    <button onclick="abrirChatbot()"
+    <!-- BOTÓN FLOTANTE PRINCIPAL -->
+    <button id="chatbot-float-btn"
+            type="button"
+            onclick="abrirChatbot()"
+            title="Abrir asistente virtual"
             style="
         position:fixed;
-        bottom:20px;
-        right:20px;
-        width:60px;
-        height:60px;
+        bottom:22px;
+        right:22px;
+        width:62px;
+        height:62px;
         border-radius:50%;
-        border:none;
-        background:#c39d7a;
+        border:2px solid #ffffff;
+        background: linear-gradient(135deg, #c39d7a 0%, #9a7452 100%);
         color:white;
-        font-size:25px;
-        z-index:9999;">
+        font-size:27px;
+        box-shadow:0 8px 24px rgba(195,157,122,0.45);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        cursor:pointer;
+        z-index:9998;
+        transition:transform 0.2s, box-shadow 0.2s;"
+            onmouseover="this.style.transform='scale(1.08)'; this.style.boxShadow='0 10px 28px rgba(195,157,122,0.6)';"
+            onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 8px 24px rgba(195,157,122,0.45)';">
         🤖
     </button>
 
-
-
+    <!-- SCRIPTS DEL CHATBOT -->
     <script>
+        // Mapa de rutas a nombres amigables para mostrar en el header del chatbot
+        var _vistaLabels = {
+            'dashboard':     'Dashboard',
+            'clientes':      'Gestión Clientes',
+            'empleados':     'Gestión Empleados',
+            'usuarios':      'Gestión Usuarios',
+            'ventas':        'Ventas y Facturación',
+            'factura':       'Ventas y Facturación',
+            'pedidos':       'Pedidos',
+            'cotizaciones':  'Cotizaciones',
+            'inventario':    'Inventario',
+            'manoobra':      'Mano de Obra',
+            'mano':          'Mano de Obra',
+            'reportes':      'Reportes',
+            'pqr':           'PQR',
+            'configuracion': 'Configuración',
+            'productos':     'Productos'
+        };
 
-            function abrirChatbot() {
-
-                document.getElementById("chatbot-box")
-                    .style.display = "block";
-
+        // Devuelve el nombre amigable de la vista actual basado en la URL
+        function _detectarVistaLabel() {
+            var path = window.location.pathname.toLowerCase();
+            for (var clave in _vistaLabels) {
+                if (path.indexOf(clave) !== -1) return _vistaLabels[clave];
             }
+            return 'Panel Admin';
+        }
 
+        // ¿Es la primera vez que se abre el chatbot en esta sesión de página?
+        var _chatbotYaAbierto = false;
 
-            function cerrarChatbot() {
+        function abrirChatbot() {
+            var box = document.getElementById("chatbot-box");
+            box.style.display = "flex";
+            document.getElementById("chatbot-float-btn").style.display = "none";
 
-                document.getElementById("chatbot-box")
-                    .style.display = "none";
+            // Actualizar el label de la vista en el header del chatbot
+            var label = document.getElementById("chatbot-vista-label");
+            if (label) label.textContent = _detectarVistaLabel();
 
-            }
+            setTimeout(function() {
+                document.getElementById("chat-input").focus();
+                scrollChatFinal();
 
-            function enviarPregunta(texto) {
-
-                document.getElementById("chat-input").value = texto;
-
-                enviarMensaje();
-
-            }
-
-            async function enviarMensaje() {
-
-                let input = document.getElementById("chat-input");
-
-                let mensaje = input.value;
-
-
-                if (mensaje.trim() == "") {
-                    return;
+                // Auto-consulta contextual solo la primera vez que se abre en esta página
+                if (!_chatbotYaAbierto) {
+                    _chatbotYaAbierto = true;
+                    // Pequeño delay para que el usuario vea el chatbot antes del mensaje
+                    setTimeout(function() {
+                        enviarMensajeContexto('¿Qué puedo hacer aquí?');
+                    }, 500);
                 }
+            }, 150);
+        }
 
+        // Envía la pregunta de contexto SIN mostrarla como burbuja de usuario (es automática)
+        async function enviarMensajeContexto(pregunta) {
+            var contenedor = document.getElementById("chat-respuestas");
+            var typing = document.getElementById("chat-typing");
+            typing.style.display = "flex";
+            scrollChatFinal();
 
-                document.getElementById("chat-respuestas").innerHTML +=
-                    `
-                <p><b>Tú:</b> ${mensaje}</p>
+            try {
+                var respuesta = await fetch('/Chatbot/Preguntar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mensaje: pregunta, contextoVista: window.location.pathname })
+                });
+                var data = await respuesta.json();
+                typing.style.display = "none";
+
+                var botMsgHtml = document.createElement("div");
+                botMsgHtml.style.cssText = "display:flex; gap:10px; align-items:flex-start;";
+                botMsgHtml.innerHTML = `
+                    <div style="width:32px;height:32px;border-radius:50%;background:#c39d7a;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">
+                        🪵
+                    </div>
+                    <div style="background:#fffaf5;border:1px solid #ddc9b8;border-radius:0 14px 14px 14px;padding:12px 14px;color:#333333;font-size:13.5px;line-height:1.55;box-shadow:0 2px 6px rgba(0,0,0,0.06);max-width:88%;word-break:break-word;">
+                        <div style="font-weight:700;color:#5d3a30;margin-bottom:4px;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;">📍 Vista actual: ${_detectarVistaLabel()}</div>
+                        ${formatearTextoMarkdown(data.respuesta)}
+                    </div>
                 `;
+                contenedor.insertBefore(botMsgHtml, typing);
+                scrollChatFinal();
+            } catch (e) {
+                typing.style.display = "none";
+            }
+        }
 
+        // Botón chip: "¿Qué puedo hacer aquí?" — envía con burbuja visible del usuario
+        function preguntarContexto() {
+            enviarPregunta('¿Qué puedo hacer aquí?');
+        }
 
-                let respuesta = await fetch('/Chatbot/Preguntar',
-                    {
+        function cerrarChatbot() {
+            document.getElementById("chatbot-box").style.display = "none";
+            document.getElementById("chatbot-float-btn").style.display = "flex";
+        }
 
-                        method: 'POST',
+        function reiniciarChatbot() {
+            var contenedor = document.getElementById("chat-respuestas");
+            var typing = document.getElementById("chat-typing");
+            contenedor.innerHTML = `
+            <div style="display:flex; gap:10px; align-items:flex-start;">
+                <div style="width:32px; height:32px; border-radius:50%; background:#c39d7a; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0;">
+                    🪵
+                </div>
+                <div style="background:#ffffff; border:1px solid #ebdcd0; border-radius:0 14px 14px 14px; padding:12px 14px; color:#333333; font-size:13.5px; line-height:1.55; box-shadow:0 2px 6px rgba(0,0,0,0.04); max-width:88%;">
+                    <div style="font-weight:700; color:#5d3a30; margin-bottom:4px; font-size:12px;">Asistente CARPINTEC</div>
+                    👋 Conversación reiniciada. ¿En qué puedo ayudarte ahora?<br>
+                    Puedes preguntarme sobre <b>clientes, inventario, pedidos, cotizaciones, facturas, empleados</b> o pedirme una guía de cómo llenar formularios.
+                </div>
+            </div>`;
+            contenedor.appendChild(typing);
+            document.getElementById("chat-input").focus();
+        }
 
-                        headers:
-                        {
-                            'Content-Type': 'application/json'
-                        },
+        function enviarPregunta(texto) {
+            document.getElementById("chat-input").value = texto;
+            enviarMensaje();
+        }
 
-                        body: JSON.stringify(
-                            {
-                                mensaje: mensaje
-                            })
+        function scrollChatFinal() {
+            var contenedor = document.getElementById("chat-respuestas");
+            contenedor.scrollTop = contenedor.scrollHeight;
+        }
 
-                    });
+        function formatearTextoMarkdown(texto) {
+            if (!texto) return "";
 
+            // Sanitizar caracteres básicos
+            var res = texto
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
 
+            // Convertir negrita **texto**
+            res = res.replace(/\*\*(.*?)\*\*/g, "<strong style='color:#3a2016;'>$1</strong>");
 
-                let data = await respuesta.json();
+            // Convertir cursiva *texto*
+            res = res.replace(/\*(.*?)\*/g, "<em>$1</em>");
 
+            // Convertir código `texto`
+            res = res.replace(/`(.*?)`/g, "<code style='background:#f3ede7; padding:2px 6px; border-radius:4px; font-size:12px; color:#5d3a30;'>$1</code>");
 
+            // Convertir líneas con viñeta •
+            var lineas = res.split('\n');
+            var procesadas = lineas.map(function(linea) {
+                var l = linea.trim();
+                if (l.startsWith('•')) {
+                    return "<div style='display:flex; gap:6px; margin:3px 0;'><span style='color:#c39d7a; font-weight:bold;'>•</span><span>" + l.substring(1).trim() + "</span></div>";
+                }
+                return linea;
+            });
 
-                document.getElementById("chat-respuestas").innerHTML +=
-                    `
-                <p><b>Bot:</b> ${data.respuesta}</p>
+            res = procesadas.join('<br>');
+            return res;
+        }
+
+        async function enviarMensaje() {
+            var input = document.getElementById("chat-input");
+            var mensaje = input.value.trim();
+
+            if (mensaje === "") return;
+
+            var contenedor = document.getElementById("chat-respuestas");
+            var typing = document.getElementById("chat-typing");
+
+            // 1. Mostrar mensaje del usuario en burbuja derecha
+            var userMsgHtml = document.createElement("div");
+            userMsgHtml.style.cssText = "display:flex; justify-content:flex-end;";
+            userMsgHtml.innerHTML = `
+                <div style="
+                    background: linear-gradient(135deg, #442a22 0%, #5d3a30 100%);
+                    color: white;
+                    border-radius: 14px 14px 0 14px;
+                    padding: 10px 14px;
+                    font-size: 13.5px;
+                    line-height: 1.45;
+                    max-width: 85%;
+                    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+                    word-break: break-word;">
+                    ${mensaje.replace(/</g, "&lt;").replace(/>/g, "&gt;")}
+                </div>
+            `;
+            contenedor.insertBefore(userMsgHtml, typing);
+
+            input.value = "";
+            typing.style.display = "flex";
+            scrollChatFinal();
+
+            try {
+                var respuesta = await fetch('/Chatbot/Preguntar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ mensaje: mensaje, contextoVista: window.location.pathname })
+                });
+
+                var data = await respuesta.json();
+                typing.style.display = "none";
+
+                var botMsgHtml = document.createElement("div");
+                botMsgHtml.style.cssText = "display:flex; gap:10px; align-items:flex-start;";
+                botMsgHtml.innerHTML = `
+                    <div style="
+                        width:32px;
+                        height:32px;
+                        border-radius:50%;
+                        background:#c39d7a;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        font-size:16px;
+                        flex-shrink:0;">
+                        🪵
+                    </div>
+                    <div style="
+                        background:#ffffff;
+                        border:1px solid #ebdcd0;
+                        border-radius:0 14px 14px 14px;
+                        padding:12px 14px;
+                        color:#333333;
+                        font-size:13.5px;
+                        line-height:1.55;
+                        box-shadow:0 2px 6px rgba(0,0,0,0.04);
+                        max-width:88%;
+                        word-break: break-word;">
+                        <div style="font-weight:700; color:#5d3a30; margin-bottom:4px; font-size:12px;">Asistente CARPINTEC</div>
+                        ${formatearTextoMarkdown(data.respuesta)}
+                    </div>
                 `;
-
-
-                input.value = "";
-
-
+                contenedor.insertBefore(botMsgHtml, typing);
+            } catch (error) {
+                typing.style.display = "none";
+                var errorMsgHtml = document.createElement("div");
+                errorMsgHtml.style.cssText = "display:flex; gap:10px; align-items:flex-start;";
+                errorMsgHtml.innerHTML = `
+                    <div style="width:32px; height:32px; border-radius:50%; background:#e11d48; color:white; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0;">
+                        ⚠️
+                    </div>
+                    <div style="background:#fff1f2; border:1px solid #fecdd3; border-radius:0 14px 14px 14px; padding:10px 14px; color:#9f1239; font-size:13px; max-width:88%;">
+                        No fue posible conectar con el servidor en este momento. Por favor verifica tu conexión o intenta nuevamente.
+                    </div>
+                `;
+                contenedor.insertBefore(errorMsgHtml, typing);
             }
 
+            scrollChatFinal();
+            input.focus();
+        }
     </script>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
