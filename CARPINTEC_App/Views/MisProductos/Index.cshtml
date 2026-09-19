@@ -159,8 +159,11 @@
     <!-- Top Navigation Container -->
     <header class="w-full top-0 sticky z-40">
         <!-- TopAppBar -->
-        <div class="bg-primary flex items-center justify-between px-margin-mobile h-16 w-full border-b-4 border-primary-container shadow-sm">
+        <div class="bg-[#8B5A2B] flex items-center justify-between px-margin-mobile h-16 w-full border-b-4 border-[#734A23] shadow-sm">
             <div class="flex items-center gap-3">
+                    <img alt="Carpintec Logo"
+                     class="h-8 w-8 object-contain mr-2"
+                     src="~/images/logo.png">
                 <a href="javascript:history.back()"
                    class="flex items-center gap-2 text-on-primary hover:opacity-80 transition-opacity">
                     <span class="material-symbols-outlined">arrow_back</span>
@@ -196,9 +199,7 @@
                 </a>
             </nav>
             <div class="flex items-center gap-2">
-                <span class="text-xs bg-white/20 text-white font-semibold px-3 py-1 rounded-full hidden sm:inline-block">
-                    @(string.IsNullOrEmpty(ViewBag.NombreCliente) ? "Portal Cliente" : ViewBag.NombreCliente)
-                </span>
+                @await Html.PartialAsync("_ClientUserMenu")
             </div>
         </div>
     </header>

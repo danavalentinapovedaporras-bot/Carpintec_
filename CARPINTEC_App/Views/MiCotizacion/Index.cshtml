@@ -147,7 +147,10 @@
                     <span class="material-symbols-outlined text-2xl">arrow_back</span>
                 </a>
                 <span class="font-bold text-xl uppercase tracking-wider font-heading flex items-center gap-2">
-                    <span class="material-symbols-outlined text-carpintecAccent">carpenter</span>
+                        <img alt="Carpintec Logo"
+                     class="h-8 w-8 object-contain mr-2"
+                     src="~/images/logo.png">
+                   
                     Carpintec
                 </span>
             </div>
@@ -170,9 +173,7 @@
                 </a>
             </nav>
             <div class="flex items-center gap-2">
-                <span class="text-xs bg-white/15 px-3 py-1 rounded-full text-carpintecAccent font-semibold hidden sm:inline-block">
-                    @(string.IsNullOrEmpty(ViewBag.NombreCliente) ? "Portal Clientes" : ViewBag.NombreCliente)
-                </span>
+                @await Html.PartialAsync("_ClientUserMenu")
             </div>
         </div>
     </header>
@@ -570,19 +571,21 @@
                             </p>
                         </section>
 
-                        <!-- Sección de Asesoría de Medidas -->
+                        <!-- Sección de Instructivo de Medidas -->
                         <section class="card-container bg-[#FFFBF7] border-[#E8DDD5] p-4">
                             <div class="flex items-start gap-3">
                                 <div class="w-9 h-9 rounded-full bg-[#8B5A2B]/15 text-carpintecPrimary flex items-center justify-center shrink-0 mt-0.5">
-                                    <i class="fa-solid fa-headset text-sm"></i>
+                                    <i class="fa-solid fa-book-open text-sm"></i>
                                 </div>
-                                <div>
-                                    <h4 class="font-bold text-xs text-carpintecTitle mb-1">¿Necesitas asesoría con las medidas?</h4>
-                                    <p class="text-xs text-carpintecText/70 leading-relaxed mb-2">
-                                        Nuestros ebanistas pueden asesorarte vía telefónica o coordinar una visita técnica a tu domicilio.
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-xs text-carpintecTitle mb-1">¿No sabes cómo tomar las medidas?</h4>
+                                    <p class="text-xs text-carpintecText/70 leading-relaxed mb-3">
+                                        Consulta nuestro instructivo paso a paso para medir correctamente tu espacio.
                                     </p>
-                                    <a href="https://wa.me/573000000000" target="_blank" class="text-xs font-bold text-carpintecPrimary hover:underline inline-flex items-center gap-1">
-                                        <i class="fa-brands fa-whatsapp"></i> Contactar un asesor experto
+                                    <a href="/Instructivos"
+                                       class="inline-flex items-center gap-2 px-3 py-1.5 bg-carpintecPrimary hover:bg-carpintecDark text-white text-xs font-bold rounded-lg transition-colors shadow-sm">
+                                        <i class="fa-solid fa-book-open text-xs"></i>
+                                        Ver Instructivo
                                     </a>
                                 </div>
                             </div>

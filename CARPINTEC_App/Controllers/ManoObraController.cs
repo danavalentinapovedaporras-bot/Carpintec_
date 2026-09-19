@@ -26,10 +26,16 @@ namespace CARPINTEC_App.Controllers
                     .Include(m => m.IdProductoNavigation)
                     .ToListAsync();
 
+                // Cargar la lista de productos y asignarla a ViewBag para la vista
+                var listaProductos = await _context.Productos.ToListAsync(); // Ajustar nombre de DbSet si es distinto
+                ViewBag.ListaProductos = listaProductos;
+
                 return View(listaManoObra);
             }
             catch
             {
+                // Asegurar que ViewBag no sea null incluso en el caso de excepción
+                ViewBag.ListaProductos = new List<object>(); // Ajustar tipo si es necesario
                 return View(new List<ManoObra>());
             }
         }

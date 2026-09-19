@@ -69,6 +69,7 @@ namespace CARPINTEC_App.Controllers
                 ViewBag.Apellido = apellido;
                 ViewBag.Iniciales = iniciales;
                 ViewBag.Correo = usuario?.Correo ?? correoSession ?? "";
+                ViewBag.CorreoUsuario = usuario?.Correo ?? correoSession ?? ""; // para _ClientUserMenu
                 ViewBag.Rol = rolSession ?? usuario?.Rol ?? "Cliente";
                 ViewBag.Estado = usuario?.Estado ?? "Activo";
 

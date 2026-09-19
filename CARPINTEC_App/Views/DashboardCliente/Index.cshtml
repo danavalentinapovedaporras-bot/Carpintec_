@@ -112,9 +112,15 @@
     <!-- Main Content Area -->
     <main class="flex-1 ml-0 flex flex-col min-h-screen w-full relative">
         <!-- TopAppBar -->
-        <header class="w-full h-16 sticky top-0 z-40 bg-surface text-primary border-b border-outline-variant shadow-sm flex items-center justify-between px-6 md:px-margin-desktop transition-all">
+        <header class="w-full h-16 sticky top-0 z-40 bg-[#F5EBE1] text-primary border-b border-outline-variant shadow-sm flex items-center justify-between px-6 md:px-margin-desktop transition-all">
             <div class="flex items-center">
-                <span class="font-title-md text-title-md font-bold text-primary mr-8 tracking-wider">CARPINTEC</span>
+                        <img alt="Carpintec Logo"
+                     class="h-8 w-8 object-contain mr-2"
+                     src="~/images/logo.png">
+
+                <span class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-on-primary dark:text-on-primary-container tracking-tight">
+                    CARPINTEC
+                </span>
                 <div class="hidden md:flex items-center bg-surface-container rounded-full px-4 py-2 focus-within:ring-2 focus-within:ring-secondary transition-all">
                     <span class="material-symbols-outlined text-on-surface-variant mr-2">search</span>
                     <input class="bg-transparent border-none outline-none font-body-md text-body-md text-on-surface w-64 placeholder:text-on-surface-variant/60 focus:ring-0 p-0" placeholder="Buscar en CARPINTEC..." type="text">
@@ -225,88 +231,7 @@
                     </div>
                 </div>
                 <!-- Menú de usuario con dropdown -->
-                <div class="relative" id="containerUserMenu">
-                    <button id="btnUserMenu" onclick="toggleUserMenu(event)" type="button"
-                            class="flex items-center space-x-2 cursor-pointer focus:outline-none group"
-                            title="Menú de usuario">
-                        <span class="font-label-md text-label-md text-primary font-bold hidden md:inline group-hover:text-primary/80 transition-colors">@(ViewBag.PrimerNombre ?? "Cliente")</span>
-                        <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-title-md font-bold overflow-hidden border-2 border-primary/30 shadow-sm hover:border-secondary transition-all duration-200 hover:scale-105">
-                            @(ViewBag.Iniciales ?? "CL")
-                        </div>
-                    </button>
-
-                    <!-- Dropdown menú de usuario -->
-                    <div id="dropdownUserMenu"
-                         class="hidden absolute right-0 mt-3 w-64 bg-white border border-outline-variant/60 rounded-2xl shadow-2xl z-50 overflow-hidden transform transition-all duration-200 origin-top-right">
-
-                        <!-- Encabezado con info del usuario -->
-                        <div class="px-4 py-3.5 bg-gradient-to-br from-[#5C4033] to-[#8B6355] flex items-center gap-3">
-                            <div class="w-11 h-11 rounded-full bg-white/20 text-white flex items-center justify-center font-bold text-base shrink-0 ring-2 ring-white/30">
-                                @(ViewBag.Iniciales ?? "CL")
-                            </div>
-                            <div class="min-w-0">
-                                <p class="font-bold text-white text-sm truncate">@(ViewBag.NombreCompleto ?? "Cliente")</p>
-                                <p class="text-white/70 text-[11px] truncate">@(ViewBag.CorreoUsuario ?? "")</p>
-                            </div>
-                        </div>
-
-                        <!-- Opciones del menú -->
-                        <div class="py-1.5">
-                            <a asp-controller="Miperfil" asp-action="Index"
-                               class="flex items-center gap-3 px-4 py-2.5 hover:bg-[#FAF6F0] transition-colors group/item">
-                                <div class="w-8 h-8 rounded-lg bg-[#F5EFE6] text-[#5C4033] flex items-center justify-center group-hover/item:bg-[#5C4033] group-hover/item:text-white transition-colors">
-                                    <span class="material-symbols-outlined text-[18px]">person</span>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-semibold text-[#3E2723]">Mi Perfil</p>
-                                    <p class="text-[11px] text-[#8D6E63]">Información y configuración</p>
-                                </div>
-                                <span class="material-symbols-outlined text-[16px] text-[#C4A882] ml-auto">chevron_right</span>
-                            </a>
-
-                            <a asp-controller="MisProductos" asp-action="Index"
-                               class="flex items-center gap-3 px-4 py-2.5 hover:bg-[#FAF6F0] transition-colors group/item">
-                                <div class="w-8 h-8 rounded-lg bg-[#F5EFE6] text-[#5C4033] flex items-center justify-center group-hover/item:bg-[#5C4033] group-hover/item:text-white transition-colors">
-                                    <span class="material-symbols-outlined text-[18px]">grid_view</span>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-semibold text-[#3E2723]">Catálogo</p>
-                                    <p class="text-[11px] text-[#8D6E63]">Ver productos disponibles</p>
-                                </div>
-                                <span class="material-symbols-outlined text-[16px] text-[#C4A882] ml-auto">chevron_right</span>
-                            </a>
-
-                            <a asp-controller="PQRCliente" asp-action="Index"
-                               class="flex items-center gap-3 px-4 py-2.5 hover:bg-[#FAF6F0] transition-colors group/item">
-                                <div class="w-8 h-8 rounded-lg bg-[#F5EFE6] text-[#5C4033] flex items-center justify-center group-hover/item:bg-[#5C4033] group-hover/item:text-white transition-colors">
-                                    <span class="material-symbols-outlined text-[18px]">support_agent</span>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-semibold text-[#3E2723]">Ayuda / PQR</p>
-                                    <p class="text-[11px] text-[#8D6E63]">Peticiones, quejas y reclamos</p>
-                                </div>
-                                <span class="material-symbols-outlined text-[16px] text-[#C4A882] ml-auto">chevron_right</span>
-                            </a>
-                        </div>
-
-                        <!-- Separador -->
-                        <div class="border-t border-[#EDE0D6] mx-3 my-1"></div>
-
-                        <!-- Cerrar sesión -->
-                        <div class="py-1.5 pb-2">
-                            <a asp-controller="Login" asp-action="CerrarSesion"
-                               class="flex items-center gap-3 px-4 py-2.5 hover:bg-red-50 transition-colors group/item">
-                                <div class="w-8 h-8 rounded-lg bg-red-50 text-red-600 flex items-center justify-center group-hover/item:bg-red-600 group-hover/item:text-white transition-colors">
-                                    <span class="material-symbols-outlined text-[18px]">logout</span>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-semibold text-red-700">Cerrar Sesión</p>
-                                    <p class="text-[11px] text-red-400">Salir de tu cuenta</p>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                @await Html.PartialAsync("_ClientUserMenu")
 
             </div>
         </div>
@@ -688,4 +613,4 @@
             }
         }
     </script>
-</body></html>
+</body></html>

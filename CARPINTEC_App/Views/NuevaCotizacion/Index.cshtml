@@ -77,8 +77,9 @@
             <!-- Brand Logo & Identity -->
             <div class="flex items-center gap-3">
                 <div class="w-12 h-12 rounded-xl overflow-hidden shadow-inner bg-[#4A2613] p-1 flex items-center justify-center border border-[#7E5F43]">
-                    <img alt="Carpintec Logo" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1WIGoyppDodnWrWJkefIOlCDNP3LghoV2s3rWFURPmCk6_TPctaEONR9asW48O_V_S4M06WxJtopXR9MJjkVtG_50qH7S6gQW6beCN9np_UH3f3RTn_EX1e_RNHjbHl-ye3gZxt2PS62ELIL7V_yW6JRhrZ-yqbv122o2LrdGRynEp7RdmyqI4e1CYIehW8_LzoBDA2k07bEGTHSppB7KjcilEdxZcnso3qs1FBIWEd3q6LWTVDLfnyhdrVF_sPCGfTnJOoSW_F6PU" />
-                </div>
+    <img alt="Carpintec Logo"
+                     class="h-8 w-8 object-contain mr-2"
+                     src="~/images/logo.png">                </div>
                 <div>
                     <span class="text-2xl font-bold tracking-tight text-[#4A2613] uppercase flex items-center gap-1">
                         Carpintec
@@ -98,17 +99,8 @@
                 </span>
             </nav>
             <!-- Customer Profile Quick Access -->
-            <div class="flex items-center gap-3.5 pl-4 border-l border-[#EAE3DA]" data-purpose="user-profile-badge">
-                <div class="text-right hidden sm:block">
-                    <p class="text-xs font-bold text-[#34261B] leading-none">@(ViewBag.NombreCliente ?? "Cliente Carpintec")</p>
-                    <span class="text-[11px] text-[#8C7665] font-medium">Cliente Verificado</span>
-                </div>
-                <div class="relative">
-                    <div class="w-10 h-10 rounded-full bg-[#E5D5C5] text-[#5C3821] flex items-center justify-center font-bold text-sm border-2 border-[#FAF7F2] shadow-sm">
-                        @(ViewBag.Iniciales ?? "CL")
-                    </div>
-                    <span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white"></span>
-                </div>
+            <div class="flex items-center gap-3.5 pl-4 border-l border-[#EAE3DA] text-[#34261B]" data-purpose="user-profile-badge">
+                @await Html.PartialAsync("_ClientUserMenu")
             </div>
         </div>
     </header>
@@ -419,26 +411,27 @@
                         Sube una foto del lugar donde irá el producto para facilitar el cálculo de las medidas y el diseño del espacio en concordancia con tu ambiente.
                     </p>
                 </div>
-                <!-- CARD 2: Expert Measurement Assistance Banner (From Reference) -->
+                <!-- CARD 2: Instructivo de Medidas -->
                 <div class="bg-gradient-to-br from-[#FAF3EA] to-[#F1E4D6] rounded-2xl border border-[#DFCBB9] p-5 shadow-sm" data-purpose="measurement-assistance-card">
                     <div class="flex items-start gap-3.5">
                         <div class="w-10 h-10 rounded-full bg-[#EAD4C2] flex-shrink-0 flex items-center justify-center text-[#744522]">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
-                                <path d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+                                <path d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" stroke-linecap="round" stroke-linejoin="round"></path>
                             </svg>
                         </div>
-                        <div>
+                        <div class="flex-1">
                             <h4 class="text-xs font-bold text-[#3B2516] leading-snug">
-                                ¿No conozco alguna medida o necesito asesoría para medir?
+                                ¿No sabes cómo tomar las medidas?
                             </h4>
                             <p class="text-[11px] text-[#695546] mt-1.5 leading-relaxed">
-                                No te preocupes, nuestro equipo de expertos puede guiarte por videollamada o coordinar una visita técnica a tu domicilio.
+                                Consulta nuestro instructivo paso a paso para medir correctamente tu espacio.
                             </p>
-                            <a class="inline-flex items-center gap-1.5 text-xs font-bold text-[#8B4513] hover:text-[#5E2B08] mt-2.5 transition-colors" href="#solicitar-ayuda">
-                                Solicitar ayuda con las medidas
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
-                                    <path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <a href="/Instructivos"
+                               class="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-[#8B4513] hover:bg-[#6B3310] text-white text-xs font-bold rounded-lg transition-colors shadow-sm">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+                                    <path d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" stroke-linecap="round" stroke-linejoin="round"></path>
                                 </svg>
+                                Ver Instructivo
                             </a>
                         </div>
                     </div>

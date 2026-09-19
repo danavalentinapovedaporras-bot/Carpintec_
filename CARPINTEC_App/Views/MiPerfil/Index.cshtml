@@ -123,13 +123,16 @@
         <a class="flex items-center gap-3 group focus:outline-none" asp-controller="DashboardCliente" asp-action="Index">
             <div class="w-11 h-11 rounded-lg bg-gradient-to-br from-[#c99658] to-[#8d4f24] p-[1.5px] shadow-sm">
                 <div class="w-full h-full bg-[#3e1e0e] rounded-[7px] flex items-center justify-center">
-                    <svg class="w-6 h-6 text-[#e8ba80]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24">
+                   <img alt="Carpintec Logo"
+                     class="h-8 w-8 object-contain mr-2"
+                     src="~/images/logo.png">
                         <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                         <polyline points="9 22 9 12 15 12 15 22"></polyline>
                     </svg>
                 </div>
             </div>
             <div class="flex flex-col">
+                  
                 <span class="text-xl font-extrabold tracking-wider text-[#382114] uppercase font-sans">Carpintec</span>
                 <span class="text-[11px] font-semibold tracking-widest text-[#7A695E] uppercase -mt-1">Portal Cliente</span>
             </div>
@@ -148,11 +151,7 @@
         </a>
     </nav>
     <div class="flex items-center gap-3 pl-4">
-        <div class="w-10 h-10 rounded-full bg-[#4E2A18] text-[#FAF7F4] flex items-center justify-center font-bold text-sm shadow-sm ring-2 ring-[#c99658]">@iniciales</div>
-        <div class="hidden sm:flex flex-col text-left">
-            <span class="text-sm font-bold text-[#382114] leading-tight">@primerNombre</span>
-            <span class="text-xs font-medium text-[#7A695E] leading-tight">@apellido</span>
-        </div>
+        @await Html.PartialAsync("_ClientUserMenu")
     </div>
 </div>
 </header>
