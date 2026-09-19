@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
-public class PagosPendientesController : Controller
+namespace CARPINTEC_App.Controllers
 {
-    public IActionResult Index()
+    public class PagosPendientesController : Controller
     {
-        return View();
+        public IActionResult Index()
+        {
+            return View();
+        }
     }
 }

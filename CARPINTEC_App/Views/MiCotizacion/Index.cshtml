@@ -1,346 +1,916 @@
-﻿@{
+@model IEnumerable<CARPINTEC_App.Models.Cotizacion>
+@{
     Layout = null;
+    int totalCotizaciones = ViewBag.TotalCotizaciones ?? (Model != null ? Model.Count() : 0);
+    int aprobadas = ViewBag.Aprobadas ?? (Model != null ? Model.Count(c => c.Estado != null && (c.Estado.Equals("Aprobada", StringComparison.OrdinalIgnoreCase) || c.Estado.Equals("Pagada", StringComparison.OrdinalIgnoreCase))) : 0);
+    int pendientes = ViewBag.Pendientes ?? (Model != null ? Model.Count(c => c.Estado != null && c.Estado.Equals("Pendiente", StringComparison.OrdinalIgnoreCase)) : 0);
 }
+
 <!DOCTYPE html>
-<html class="light" lang="en">
+<html lang="es">
 <head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Mis Cotizaciones - CARPINTEC</title>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;family=Work+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script id="tailwind-config">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mis Cotizaciones - Carpintec</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
         tailwind.config = {
-        darkMode: "class",
-        theme: {
-        extend: {
-        "colors": {
-        "secondary-fixed": "#ffdbc9",
-        "on-secondary-fixed": "#321200",
-        "on-primary-fixed-variant": "#753401",
-        "surface-container-low": "#fef1ed",
-        "secondary": "#9a4600",
-        "surface-tint": "#934b19",
-        "on-error-container": "#93000a",
-        "surface": "#fff8f6",
-        "on-surface-variant": "#54433a",
-        "background": "#fff8f6",
-        "primary-fixed-dim": "#ffb68c",
-        "on-error": "#ffffff",
-        "secondary-fixed-dim": "#ffb68d",
-        "primary-container": "#8b4513",
-        "inverse-primary": "#ffb68c",
-        "secondary-container": "#fd8a3e",
-        "outline": "#877369",
-        "on-secondary-fixed-variant": "#763400",
-        "tertiary-fixed-dim": "#dac49b",
-        "on-secondary-container": "#672c00",
-        "surface-container-lowest": "#ffffff",
-        "error-container": "#ffdad6",
-        "primary": "#6c2f00",
-        "inverse-surface": "#362f2c",
-        "surface-dim": "#e4d7d4",
-        "surface-container": "#f9ebe7",
-        "primary-fixed": "#ffdbc9",
-        "surface-bright": "#fff8f6",
-        "on-tertiary-fixed-variant": "#544525",
-        "on-tertiary-container": "#e2cca2",
-        "tertiary-fixed": "#f7e0b5",
-        "on-secondary": "#ffffff",
-        "on-primary-container": "#ffc29f",
-        "outline-variant": "#dac2b6",
-        "tertiary-container": "#665635",
-        "on-primary-fixed": "#321200",
-        "on-primary": "#ffffff",
-        "surface-container-high": "#f3e5e1",
-        "on-surface": "#201a18",
-        "on-tertiary": "#ffffff",
-        "surface-container-highest": "#ede0dc",
-        "on-tertiary-fixed": "#251a01",
-        "tertiary": "#4d3f20",
-        "on-background": "#201a18",
-        "surface-variant": "#ede0dc",
-        "inverse-on-surface": "#fbeeea",
-        "error": "#ba1a1a"
-        },
-        "borderRadius": {
-        "DEFAULT": "0.125rem",
-        "lg": "0.25rem",
-        "xl": "0.5rem",
-        "full": "0.75rem"
-        },
-        "spacing": {
-        "margin-desktop": "64px",
-        "container-max": "1280px",
-        "margin-mobile": "16px",
-        "base": "8px",
-        "gutter": "24px"
-        },
-        "fontFamily": {
-        "headline-lg": ["Montserrat"],
-        "label-md": ["Work Sans"],
-        "headline-lg-mobile": ["Montserrat"],
-        "body-lg": ["Work Sans"],
-        "title-md": ["Montserrat"],
-        "body-md": ["Work Sans"],
-        "display-lg": ["Montserrat"]
-        },
-        "fontSize": {
-        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
-        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
-        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
-        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
-        "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
-        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
-        }
-        }
-        }
+            theme: {
+                extend: {
+                    colors: {
+                        carpintecPrimary: '#8B5A2B',    /* Marrón madera */
+                        carpintecSecondary: '#2F4F4F',  /* Azulado / Oscuro */
+                        carpintecAccent: '#F7F7B5',     /* Beige claro de acento */
+                        carpintecBackground: '#FFFFFF', /* Fondo blanco */
+                        carpintecSurface: '#FAF3E0',    /* Fondo secundario / tarjetas */
+                        carpintecText: '#333333',       /* Gris oscuro para texto */
+                        carpintecTitle: '#5A3E1B',      /* Marrón oscuro para títulos */
+                        primary: '#8B5A2B',
+                        'on-surface': '#2E1F14',
+                        'on-surface-variant': '#6B584C',
+                        'outline': '#9C877A',
+                        'outline-variant': '#E5D8D0',
+                        'surface-container-low': '#F7EFE9',
+                        'secondary-container': '#734A23'
+                    }
+                }
+            }
         }
     </script>
+
+    <!-- Google Fonts: Montserrat y Open Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Material Symbols -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <style>
-        .material-symbols-outlined {
-        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #FAF3E0;
+            color: #333333;
+            margin: 0;
+            padding: 0;
         }
 
-        .fill-icon {
-        font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        h1, h2, h3, h4, h5, h6, button, label, th, .font-heading {
+            font-family: 'Montserrat', sans-serif;
         }
-        /* Custom scrollbar to match wood aesthetic slightly */
+
+        /* Estilos para las tarjetas y campos del modal */
+        .card-container {
+            background-color: #FFFFFF;
+            border: 1px solid #EADDD5;
+            border-radius: 0.875rem;
+            padding: 1.25rem;
+            box-shadow: 0 2px 6px rgba(90, 62, 27, 0.04);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .card-container:hover {
+            border-color: #D2BEB0;
+        }
+
+        .section-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: #5A3E1B;
+            margin-bottom: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .section-icon {
+            color: #8B5A2B;
+        }
+
+        .input-field {
+            width: 100%;
+            background-color: #FAF7F4;
+            border: 1px solid #D9C8BE;
+            border-radius: 0.625rem;
+            padding: 0.625rem 0.875rem;
+            font-size: 0.875rem;
+            color: #2E1F14;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .input-field:focus {
+            outline: none;
+            background-color: #FFFFFF;
+            border-color: #8B5A2B;
+            box-shadow: 0 0 0 3px rgba(139, 90, 43, 0.15);
+        }
+
+        .input-field::placeholder {
+            color: #A39084;
+            font-weight: 400;
+        }
+
+        /* Custom Scrollbar */
         ::-webkit-scrollbar {
-        width: 8px;
+            width: 8px;
+            height: 8px;
         }
 
         ::-webkit-scrollbar-track {
-        background: #fff8f6;
+            background: #F2E8DC;
         }
 
         ::-webkit-scrollbar-thumb {
-        background: #dac2b6;
-        border-radius: 4px;
+            background: #C4AD9D;
+            border-radius: 4px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-        background: #8b4513;
+            background: #8B5A2B;
         }
     </style>
 </head>
-<body class="bg-background text-on-background min-h-screen flex flex-col antialiased">
-    <!-- TopAppBar -->
-    <header class="bg-primary dark:bg-primary-container text-on-primary dark:text-on-primary-container docked full-width top-0 border-b-4 border-primary dark:border-primary-fixed shadow-md z-50 sticky">
-        <div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-4 w-full max-w-container-max mx-auto">
-            <div class="flex items-center gap-4">
-                <img alt="Carpintec Logo" class="h-10 w-10 object-contain bg-white rounded-sm p-1" src="https://lh3.googleusercontent.com/aida/AP1WRLvNe57FwpZCdLAdjTNHN9XTbzc2Gyq00dNP3DWAuThQ7dU6F7AYKMvDhbDeJsApzda7arQDQ6fogHr1u5ZKwCDgBsRwsqgC4x9emCV66_rArH9MfjOQUoiS1p8L4xGFFDa-HKPAZFp9BAK851Lr-1WKSaZjYD-7yW8oTpXJLtD9D3fXF3ubssHwmFV2PtEA0ksdV7Y9VG-KzdVA7Dk02qu1adStcby7EaxYW734BSWgVoVXKrFPRfcLVSddUtvhdAh0ZAdn1X62HXI">
-                <div class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[32px]">carpenter</span>
-                    <h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-on-primary dark:text-on-primary-container tracking-tight">CARPINTEC</h1>
-                </div>
-            </div>
-            <!-- Desktop Nav -->
-            <nav class="hidden md:flex items-center gap-8">
-                <a class="text-on-primary/80 font-medium hover:text-secondary-fixed hover:transition-colors font-label-md text-label-md" href="#">Inicio</a>
+<body class="antialiased min-h-screen flex flex-col">
 
-                <a aria-current="page" class="text-on-primary font-bold border-b-2 border-on-primary pb-1 hover:text-secondary-fixed hover:transition-colors font-label-md text-label-md active scale-95 transition-transform duration-200" href="#">Mis Cotizaciones</a>
-                <button class="bg-surface text-primary font-label-md text-label-md px-6 py-2 rounded-full font-bold hover:bg-secondary-fixed transition-colors flex items-center gap-2">
-                    Contacto
-                </button><a class="text-on-primary/80 font-medium hover:text-secondary-fixed hover:transition-colors font-label-md text-label-md ml-4" href="#">Cerrar sesión</a>
+    <!-- BARRA SUPERIOR DE NAVEGACIÓN CLIENTE -->
+    <header class="w-full bg-[#8B5A2B] text-white shadow-md sticky top-0 z-40">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <a asp-controller="DashboardCliente" asp-action="Index" class="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors" title="Volver al inicio">
+                    <span class="material-symbols-outlined text-2xl">arrow_back</span>
+                </a>
+                <span class="font-bold text-xl uppercase tracking-wider font-heading flex items-center gap-2">
+                        <img alt="Carpintec Logo"
+                     class="h-8 w-8 object-contain mr-2"
+                     src="~/images/logo.png">
+                   
+                    Carpintec
+                </span>
+            </div>
+            <!-- Enlaces del Portal de Cliente -->
+            <nav class="hidden md:flex items-center gap-2 text-sm font-semibold">
+                <a asp-controller="DashboardCliente" asp-action="Index" class="px-3 py-1.5 rounded-lg text-white/85 hover:text-white hover:bg-white/10 transition-colors">
+                    Inicio
+                </a>
+                <a asp-controller="MisProductos" asp-action="Index" class="px-3 py-1.5 rounded-lg text-white/85 hover:text-white hover:bg-white/10 transition-colors">
+                    Catálogo
+                </a>
+                <a asp-controller="MiCotizacion" asp-action="Index" class="px-3 py-1.5 rounded-lg bg-white/20 text-white border-b-2 border-carpintecAccent font-bold">
+                    Mis Cotizaciones
+                </a>
+                <a asp-controller="Mi_Pedido" asp-action="Index" class="px-3 py-1.5 rounded-lg text-white/85 hover:text-white hover:bg-white/10 transition-colors">
+                    Mis Pedidos
+                </a>
+                <a asp-controller="Miperfil" asp-action="Index" class="px-3 py-1.5 rounded-lg text-white/85 hover:text-white hover:bg-white/10 transition-colors">
+                    Mi Perfil
+                </a>
             </nav>
-            <!-- Mobile Menu Button -->
-            <button class="md:hidden text-on-primary p-2">
-                <span class="material-symbols-outlined">menu</span>
-            </button>
+            <div class="flex items-center gap-2">
+                @await Html.PartialAsync("_ClientUserMenu")
+            </div>
         </div>
     </header>
-    <!-- Main Content -->
-    <main class="flex-grow w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-12 md:py-20 flex flex-col gap-12">
-        <!-- Page Header -->
-        <div class="flex flex-col gap-4 border-b-2 border-outline-variant pb-8">
-            <h2 class="font-display-lg text-display-lg text-primary">Mis Cotizaciones</h2>
-            <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
-                Revisa el estado de tus proyectos a medida, descarga los detalles técnicos y haz seguimiento a la artesanía de tus futuros muebles.
-            </p>
+
+    <!-- CONTENEDOR PRINCIPAL DE LA VISTA -->
+    <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 lg:p-8 space-y-6">
+
+        <!-- Cabecera de la Página -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center bg-carpintecBackground p-6 rounded-2xl border border-[#8B5A2B]/20 shadow-sm gap-4">
+            <div>
+                <div class="flex items-center gap-2 text-xs font-bold text-carpintecPrimary uppercase tracking-wider mb-1">
+                    <a asp-controller="DashboardCliente" asp-action="Index" class="hover:underline flex items-center gap-1">
+                        <span class="material-symbols-outlined text-sm">home</span> Inicio
+                    </a>
+                    <span>/</span>
+                    <span>Mis Cotizaciones</span>
+                </div>
+                <h1 class="text-2xl md:text-3xl font-bold text-carpintecTitle flex items-center gap-3">
+                    <span class="material-symbols-outlined text-carpintecPrimary text-3xl">history_edu</span>
+                    Historial de Mis Cotizaciones
+                </h1>
+                <p class="text-sm text-carpintecText/80 mt-1">
+                    Consulte el estado de sus muebles y piezas cotizadas, presupuestos aprobados y solicitudes en proceso técnico.
+                </p>
+            </div>
+            <!-- Botón para solicitar nueva cotización -->
+            <button type="button" onclick="abrirModalCotizacion()" class="px-5 py-3 bg-carpintecPrimary text-white text-sm font-bold rounded-xl shadow-md hover:bg-[#734A23] transition-all transform active:scale-95 flex items-center gap-2">
+                <span class="material-symbols-outlined text-lg">add_circle</span> Solicitar Cotización
+            </button>
         </div>
-        <!-- Quotations List - Bento / Card Grid Style -->
-        <div class="flex flex-col gap-8">
-            <!-- Quote Item 1 -->
-            <article class="bg-surface-container-lowest border-2 border-outline-variant rounded-xl overflow-hidden flex flex-col md:flex-row shadow-[0_4px_12px_rgba(0,0,0,0.05)] hover:border-primary transition-colors group">
-                <!-- Image Section -->
-                <div class="w-full md:w-1/3 min-h-[300px] md:min-h-full relative overflow-hidden bg-surface-variant border-b-2 md:border-b-0 md:border-r-2 border-outline-variant">
-                    <img alt="Closet de Roble" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AP1WRLuNN4-8Ckda6pBcJcWMF2onSP_QfqXBNVrh8mTBZLnPGEyxS4Jec6ZDD6JiSQYt7Ti5KMCY3R9VVlbgLG-_NpJZ5oYZ97tPe6bsMYX_zbNmMB5JabgXP6DpJXRyG9wwyWwvl800EsDcbk-6kry-BjQLzDeonxGQfSIyhGgGZ3gMVt-ttV2hDz4974gCiUKwjsfOYzVQ8rEcwW7gGJHwgrth0SbqwgUUBQK3PfbviCO3DzZoUU1NdD3ShWlk">
+
+        <!-- Tarjetas de Resumen Rápido (Indicadores de Estado) -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <!-- Aprobadas / Pagadas -->
+            <div class="bg-carpintecBackground p-5 rounded-2xl border border-[#8B5A2B]/20 shadow-sm flex items-center gap-4">
+                <div class="w-12 h-12 bg-green-100 text-green-700 rounded-xl flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-2xl">task_alt</span>
                 </div>
-                <!-- Content Section -->
-                <div class="w-full md:w-2/3 p-6 md:p-8 flex flex-col justify-between gap-6">
-                    <div class="flex flex-col gap-4">
-                        <div class="flex justify-between items-start flex-wrap gap-4">
-                            <div>
-                                <h3 class="font-title-md text-title-md text-primary mb-1">Closet Empotrado de Roble</h3>
-                                <p class="font-label-md text-label-md text-on-surface-variant">Cotización #CT-2024-089</p>
-                            </div>
-                            <span class="inline-flex items-center gap-1.5 bg-surface-container-highest text-on-surface px-3 py-1.5 rounded-full font-label-md text-label-md border border-outline-variant">
-                                <span class="w-2 h-2 rounded-full bg-[#eab308]"></span>
-                                Pendiente
-                            </span>
-                        </div>
-                        <p class="font-body-md text-body-md text-on-surface">
-                            Diseño a medida de closet empotrado con puertas batientes, cajoneras interiores con rieles telescópicos y espacio de colgado de doble altura. Acabado natural mate para resaltar la veta del roble.
-                        </p>
-                        <!-- Tech Specs Grid -->
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-surface-container-low p-4 rounded-lg border border-outline-variant mt-2">
-                            <div class="flex flex-col gap-1">
-                                <span class="font-label-md text-[12px] text-on-surface-variant uppercase tracking-wider">Madera</span>
-                                <span class="font-body-md text-body-md font-semibold text-primary">Roble Americano</span>
-                            </div>
-                            <div class="flex flex-col gap-1">
-                                <span class="font-label-md text-[12px] text-on-surface-variant uppercase tracking-wider">Alto</span>
-                                <span class="font-body-md text-body-md font-semibold text-primary">240 cm</span>
-                            </div>
-                            <div class="flex flex-col gap-1">
-                                <span class="font-label-md text-[12px] text-on-surface-variant uppercase tracking-wider">Ancho</span>
-                                <span class="font-body-md text-body-md font-semibold text-primary">320 cm</span>
-                            </div>
-                            <div class="flex flex-col gap-1">
-                                <span class="font-label-md text-[12px] text-on-surface-variant uppercase tracking-wider">Profundidad</span>
-                                <span class="font-body-md text-body-md font-semibold text-primary">60 cm</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Actions -->
-                    <div class="flex flex-col sm:flex-row gap-4 pt-4 border-t border-outline-variant/50">
-                        <button class="bg-primary hover:bg-secondary text-on-primary font-label-md text-label-md px-6 py-3 rounded-lg font-bold transition-colors flex items-center justify-center gap-2">
-                            <span class="material-symbols-outlined text-[20px]">visibility</span>
-                            Ver Detalle
-                        </button>
-                        <button class="bg-transparent border-2 border-primary text-primary hover:bg-secondary-fixed hover:border-secondary hover:text-secondary font-label-md text-label-md px-6 py-3 rounded-lg font-bold transition-colors flex items-center justify-center gap-2">
-                            <span class="material-symbols-outlined text-[20px]">download</span>
-                            Descargar PDF
-                        </button>
-                    </div>
+                <div>
+                    <p class="text-xs font-bold text-carpintecText/70 uppercase">Aprobadas / Pagadas</p>
+                    <h3 class="text-2xl font-bold text-carpintecTitle">@aprobadas</h3>
                 </div>
-            </article>
-            <!-- Quote Item 2 -->
-            <article class="bg-surface-container-lowest border-2 border-outline-variant rounded-xl overflow-hidden flex flex-col md:flex-row shadow-[0_4px_12px_rgba(0,0,0,0.05)] hover:border-primary transition-colors group">
-                <div class="w-full md:w-1/3 min-h-[300px] md:min-h-full relative overflow-hidden bg-surface-variant border-b-2 md:border-b-0 md:border-r-2 border-outline-variant">
-                    <img alt="Mesa de Comedor de Nogal" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AP1WRLu5SsRBaJQOKX60FyUpwZh2jPuxm-0HZ553N6o-sBP39OeYHc0oLh-5B_aD_j1wVEMFSpvG9WcZ_IESK5Tg33YBuEHOawOEsmFa3jnwGud_Dh_RNXLsgON_aE8xQL77asaE-1RIP01TUnB07b1JxtOYaWC2AAow4yXBZoUVuuM-FjRosQZ_hR7e9V0WATZ7HFqrV1-hCZy9u0qilUWwDPWJbmePfI_KkRunh-AKC6vvklY-0zDHmnZWktk">
+            </div>
+            <!-- Pendientes -->
+            <div class="bg-carpintecBackground p-5 rounded-2xl border border-[#8B5A2B]/20 shadow-sm flex items-center gap-4">
+                <div class="w-12 h-12 bg-amber-100 text-amber-800 rounded-xl flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-2xl">schedule</span>
                 </div>
-                <div class="w-full md:w-2/3 p-6 md:p-8 flex flex-col justify-between gap-6">
-                    <div class="flex flex-col gap-4">
-                        <div class="flex justify-between items-start flex-wrap gap-4">
-                            <div>
-                                <h3 class="font-title-md text-title-md text-primary mb-1">Mesa de Comedor Artesanal</h3>
-                                <p class="font-label-md text-label-md text-on-surface-variant">Cotización #CT-2024-075</p>
-                            </div>
-                            <span class="inline-flex items-center gap-1.5 bg-surface-container-low text-on-surface px-3 py-1.5 rounded-full font-label-md text-label-md border border-primary-container/30">
-                                <span class="w-2 h-2 rounded-full bg-[#22c55e]"></span>
-                                Aprobado
-                            </span>
-                        </div>
-                        <p class="font-body-md text-body-md text-on-surface">
-                            Mesa de comedor sólida para 8 personas. Cubierta de una sola pieza con borde vivo (live edge) y base de patas en 'X' reforzadas. Sellado con aceite de linaza natural para protección profunda.
-                        </p>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-surface-container-low p-4 rounded-lg border border-outline-variant mt-2">
-                            <div class="flex flex-col gap-1">
-                                <span class="font-label-md text-[12px] text-on-surface-variant uppercase tracking-wider">Madera</span>
-                                <span class="font-body-md text-body-md font-semibold text-primary">Nogal</span>
-                            </div>
-                            <div class="flex flex-col gap-1">
-                                <span class="font-label-md text-[12px] text-on-surface-variant uppercase tracking-wider">Alto</span>
-                                <span class="font-body-md text-body-md font-semibold text-primary">76 cm</span>
-                            </div>
-                            <div class="flex flex-col gap-1">
-                                <span class="font-label-md text-[12px] text-on-surface-variant uppercase tracking-wider">Largo</span>
-                                <span class="font-body-md text-body-md font-semibold text-primary">220 cm</span>
-                            </div>
-                            <div class="flex flex-col gap-1">
-                                <span class="font-label-md text-[12px] text-on-surface-variant uppercase tracking-wider">Ancho</span>
-                                <span class="font-body-md text-body-md font-semibold text-primary">100 cm</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex flex-col sm:flex-row gap-4 pt-4 border-t border-outline-variant/50">
-                        <button class="bg-primary hover:bg-secondary text-on-primary font-label-md text-label-md px-6 py-3 rounded-lg font-bold transition-colors flex items-center justify-center gap-2">
-                            <span class="material-symbols-outlined text-[20px]">visibility</span>
-                            Ver Detalle
-                        </button>
-                        <button class="bg-transparent border-2 border-primary text-primary hover:bg-secondary-fixed hover:border-secondary hover:text-secondary font-label-md text-label-md px-6 py-3 rounded-lg font-bold transition-colors flex items-center justify-center gap-2">
-                            <span class="material-symbols-outlined text-[20px]">download</span>
-                            Descargar PDF
-                        </button>
-                    </div>
+                <div>
+                    <p class="text-xs font-bold text-carpintecText/70 uppercase">Pendientes de Revisión</p>
+                    <h3 class="text-2xl font-bold text-carpintecTitle">@pendientes</h3>
                 </div>
-            </article>
-            <!-- Quote Item 3 -->
-            <article class="bg-surface-container-lowest border-2 border-outline-variant rounded-xl overflow-hidden flex flex-col md:flex-row shadow-[0_4px_12px_rgba(0,0,0,0.05)] hover:border-primary transition-colors group">
-                <div class="w-full md:w-1/3 min-h-[300px] md:min-h-full relative overflow-hidden bg-surface-variant border-b-2 md:border-b-0 md:border-r-2 border-outline-variant">
-                    <img alt="Silla de Cedro" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AP1WRLu_MICgZb4vn1-FPS7g0W4TEQnw4rEaSpWLzIRlM4UeyHq8wQ8OFeBfsq8ETSKPhwbmE5cZ8Rec1ex9VyUI9nAMhwxtHJysa7xNcaw80nIeJbIZxL9EQ1FsACIpFps_M2u51eZ3q7zg4McGAjkayPamZlsDYvdWDeUcCUAT7hS0gXDOkNKLFy6GGm_22J7uKLTqci2r4W4W0uU7H_-U9lwZsUkz3o8cfSQ5HUD6WYbfuemE2mVMUCr8bRGf">
+            </div>
+            <!-- Total de Cotizaciones -->
+            <div class="bg-carpintecBackground p-5 rounded-2xl border border-[#8B5A2B]/20 shadow-sm flex items-center gap-4">
+                <div class="w-12 h-12 bg-[#8B5A2B]/10 text-carpintecPrimary rounded-xl flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-2xl">receipt_long</span>
                 </div>
-                <div class="w-full md:w-2/3 p-6 md:p-8 flex flex-col justify-between gap-6">
-                    <div class="flex flex-col gap-4">
-                        <div class="flex justify-between items-start flex-wrap gap-4">
-                            <div>
-                                <h3 class="font-title-md text-title-md text-primary mb-1">Set de Sillas Clásicas (x6)</h3>
-                                <p class="font-label-md text-label-md text-on-surface-variant">Cotización #CT-2024-112</p>
-                            </div>
-                            <span class="inline-flex items-center gap-1.5 bg-surface-container-highest text-on-surface px-3 py-1.5 rounded-full font-label-md text-label-md border border-outline-variant">
-                                <span class="w-2 h-2 rounded-full bg-[#64748b]"></span>
-                                En Revisión
-                            </span>
-                        </div>
-                        <p class="font-body-md text-body-md text-on-surface">
-                            Juego de 6 sillas de comedor con diseño ergonómico de respaldo curvo. Ensamblaje tradicional de caja y espiga garantizando durabilidad. Asientos tallados para mayor comodidad sin necesidad de cojines.
-                        </p>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-surface-container-low p-4 rounded-lg border border-outline-variant mt-2">
-                            <div class="flex flex-col gap-1">
-                                <span class="font-label-md text-[12px] text-on-surface-variant uppercase tracking-wider">Madera</span>
-                                <span class="font-body-md text-body-md font-semibold text-primary">Cedro</span>
-                            </div>
-                            <div class="flex flex-col gap-1">
-                                <span class="font-label-md text-[12px] text-on-surface-variant uppercase tracking-wider">Alto Total</span>
-                                <span class="font-body-md text-body-md font-semibold text-primary">95 cm</span>
-                            </div>
-                            <div class="flex flex-col gap-1">
-                                <span class="font-label-md text-[12px] text-on-surface-variant uppercase tracking-wider">Ancho Asiento</span>
-                                <span class="font-body-md text-body-md font-semibold text-primary">45 cm</span>
-                            </div>
-                            <div class="flex flex-col gap-1">
-                                <span class="font-label-md text-[12px] text-on-surface-variant uppercase tracking-wider">Profundidad</span>
-                                <span class="font-body-md text-body-md font-semibold text-primary">48 cm</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex flex-col sm:flex-row gap-4 pt-4 border-t border-outline-variant/50">
-                        <button class="bg-primary hover:bg-secondary text-on-primary font-label-md text-label-md px-6 py-3 rounded-lg font-bold transition-colors flex items-center justify-center gap-2">
-                            <span class="material-symbols-outlined text-[20px]">visibility</span>
-                            Ver Detalle
-                        </button>
-                        <button class="bg-transparent border-2 border-primary text-primary hover:bg-secondary-fixed hover:border-secondary hover:text-secondary font-label-md text-label-md px-6 py-3 rounded-lg font-bold transition-colors flex items-center justify-center gap-2">
-                            <span class="material-symbols-outlined text-[20px]">download</span>
-                            Descargar PDF
-                        </button>
-                    </div>
+                <div>
+                    <p class="text-xs font-bold text-carpintecText/70 uppercase">Total Solicitadas</p>
+                    <h3 class="text-2xl font-bold text-carpintecTitle">@totalCotizaciones</h3>
                 </div>
-            </article>
+            </div>
         </div>
+
+        <!-- Tabla de Listado de Cotizaciones del Cliente -->
+        <div class="bg-carpintecBackground rounded-2xl border border-[#8B5A2B]/20 shadow-sm overflow-hidden">
+            <div class="p-5 border-b border-[#8B5A2B]/20 flex justify-between items-center bg-white">
+                <h2 class="text-lg font-bold text-carpintecTitle flex items-center gap-2">
+                    <span class="material-symbols-outlined text-carpintecPrimary">table_rows</span>
+                    Detalle de Productos Cotizados
+                </h2>
+                <span class="text-xs text-carpintecText/60">
+                    @totalCotizaciones @(totalCotizaciones == 1 ? "registro encontrado" : "registros encontrados")
+                </span>
+            </div>
+
+            @if (Model != null && Model.Any())
+            {
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-carpintecSurface/60 text-carpintecTitle text-xs uppercase tracking-wider border-b border-[#8B5A2B]/20">
+                                <th class="py-3.5 px-4 font-bold">Nº Cotización</th>
+                                <th class="py-3.5 px-4 font-bold">Fecha</th>
+                                <th class="py-3.5 px-4 font-bold">Producto / Mueble</th>
+                                <th class="py-3.5 px-4 font-bold">Madera</th>
+                                <th class="py-3.5 px-4 font-bold">Total ($)</th>
+                                <th class="py-3.5 px-4 font-bold">Estado</th>
+                                <th class="py-3.5 px-4 text-center font-bold">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-[#8B5A2B]/10 text-sm text-carpintecText">
+                            @foreach (var item in Model)
+                            {
+                                string estadoLower = (item.Estado ?? "pendiente").ToLower();
+                                string badgeClase = "bg-amber-100 text-amber-800 border border-amber-300";
+                                string iconEstado = "hourglass_top";
+
+                                if (estadoLower == "aprobada" || estadoLower == "pagada" || estadoLower == "finalizada")
+                                {
+                                    badgeClase = "bg-green-100 text-green-800 border border-green-300";
+                                    iconEstado = "check_circle";
+                                }
+                                else if (estadoLower == "rechazada" || estadoLower == "cancelada")
+                                {
+                                    badgeClase = "bg-red-100 text-red-700 border border-red-300";
+                                    iconEstado = "cancel";
+                                }
+
+                                string nombreProducto = !string.IsNullOrWhiteSpace(item.DetalleProducto)
+                                    ? item.DetalleProducto
+                                    : (item.DetalleCotizacions?.FirstOrDefault()?.IdProductoNavigation?.Nombre ?? "Mueble personalizado");
+
+                                string tipoMadera = !string.IsNullOrWhiteSpace(item.TipoMadera)
+                                    ? item.TipoMadera
+                                    : (item.DetalleCotizacions?.FirstOrDefault()?.IdProductoNavigation?.Material ?? "Pino Macizo");
+
+                                string medidasItem = !string.IsNullOrWhiteSpace(item.Medidas)
+                                    ? item.Medidas
+                                    : (item.DetalleCotizacions?.FirstOrDefault()?.Medidas ?? "");
+
+                                int cantidadItem = item.Cantidad ?? item.DetalleCotizacions?.FirstOrDefault()?.Cantidad ?? 1;
+
+                                <tr class="hover:bg-carpintecSurface/30 transition-colors">
+                                    <td class="py-4 px-4 font-bold text-carpintecPrimary font-mono">@item.Folio</td>
+                                    <td class="py-4 px-4 text-xs font-medium text-gray-600">@item.Fecha.ToString("yyyy-MM-dd")</td>
+                                    <td class="py-4 px-4">
+                                        <div class="font-semibold text-gray-800">@nombreProducto</div>
+                                        @if (!string.IsNullOrEmpty(medidasItem))
+                                        {
+                                            <div class="text-xs text-gray-500 mt-0.5 flex items-center gap-1">
+                                                <i class="fa-solid fa-ruler-combined text-[10px] text-[#8B5A2B]/70"></i>
+                                                <span>@medidasItem</span>
+                                            </div>
+                                        }
+                                    </td>
+                                    <td class="py-4 px-4 text-xs">
+                                        <span class="bg-[#8B5A2B]/10 text-carpintecPrimary px-2.5 py-1 rounded-md font-medium inline-flex items-center gap-1">
+                                            <i class="fa-solid fa-tree text-[10px]"></i>
+                                            @tipoMadera
+                                        </span>
+                                        @if (cantidadItem > 1)
+                                        {
+                                            <span class="ml-1 text-gray-600 font-bold">x@cantidadItem</span>
+                                        }
+                                    </td>
+                                    <td class="py-4 px-4 font-bold text-carpintecTitle">
+                                        $ @item.Total.ToString("N0") COP
+                                    </td>
+                                    <td class="py-4 px-4">
+                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold @badgeClase">
+                                            <span class="material-symbols-outlined text-xs">@iconEstado</span>
+                                            @(item.Estado ?? "Pendiente")
+                                        </span>
+                                    </td>
+                                    <td class="py-4 px-4 text-center">
+                                        <button type="button" onclick="verDetalleCotizacion(@item.IdCotizacion)" class="p-2 hover:bg-[#8B5A2B]/10 rounded-xl text-carpintecPrimary transition-colors inline-flex items-center justify-center" title="Ver Detalle Completo">
+                                            <span class="material-symbols-outlined text-lg">visibility</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <!-- Estado vacío cuando no hay cotizaciones -->
+                <div class="text-center py-16 px-4">
+                    <div class="w-16 h-16 bg-[#8B5A2B]/10 text-carpintecPrimary rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="material-symbols-outlined text-3xl">post_add</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-carpintecTitle mb-1">Aún no tienes cotizaciones registradas</h3>
+                    <p class="text-sm text-carpintecText/70 max-w-md mx-auto mb-6">
+                        Puedes solicitar el presupuesto para tus muebles de madera a medida ahora mismo de forma rápida y sencilla.
+                    </p>
+                    <button type="button" onclick="abrirModalCotizacion()" class="px-6 py-2.5 bg-carpintecPrimary text-white text-sm font-bold rounded-lg shadow hover:bg-[#734A23] transition-colors inline-flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm">add</span> Crear Mi Primera Cotización
+                    </button>
+                </div>
+            }
+        </div>
+
     </main>
-    <!-- Footer -->
-    <footer class="bg-on-background dark:bg-surface-dim text-surface dark:text-on-surface full-width bottom-0 border-t-4 border-primary mt-auto">
-        <div class="flex flex-col md:flex-row justify-between items-center px-margin-mobile md:px-margin-desktop py-12 w-full max-w-container-max mx-auto gap-8">
-            <div class="font-headline-lg text-headline-lg text-primary-fixed">
-                CARPINTEC
+
+    <!-- ========================================== -->
+    <!-- MODAL DE NUEVA COTIZACIÓN                  -->
+    <!-- ========================================== -->
+    <div id="modalNuevaCotizacion" class="fixed inset-0 z-50 hidden overflow-y-auto bg-black/60 backdrop-blur-sm flex justify-center items-center p-4 md:p-6">
+
+        <!-- Contenedor interno del modal -->
+        <div class="bg-[#FAF6F2] w-full max-w-[1300px] rounded-3xl shadow-2xl overflow-hidden relative max-h-[92vh] flex flex-col border border-[#E0D2C7]">
+
+            <!-- Barra Superior del Modal -->
+            <div class="bg-white border-b border-[#EADDD5] px-6 py-4 flex items-center justify-between shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-[#8B5A2B]/15 text-carpintecPrimary flex items-center justify-center">
+                        <i class="fa-solid fa-file-invoice text-lg"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-extrabold text-carpintecTitle uppercase tracking-tight">
+                            Nueva <span class="text-carpintecPrimary">Cotización</span>
+                        </h2>
+                        <p class="text-xs text-carpintecText/70">Define los detalles técnicos para tu pieza personalizada de carpintería.</p>
+                    </div>
+                </div>
+
+                <!-- Botón cerrar modal -->
+                <button type="button" onclick="cerrarModalCotizacion()" class="w-9 h-9 bg-gray-100 border border-gray-200 rounded-full flex items-center justify-center text-gray-600 hover:bg-red-50 hover:text-red-600 transition-colors shadow-sm" title="Cerrar ventana">
+                    <i class="fa-solid fa-xmark text-base"></i>
+                </button>
             </div>
-            <nav class="flex flex-wrap justify-center gap-6">
-                <a class="text-surface-variant dark:text-on-surface-variant font-label-md text-label-md hover:text-primary-fixed-dim transition-colors opacity-100 hover:opacity-80" href="#">Inicio</a>
-                <a class="text-surface-variant dark:text-on-surface-variant font-label-md text-label-md hover:text-primary-fixed-dim transition-colors opacity-100 hover:opacity-80" href="#">Acerca de</a>
-                <a class="text-surface-variant dark:text-on-surface-variant font-label-md text-label-md hover:text-primary-fixed-dim transition-colors opacity-100 hover:opacity-80" href="#">Servicios</a>
-                <a class="text-surface-variant dark:text-on-surface-variant font-label-md text-label-md hover:text-primary-fixed-dim transition-colors opacity-100 hover:opacity-80" href="#">Trabajos</a>
-                <a class="text-surface-variant dark:text-on-surface-variant font-label-md text-label-md hover:text-primary-fixed-dim transition-colors opacity-100 hover:opacity-80" href="#">Privacidad</a>
-            </nav>
-            <div class="font-body-md text-body-md text-surface-variant dark:text-on-surface-variant text-center md:text-right">
-                © 2024 CARPINTEC. Artesanía en Madera.
+
+            <!-- Contenido del Formulario (con Scroll) -->
+            <div class="overflow-y-auto p-6 md:p-8 space-y-6 flex-1">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+                    <!-- Left Column (Form Area) -->
+                    <div class="lg:col-span-8 space-y-6">
+
+                        <!-- Grid para los campos del formulario -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <!-- Client Info -->
+                            <section class="card-container" data-purpose="client-info">
+                                <h3 class="section-title">
+                                    <i class="fa-regular fa-user section-icon"></i> Información del Cliente
+                                </h3>
+                                <div class="space-y-3">
+                                    <div class="relative">
+                                        <i class="fa-regular fa-user absolute left-3.5 top-1/2 -translate-y-1/2 text-[#A39084]"></i>
+                                        <input id="txtCliente" class="input-field pl-10" type="text" placeholder="Nombre completo" value="@ViewBag.NombreCliente">
+                                    </div>
+                                    <div class="relative">
+                                        <i class="fa-solid fa-phone absolute left-3.5 top-1/2 -translate-y-1/2 text-[#A39084] text-xs"></i>
+                                        <input id="txtTelefono" class="input-field pl-10" type="text" placeholder="Teléfono de contacto" value="@ViewBag.TelefonoCliente">
+                                    </div>
+                                    <div class="relative">
+                                        <i class="fa-regular fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-[#A39084]"></i>
+                                        <input id="txtEmail" class="input-field pl-10" type="email" placeholder="Correo electrónico" value="@ViewBag.CorreoCliente">
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- Product Details -->
+                            <section class="card-container" data-purpose="product-details">
+                                <h3 class="section-title">
+                                    <i class="fa-solid fa-cube section-icon text-sm"></i> Detalles del Producto
+                                </h3>
+                                <div class="space-y-3 h-full flex flex-col justify-between">
+                                    <div class="relative">
+                                        <input id="selectProducto" list="listaProductos" class="input-field pr-10 font-semibold" placeholder="Escribe o selecciona un producto...">
+                                        <datalist id="listaProductos">
+                                            <option value="Mesa de Comedor Artesanal"></option>
+                                            <option value="Escritorio Moderno de Oficina"></option>
+                                            <option value="Closet Empotrado en Roble"></option>
+                                            <option value="Biblioteca de Pared Flotante"></option>
+                                            <option value="Cama Rústica King Size"></option>
+                                            <option value="Cómoda con Gaveteros"></option>
+                                            <option value="Mueble para TV y Entretenimiento"></option>
+                                        </datalist>
+                                        <i class="fa-solid fa-pen-to-square absolute right-4 top-1/2 -translate-y-1/2 text-[#A39084] text-sm pointer-events-none"></i>
+                                    </div>
+                                    <div class="p-2.5 bg-[#FAF7F4] rounded-lg border border-[#EADDD5] text-xs flex items-center justify-between">
+                                        <span class="text-carpintecText/70 font-semibold">Acabado sugerido:</span>
+                                        <span class="font-bold text-carpintecPrimary">Natural / Barniz Mate</span>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- Wood Type -->
+                            <section class="card-container" data-purpose="wood-type">
+                                <h3 class="section-title">
+                                    <i class="fa-solid fa-tree section-icon text-sm"></i> Tipo de Madera
+                                </h3>
+                                <div class="relative">
+                                    <select id="selectMadera" class="input-field appearance-none pr-10 font-bold text-carpintecTitle cursor-pointer">
+                                        <option value="Pino Macizo">Pino Macizo (Económico & Resistente)</option>
+                                        <option value="Roble">Roble (Duro & Elegante)</option>
+                                        <option value="Cedro">Cedro (Fino & Aromático)</option>
+                                        <option value="Nogal">Nogal (Premium & Exclusivo)</option>
+                                    </select>
+                                    <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-[#A39084] text-sm pointer-events-none"></i>
+                                </div>
+                                <div class="mt-2 text-right">
+                                    <span id="labelPrecioMadera" class="text-xs font-bold text-carpintecPrimary">Base: $320.000 COP</span>
+                                </div>
+                            </section>
+
+                            <!-- Quantity -->
+                            <section class="card-container flex flex-col justify-between" data-purpose="quantity">
+                                <h3 class="section-title">
+                                    <i class="fa-solid fa-boxes-stacked section-icon text-sm"></i> Cantidad de Piezas
+                                </h3>
+                                <div class="flex items-center mt-2">
+                                    <button type="button" onclick="cambiarCantidad(-1)" class="w-12 h-11 bg-[#F2E8DC] text-carpintecTitle font-bold flex items-center justify-center rounded-l-xl hover:bg-[#E2D2C2] transition-colors active:scale-95">
+                                        <i class="fa-solid fa-minus text-sm"></i>
+                                    </button>
+                                    <input id="inputCantidad" class="w-20 h-11 text-center border-y border-[#D9C8BE] font-bold text-xl focus:outline-none bg-white text-carpintecTitle" type="number" value="1" min="1">
+                                    <button type="button" onclick="cambiarCantidad(1)" class="w-12 h-11 bg-[#F2E8DC] text-carpintecTitle font-bold flex items-center justify-center rounded-r-xl hover:bg-[#E2D2C2] transition-colors active:scale-95">
+                                        <i class="fa-solid fa-plus text-sm"></i>
+                                    </button>
+                                </div>
+                            </section>
+                        </div>
+
+                        <!-- Measurements -->
+                        <section class="card-container relative" data-purpose="measurements">
+                            <h3 class="section-title">
+                                <i class="fa-solid fa-ruler-combined section-icon text-sm"></i> Dimensiones Requeridas (en cm)
+                            </h3>
+                            <div class="flex flex-col md:flex-row justify-between items-center gap-6 mt-4">
+                                <div class="flex gap-4 w-full md:w-3/5">
+                                    <div class="flex-1">
+                                        <label class="block text-xs font-bold text-carpintecText/80 mb-1 flex items-center gap-1">
+                                            <span class="text-carpintecPrimary">▲</span> ALTO
+                                        </label>
+                                        <div class="relative">
+                                            <input id="inputAlto" class="input-field font-bold text-base text-center" type="number" value="80" min="10">
+                                            <span class="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-[#A39084] font-medium">cm</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1">
+                                        <label class="block text-xs font-bold text-carpintecText/80 mb-1 flex items-center gap-1">
+                                            <span class="text-carpintecPrimary">▶</span> ANCHO
+                                        </label>
+                                        <div class="relative">
+                                            <input id="inputAncho" class="input-field font-bold text-base text-center" type="number" value="120" min="10">
+                                            <span class="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-[#A39084] font-medium">cm</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1">
+                                        <label class="block text-xs font-bold text-carpintecText/80 mb-1 flex items-center gap-1">
+                                            <span class="text-carpintecPrimary">↗</span> PROF.
+                                        </label>
+                                        <div class="relative">
+                                            <input id="inputProfundidad" class="input-field font-bold text-base text-center" type="number" value="60" min="10">
+                                            <span class="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-[#A39084] font-medium">cm</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Gráfico visual de medidas 3D Box -->
+                                <div class="w-full md:w-2/5 flex items-center justify-center p-3 bg-[#FAF7F4] rounded-xl border border-dashed border-[#D2BEB0]">
+                                    <div class="flex items-center gap-3 text-xs text-carpintecText/80">
+                                        <span class="material-symbols-outlined text-4xl text-carpintecPrimary">view_in_ar</span>
+                                        <div>
+                                            <span class="font-bold text-carpintecTitle block">Volumen calculado</span>
+                                            <span id="lblDimensionesTexto" class="text-xs text-carpintecPrimary font-semibold">80cm x 120cm x 60cm</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Observations -->
+                        <section class="card-container" data-purpose="observations">
+                            <h3 class="section-title">
+                                <i class="fa-regular fa-pen-to-square section-icon text-sm"></i> Observaciones Adicionales
+                            </h3>
+                            <textarea id="txtObservaciones" class="input-field h-24 resize-none" placeholder="Especifique detalles del ensamblaje, color de tinte, compartimientos o estilo de manijas..."></textarea>
+                        </section>
+
+                    </div>
+
+                    <!-- Right Column (Sidebar) -->
+                    <div class="lg:col-span-4 space-y-5">
+
+                        <!-- Subir foto del lugar -->
+                        <section class="card-container" data-purpose="upload-location-image">
+                            <h3 class="section-title">
+                                <i class="fa-solid fa-camera section-icon text-sm"></i> Foto de Referencia o Espacio
+                            </h3>
+
+                            <div class="mt-2">
+                                <label for="inputFotoLugar" class="border-2 border-dashed border-[#D2BEB0] hover:border-carpintecPrimary rounded-2xl flex flex-col items-center justify-center p-6 text-center cursor-pointer bg-white/70 hover:bg-white transition-all group h-44 block relative overflow-hidden">
+
+                                    <img id="previewFoto" class="absolute inset-0 w-full h-full object-cover hidden" alt="Vista previa del lugar">
+
+                                    <div id="uploadPlaceholder" class="flex flex-col items-center">
+                                        <div class="w-12 h-12 rounded-full bg-[#8B5A2B]/15 text-carpintecPrimary flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                                            <i class="fa-solid fa-cloud-arrow-up text-lg"></i>
+                                        </div>
+                                        <h4 class="font-bold text-xs text-carpintecTitle mb-1">Sube una foto del espacio</h4>
+                                        <p class="text-[0.7rem] text-carpintecText/70">Haz clic para buscar (JPG, PNG)</p>
+                                    </div>
+
+                                    <input id="inputFotoLugar" type="file" accept="image/*" class="sr-only" onchange="mostrarVistaPrevia(event)">
+                                </label>
+                            </div>
+
+                            <p class="text-xs text-carpintecText/70 leading-relaxed mt-3">
+                                Si tienes una foto del lugar o un plano referencial, adjúntalo para agilizar la cotización de medidas exactas.
+                            </p>
+                        </section>
+
+                        <!-- Sección de Instructivo de Medidas -->
+                        <section class="card-container bg-[#FFFBF7] border-[#E8DDD5] p-4">
+                            <div class="flex items-start gap-3">
+                                <div class="w-9 h-9 rounded-full bg-[#8B5A2B]/15 text-carpintecPrimary flex items-center justify-center shrink-0 mt-0.5">
+                                    <i class="fa-solid fa-book-open text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-xs text-carpintecTitle mb-1">¿No sabes cómo tomar las medidas?</h4>
+                                    <p class="text-xs text-carpintecText/70 leading-relaxed mb-3">
+                                        Consulta nuestro instructivo paso a paso para medir correctamente tu espacio.
+                                    </p>
+                                    <a href="/Instructivos"
+                                       class="inline-flex items-center gap-2 px-3 py-1.5 bg-carpintecPrimary hover:bg-carpintecDark text-white text-xs font-bold rounded-lg transition-colors shadow-sm">
+                                        <i class="fa-solid fa-book-open text-xs"></i>
+                                        Ver Instructivo
+                                    </a>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Total Summary -->
+                        <section class="card-container bg-[#F4ECE7] border-[#E0D2C7]">
+                            <h3 class="font-bold text-xs uppercase tracking-wider text-carpintecTitle mb-2">Estimado de Inversión</h3>
+                            <div id="precioTotalDinamico" class="text-3xl font-extrabold text-[#5A3E1B] mb-2 font-heading">
+                                $320.000 <span class="text-sm font-bold text-carpintecText/70">COP</span>
+                            </div>
+                            <hr class="border-[#D9C8BE] my-2">
+                            <p class="text-[0.7rem] text-carpintecText/70">
+                                *Precio estimado base con acabados estándar. Incluye fabricación artesanal. Válido por 15 días.
+                            </p>
+                        </section>
+
+                        <!-- Botón Guardar Cotización -->
+                        <button type="button" id="btnGuardarCotizacion" onclick="guardarCotizacionReal()" class="w-full bg-[#8B5A2B] hover:bg-[#734A23] text-white font-bold py-4 rounded-2xl shadow-lg transition-all transform active:scale-98 flex items-center justify-center gap-3 text-base">
+                            <i class="fa-regular fa-paper-plane"></i>
+                            <span>SOLICITAR MI COTIZACIÓN</span>
+                        </button>
+
+                    </div>
+
+                </div>
             </div>
         </div>
-    </footer>
+    </div>
 
+    <!-- ========================================== -->
+    <!-- MODAL DE VER DETALLE DE COTIZACIÓN         -->
+    <!-- ========================================== -->
+    <div id="modalDetalleCotizacion" class="fixed inset-0 z-50 hidden overflow-y-auto bg-black/60 backdrop-blur-sm flex justify-center items-center p-4">
+        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border border-[#E0D2C7]">
+            <div class="bg-[#8B5A2B] text-white px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-2xl">receipt</span>
+                    <h3 class="font-bold text-lg" id="detFolio">Detalle de Cotización</h3>
+                </div>
+                <button type="button" onclick="cerrarModalDetalle()" class="text-white/80 hover:text-white text-xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="p-6 space-y-4 text-sm" id="detContenido">
+                <!-- Información del Cliente Solicitante -->
+                <div class="bg-[#FAF6F2] p-3.5 rounded-xl border border-[#8B5A2B]/20 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div>
+                        <span class="text-[11px] uppercase tracking-wider text-[#8B5A2B] font-bold block">Cliente Solicitante</span>
+                        <span class="font-bold text-gray-800 text-sm" id="detCliente">--</span>
+                    </div>
+                    <div class="text-xs text-gray-600 space-y-0.5">
+                        <div class="flex items-center gap-1.5"><i class="fa-regular fa-envelope text-carpintecPrimary"></i> <span id="detEmailCliente">--</span></div>
+                        <div class="flex items-center gap-1.5"><i class="fa-solid fa-phone text-carpintecPrimary text-[11px]"></i> <span id="detTelefonoCliente">--</span></div>
+                    </div>
+                </div>
+                <div class="flex justify-between pb-2 border-b border-gray-100">
+                    <span class="text-gray-500">Fecha de Solicitud:</span>
+                    <span class="font-semibold text-gray-800" id="detFecha">--</span>
+                </div>
+                <div class="flex justify-between pb-2 border-b border-gray-100">
+                    <span class="text-gray-500">Producto / Pieza:</span>
+                    <span class="font-bold text-carpintecPrimary" id="detProducto">--</span>
+                </div>
+                <div class="flex justify-between pb-2 border-b border-gray-100">
+                    <span class="text-gray-500">Madera Seleccionada:</span>
+                    <span class="font-semibold text-gray-800" id="detMadera">--</span>
+                </div>
+                <div class="flex justify-between pb-2 border-b border-gray-100">
+                    <span class="text-gray-500">Cantidad:</span>
+                    <span class="font-semibold text-gray-800" id="detCantidad">--</span>
+                </div>
+                <div class="flex justify-between pb-2 border-b border-gray-100">
+                    <span class="text-gray-500">Medidas:</span>
+                    <span class="font-semibold text-gray-800" id="detMedidas">--</span>
+                </div>
+                <div class="flex justify-between pb-2 border-b border-gray-100">
+                    <span class="text-gray-500">Tiempo de Entrega:</span>
+                    <span class="font-semibold text-gray-800" id="detTiempo">--</span>
+                </div>
+                <div class="flex justify-between pb-2 border-b border-gray-100">
+                    <span class="text-gray-500">Estado Actual:</span>
+                    <span class="font-bold px-3 py-0.5 rounded-full text-xs" id="detEstado">--</span>
+                </div>
+                <div>
+                    <span class="text-gray-500 block mb-1">Observaciones:</span>
+                    <p class="text-gray-700 bg-gray-50 p-3 rounded-xl border border-gray-200 text-xs italic" id="detObservaciones">--</p>
+                </div>
+                <div class="pt-3 border-t border-gray-200 flex justify-between items-center">
+                    <span class="font-bold text-gray-600">Presupuesto Estimado:</span>
+                    <span class="text-2xl font-extrabold text-[#5A3E1B]" id="detTotal">--</span>
+                </div>
+            </div>
+            <div class="bg-gray-50 px-6 py-4 border-t border-gray-100 text-right">
+                <button type="button" onclick="cerrarModalDetalle()" class="px-5 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold rounded-xl text-xs transition-colors">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
 
-</body></html>
+    <!-- ========================================== -->
+    <!-- SCRIPTS                                    -->
+    <!-- ========================================== -->
+    <script>
+        // 1. Control del Modal de Cotización
+        function abrirModalCotizacion() {
+            const modal = document.getElementById('modalNuevaCotizacion');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            calcularPrecioTotal();
+        }
+
+        function cerrarModalCotizacion() {
+            const modal = document.getElementById('modalNuevaCotizacion');
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Cerrar modal al pulsar fondo
+        document.getElementById('modalNuevaCotizacion').addEventListener('click', function(event) {
+            if (event.target === this) {
+                cerrarModalCotizacion();
+            }
+        });
+
+        // 2. Control de Cantidad (+ y -)
+        function cambiarCantidad(cambio) {
+            const input = document.getElementById('inputCantidad');
+            let valorActual = parseInt(input.value) || 1;
+            valorActual += cambio;
+            if (valorActual < 1) valorActual = 1;
+            input.value = valorActual;
+            calcularPrecioTotal();
+        }
+
+        // 3. Previsualización de la foto seleccionada
+        function mostrarVistaPrevia(event) {
+            const archivo = event.target.files[0];
+            if (archivo) {
+                const lector = new FileReader();
+                lector.onload = function(e) {
+                    const preview = document.getElementById('previewFoto');
+                    const placeholder = document.getElementById('uploadPlaceholder');
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                    placeholder.classList.add('hidden');
+                };
+                lector.readAsDataURL(archivo);
+            }
+        }
+
+        // 4. Lógica de cálculo dinámico de precio
+        function calcularPrecioTotal() {
+            const selectMadera = document.getElementById('selectMadera');
+            const inputCantidad = document.getElementById('inputCantidad');
+            const divPrecio = document.getElementById('precioTotalDinamico');
+            const labelMadera = document.getElementById('labelPrecioMadera');
+            const inputAlto = document.getElementById('inputAlto');
+            const inputAncho = document.getElementById('inputAncho');
+            const inputProf = document.getElementById('inputProfundidad');
+            const lblDimensiones = document.getElementById('lblDimensionesTexto');
+
+            if (!selectMadera || !inputCantidad) return;
+
+            const madera = selectMadera.value;
+            let precioBase = 320000;
+
+            if (madera === 'Roble') precioBase = 460000;
+            else if (madera === 'Cedro') precioBase = 420000;
+            else if (madera === 'Nogal') precioBase = 580000;
+
+            if (labelMadera) {
+                labelMadera.innerText = `Base: $${precioBase.toLocaleString('es-CO')} COP`;
+            }
+
+            const cantidad = parseInt(inputCantidad.value) || 1;
+            const total = precioBase * cantidad;
+
+            if (divPrecio) {
+                divPrecio.innerHTML = `$${total.toLocaleString('es-CO')} <span class="text-sm font-bold text-carpintecText/70">COP</span>`;
+            }
+
+            if (lblDimensiones && inputAlto && inputAncho && inputProf) {
+                lblDimensiones.innerText = `${inputAlto.value || 0}cm x ${inputAncho.value || 0}cm x ${inputProf.value || 0}cm`;
+            }
+        }
+
+        // Listeners para recálculo en tiempo real
+        document.getElementById('selectMadera')?.addEventListener('change', calcularPrecioTotal);
+        document.getElementById('inputCantidad')?.addEventListener('input', calcularPrecioTotal);
+        document.getElementById('inputAlto')?.addEventListener('input', calcularPrecioTotal);
+        document.getElementById('inputAncho')?.addEventListener('input', calcularPrecioTotal);
+        document.getElementById('inputProfundidad')?.addEventListener('input', calcularPrecioTotal);
+
+        // 5. Envío Real al Servidor (Guardar Cotización)
+        async function guardarCotizacionReal() {
+            const producto = document.getElementById('selectProducto')?.value?.trim();
+            const cliente = document.getElementById('txtCliente')?.value?.trim();
+            const telefono = document.getElementById('txtTelefono')?.value?.trim();
+            const email = document.getElementById('txtEmail')?.value?.trim();
+            const madera = document.getElementById('selectMadera')?.value;
+            const cantidad = parseInt(document.getElementById('inputCantidad')?.value) || 1;
+            const alto = parseFloat(document.getElementById('inputAlto')?.value) || 80;
+            const ancho = parseFloat(document.getElementById('inputAncho')?.value) || 120;
+            const profundidad = parseFloat(document.getElementById('inputProfundidad')?.value) || 60;
+            const observaciones = document.getElementById('txtObservaciones')?.value?.trim() || "";
+
+            if (!producto) {
+                alert('Por favor, ingresa o selecciona el nombre del producto que deseas cotizar.');
+                document.getElementById('selectProducto')?.focus();
+                return;
+            }
+
+            if (!cliente) {
+                alert('Por favor, ingresa tu nombre de cliente.');
+                document.getElementById('txtCliente')?.focus();
+                return;
+            }
+
+            // Calcular monto numérico limpio
+            let totalVal = 320000;
+            const elementoTotal = document.getElementById('precioTotalDinamico');
+            if (elementoTotal) {
+                const soloNumeros = elementoTotal.innerText.replace(/[^0-9]/g, '');
+                if (soloNumeros) totalVal = parseFloat(soloNumeros);
+            }
+
+            const btn = document.getElementById('btnGuardarCotizacion');
+            const textoOriginal = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>Guardando cotización...</span>`;
+
+            try {
+                const formData = new FormData();
+                formData.append('nombreCliente', cliente);
+                formData.append('telefono', telefono);
+                formData.append('correo', email);
+                formData.append('producto', producto);
+                formData.append('madera', madera);
+                formData.append('cantidad', cantidad);
+                formData.append('alto', alto);
+                formData.append('ancho', ancho);
+                formData.append('profundidad', profundidad);
+                formData.append('observaciones', observaciones);
+                formData.append('total', totalVal);
+
+                const inputFile = document.getElementById('inputFotoLugar');
+                if (inputFile && inputFile.files.length > 0) {
+                    formData.append('fotoLugar', inputFile.files[0]);
+                }
+
+                const response = await fetch('/MiCotizacion/GuardarCotizacion', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert(data.message);
+                    cerrarModalCotizacion();
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error al guardar la cotización:', error);
+                alert('Ocurrió un error de conexión al enviar la cotización. Por favor intente de nuevo.');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = textoOriginal;
+            }
+        }
+
+        // 6. Modal de Ver Detalle
+        async function verDetalleCotizacion(id) {
+            try {
+                const response = await fetch(`/MiCotizacion/ObtenerDetalle/${id}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('detFolio').innerText = `Cotización ${data.folio}`;
+                    document.getElementById('detCliente').innerText = data.cliente || 'Cliente General';
+                    document.getElementById('detEmailCliente').innerText = data.correo || 'No registrado';
+                    document.getElementById('detTelefonoCliente').innerText = data.telefono || 'No registrado';
+                    document.getElementById('detFecha').innerText = data.fecha;
+                    document.getElementById('detProducto').innerText = data.producto;
+                    document.getElementById('detMadera').innerText = data.madera;
+                    document.getElementById('detCantidad').innerText = `${data.cantidad} unidad(es)`;
+                    document.getElementById('detMedidas').innerText = data.medidas;
+                    document.getElementById('detTiempo').innerText = data.tiempoEntrega;
+                    document.getElementById('detObservaciones').innerText = data.observaciones;
+                    document.getElementById('detTotal').innerText = data.total;
+
+                    const estadoSpan = document.getElementById('detEstado');
+                    estadoSpan.innerText = data.estado;
+
+                    if (data.estado.toLowerCase() === 'aprobada' || data.estado.toLowerCase() === 'pagada') {
+                        estadoSpan.className = 'font-bold px-3 py-0.5 rounded-full text-xs bg-green-100 text-green-800';
+                    } else if (data.estado.toLowerCase() === 'rechazada') {
+                        estadoSpan.className = 'font-bold px-3 py-0.5 rounded-full text-xs bg-red-100 text-red-700';
+                    } else {
+                        estadoSpan.className = 'font-bold px-3 py-0.5 rounded-full text-xs bg-amber-100 text-amber-800';
+                    }
+
+                    document.getElementById('modalDetalleCotizacion').classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    alert(data.message || 'No se pudo cargar el detalle.');
+                }
+            } catch (error) {
+                console.error('Error al obtener detalle:', error);
+                alert('Error al consultar el detalle de la cotización.');
+            }
+        }
+
+        function cerrarModalDetalle() {
+            document.getElementById('modalDetalleCotizacion').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        document.getElementById('modalDetalleCotizacion')?.addEventListener('click', function(e) {
+            if (e.target === this) cerrarModalDetalle();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+@* Views/Shared/_ClientUserMenu.cshtml *@
+@{
+    string primerNombre = ViewBag.PrimerNombre as string ?? ViewBag.NombreCliente as string ?? "Cliente";
+    string iniciales = ViewBag.Iniciales as string ?? "CL";
+    string nombreCompleto = ViewBag.NombreCompleto as string ?? ViewBag.NombreCliente as string
+                            ?? ((ViewBag.PrimerNombre as string ?? "") + " " + (ViewBag.Apellido as string ?? "")).Trim()
+                            ?? "Cliente";
+    string correo = ViewBag.CorreoUsuario as string ?? ViewBag.CorreoCliente as string ?? ViewBag.Correo as string ?? "";
+}
+
+<!-- Menú de usuario con dropdown -->
+<div class="relative" id="containerUserMenu">
+    <button id="btnUserMenu" onclick="toggleUserMenu(event)" type="button"
+            class="flex items-center space-x-2 cursor-pointer focus:outline-none group"
+            title="Menú de usuario">
+        <span class="text-sm font-bold hidden md:inline opacity-90 group-hover:opacity-100 transition-opacity">@primerNombre</span>
+        <div class="w-10 h-10 rounded-full bg-[#8B5A2B] text-white flex items-center justify-center font-bold overflow-hidden border-2 border-[#D7CCC8]/30 shadow-sm hover:scale-105 transition-all duration-200">
+            @iniciales
+        </div>
+    </button>
+
+    <!-- Dropdown menú de usuario -->
+    <div id="dropdownUserMenu"
+         class="hidden absolute right-0 mt-3 w-64 bg-white border border-[#D7CCC8]/60 rounded-2xl shadow-2xl z-50 overflow-hidden transform transition-all duration-200 origin-top-right text-left">
+
+        <!-- Encabezado con info del usuario -->
+        <div class="px-4 py-3.5 bg-gradient-to-br from-[#5C4033] to-[#8B6355] flex items-center gap-3">
+            <div class="w-11 h-11 rounded-full bg-white/20 text-white flex items-center justify-center font-bold text-base shrink-0 ring-2 ring-white/30">
+                @iniciales
+            </div>
+            <div class="min-w-0">
+                <p class="font-bold text-white text-sm truncate">@nombreCompleto</p>
+                <p class="text-white/70 text-[11px] truncate">@correo</p>
+            </div>
+        </div>
+
+        <!-- Opciones del menú -->
+        <div class="py-1.5">
+            <a href="/MiPerfil"
+               class="flex items-center gap-3 px-4 py-2.5 hover:bg-[#FAF6F0] transition-colors group/item">
+                <div class="w-8 h-8 rounded-lg bg-[#F5EFE6] text-[#5C4033] flex items-center justify-center group-hover/item:bg-[#5C4033] group-hover/item:text-white transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">person</span>
+                </div>
+                <div>
+                    <p class="text-sm font-semibold text-[#3E2723]">Mi Perfil</p>
+                    <p class="text-[11px] text-[#8D6E63]">Información y configuración</p>
+                </div>
+                <span class="material-symbols-outlined text-[16px] text-[#C4A882] ml-auto">chevron_right</span>
+            </a>
+
+            <a href="/MisProductos"
+               class="flex items-center gap-3 px-4 py-2.5 hover:bg-[#FAF6F0] transition-colors group/item">
+                <div class="w-8 h-8 rounded-lg bg-[#F5EFE6] text-[#5C4033] flex items-center justify-center group-hover/item:bg-[#5C4033] group-hover/item:text-white transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">grid_view</span>
+                </div>
+                <div>
+                    <p class="text-sm font-semibold text-[#3E2723]">Catálogo</p>
+                    <p class="text-[11px] text-[#8D6E63]">Ver productos disponibles</p>
+                </div>
+                <span class="material-symbols-outlined text-[16px] text-[#C4A882] ml-auto">chevron_right</span>
+            </a>
+
+            <a href="/PQRCliente"
+               class="flex items-center gap-3 px-4 py-2.5 hover:bg-[#FAF6F0] transition-colors group/item">
+                <div class="w-8 h-8 rounded-lg bg-[#F5EFE6] text-[#5C4033] flex items-center justify-center group-hover/item:bg-[#5C4033] group-hover/item:text-white transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">support_agent</span>
+                </div>
+                <div>
+                    <p class="text-sm font-semibold text-[#3E2723]">Ayuda / PQR</p>
+                    <p class="text-[11px] text-[#8D6E63]">Peticiones, quejas y reclamos</p>
+                </div>
+                <span class="material-symbols-outlined text-[16px] text-[#C4A882] ml-auto">chevron_right</span>
+            </a>
+        </div>
+
+        <!-- Separador -->
+        <div class="border-t border-[#EDE0D6] mx-3 my-1"></div>
+
+        <!-- Cerrar sesión -->
+        <div class="py-1.5 pb-2">
+            <a href="/Login/CerrarSesion"
+               class="flex items-center gap-3 px-4 py-2.5 hover:bg-red-50 transition-colors group/item">
+                <div class="w-8 h-8 rounded-lg bg-red-50 text-red-600 flex items-center justify-center group-hover/item:bg-red-600 group-hover/item:text-white transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">logout</span>
+                </div>
+                <div>
+                    <p class="text-sm font-semibold text-red-700">Cerrar Sesión</p>
+                    <p class="text-[11px] text-red-400">Salir de tu cuenta</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function toggleUserMenu(e) {
+            if (e) e.stopPropagation();
+            const dropdown = document.getElementById('dropdownUserMenu');
+            if (dropdown) {
+                dropdown.classList.toggle('hidden');
+            }
+        }
+
+        document.addEventListener('click', function (e) {
+            const userContainer = document.getElementById('containerUserMenu');
+            const userDropdown = document.getElementById('dropdownUserMenu');
+            if (userDropdown && !userDropdown.classList.contains('hidden')) {
+                if (userContainer && !userContainer.contains(e.target)) {
+                    userDropdown.classList.add('hidden');
+                }
+            }
+        });
+    </script>
+</div>

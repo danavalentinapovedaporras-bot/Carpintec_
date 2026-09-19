@@ -1,9 +1,10 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using CARPINTEC_App.Data;
 using CARPINTEC_App.Models;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace CARPINTEC_App.Controllers
 {
@@ -73,9 +74,64 @@ namespace CARPINTEC_App.Controllers
                 // Datos por defecto
                 usuario.Rol = "Cliente";
                 usuario.Estado = "Activo";
-                // Guardar
+
+                // 1. Guardar en tabla Usuario
                 _context.Usuarios.Add(usuario);
                 _context.SaveChanges();
+
+                // 2. Sincronizar automáticamente en la tabla Cliente para que exista su IdCliente correspondiente
+                var clienteExistente = _context.Clientes.FirstOrDefault(c =>
+                    (!string.IsNullOrEmpty(usuario.Correo) && c.Correo != null && c.Correo.ToLower() == usuario.Correo.ToLower()) ||
+                    (c.Nombre != null && c.Nombre.ToLower() == usuario.Nombre.ToLower() && (c.Apellido ?? "").ToLower() == usuario.Apellido.ToLower())
+                );
+
+                if (clienteExistente == null)
+                {
+                    clienteExistente = new Cliente
+                    {
+                        Nombre = usuario.Nombre,
+                        Apellido = usuario.Apellido,
+                        Correo = usuario.Correo ?? "",
+                        Telefono = "",
+                        TipoCliente = "Natural",
+                        Contacto = $"{usuario.Nombre} {usuario.Apellido}".Trim(),
+                        Estado = "Activo",
+                        FechaRegistro = DateTime.Now
+                    };
+                    _context.Clientes.Add(clienteExistente);
+                    _context.SaveChanges();
+                }
+
+                // 3. Vincular y actualizar la columna IdCliente en Pedido y Cotizacion si existían registros previos con su correo o nombre
+                string correoUser = usuario.Correo?.ToLower() ?? "";
+                string nombreUser = $"{usuario.Nombre} {usuario.Apellido}".Trim().ToLower();
+
+                var cotizacionesPrevias = _context.Cotizaciones
+                    .Where(c => (c.CorreoCliente != null && c.CorreoCliente.ToLower() == correoUser) ||
+                                (c.NombreCliente != null && c.NombreCliente.ToLower() == nombreUser))
+                    .ToList();
+
+                foreach (var cot in cotizacionesPrevias)
+                {
+                    cot.IdCliente = clienteExistente.IdCliente;
+                }
+
+                var pedidosPrevios = _context.Pedidos
+                    .Include(p => p.IdCotizacionNavigation)
+                    .Where(p => p.IdCotizacionNavigation != null &&
+                                ((p.IdCotizacionNavigation.CorreoCliente != null && p.IdCotizacionNavigation.CorreoCliente.ToLower() == correoUser) ||
+                                 (p.IdCotizacionNavigation.NombreCliente != null && p.IdCotizacionNavigation.NombreCliente.ToLower() == nombreUser)))
+                    .ToList();
+
+                foreach (var ped in pedidosPrevios)
+                {
+                    ped.IdCliente = clienteExistente.IdCliente;
+                }
+
+                if (cotizacionesPrevias.Any() || pedidosPrevios.Any())
+                {
+                    _context.SaveChanges();
+                }
 
                 TempData["Success"] = "Cuenta creada correctamente. Ya puedes iniciar sesión.";
 

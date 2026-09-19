@@ -1,4 +1,4 @@
-﻿@{
+@{
     Layout = null;
 }
 <!DOCTYPE html>
@@ -7,166 +7,165 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Carpintec - Catálogo</title>
+    <!-- Fonts: Google Fonts (Montserrat & Work Sans) & Material Symbols -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;family=Work+Sans:wght@400;500&amp;display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&amp;family=Work+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Tailwind CSS with Forms & Container Plugins -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script id="tailwind-config">
         tailwind.config = {
-        darkMode: "class",
-        theme: {
-        extend: {
-        "colors": {
-        "outline-variant": "#dac2b6",
-        "on-tertiary-fixed": "#251a01",
-        "on-tertiary-container": "#e2cca2",
-        "tertiary-container": "#665635",
-        "secondary-fixed-dim": "#ffb68d",
-        "on-tertiary-fixed-variant": "#544525",
-        "tertiary-fixed": "#f7e0b5",
-        "secondary": "#9a4600",
-        "inverse-surface": "#362f2c",
-        "outline": "#877369",
-        "on-primary": "#ffffff",
-        "surface-container-highest": "#ede0dc",
-        "on-tertiary": "#ffffff",
-        "primary": "#6c2f00",
-        "on-secondary-container": "#672c00",
-        "secondary-container": "#fd8a3e",
-        "on-surface": "#201a18",
-        "on-secondary-fixed": "#321200",
-        "on-secondary": "#ffffff",
-        "primary-container": "#8b4513",
-        "tertiary-fixed-dim": "#dac49b",
-        "on-error": "#ffffff",
-        "error-container": "#ffdad6",
-        "on-primary-container": "#ffc29f",
-        "on-primary-fixed-variant": "#753401",
-        "surface-variant": "#ede0dc",
-        "on-primary-fixed": "#321200",
-        "error": "#ba1a1a",
-        "on-background": "#201a18",
-        "tertiary": "#4d3f20",
-        "surface": "#fff8f6",
-        "surface-dim": "#e4d7d4",
-        "on-secondary-fixed-variant": "#763400",
-        "inverse-on-surface": "#fbeeea",
-        "background": "#fff8f6",
-        "surface-container-high": "#f3e5e1",
-        "surface-container": "#f9ebe7",
-        "surface-bright": "#fff8f6",
-        "on-error-container": "#93000a",
-        "surface-container-lowest": "#ffffff",
-        "surface-container-low": "#fef1ed",
-        "surface-tint": "#934b19",
-        "secondary-fixed": "#ffdbc9",
-        "primary-fixed-dim": "#ffb68c",
-        "primary-fixed": "#ffdbc9",
-        "on-surface-variant": "#54433a",
-        "inverse-primary": "#ffb68c"
-        },
-        "borderRadius": {
-        "DEFAULT": "0.125rem",
-        "lg": "0.25rem",
-        "xl": "0.5rem",
-        "full": "0.75rem"
-        },
-        "spacing": {
-        "margin-mobile": "16px",
-        "gutter": "24px",
-        "base": "8px",
-        "container-max": "1280px",
-        "margin-desktop": "64px"
-        },
-        "fontFamily": {
-        "title-md": [
-        "Montserrat"
-        ],
-        "headline-lg": [
-        "Montserrat"
-        ],
-        "body-lg": [
-        "Work Sans"
-        ],
-        "body-md": [
-        "Work Sans"
-        ],
-        "headline-lg-mobile": [
-        "Montserrat"
-        ],
-        "label-md": [
-        "Work Sans"
-        ],
-        "display-lg": [
-        "Montserrat"
-        ]
-        },
-        "fontSize": {
-        "title-md": [
-        "20px",
-        {
-        "lineHeight": "28px",
-        "fontWeight": "600"
-        }
-        ],
-        "headline-lg": [
-        "32px",
-        {
-        "lineHeight": "40px",
-        "fontWeight": "700"
-        }
-        ],
-        "body-lg": [
-        "18px",
-        {
-        "lineHeight": "28px",
-        "fontWeight": "400"
-        }
-        ],
-        "body-md": [
-        "16px",
-        {
-        "lineHeight": "24px",
-        "fontWeight": "400"
-        }
-        ],
-        "headline-lg-mobile": [
-        "24px",
-        {
-        "lineHeight": "32px",
-        "fontWeight": "700"
-        }
-        ],
-        "label-md": [
-        "14px",
-        {
-        "lineHeight": "20px",
-        "letterSpacing": "0.05em",
-        "fontWeight": "500"
-        }
-        ],
-        "display-lg": [
-        "48px",
-        {
-        "lineHeight": "56px",
-        "letterSpacing": "-0.02em",
-        "fontWeight": "700"
-        }
-        ]
-        }
-        },
-        },
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "outline-variant": "#dac2b6",
+                        "on-tertiary-fixed": "#251a01",
+                        "on-tertiary-container": "#e2cca2",
+                        "tertiary-container": "#665635",
+                        "secondary-fixed-dim": "#ffb68d",
+                        "on-tertiary-fixed-variant": "#544525",
+                        "tertiary-fixed": "#f7e0b5",
+                        "secondary": "#9a4600",
+                        "inverse-surface": "#362f2c",
+                        "outline": "#877369",
+                        "on-primary": "#ffffff",
+                        "surface-container-highest": "#ede0dc",
+                        "on-tertiary": "#ffffff",
+                        "primary": "#6c2f00",
+                        "on-secondary-container": "#672c00",
+                        "secondary-container": "#fd8a3e",
+                        "on-surface": "#201a18",
+                        "on-secondary-fixed": "#321200",
+                        "on-secondary": "#ffffff",
+                        "primary-container": "#8b4513",
+                        "tertiary-fixed-dim": "#dac49b",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#ffc29f",
+                        "on-primary-fixed-variant": "#753401",
+                        "surface-variant": "#ede0dc",
+                        "on-primary-fixed": "#321200",
+                        "error": "#ba1a1a",
+                        "on-background": "#201a18",
+                        "tertiary": "#4d3f20",
+                        "surface": "#fff8f6",
+                        "surface-dim": "#e4d7d4",
+                        "on-secondary-fixed-variant": "#763400",
+                        "inverse-on-surface": "#fbeeea",
+                        "background": "#fff8f6",
+                        "surface-container-high": "#f3e5e1",
+                        "surface-container": "#f9ebe7",
+                        "surface-bright": "#fff8f6",
+                        "on-error-container": "#93000a",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#fef1ed",
+                        "surface-tint": "#934b19",
+                        "secondary-fixed": "#ffdbc9",
+                        "primary-fixed-dim": "#ffb68c",
+                        "primary-fixed": "#ffdbc9",
+                        "on-surface-variant": "#54433a",
+                        "inverse-primary": "#ffb68c",
+                        timber: {
+                            50: '#FAF6F0',
+                            100: '#F4ECE1',
+                            200: '#E6D7C3',
+                            300: '#D5BEA2',
+                            400: '#BA9B7B',
+                            500: '#9C7A59',
+                            600: '#7E5F43',
+                            700: '#644A34',
+                            800: '#4D3827',
+                            900: '#34261B',
+                            950: '#231810'
+                        },
+                        wood: {
+                            light: '#f5ebe6',
+                            accent: '#8b4513',
+                            dark: '#5c2c16',
+                            surface: '#FFFBF7',
+                            border: '#E8DDD5'
+                        }
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    spacing: {
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "base": "8px",
+                        "container-max": "1280px",
+                        "margin-desktop": "64px"
+                    },
+                    fontFamily: {
+                        "title-md": ["Montserrat"],
+                        "headline-lg": ["Montserrat"],
+                        "body-lg": ["Work Sans"],
+                        "body-md": ["Work Sans"],
+                        "headline-lg-mobile": ["Montserrat"],
+                        "label-md": ["Work Sans"],
+                        "display-lg": ["Montserrat"]
+                    },
+                    fontSize: {
+                        "title-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
         }
     </script>
+    <style>
+        /* Ocultar botones spin de inputs numéricos */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Scrollbar estilizada */
+        ::-webkit-scrollbar {
+            width: 7px;
+            height: 7px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #F4ECE1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #D5BEA2;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8B4513;
+        }
+    </style>
 </head>
 <body class="bg-surface text-on-surface font-body-md antialiased pb-24 md:pb-0">
     <!-- Top Navigation Container -->
-    <header class="w-full top-0 sticky z-50">
+    <header class="w-full top-0 sticky z-40">
         <!-- TopAppBar -->
-        <div class="bg-primary flex items-center justify-between px-margin-mobile h-16 w-full border-b-4 border-primary-container shadow-sm">
+        <div class="bg-[#8B5A2B] flex items-center justify-between px-margin-mobile h-16 w-full border-b-4 border-[#734A23] shadow-sm">
             <div class="flex items-center gap-3">
+                    <img alt="Carpintec Logo"
+                     class="h-8 w-8 object-contain mr-2"
+                     src="~/images/logo.png">
                 <a href="javascript:history.back()"
-                   class="flex items-center gap-2">
+                   class="flex items-center gap-2 text-on-primary hover:opacity-80 transition-opacity">
                     <span class="material-symbols-outlined">arrow_back</span>
                 </a>
                 <span class="font-headline-lg-mobile text-headline-lg-mobile text-on-primary uppercase tracking-wider">Carpintec</span>
@@ -178,38 +177,35 @@
                    asp-action="Index">
                     Inicio
                 </a>             
-                <a class="text-on-primary/80 hover:bg-secondary-container transition-colors px-3 py-2 rounded-md cursor-pointer active:scale-95"
+                <a class="text-on-primary font-bold border-b-2 border-on-primary pb-1 hover:text-secondary-fixed hover:transition-colors font-label-md text-label-md active scale-95 transition-transform duration-200"
                    asp-controller="MisProductos"
                    asp-action="Index">
-                    Catalogo
+                    Catálogo
                 </a>             
-                <a aria-current="page"
-               class="text-on-primary font-bold border-b-2 border-on-primary pb-1 hover:text-secondary-fixed hover:transition-colors font-label-md text-label-md active scale-95 transition-transform duration-200"
-               asp-controller="MiCotizacion"
-               asp-action="Index">
-                Mis Cotizaciones
-            </a>         
-            <a class="text-on-primary/80 hover:bg-secondary-container transition-colors px-3 py-2 rounded-md cursor-pointer active:scale-95"
-           asp-controller="Mi_Pedido"
-           asp-action="Index">
-            Pedidos
-        </a>         
-        <a class="text-on-primary font-bold hover:bg-secondary-container transition-colors px-3 py-2 rounded-md cursor-pointer active:scale-95 border-b-2 border-white"
-       asp-controller="Miperfil"
-       asp-action="Index">
-        Perfil
-    </a>
-</nav>
-            <div class="md:hidden flex items-center">
-                <img alt="Carpintec Logo"
-                     class="h-8 w-8 object-contain mr-2"
-                     src="~/images/logo.png">
+                <a class="text-on-primary/80 hover:bg-secondary-container transition-colors px-3 py-2 rounded-md cursor-pointer active:scale-95"
+                   asp-controller="MiCotizacion"
+                   asp-action="Index">
+                    Mis Cotizaciones
+                </a>         
+                <a class="text-on-primary/80 hover:bg-secondary-container transition-colors px-3 py-2 rounded-md cursor-pointer active:scale-95"
+                   asp-controller="Mi_Pedido"
+                   asp-action="Index">
+                    Pedidos
+                </a>         
+                <a class="text-on-primary/80 hover:bg-secondary-container transition-colors px-3 py-2 rounded-md cursor-pointer active:scale-95"
+                   asp-controller="Miperfil"
+                   asp-action="Index">
+                    Perfil
+                </a>
+            </nav>
+            <div class="flex items-center gap-2">
+                @await Html.PartialAsync("_ClientUserMenu")
             </div>
         </div>
     </header>
+
     <!-- Main Content Canvas -->
     <main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8 md:py-12 flex flex-col md:flex-row gap-gutter">
-        <!-- Desktop SideNav (Drawer) - Hidden on Mobile, Fixed Grid placement on Desktop -->
         <!-- Product Catalog Area -->
         <section class="flex-1">
             <!-- Search & Filters -->
@@ -228,44 +224,142 @@
                 </div>
             </div>
             <!-- Header -->
-            <div class="mb-6 flex items-baseline justify-between border-b-2 border-primary pb-2">
-                <h1 class="font-headline-lg-mobile md:font-headline-lg text-primary">Nuestro Catálogo</h1>
-                <span class="font-label-md text-outline">20 Productos</span>
+            <div class="mb-6 flex flex-wrap items-center justify-between gap-3 border-b-2 border-primary pb-3">
+                <div>
+                    <h1 class="font-headline-lg-mobile md:font-headline-lg text-primary">Nuestro Catálogo</h1>
+                    <span class="font-label-md text-outline">12 Productos Destacados</span>
+                </div>
+                <button type="button" onclick="abrirModalCotizarProducto('Mueble Personalizado', 'pino', 80, 120, 60)" class="bg-[#8B4513] hover:bg-[#72370D] text-white font-bold py-2.5 px-5 rounded-xl shadow-sm hover:shadow transition-all active:scale-95 flex items-center gap-2 text-sm tracking-wide">
+                    <span class="material-symbols-outlined text-base">calculate</span>
+                    <span>Nueva Cotización</span>
+                </button>
             </div>
+
             <!-- Products Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                <!-- KITCHENS (4) -->
+                
                 <!-- Product 1 -->
                 <article class="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden flex flex-col group hover:shadow-lg transition-shadow duration-300">
                     <div class="relative h-48 w-full overflow-hidden bg-surface-container">
-                        <img alt="Cocina Moderna"
+                        <img alt="Cocina Moderna Roble"
                              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                              src="~/images/cocina.jpeg">
                     </div>
-                    <div class="p-4 flex flex-col flex-grow"><h2 class="font-title-md text-title-md text-primary mb-1">Cocina Moderna Roble</h2><p class="font-label-md text-label-md text-on-surface-variant mb-2">Cocinas</p><div class="mb-2"><span class="bg-tertiary-container text-on-tertiary-container text-xs px-2 py-0.5 rounded font-label-md">Madera: Roble Macizo</span></div><p class="font-body-md text-sm text-on-surface mb-4 flex-grow line-clamp-3">Gabinetería en roble macizo con acabado natural mate. Herrajes de cierre lento y diseño minimalista para espacios contemporáneos.</p><div class="bg-surface-container-high p-2 rounded mb-4 flex flex-col gap-1"><span class="font-label-md text-xs text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">straighten</span> A Medida</span></div><div class="flex gap-2 mt-auto"><button class="flex-1 bg-primary hover:bg-secondary text-on-primary font-title-md text-[14px] font-bold py-2 px-2 rounded transition-colors flex items-center justify-center gap-1"><span class="material-symbols-outlined text-[18px]">calculate</span> Cotizar</button><button class="flex-1 border border-primary text-primary hover:bg-primary-container hover:text-on-primary-container font-title-md text-[14px] font-bold py-2 px-2 rounded transition-colors flex items-center justify-center gap-1"><span class="material-symbols-outlined text-[18px]">menu_book</span> Instructivo</button></div></div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <h2 class="font-title-md text-title-md text-primary mb-1">Cocina Moderna Roble</h2>
+                        <p class="font-label-md text-label-md text-on-surface-variant mb-2">Cocinas</p>
+                        <div class="mb-2">
+                            <span class="bg-tertiary-container text-on-tertiary-container text-xs px-2 py-0.5 rounded font-label-md">Madera: Roble Macizo</span>
+                        </div>
+                        <p class="font-body-md text-sm text-on-surface mb-4 flex-grow line-clamp-3">
+                            Gabinetería en roble macizo con acabado natural mate. Herrajes de cierre lento y diseño minimalista para espacios contemporáneos.
+                        </p>
+                        <div class="bg-surface-container-high p-2 rounded mb-4 flex flex-col gap-1">
+                            <span class="font-label-md text-xs text-on-surface-variant flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px]">straighten</span> A Medida
+                            </span>
+                        </div>
+                        <div class="flex gap-2 mt-auto">
+                            <button type="button" onclick="abrirModalCotizarProducto('Cocina Moderna Roble', 'roble', 85, 240, 60)" class="flex-1 bg-primary hover:bg-secondary text-on-primary font-title-md text-[14px] font-bold py-2 px-2 rounded transition-all active:scale-95 flex items-center justify-center gap-1">
+                                <span class="material-symbols-outlined text-[18px]">calculate</span> Cotizar
+                            </button>
+                            <a asp-controller="Instructivos" asp-action="Index" class="flex-1 border border-primary text-primary hover:bg-primary-container hover:text-on-primary-container font-title-md text-[14px] font-bold py-2 px-2 rounded transition-colors flex items-center justify-center gap-1">
+                                <span class="material-symbols-outlined text-[18px]">menu_book</span> Instructivo
+                            </a>
+                        </div>
+                    </div>
                 </article>
+
                 <!-- Product 2 -->
                 <article class="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden flex flex-col group hover:shadow-lg transition-shadow duration-300">
                     <div class="relative h-48 w-full overflow-hidden bg-surface-container">
-                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Professional architectural photography of a rustic farmhouse kitchen featuring solid pine wood cabinetry with distressed finish, exposed wooden beams, natural stone countertops, warm inviting lighting, artisan crafted kitchen design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjbFbxAHnKorOYBZQk2lYkCg0WxtQC30h5hIFVHAvoMLtO0B2KvpSTOMB3PFqha4RM_ZwRAUMX-GgWC9JZq59GYoIoTwzvFoJxJzQVysbopHgohOrNBkVGj8LUazCchXp69bLAbOVBja_wgW3f5pX13T444Hth2WYeAbEcdHyAZgeqVEUVlOzEsDkOpG6EUdRbY0msC-bI0VGkq7V_96r0vUwlB8vxDvoDTpElxn8GViuog3BDFDqmuQ">
+                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Cocina Rústica Pino" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjbFbxAHnKorOYBZQk2lYkCg0WxtQC30h5hIFVHAvoMLtO0B2KvpSTOMB3PFqha4RM_ZwRAUMX-GgWC9JZq59GYoIoTwzvFoJxJzQVysbopHgohOrNBkVGj8LUazCchXp69bLAbOVBja_wgW3f5pX13T444Hth2WYeAbEcdHyAZgeqVEUVlOzEsDkOpG6EUdRbY0msC-bI0VGkq7V_96r0vUwlB8vxDvoDTpElxn8GViuog3BDFDqmuQ">
                     </div>
-                    <div class="p-4 flex flex-col flex-grow"><h2 class="font-title-md text-title-md text-primary mb-1">Cocina Rústica Pino</h2><p class="font-label-md text-label-md text-on-surface-variant mb-2">Cocinas</p><div class="mb-2"><span class="bg-tertiary-container text-on-tertiary-container text-xs px-2 py-0.5 rounded font-label-md">Madera: Pino Seleccionado</span></div><p class="font-body-md text-sm text-on-surface mb-4 flex-grow line-clamp-3">Estilo campestre en pino seleccionado. Acabado rústico artesanal que resalta la veta natural de la madera, ideal para casas de campo.</p><div class="bg-surface-container-high p-2 rounded mb-4 flex flex-col gap-1"><span class="font-label-md text-xs text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">straighten</span> A Medida</span></div><div class="flex gap-2 mt-auto"><button class="flex-1 bg-primary hover:bg-secondary text-on-primary font-title-md text-[14px] font-bold py-2 px-2 rounded transition-colors flex items-center justify-center gap-1"><span class="material-symbols-outlined text-[18px]">calculate</span> Cotizar</button><button class="flex-1 border border-primary text-primary hover:bg-primary-container hover:text-on-primary-container font-title-md text-[14px] font-bold py-2 px-2 rounded transition-colors flex items-center justify-center gap-1"><span class="material-symbols-outlined text-[18px]">menu_book</span> Instructivo</button></div></div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <h2 class="font-title-md text-title-md text-primary mb-1">Cocina Rústica Pino</h2>
+                        <p class="font-label-md text-label-md text-on-surface-variant mb-2">Cocinas</p>
+                        <div class="mb-2">
+                            <span class="bg-tertiary-container text-on-tertiary-container text-xs px-2 py-0.5 rounded font-label-md">Madera: Pino Seleccionado</span>
+                        </div>
+                        <p class="font-body-md text-sm text-on-surface mb-4 flex-grow line-clamp-3">
+                            Estilo campestre en pino seleccionado. Acabado rústico artesanal que resalta la veta natural de la madera, ideal para casas de campo.
+                        </p>
+                        <div class="bg-surface-container-high p-2 rounded mb-4 flex flex-col gap-1">
+                            <span class="font-label-md text-xs text-on-surface-variant flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px]">straighten</span> A Medida
+                            </span>
+                        </div>
+                        <div class="flex gap-2 mt-auto">
+                            <button type="button" onclick="abrirModalCotizarProducto('Cocina Rústica Pino', 'pino', 85, 220, 60)" class="flex-1 bg-primary hover:bg-secondary text-on-primary font-title-md text-[14px] font-bold py-2 px-2 rounded transition-all active:scale-95 flex items-center justify-center gap-1">
+                                <span class="material-symbols-outlined text-[18px]">calculate</span> Cotizar
+                            </button>
+                            <a asp-controller="Instructivos" asp-action="Index" class="flex-1 border border-primary text-primary hover:bg-primary-container hover:text-on-primary-container font-title-md text-[14px] font-bold py-2 px-2 rounded transition-colors flex items-center justify-center gap-1">
+                                <span class="material-symbols-outlined text-[18px]">menu_book</span> Instructivo
+                            </a>
+                        </div>
+                    </div>
                 </article>
+
                 <!-- Product 3 -->
                 <article class="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden flex flex-col group hover:shadow-lg transition-shadow duration-300">
                     <div class="relative h-48 w-full overflow-hidden bg-surface-container">
-                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="High-end interior design photography of a classic elegant kitchen with dark cherry wood cabinets, ornate molding details, granite countertops, sophisticated ambient lighting, premium artisan craftsmanship." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZ9bKQA4DpYQ_8jEfBnddX5L3pF-plyX8hXsppOSHSihlYJj4DBZ91wR8UjsPi63QNciPO7yTdgaivQ7ZEkcuS1PAV2tDB176Dg-hoJ8Mex2_CfTVAimtXj5YNGigZPdmjyQ9OcRMBV7GGNeL339IKNPUubfv0wV2h1TR6mYn94YI_olm_SYec1exqGFpjHMw6Y2WvI1_3wl1XHRdimM3sTE6sgQIgEsALw0h_j78tOf8dieTiZ7wXsA">
+                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Cocina Clásica Cerezo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZ9bKQA4DpYQ_8jEfBnddX5L3pF-plyX8hXsppOSHSihlYJj4DBZ91wR8UjsPi63QNciPO7yTdgaivQ7ZEkcuS1PAV2tDB176Dg-hoJ8Mex2_CfTVAimtXj5YNGigZPdmjyQ9OcRMBV7GGNeL339IKNPUubfv0wV2h1TR6mYn94YI_olm_SYec1exqGFpjHMw6Y2WvI1_3wl1XHRdimM3sTE6sgQIgEsALw0h_j78tOf8dieTiZ7wXsA">
                     </div>
-                    <div class="p-4 flex flex-col flex-grow"><h2 class="font-title-md text-title-md text-primary mb-1">Cocina Clásica Cerezo</h2><p class="font-label-md text-label-md text-on-surface-variant mb-2">Cocinas</p><div class="mb-2"><span class="bg-tertiary-container text-on-tertiary-container text-xs px-2 py-0.5 rounded font-label-md">Madera: Cerezo</span></div><p class="font-body-md text-sm text-on-surface mb-4 flex-grow line-clamp-3">Elegancia atemporal en madera de cerezo con molduras clásicas detalladas a mano. Barniz de alta resistencia y brillo sedoso.</p><div class="bg-surface-container-high p-2 rounded mb-4 flex flex-col gap-1"><span class="font-label-md text-xs text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">straighten</span> A Medida</span></div><div class="flex gap-2 mt-auto"><button class="flex-1 bg-primary hover:bg-secondary text-on-primary font-title-md text-[14px] font-bold py-2 px-2 rounded transition-colors flex items-center justify-center gap-1"><span class="material-symbols-outlined text-[18px]">calculate</span> Cotizar</button><button class="flex-1 border border-primary text-primary hover:bg-primary-container hover:text-on-primary-container font-title-md text-[14px] font-bold py-2 px-2 rounded transition-colors flex items-center justify-center gap-1"><span class="material-symbols-outlined text-[18px]">menu_book</span> Instructivo</button></div></div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <h2 class="font-title-md text-title-md text-primary mb-1">Cocina Clásica Cerezo</h2>
+                        <p class="font-label-md text-label-md text-on-surface-variant mb-2">Cocinas</p>
+                        <div class="mb-2">
+                            <span class="bg-tertiary-container text-on-tertiary-container text-xs px-2 py-0.5 rounded font-label-md">Madera: Cedro / Cerezo</span>
+                        </div>
+                        <p class="font-body-md text-sm text-on-surface mb-4 flex-grow line-clamp-3">
+                            Elegancia atemporal en madera noble con molduras clásicas detalladas a mano. Barniz de alta resistencia y brillo sedoso.
+                        </p>
+                        <div class="bg-surface-container-high p-2 rounded mb-4 flex flex-col gap-1">
+                            <span class="font-label-md text-xs text-on-surface-variant flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px]">straighten</span> A Medida
+                            </span>
+                        </div>
+                        <div class="flex gap-2 mt-auto">
+                            <button type="button" onclick="abrirModalCotizarProducto('Cocina Clásica Cerezo', 'cedro', 85, 250, 60)" class="flex-1 bg-primary hover:bg-secondary text-on-primary font-title-md text-[14px] font-bold py-2 px-2 rounded transition-all active:scale-95 flex items-center justify-center gap-1">
+                                <span class="material-symbols-outlined text-[18px]">calculate</span> Cotizar
+                            </button>
+                            <a asp-controller="Instructivos" asp-action="Index" class="flex-1 border border-primary text-primary hover:bg-primary-container hover:text-on-primary-container font-title-md text-[14px] font-bold py-2 px-2 rounded transition-colors flex items-center justify-center gap-1">
+                                <span class="material-symbols-outlined text-[18px]">menu_book</span> Instructivo
+                            </a>
+                        </div>
+                    </div>
                 </article>
+
                 <!-- Product 4 -->
                 <article class="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden flex flex-col group hover:shadow-lg transition-shadow duration-300">
                     <div class="relative h-48 w-full overflow-hidden bg-surface-container">
-                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Minimalist contemporary kitchen design photography featuring sleek flat-panel walnut wood cabinets, seamless integration, hidden handles, bright clean lighting, premium modern carpentry." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-JwPKXmLhGqpHmlWsxnM9Hh8qm6CZpU2pW9ESjixkjOmtCVzXfiuv1x04znYtC9PyNJfOsRwWrFJ3Us6eFHCwvUz5wW25SD0Z8zzBRc8xrGCkjkFZDMVfzYrDqP8ufqUXQI2yfAFcDR9rnnY-X9TlPrrtfbBeNH86wtkA5etjOSLn1HjM7gg0t_AUfTDbjZBnm8OQJ9YEvSaISbgBuFdeXvT25JidlUKXge8728t0_irxuwfbHGfiqg">
+                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Cocina Minimalista Nogal" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-JwPKXmLhGqpHmlWsxnM9Hh8qm6CZpU2pW9ESjixkjOmtCVzXfiuv1x04znYtC9PyNJfOsRwWrFJ3Us6eFHCwvUz5wW25SD0Z8zzBRc8xrGCkjkFZDMVfzYrDqP8ufqUXQI2yfAFcDR9rnnY-X9TlPrrtfbBeNH86wtkA5etjOSLn1HjM7gg0t_AUfTDbjZBnm8OQJ9YEvSaISbgBuFdeXvT25JidlUKXge8728t0_irxuwfbHGfiqg">
                     </div>
-                    <div class="p-4 flex flex-col flex-grow"><h2 class="font-title-md text-title-md text-primary mb-1">Cocina Minimalista Nogal</h2><p class="font-label-md text-label-md text-on-surface-variant mb-2">Cocinas</p><div class="mb-2"><span class="bg-tertiary-container text-on-tertiary-container text-xs px-2 py-0.5 rounded font-label-md">Madera: Nogal Premium</span></div><p class="font-body-md text-sm text-on-surface mb-4 flex-grow line-clamp-3">Líneas puras en nogal premium. Frentes lisos sin tiradores visibles, maximizando el protagonismo de la textura natural.</p><div class="bg-surface-container-high p-2 rounded mb-4 flex flex-col gap-1"><span class="font-label-md text-xs text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">straighten</span> A Medida</span></div><div class="flex gap-2 mt-auto"><button class="flex-1 bg-primary hover:bg-secondary text-on-primary font-title-md text-[14px] font-bold py-2 px-2 rounded transition-colors flex items-center justify-center gap-1"><span class="material-symbols-outlined text-[18px]">calculate</span> Cotizar</button><button class="flex-1 border border-primary text-primary hover:bg-primary-container hover:text-on-primary-container font-title-md text-[14px] font-bold py-2 px-2 rounded transition-colors flex items-center justify-center gap-1"><span class="material-symbols-outlined text-[18px]">menu_book</span> Instructivo</button></div></div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <h2 class="font-title-md text-title-md text-primary mb-1">Cocina Minimalista Nogal</h2>
+                        <p class="font-label-md text-label-md text-on-surface-variant mb-2">Cocinas</p>
+                        <div class="mb-2">
+                            <span class="bg-tertiary-container text-on-tertiary-container text-xs px-2 py-0.5 rounded font-label-md">Madera: Nogal Premium</span>
+                        </div>
+                        <p class="font-body-md text-sm text-on-surface mb-4 flex-grow line-clamp-3">
+                            Líneas puras en nogal premium. Frentes lisos sin tiradores visibles, maximizando el protagonismo de la textura natural.
+                        </p>
+                        <div class="bg-surface-container-high p-2 rounded mb-4 flex flex-col gap-1">
+                            <span class="font-label-md text-xs text-on-surface-variant flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px]">straighten</span> A Medida
+                            </span>
+                        </div>
+                        <div class="flex gap-2 mt-auto">
+                            <button type="button" onclick="abrirModalCotizarProducto('Cocina Minimalista Nogal', 'nogal', 85, 260, 60)" class="flex-1 bg-primary hover:bg-secondary text-on-primary font-title-md text-[14px] font-bold py-2 px-2 rounded transition-all active:scale-95 flex items-center justify-center gap-1">
+                                <span class="material-symbols-outlined text-[18px]">calculate</span> Cotizar
+                            </button>
+                            <a asp-controller="Instructivos" asp-action="Index" class="flex-1 border border-primary text-primary hover:bg-primary-container hover:text-on-primary-container font-title-md text-[14px] font-bold py-2 px-2 rounded transition-colors flex items-center justify-center gap-1">
+                                <span class="material-symbols-outlined text-[18px]">menu_book</span> Instructivo
+                            </a>
+                        </div>
+                    </div>
                 </article>
-                <!-- TABLES (4) -->
+
                 <!-- Product 5 -->
                 <article class="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden flex flex-col group hover:shadow-lg transition-shadow duration-300">
                     <div class="relative h-48 w-full overflow-hidden bg-surface-container">
@@ -276,67 +370,86 @@
                     <div class="p-4 flex flex-col flex-grow">
                         <h2 class="font-title-md text-title-md text-primary mb-1">Comedor Roble Macizo</h2>
                         <p class="font-label-md text-label-md text-on-surface-variant mb-2">Mesas</p>
-                        <p class="font-body-md text-sm text-on-surface mb-4 flex-grow line-clamp-3">Mesa de comedor imponente. Tablero grueso de roble macizo con bordes naturales u orgánicos, base robusta en X o pedestal.</p>
+                        <p class="font-body-md text-sm text-on-surface mb-4 flex-grow line-clamp-3">
+                            Mesa de comedor imponente. Tablero grueso de roble macizo con bordes naturales u orgánicos, base robusta en X o pedestal.
+                        </p>
                         <div class="bg-surface-container-high p-2 rounded mb-4 flex flex-col gap-1">
-                            <span class="font-label-md text-xs text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">straighten</span> 200 x 76 x 100 cm</span>
+                            <span class="font-label-md text-xs text-on-surface-variant flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px]">straighten</span> 200 x 76 x 100 cm
+                            </span>
                         </div>
-                        <button class="w-full bg-primary hover:bg-secondary text-on-primary font-title-md text-[14px] font-bold py-2 px-4 rounded transition-colors mt-auto flex items-center justify-center gap-2">
+                        <button type="button" onclick="abrirModalCotizarProducto('Comedor Roble Macizo', 'roble', 76, 200, 100)" class="w-full bg-primary hover:bg-secondary text-on-primary font-title-md text-[14px] font-bold py-2 px-4 rounded transition-all active:scale-95 mt-auto flex items-center justify-center gap-2">
                             <span class="material-symbols-outlined text-[18px]">calculate</span> Cotizar
                         </button>
                     </div>
                 </article>
+
                 <!-- Product 6 -->
                 <article class="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden flex flex-col group hover:shadow-lg transition-shadow duration-300">
                     <div class="relative h-48 w-full overflow-hidden bg-surface-container">
-                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Studio shot of a beautiful mid-century modern solid teak wood coffee table with tapered legs and smooth curved edges. Placed in a bright, stylish living room setting with natural light." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqGyJN1TOA2wXmMQ-6iS1E-DmCU6coDp5tcvA5j23rfR2M1YbtpBmzm2DE5b5Kubxx9cogyYb6rZ1bpTO-kRf5m0FsAYuIDWL1m3KeCk6_bUE7RoZALsXtlflUTKyYObJPBExN-8z05dXMKR_iOpqzQc4alwKjnPeAgUqqL-CBCU_29MtMFkNz6cBuvVy6DdUZLpr3iAoGGICUFM0kogqyvVzXJ4l22J4dnqck6XGsv-UurmPNzB4tVQ">
+                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Mesa Centro Teca" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqGyJN1TOA2wXmMQ-6iS1E-DmCU6coDp5tcvA5j23rfR2M1YbtpBmzm2DE5b5Kubxx9cogyYb6rZ1bpTO-kRf5m0FsAYuIDWL1m3KeCk6_bUE7RoZALsXtlflUTKyYObJPBExN-8z05dXMKR_iOpqzQc4alwKjnPeAgUqqL-CBCU_29MtMFkNz6cBuvVy6DdUZLpr3iAoGGICUFM0kogqyvVzXJ4l22J4dnqck6XGsv-UurmPNzB4tVQ">
                     </div>
                     <div class="p-4 flex flex-col flex-grow">
                         <h2 class="font-title-md text-title-md text-primary mb-1">Mesa Centro Teca</h2>
                         <p class="font-label-md text-label-md text-on-surface-variant mb-2">Mesas</p>
-                        <p class="font-body-md text-sm text-on-surface mb-4 flex-grow line-clamp-3">Diseño Mid-Century en madera de teca. Bordes suavemente redondeados y patas cónicas torneadas artesanalmente.</p>
+                        <p class="font-body-md text-sm text-on-surface mb-4 flex-grow line-clamp-3">
+                            Diseño Mid-Century en madera selecta. Bordes suavemente redondeados y patas cónicas torneadas artesanalmente.
+                        </p>
                         <div class="bg-surface-container-high p-2 rounded mb-4 flex flex-col gap-1">
-                            <span class="font-label-md text-xs text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">straighten</span> 120 x 45 x 60 cm</span>
+                            <span class="font-label-md text-xs text-on-surface-variant flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px]">straighten</span> 120 x 45 x 60 cm
+                            </span>
                         </div>
-                        <button class="w-full bg-primary hover:bg-secondary text-on-primary font-title-md text-[14px] font-bold py-2 px-4 rounded transition-colors mt-auto flex items-center justify-center gap-2">
+                        <button type="button" onclick="abrirModalCotizarProducto('Mesa Centro Teca', 'pino', 45, 120, 60)" class="w-full bg-primary hover:bg-secondary text-on-primary font-title-md text-[14px] font-bold py-2 px-4 rounded transition-all active:scale-95 mt-auto flex items-center justify-center gap-2">
                             <span class="material-symbols-outlined text-[18px]">calculate</span> Cotizar
                         </button>
                     </div>
                 </article>
+
                 <!-- Product 7 -->
                 <article class="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden flex flex-col group hover:shadow-lg transition-shadow duration-300">
                     <div class="relative h-48 w-full overflow-hidden bg-surface-container">
-                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A small, elegant solid mahogany wood side table with a single drawer and brass hardware. Photographed against a neutral wall in soft, high-quality studio lighting, showcasing fine carpentry." src="https://lh3.googleusercontent.com/aida-public/AB6AXuACmF7OGGxBvorFxJAI2baakvYzhJjH48QDTCz9v-8Vj6tk0BBkphcHgMlLG6xgs_-pmlBu6PSF0UtD4yaWMlE0Oq18mC9hQYZTV1XkAwLcTm2VahtbQ_Tkfg_vaNbFkA0Z5zonx120vjfOeoNH0vXaMVdjDcnE0lwBi66y31lwFK-OcCaQx77F-5rZt0BaiMZiLDO3RBHGQgrRvjR4KGK3UANfdvWW7ucc1AssDOMI9M1Kd7769Z_NDA">
+                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Mesa Auxiliar Caoba" src="https://lh3.googleusercontent.com/aida-public/AB6AXuACmF7OGGxBvorFxJAI2baakvYzhJjH48QDTCz9v-8Vj6tk0BBkphcHgMlLG6xgs_-pmlBu6PSF0UtD4yaWMlE0Oq18mC9hQYZTV1XkAwLcTm2VahtbQ_Tkfg_vaNbFkA0Z5zonx120vjfOeoNH0vXaMVdjDcnE0lwBi66y31lwFK-OcCaQx77F-5rZt0BaiMZiLDO3RBHGQgrRvjR4KGK3UANfdvWW7ucc1AssDOMI9M1Kd7769Z_NDA">
                     </div>
                     <div class="p-4 flex flex-col flex-grow">
                         <h2 class="font-title-md text-title-md text-primary mb-1">Mesa Auxiliar Caoba</h2>
                         <p class="font-label-md text-label-md text-on-surface-variant mb-2">Mesas</p>
-                        <p class="font-body-md text-sm text-on-surface mb-4 flex-grow line-clamp-3">Pieza clásica y elegante en caoba. Incluye un cajón ensamblado con cola de milano y herrajes de latón envejecido.</p>
+                        <p class="font-body-md text-sm text-on-surface mb-4 flex-grow line-clamp-3">
+                            Pieza clásica y elegante en madera fina. Incluye un cajón ensamblado con cola de milano y herrajes de latón envejecido.
+                        </p>
                         <div class="bg-surface-container-high p-2 rounded mb-4 flex flex-col gap-1">
-                            <span class="font-label-md text-xs text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">straighten</span> 45 x 60 x 45 cm</span>
+                            <span class="font-label-md text-xs text-on-surface-variant flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px]">straighten</span> 45 x 60 x 45 cm
+                            </span>
                         </div>
-                        <button class="w-full bg-primary hover:bg-secondary text-on-primary font-title-md text-[14px] font-bold py-2 px-4 rounded transition-colors mt-auto flex items-center justify-center gap-2">
+                        <button type="button" onclick="abrirModalCotizarProducto('Mesa Auxiliar Caoba', 'cedro', 60, 45, 45)" class="w-full bg-primary hover:bg-secondary text-on-primary font-title-md text-[14px] font-bold py-2 px-4 rounded transition-all active:scale-95 mt-auto flex items-center justify-center gap-2">
                             <span class="material-symbols-outlined text-[18px]">calculate</span> Cotizar
                         </button>
                     </div>
                 </article>
+
                 <!-- Product 8 -->
                 <article class="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden flex flex-col group hover:shadow-lg transition-shadow duration-300">
                     <div class="relative h-48 w-full overflow-hidden bg-surface-container">
-                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A modern executive desk made of solid ebony wood and metal accents in a well-lit minimalist home office space. High-end professional furniture photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBaNi230CXkvJ4mOsr6nRzdSleDmdYewk975RXLiIW8ho5XHikWbbgQzJ92yDDDOn6sbU67uTOHSYypUL-KTsmc7ubEmbJ_Y-TB1MU5-MmvRPZmAxRh_We9E8-4M1IVEbkPYu8y-xw1ntz6Q7tEl6qcjKzNQ7-ZsqUhqbfvlAJDyoEAPEsaDGn1vGmjrjM_5zXEx1euXuoTD1pCoa_JrF_2_WGsTONH9Vnp2Mr_rRpAVfbk-ToTeDQBVw">
+                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Escritorio Ébano Moderno" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBaNi230CXkvJ4mOsr6nRzdSleDmdYewk975RXLiIW8ho5XHikWbbgQzJ92yDDDOn6sbU67uTOHSYypUL-KTsmc7ubEmbJ_Y-TB1MU5-MmvRPZmAxRh_We9E8-4M1IVEbkPYu8y-xw1ntz6Q7tEl6qcjKzNQ7-ZsqUhqbfvlAJDyoEAPEsaDGn1vGmjrjM_5zXEx1euXuoTD1pCoa_JrF_2_WGsTONH9Vnp2Mr_rRpAVfbk-ToTeDQBVw">
                     </div>
                     <div class="p-4 flex flex-col flex-grow">
                         <h2 class="font-title-md text-title-md text-primary mb-1">Escritorio Ébano Moderno</h2>
                         <p class="font-label-md text-label-md text-on-surface-variant mb-2">Mesas</p>
-                        <p class="font-body-md text-sm text-on-surface mb-4 flex-grow line-clamp-3">Superficie amplia y sofisticada de ébano oscuro contrastado con discretos acentos metálicos negros. Gestión de cables oculta.</p>
+                        <p class="font-body-md text-sm text-on-surface mb-4 flex-grow line-clamp-3">
+                            Superficie amplia y sofisticada de madera oscura contrastada con discretos acentos metálicos negros. Gestión de cables oculta.
+                        </p>
                         <div class="bg-surface-container-high p-2 rounded mb-4 flex flex-col gap-1">
-                            <span class="font-label-md text-xs text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">straighten</span> 140 x 75 x 70 cm</span>
+                            <span class="font-label-md text-xs text-on-surface-variant flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px]">straighten</span> 140 x 75 x 70 cm
+                            </span>
                         </div>
-                        <button class="w-full bg-primary hover:bg-secondary text-on-primary font-title-md text-[14px] font-bold py-2 px-4 rounded transition-colors mt-auto flex items-center justify-center gap-2">
+                        <button type="button" onclick="abrirModalCotizarProducto('Escritorio Ébano Moderno', 'nogal', 75, 140, 70)" class="w-full bg-primary hover:bg-secondary text-on-primary font-title-md text-[14px] font-bold py-2 px-4 rounded transition-all active:scale-95 mt-auto flex items-center justify-center gap-2">
                             <span class="material-symbols-outlined text-[18px]">calculate</span> Cotizar
                         </button>
                     </div>
                 </article>
-                <!-- BEDROOM (4) -->
+
                 <!-- Product 9 -->
                 <article class="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden flex flex-col group hover:shadow-lg transition-shadow duration-300">
                     <div class="relative h-48 w-full overflow-hidden bg-surface-container">
@@ -347,90 +460,831 @@
                     <div class="p-4 flex flex-col flex-grow">
                         <h2 class="font-title-md text-title-md text-primary mb-1">Cama Zen Nogal</h2>
                         <p class="font-label-md text-label-md text-on-surface-variant mb-2">Dormitorio</p>
-                        <p class="font-body-md text-sm text-on-surface mb-4 flex-grow line-clamp-3">Estructura tipo tatami en madera maciza de nogal con acabado al aceite natural. Ensambles tradicionales japoneses sin tornillos visibles.</p>
+                        <p class="font-body-md text-sm text-on-surface mb-4 flex-grow line-clamp-3">
+                            Estructura tipo tatami en madera maciza de nogal con acabado al aceite natural. Ensambles tradicionales japoneses sin tornillos visibles.
+                        </p>
                         <div class="bg-surface-container-high p-2 rounded mb-4 flex flex-col gap-1">
-                            <span class="font-label-md text-xs text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">straighten</span> 180 x 35 x 220 cm</span>
+                            <span class="font-label-md text-xs text-on-surface-variant flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px]">straighten</span> 180 x 35 x 220 cm
+                            </span>
                         </div>
-                        <button class="w-full bg-primary hover:bg-secondary text-on-primary font-title-md text-[14px] font-bold py-2 px-4 rounded transition-colors mt-auto flex items-center justify-center gap-2">
+                        <button type="button" onclick="abrirModalCotizarProducto('Cama Zen Nogal', 'nogal', 35, 180, 220)" class="w-full bg-primary hover:bg-secondary text-on-primary font-title-md text-[14px] font-bold py-2 px-4 rounded transition-all active:scale-95 mt-auto flex items-center justify-center gap-2">
                             <span class="material-symbols-outlined text-[18px]">calculate</span> Cotizar
                         </button>
                     </div>
                 </article>
+
                 <!-- Product 10 -->
                 <article class="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden flex flex-col group hover:shadow-lg transition-shadow duration-300">
                     <div class="relative h-48 w-full overflow-hidden bg-surface-container">
-                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A pair of beautifully crafted solid ash wood nightstands with simple, clean lines next to a modern bed. Warm studio lighting highlighting the light wood grain." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzhOKxnf-xXsQTscAa2JD9pUnxzb_d5udHtJaOe6aARuiBWcZMg4tuLh-N4FCWvZ0Urf3Y5vMDsDU15bcOlvf1W1iSWh4uuDOl_SYGAKFyO9WHlERVXW-Pl9v3jVpwOOCH-kHRocbLIWhSGPQ84eKTdpU-pxAlcAzRQhqA7vVKcRtweoUxvmsGXJALXRD2HRyVecXOF79Xr7qV-YLacMEnGEwIqsDyp4rRIgLpRqV2CsBBPxv6vHS-RA">
+                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Mesa de Noche Fresno" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzhOKxnf-xXsQTscAa2JD9pUnxzb_d5udHtJaOe6aARuiBWcZMg4tuLh-N4FCWvZ0Urf3Y5vMDsDU15bcOlvf1W1iSWh4uuDOl_SYGAKFyO9WHlERVXW-Pl9v3jVpwOOCH-kHRocbLIWhSGPQ84eKTdpU-pxAlcAzRQhqA7vVKcRtweoUxvmsGXJALXRD2HRyVecXOF79Xr7qV-YLacMEnGEwIqsDyp4rRIgLpRqV2CsBBPxv6vHS-RA">
                     </div>
                     <div class="p-4 flex flex-col flex-grow">
                         <h2 class="font-title-md text-title-md text-primary mb-1">Mesa de Noche Fresno</h2>
                         <p class="font-label-md text-label-md text-on-surface-variant mb-2">Dormitorio</p>
-                        <p class="font-body-md text-sm text-on-surface mb-4 flex-grow line-clamp-3">Diseño limpio y funcional en fresno macizo claro. Dos cajones con correderas de extensión total y tiradores rebajados.</p>
+                        <p class="font-body-md text-sm text-on-surface mb-4 flex-grow line-clamp-3">
+                            Diseño limpio y funcional en fresno macizo claro. Dos cajones con correderas de extensión total y tiradores rebajados.
+                        </p>
                         <div class="bg-surface-container-high p-2 rounded mb-4 flex flex-col gap-1">
-                            <span class="font-label-md text-xs text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">straighten</span> 50 x 55 x 40 cm</span>
+                            <span class="font-label-md text-xs text-on-surface-variant flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px]">straighten</span> 50 x 55 x 40 cm
+                            </span>
                         </div>
-                        <button class="w-full bg-primary hover:bg-secondary text-on-primary font-title-md text-[14px] font-bold py-2 px-4 rounded transition-colors mt-auto flex items-center justify-center gap-2">
+                        <button type="button" onclick="abrirModalCotizarProducto('Mesa de Noche Fresno', 'pino', 55, 50, 40)" class="w-full bg-primary hover:bg-secondary text-on-primary font-title-md text-[14px] font-bold py-2 px-4 rounded transition-all active:scale-95 mt-auto flex items-center justify-center gap-2">
                             <span class="material-symbols-outlined text-[18px]">calculate</span> Cotizar
                         </button>
                     </div>
                 </article>
+
                 <!-- Product 11 -->
                 <article class="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden flex flex-col group hover:shadow-lg transition-shadow duration-300">
                     <div class="relative h-48 w-full overflow-hidden bg-surface-container">
-                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A luxurious custom built-in wardrobe closet made of dark stained solid wood with louvered doors. Placed in a spacious bedroom interior with soft architectural lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbv-km_Ie7Iki1OLAeqDz2OsjS7TBGwd5PGjIpqqNBiASwIkF_BrI8jdpjOMjd9BQWOgiGa5OJYSHCQApVD3VaKu4STqedrg7Iq592cOntfEwpqzWr2U1_fJFTCpXWm_G40zHU0BfwpERjrYXZLc7yRqKBSQTJl9ZPoKEs7TdaZurv91y0x5qjC7EYu_BIPZZR3OPRymea1jwok9MAtaPUhKA-cvFR_3jp70_rWbyaiwoiX7fg5ypedg">
+                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Armario Rústico Cedro" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbv-km_Ie7Iki1OLAeqDz2OsjS7TBGwd5PGjIpqqNBiASwIkF_BrI8jdpjOMjd9BQWOgiGa5OJYSHCQApVD3VaKu4STqedrg7Iq592cOntfEwpqzWr2U1_fJFTCpXWm_G40zHU0BfwpERjrYXZLc7yRqKBSQTJl9ZPoKEs7TdaZurv91y0x5qjC7EYu_BIPZZR3OPRymea1jwok9MAtaPUhKA-cvFR_3jp70_rWbyaiwoiX7fg5ypedg">
                     </div>
                     <div class="p-4 flex flex-col flex-grow">
                         <h2 class="font-title-md text-title-md text-primary mb-1">Armario Rústico Cedro</h2>
                         <p class="font-label-md text-label-md text-on-surface-variant mb-2">Dormitorio</p>
-                        <p class="font-body-md text-sm text-on-surface mb-4 flex-grow line-clamp-3">Imponente ropero de cedro aromático natural. Puertas con paneles rebajados y amplio espacio interior con distribución personalizada.</p>
+                        <p class="font-body-md text-sm text-on-surface mb-4 flex-grow line-clamp-3">
+                            Imponente ropero de cedro aromático natural. Puertas con paneles rebajados y amplio espacio interior con distribución personalizada.
+                        </p>
                         <div class="bg-surface-container-high p-2 rounded mb-4 flex flex-col gap-1">
-                            <span class="font-label-md text-xs text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">straighten</span> A Medida</span>
+                            <span class="font-label-md text-xs text-on-surface-variant flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px]">straighten</span> A Medida
+                            </span>
                         </div>
-                        <button class="w-full bg-primary hover:bg-secondary text-on-primary font-title-md text-[14px] font-bold py-2 px-4 rounded transition-colors mt-auto flex items-center justify-center gap-2">
+                        <button type="button" onclick="abrirModalCotizarProducto('Armario Rústico Cedro', 'cedro', 200, 180, 60)" class="w-full bg-primary hover:bg-secondary text-on-primary font-title-md text-[14px] font-bold py-2 px-4 rounded transition-all active:scale-95 mt-auto flex items-center justify-center gap-2">
                             <span class="material-symbols-outlined text-[18px]">calculate</span> Cotizar
                         </button>
                     </div>
                 </article>
+
                 <!-- Product 12 -->
                 <article class="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden flex flex-col group hover:shadow-lg transition-shadow duration-300">
                     <div class="relative h-48 w-full overflow-hidden bg-surface-container">
-                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="An elegant solid wood bed frame with a finely crafted slatted headboard in warm cherry wood, styled with crisp white linens in a bright, modern bedroom." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwLFqxUe8u2iPPHv_PMrfdK6tzZlxutNYGXRH8p1cQdoezFxKjol8tB5-npvPpsmeqC_59lmz_pqL7aIQja0nLfXN0M_m-k0rHrow2_GJKtAwTtg-FFgqcaqEvuDG_WbI1Y3NHwXQfNkKsZ3Nm2QXLCUV5AzrKHq10WNWZ7H9U7P6k-0-iSZOupBmXNOSk-xsjYd1tkaWzApWFTh4EgW5wqZVrV6EGtcxkVHGzW1mgzjlaX-CNAtntxw">
+                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Cama Listones Cerezo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwLFqxUe8u2iPPHv_PMrfdK6tzZlxutNYGXRH8p1cQdoezFxKjol8tB5-npvPpsmeqC_59lmz_pqL7aIQja0nLfXN0M_m-k0rHrow2_GJKtAwTtg-FFgqcaqEvuDG_WbI1Y3NHwXQfNkKsZ3Nm2QXLCUV5AzrKHq10WNWZ7H9U7P6k-0-iSZOupBmXNOSk-xsjYd1tkaWzApWFTh4EgW5wqZVrV6EGtcxkVHGzW1mgzjlaX-CNAtntxw">
                     </div>
                     <div class="p-4 flex flex-col flex-grow">
                         <h2 class="font-title-md text-title-md text-primary mb-1">Cama Listones Cerezo</h2>
                         <p class="font-label-md text-label-md text-on-surface-variant mb-2">Dormitorio</p>
-                        <p class="font-body-md text-sm text-on-surface mb-4 flex-grow line-clamp-3">Cabecero detallado con listones verticales de cerezo ensamblados a mano. Estructura sólida y duradera de diseño atemporal.</p>
+                        <p class="font-body-md text-sm text-on-surface mb-4 flex-grow line-clamp-3">
+                            Cabecero detallado con listones verticales de madera selecta ensamblados a mano. Estructura sólida y duradera de diseño atemporal.
+                        </p>
                         <div class="bg-surface-container-high p-2 rounded mb-4 flex flex-col gap-1">
-                            <span class="font-label-md text-xs text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">straighten</span> 160 x 110 x 210 cm</span>
+                            <span class="font-label-md text-xs text-on-surface-variant flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px]">straighten</span> 160 x 110 x 210 cm
+                            </span>
                         </div>
-                        <button class="w-full bg-primary hover:bg-secondary text-on-primary font-title-md text-[14px] font-bold py-2 px-4 rounded transition-colors mt-auto flex items-center justify-center gap-2">
+                        <button type="button" onclick="abrirModalCotizarProducto('Cama Listones Cerezo', 'cedro', 110, 160, 210)" class="w-full bg-primary hover:bg-secondary text-on-primary font-title-md text-[14px] font-bold py-2 px-4 rounded transition-all active:scale-95 mt-auto flex items-center justify-center gap-2">
                             <span class="material-symbols-outlined text-[18px]">calculate</span> Cotizar
                         </button>
                     </div>
                 </article>
+
             </div>
         </section>
     </main>
+
     <!-- BottomNavBar (Mobile Only) -->
-    <nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center bg-surface px-2 pb-2 h-20 border-t-2 border-primary z-50">
-        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-secondary active:scale-90 transition-transform" href="#">
+    <nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center bg-surface px-2 pb-2 h-20 border-t-2 border-primary z-40">
+        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-secondary active:scale-90 transition-transform" asp-controller="DashboardCliente" asp-action="Index">
             <span class="material-symbols-outlined font-headline-lg text-headline-lg">home</span>
             <span class="font-label-md text-label-md">Inicio</span>
         </a>
-        <a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 hover:text-secondary active:scale-90 transition-transform" href="#">
+        <a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 hover:text-secondary active:scale-90 transition-transform" asp-controller="MisProductos" asp-action="Index">
             <span class="material-symbols-outlined font-headline-lg text-headline-lg">chair</span>
             <span class="font-label-md text-label-md">Catálogo</span>
         </a>
-        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-secondary active:scale-90 transition-transform" href="#">
+        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-secondary active:scale-90 transition-transform" href="javascript:void(0)" onclick="abrirModalCotizarProducto('Mueble Personalizado', 'pino', 80, 120, 60)">
             <span class="material-symbols-outlined font-headline-lg text-headline-lg">calculate</span>
             <span class="font-label-md text-label-md">Cotizar</span>
         </a>
-        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-secondary active:scale-90 transition-transform" href="#">
+        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-secondary active:scale-90 transition-transform" asp-controller="Mi_Pedido" asp-action="Index">
             <span class="material-symbols-outlined font-headline-lg text-headline-lg">pending_actions</span>
             <span class="font-label-md text-label-md">Pedidos</span>
         </a>
-        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-secondary active:scale-90 transition-transform" href="#">
+        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-secondary active:scale-90 transition-transform" asp-controller="Miperfil" asp-action="Index">
             <span class="material-symbols-outlined font-headline-lg text-headline-lg">person</span>
             <span class="font-label-md text-label-md">Perfil</span>
         </a>
     </nav>
-</body></html>
+
+    <!-- ========================================================================= -->
+    <!-- VENTANA EMERGENTE DE NUEVA COTIZACIÓN (DISEÑO IDÉNTICO A NuevaCotizacion) -->
+    <!-- ========================================================================= -->
+    <div id="modalNuevaCotizacion" class="fixed inset-0 z-50 hidden overflow-y-auto bg-black/60 backdrop-blur-sm flex justify-center items-center p-3 sm:p-5 md:p-7">
+
+        <!-- Contenedor del Modal -->
+        <div class="bg-[#FAF7F2] w-full max-w-[1360px] rounded-3xl shadow-2xl overflow-hidden relative max-h-[94vh] flex flex-col border border-[#DECDBE]">
+
+            <!-- Barra Superior del Modal (Hero Compacto) -->
+            <div class="bg-gradient-to-r from-[#FFFDFB] via-[#FCFAF7] to-[#F7EFE7] border-b border-[#E5DACD] px-6 py-4 sm:py-5 flex flex-wrap items-center justify-between gap-4 shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-xl bg-[#4A2613] p-1 flex items-center justify-center border border-[#7E5F43] shrink-0 shadow-inner">
+                        <img alt="Carpintec Logo" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1WIGoyppDodnWrWJkefIOlCDNP3LghoV2s3rWFURPmCk6_TPctaEONR9asW48O_V_S4M06WxJtopXR9MJjkVtG_50qH7S6gQW6beCN9np_UH3f3RTn_EX1e_RNHjbHl-ye3gZxt2PS62ELIL7V_yW6JRhrZ-yqbv122o2LrdGRynEp7RdmyqI4e1CYIehW8_LzoBDA2k07bEGTHSppB7KjcilEdxZcnso3qs1FBIWEd3q6LWTVDLfnyhdrVF_sPCGfTnJOoSW_F6PU" />
+                    </div>
+                    <div>
+                        <div class="inline-flex items-center gap-2 mb-0.5">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-[#9C6D45] bg-[#F2E5D7] px-2 py-0.5 rounded">Taller Digital</span>
+                            <span class="text-[11px] text-[#8A7869] hidden sm:inline">• Proforma Técnica</span>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-[#2E1F14] tracking-tight">
+                            NUEVA <span class="text-[#9C5A2A] font-extrabold">COTIZACIÓN</span>
+                        </h2>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <!-- Folio Badge -->
+                    <div class="bg-white/90 px-3.5 py-1.5 rounded-xl border border-[#DECDBE] text-center shadow-xs hidden sm:block">
+                        <span class="text-[9px] font-bold tracking-wider text-[#8A7566] uppercase block">Folio</span>
+                        <span id="modalFolioTexto" class="text-xs font-bold text-[#422B1D] font-mono tracking-wide">COT-2026-@DateTime.Now.ToString("MMdd")</span>
+                    </div>
+                    <!-- Fecha Badge -->
+                    <div class="bg-white/90 px-3.5 py-1.5 rounded-xl border border-[#DECDBE] text-center shadow-xs hidden sm:block">
+                        <span class="text-[9px] font-bold tracking-wider text-[#8A7566] uppercase block">Fecha</span>
+                        <span class="text-xs font-bold text-[#422B1D]">@DateTime.Now.ToString("dd MMM yyyy")</span>
+                    </div>
+                    <!-- Botón de Cerrar Modal -->
+                    <button type="button" onclick="cerrarModalCotizacion()" class="w-9 h-9 rounded-full bg-white border border-[#DECDBE] flex items-center justify-center text-[#5C3821] hover:bg-red-50 hover:text-red-700 hover:border-red-300 transition-colors shadow-xs" title="Cerrar">
+                        <i class="fa-solid fa-xmark text-base"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Cuerpo del Formulario con Scroll Interno -->
+            <div class="overflow-y-auto p-4 sm:p-6 md:p-8 flex-1">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
+
+                    <!-- LEFT COLUMN: Form Inputs (8 Cols) -->
+                    <div class="lg:col-span-8 space-y-6 sm:space-y-7">
+
+                        <!-- SECTION 1: Client Information -->
+                        <section class="bg-[#FFFDFB] rounded-2xl border border-[#E7DCCE] p-5 sm:p-6 shadow-sm">
+                            <div class="flex items-center gap-2.5 pb-3 mb-4 border-b border-[#F0E6DB]">
+                                <span class="w-7 h-7 rounded-lg bg-[#EFE4D6] text-[#7A4B29] flex items-center justify-center font-bold text-xs">01</span>
+                                <h3 class="text-sm font-bold uppercase tracking-wider text-[#4A3222]">Información del Cliente</h3>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <!-- Full Name -->
+                                <div>
+                                    <label class="block text-xs font-semibold text-[#6C5645] mb-1.5" for="modal-client-name">Nombre del Cliente</label>
+                                    <div class="relative rounded-lg shadow-xs">
+                                        <input class="w-full text-xs font-medium text-[#2E1F14] bg-[#FAF7F2] border border-[#D9CABA] rounded-lg px-3.5 py-2.5 focus:bg-white focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A] transition-all" id="modal-client-name" placeholder="Escribe el nombre completo" type="text" value="@ViewBag.NombreCliente" />
+                                    </div>
+                                </div>
+                                <!-- Phone -->
+                                <div>
+                                    <label class="block text-xs font-semibold text-[#6C5645] mb-1.5" for="modal-client-phone">Teléfono Móvil</label>
+                                    <div class="relative rounded-lg shadow-xs">
+                                        <input class="w-full text-xs font-medium text-[#2E1F14] bg-[#FAF7F2] border border-[#D9CABA] rounded-lg px-3.5 py-2.5 focus:bg-white focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A] transition-all" id="modal-client-phone" placeholder="Ej. 300 000 0000" type="text" value="@ViewBag.TelefonoCliente" />
+                                    </div>
+                                </div>
+                                <!-- Email -->
+                                <div>
+                                    <label class="block text-xs font-semibold text-[#6C5645] mb-1.5" for="modal-client-email">Correo Electrónico</label>
+                                    <div class="relative rounded-lg shadow-xs">
+                                        <input class="w-full text-xs font-medium text-[#2E1F14] bg-[#FAF7F2] border border-[#D9CABA] rounded-lg px-3.5 py-2.5 focus:bg-white focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A] transition-all" id="modal-client-email" placeholder="correo@ejemplo.com" type="email" value="@ViewBag.CorreoCliente" />
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- SECTION 2: Product and Material Selection -->
+                        <section class="bg-[#FFFDFB] rounded-2xl border border-[#E7DCCE] p-5 sm:p-6 shadow-sm">
+                            <div class="flex items-center gap-2.5 pb-3 mb-4 border-b border-[#F0E6DB]">
+                                <span class="w-7 h-7 rounded-lg bg-[#EFE4D6] text-[#7A4B29] flex items-center justify-center font-bold text-xs">02</span>
+                                <h3 class="text-sm font-bold uppercase tracking-wider text-[#4A3222]">Detalles del Producto y Material</h3>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-12 gap-5">
+                                <!-- Product Item -->
+                                <div class="md:col-span-7">
+                                    <label class="block text-xs font-semibold text-[#6C5645] mb-1.5" for="modal-product-name">Escribe o selecciona un Producto</label>
+                                    <div class="relative">
+                                        <input class="w-full text-xs font-semibold text-[#2E1F14] bg-[#FAF7F2] border border-[#D9CABA] rounded-lg px-3.5 py-2.5 focus:bg-white focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A] transition-all" id="modal-product-name" placeholder="Ej. Mesa de Comedor, Estantería, etc." type="text" value="Comedor Roble Macizo" />
+                                        <div class="mt-2 flex flex-wrap gap-1.5">
+                                            <span class="text-[10px] text-[#8C7564]">Sugerencias:</span>
+                                            <button onclick="seleccionarSugerencia('Mesa Auxiliar')" class="text-[10px] bg-[#EFE3D5] hover:bg-[#E2D2C2] text-[#5C3821] px-2 py-0.5 rounded transition" type="button">Mesa Auxiliar</button>
+                                            <button onclick="seleccionarSugerencia('Escritorio Nórdico')" class="text-[10px] bg-[#EFE3D5] hover:bg-[#E2D2C2] text-[#5C3821] px-2 py-0.5 rounded transition" type="button">Escritorio Nórdico</button>
+                                            <button onclick="seleccionarSugerencia('Mueble TV')" class="text-[10px] bg-[#EFE3D5] hover:bg-[#E2D2C2] text-[#5C3821] px-2 py-0.5 rounded transition" type="button">Mueble TV</button>
+                                            <button onclick="seleccionarSugerencia('Closet Empotrado')" class="text-[10px] bg-[#EFE3D5] hover:bg-[#E2D2C2] text-[#5C3821] px-2 py-0.5 rounded transition" type="button">Closet Empotrado</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Style Selector -->
+                                <div class="md:col-span-5">
+                                    <label class="block text-xs font-semibold text-[#6C5645] mb-1.5" for="modal-product-style">
+                                        Estilo de Diseño: <span id="lblEstiloSeleccionado" class="text-[#9C5A2A] font-bold">Rústico Moderno</span>
+                                    </label>
+                                    <select onchange="document.getElementById('lblEstiloSeleccionado').innerText = this.value" class="w-full text-xs font-medium text-[#2E1F14] bg-[#FAF7F2] border border-[#D9CABA] rounded-lg px-3.5 py-2.5 focus:bg-white focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A]" id="modal-product-style">
+                                        <option selected value="Rústico Moderno">Rústico Moderno</option>
+                                        <option value="Industrial Minimalista">Industrial Minimalista</option>
+                                        <option value="Nórdico Escandinavo">Nórdico Escandinavo</option>
+                                        <option value="Clásico Colonial">Clásico Colonial</option>
+                                    </select>
+                                </div>
+                                <!-- Wood Type -->
+                                <div class="md:col-span-7">
+                                    <div class="flex items-center justify-between mb-1.5">
+                                        <label class="block text-xs font-semibold text-[#6C5645]" for="modal-wood-select">Tipo de Madera</label>
+                                        <span id="modalWoodBasePriceBadge" class="text-xs font-bold text-[#8C5229] bg-[#F7ECE1] px-2 py-0.5 rounded border border-[#DEC9B7]">
+                                            Precio Base: $320.000 COP
+                                        </span>
+                                    </div>
+                                    <select onchange="recalcularTotalCotizacionModal()" class="w-full text-xs font-medium text-[#2E1F14] bg-[#FAF7F2] border border-[#D9CABA] rounded-lg px-3.5 py-2.5 focus:bg-white focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A]" id="modal-wood-select">
+                                        <option value="pino">Pino Macizo - Acabado Natural ($320.000)</option>
+                                        <option selected value="roble">Roble Europeo (+ $180.000)</option>
+                                        <option value="cedro">Cedro Rojo Tradicional (+ $140.000)</option>
+                                        <option value="nogal">Nogal Americano Prémium (+ $260.000)</option>
+                                    </select>
+                                </div>
+                                <!-- Quantity with Stepper -->
+                                <div class="md:col-span-5">
+                                    <label class="block text-xs font-semibold text-[#6C5645] mb-1.5">Cantidad</label>
+                                    <div class="flex items-center bg-[#FAF7F2] border border-[#D9CABA] rounded-lg p-1">
+                                        <button onclick="cambiarCantidadModal(-1)" class="w-8 h-8 rounded bg-white shadow-xs text-[#5C3821] hover:bg-[#EFE4D6] font-bold text-sm flex items-center justify-center transition active:scale-95" type="button">−</button>
+                                        <input id="modal-cantidad" oninput="recalcularTotalCotizacionModal()" class="w-full text-center border-0 bg-transparent text-sm font-bold text-[#34261B] focus:ring-0" min="1" type="number" value="1" />
+                                        <button onclick="cambiarCantidadModal(1)" class="w-8 h-8 rounded bg-white shadow-xs text-[#5C3821] hover:bg-[#EFE4D6] font-bold text-sm flex items-center justify-center transition active:scale-95" type="button">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- SECTION 3: Dimensions & Technical Isometric Graphic -->
+                        <section class="bg-[#FFFDFB] rounded-2xl border border-[#E7DCCE] p-5 sm:p-6 shadow-sm">
+                            <div class="flex items-center justify-between pb-3 mb-4 border-b border-[#F0E6DB]">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="w-7 h-7 rounded-lg bg-[#EFE4D6] text-[#7A4B29] flex items-center justify-center font-bold text-xs">03</span>
+                                    <div>
+                                        <h3 class="text-sm font-bold uppercase tracking-wider text-[#4A3222]">Medidas Técnicas (cm)</h3>
+                                        <p class="text-[11px] text-[#8C7665]">Ingresa las cotas exactas en centímetros para el cálculo volumétrico</p>
+                                    </div>
+                                </div>
+                                <span class="hidden sm:inline-block text-[11px] bg-[#EFE6DB] text-[#69482F] px-2.5 py-1 rounded-md font-medium border border-[#DECFBD]">
+                                    Escala 1:1
+                                </span>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                                <!-- Numerical Inputs (3 Axis) -->
+                                <div class="md:col-span-7 space-y-3.5">
+                                    <!-- Alto -->
+                                    <div class="bg-[#FAF7F2] p-3 rounded-xl border border-[#E5DACD] flex items-center justify-between gap-3">
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-xs font-bold text-[#9C5A2A] bg-[#EFE1D2] w-6 h-6 rounded flex items-center justify-center">▲</span>
+                                            <span class="text-xs font-semibold text-[#543D2D] uppercase tracking-wide">Alto</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <input id="modal-alto" oninput="actualizarGraficoSvg()" class="w-20 text-center font-bold text-sm bg-white border border-[#CFBEAE] rounded-lg py-1.5 text-[#34261B] focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A]" type="number" value="76" min="10" />
+                                            <span class="text-xs font-semibold text-[#7E6654]">cm</span>
+                                        </div>
+                                    </div>
+                                    <!-- Ancho -->
+                                    <div class="bg-[#FAF7F2] p-3 rounded-xl border border-[#E5DACD] flex items-center justify-between gap-3">
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-xs font-bold text-[#9C5A2A] bg-[#EFE1D2] w-6 h-6 rounded flex items-center justify-center">►</span>
+                                            <span class="text-xs font-semibold text-[#543D2D] uppercase tracking-wide">Ancho</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <input id="modal-ancho" oninput="actualizarGraficoSvg()" class="w-20 text-center font-bold text-sm bg-white border border-[#CFBEAE] rounded-lg py-1.5 text-[#34261B] focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A]" type="number" value="200" min="10" />
+                                            <span class="text-xs font-semibold text-[#7E6654]">cm</span>
+                                        </div>
+                                    </div>
+                                    <!-- Profundidad -->
+                                    <div class="bg-[#FAF7F2] p-3 rounded-xl border border-[#E5DACD] flex items-center justify-between gap-3">
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-xs font-bold text-[#9C5A2A] bg-[#EFE1D2] w-6 h-6 rounded flex items-center justify-center">↗</span>
+                                            <span class="text-xs font-semibold text-[#543D2D] uppercase tracking-wide">Profundidad</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <input id="modal-profundidad" oninput="actualizarGraficoSvg()" class="w-20 text-center font-bold text-sm bg-white border border-[#CFBEAE] rounded-lg py-1.5 text-[#34261B] focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A]" type="number" value="100" min="10" />
+                                            <span class="text-xs font-semibold text-[#7E6654]">cm</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Technical Graphic / Isometric Table Diagram -->
+                                <div class="md:col-span-5 bg-gradient-to-b from-[#F7EFE6] to-[#EFE2D3] border border-dashed border-[#CBB39C] rounded-xl p-4 flex flex-col items-center justify-center relative overflow-hidden min-h-[170px]">
+                                    <span class="text-[10px] font-bold text-[#7A5338] uppercase tracking-wider mb-2">Esquema Técnico 3D</span>
+                                    <!-- SVG Isometric Furniture Diagram -->
+                                    <svg class="w-48 h-auto drop-shadow-sm" fill="none" viewbox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">
+                                        <!-- Top Table Board -->
+                                        <polygon fill="#C99F77" points="100,18 165,48 100,75 35,48" stroke="#7A4C27" stroke-width="1.8"></polygon>
+                                        <polygon fill="#9F734F" points="35,48 100,75 100,82 35,55" stroke="#7A4C27" stroke-width="1.8"></polygon>
+                                        <polygon fill="#7A4C27" points="100,75 165,48 165,55 100,82" stroke="#7A4C27" stroke-width="1.8"></polygon>
+                                        <!-- Front Left Leg -->
+                                        <rect fill="#8B5731" height="55" rx="1" stroke="#5E381C" stroke-width="1.2" width="8" x="42" y="55"></rect>
+                                        <!-- Front Center/Right Leg -->
+                                        <rect fill="#784521" height="38" rx="1" stroke="#5E381C" stroke-width="1.2" width="8" x="96" y="80"></rect>
+                                        <!-- Far Right Leg -->
+                                        <rect fill="#8B5731" height="52" rx="1" stroke="#5E381C" stroke-width="1.2" width="7" x="153" y="53"></rect>
+                                        <!-- Far Left/Back Leg -->
+                                        <rect fill="#6A3B1B" height="42" opacity="0.4" rx="1" stroke="#482711" stroke-width="1.2" width="6" x="96" y="30"></rect>
+                                        <!-- Dimension Lines -->
+                                        <!-- Ancho (Width) -->
+                                        <line stroke="#8C4412" stroke-dasharray="2 2" stroke-width="1.2" x1="30" x2="95" y1="44" y2="14"></line>
+                                        <text id="svgTextAncho" fill="#8C4412" font-size="8" font-weight="700" x="50" y="24">200 cm</text>
+                                        <!-- Profundidad (Depth) -->
+                                        <line stroke="#8C4412" stroke-dasharray="2 2" stroke-width="1.2" x1="105" x2="170" y1="14" y2="44"></line>
+                                        <text id="svgTextProfundidad" fill="#8C4412" font-size="8" font-weight="700" x="142" y="24">100 cm</text>
+                                        <!-- Alto (Height) -->
+                                        <line stroke="#8C4412" stroke-dasharray="2 2" stroke-width="1.2" x1="28" x2="28" y1="52" y2="110"></line>
+                                        <text id="svgTextAlto" fill="#8C4412" font-size="8" font-weight="700" x="10" y="85">76 cm</text>
+                                    </svg>
+                                    <div id="svgTextDimensionesFull" class="text-[10px] text-[#7A5B44] text-center mt-2 font-medium">
+                                        Cotas: 76cm (alto) × 200cm (ancho) × 100cm (prof.)
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- SECTION 4: Observations & Notes -->
+                        <section class="bg-[#FFFDFB] rounded-2xl border border-[#E7DCCE] p-5 sm:p-6 shadow-sm">
+                            <div class="flex items-center gap-2.5 pb-3 mb-4 border-b border-[#F0E6DB]">
+                                <span class="w-7 h-7 rounded-lg bg-[#EFE4D6] text-[#7A4B29] flex items-center justify-center font-bold text-xs">04</span>
+                                <h3 class="text-sm font-bold uppercase tracking-wider text-[#4A3222]">Observaciones y Especificaciones</h3>
+                            </div>
+                            <div>
+                                <textarea id="modal-observaciones" class="w-full text-xs text-[#2E1F14] bg-[#FAF7F2] border border-[#D9CABA] rounded-xl p-3.5 focus:bg-white focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A] placeholder-[#9E8B7C] transition-all" placeholder="Indica detalles de esquinas redondeadas, perforaciones para cables, tono de barniz mate/satinado o requisitos particulares para el ensamble..." rows="3">Deseo los bordes superiores suavemente biselados con acabado poliuretano semi-mate resistente a la humedad.</textarea>
+                            </div>
+                        </section>
+
+                        <!-- SECTION 5: Payment Methods Selection -->
+                        <section class="bg-[#FFFDFB] rounded-2xl border border-[#E7DCCE] p-5 sm:p-6 shadow-sm">
+                            <div class="flex items-center gap-2.5 pb-3 mb-4 border-b border-[#F0E6DB]">
+                                <span class="w-7 h-7 rounded-lg bg-[#EFE4D6] text-[#7A4B29] flex items-center justify-center font-bold text-xs">05</span>
+                                <h3 class="text-sm font-bold uppercase tracking-wider text-[#4A3222]">Método de Pago Preferido</h3>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                                <!-- Option 1: Transfer / Cash -->
+                                <label class="cursor-pointer border-2 border-[#9C5A2A] bg-[#FAF3EC] rounded-xl p-3 flex flex-col justify-between transition-all hover:shadow-xs">
+                                    <div class="flex items-center justify-between">
+                                        <input checked class="text-[#9C5A2A] focus:ring-[#9C5A2A] w-4 h-4" name="payment_method" type="radio" value="transferencia" onchange="recalcularTotalCotizacionModal()" />
+                                        <span class="text-[10px] font-bold bg-[#EAD4C2] text-[#693D1B] px-1.5 py-0.5 rounded">-5% OFF</span>
+                                    </div>
+                                    <div class="mt-3">
+                                        <p class="text-xs font-bold text-[#3A2415]">Transferencia</p>
+                                        <p class="text-[11px] text-[#745F50]">Bancolombia / Nequi</p>
+                                    </div>
+                                </label>
+                                <!-- Option 2: Credit Card -->
+                                <label class="cursor-pointer border border-[#E0D2C3] bg-[#FAF7F2] hover:bg-[#FDFBF9] rounded-xl p-3 flex flex-col justify-between transition-all">
+                                    <div class="flex items-center justify-between">
+                                        <input class="text-[#9C5A2A] focus:ring-[#9C5A2A] w-4 h-4" name="payment_method" type="radio" value="tarjeta" onchange="recalcularTotalCotizacionModal()" />
+                                        <span class="text-[10px] text-[#8C7665]">Hasta 12 cuotas</span>
+                                    </div>
+                                    <div class="mt-3">
+                                        <p class="text-xs font-bold text-[#3A2415]">Tarjeta Crédito</p>
+                                        <p class="text-[11px] text-[#745F50]">Visa, Mastercard</p>
+                                    </div>
+                                </label>
+                                <!-- Option 3: Instalments -->
+                                <label class="cursor-pointer border border-[#E0D2C3] bg-[#FAF7F2] hover:bg-[#FDFBF9] rounded-xl p-3 flex flex-col justify-between transition-all">
+                                    <div class="flex items-center justify-between">
+                                        <input class="text-[#9C5A2A] focus:ring-[#9C5A2A] w-4 h-4" name="payment_method" type="radio" value="anticipo" onchange="recalcularTotalCotizacionModal()" />
+                                        <span class="text-[10px] text-[#8C7665]">50% y 50%</span>
+                                    </div>
+                                    <div class="mt-3">
+                                        <p class="text-xs font-bold text-[#3A2415]">Anticipo Taller</p>
+                                        <p class="text-[11px] text-[#745F50]">Saldo contra-entrega</p>
+                                    </div>
+                                </label>
+                                <!-- Option 4: PSE -->
+                                <label class="cursor-pointer border border-[#E0D2C3] bg-[#FAF7F2] hover:bg-[#FDFBF9] rounded-xl p-3 flex flex-col justify-between transition-all">
+                                    <div class="flex items-center justify-between">
+                                        <input class="text-[#9C5A2A] focus:ring-[#9C5A2A] w-4 h-4" name="payment_method" type="radio" value="pse" onchange="recalcularTotalCotizacionModal()" />
+                                        <span class="text-[10px] text-[#8C7665]">Inmediato</span>
+                                    </div>
+                                    <div class="mt-3">
+                                        <p class="text-xs font-bold text-[#3A2415]">PSE en Línea</p>
+                                        <p class="text-[11px] text-[#745F50]">Débito bancario</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </section>
+
+                        <!-- Action Button -->
+                        <div class="pt-2">
+                            <button id="btnGenerarCotizacionModal" onclick="enviarCotizacionDesdeCatalogo()" class="w-full bg-[#8B4513] hover:bg-[#72370D] active:bg-[#592B0A] text-white font-bold py-4 px-6 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-3 group text-sm tracking-wide uppercase" type="button">
+                                <svg class="w-5 h-5 text-[#E7C6A5] group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+                                    <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                                <span>Generar y Guardar Cotización</span>
+                            </button>
+                            <p class="text-center text-[11px] text-[#8A7666] mt-2">
+                                La cotización se registrará automáticamente en su historial de cliente.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <!-- RIGHT COLUMN: Support Panels & Quotation Summary (4 Cols) -->
+                    <div class="lg:col-span-4 space-y-6">
+
+                        <!-- CARD 1: Upload Space Photo -->
+                        <div class="bg-[#FFFDFB] rounded-2xl border border-[#E7DCCE] p-5 sm:p-6 shadow-sm">
+                            <div class="flex items-center justify-between mb-3">
+                                <h4 class="text-xs font-bold uppercase tracking-wider text-[#4A3222]">Foto del Lugar / Espacio</h4>
+                                <span class="text-[10px] text-[#9C6D45] font-semibold bg-[#F5EADF] px-2 py-0.5 rounded">Opcional</span>
+                            </div>
+                            <!-- Dropzone Area -->
+                            <label for="modal-foto-input" class="border-2 border-dashed border-[#D2BFAF] hover:border-[#8B4513] bg-[#FAF6F0] rounded-xl p-5 text-center transition-colors cursor-pointer group block relative overflow-hidden h-40 flex flex-col items-center justify-center">
+                                
+                                <img id="modalFotoPreview" class="absolute inset-0 w-full h-full object-cover hidden" alt="Vista previa" />
+
+                                <div id="modalFotoPlaceholder" class="flex flex-col items-center">
+                                    <div class="w-11 h-11 mx-auto rounded-full bg-[#EFE3D5] flex items-center justify-center text-[#8B4513] mb-2 group-hover:bg-[#E7D4C1] transition-colors">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+                                            <path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            <path d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+                                    </div>
+                                    <p class="text-xs font-bold text-[#3F2B1D]">Sube una foto del espacio</p>
+                                    <p class="text-[11px] text-[#867160] mt-1">Haz clic para cargar (PNG, JPG)</p>
+                                </div>
+
+                                <input id="modal-foto-input" type="file" accept="image/*" class="sr-only" onchange="mostrarVistaPreviaFotoModal(event)">
+                            </label>
+                            <p class="text-[11px] text-[#786353] leading-relaxed mt-3">
+                                Sube una foto del lugar donde irá el producto para facilitar el cálculo de las medidas y el diseño en concordancia con tu ambiente.
+                            </p>
+                        </div>
+
+                        <!-- CARD 2: Expert Measurement Assistance Banner -->
+                        <div class="bg-gradient-to-br from-[#FAF3EA] to-[#F1E4D6] rounded-2xl border border-[#DFCBB9] p-5 shadow-sm">
+                            <div class="flex items-start gap-3.5">
+                                <div class="w-10 h-10 rounded-full bg-[#EAD4C2] flex-shrink-0 flex items-center justify-center text-[#744522]">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+                                        <path d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-bold text-[#3B2516] leading-snug">
+                                        ¿No conozco alguna medida o necesito asesoría para medir?
+                                    </h4>
+                                    <p class="text-[11px] text-[#695546] mt-1.5 leading-relaxed">
+                                        No te preocupes, nuestro equipo técnico puede guiarte por llamada o coordinar una visita a tu domicilio.
+                                    </p>
+                                    <a class="inline-flex items-center gap-1.5 text-xs font-bold text-[#8B4513] hover:text-[#5E2B08] mt-2.5 transition-colors" href="https://wa.me/573000000000" target="_blank">
+                                        Solicitar ayuda con las medidas
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+                                            <path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CARD 3: Quotation Breakdown & Final Total -->
+                        <div class="bg-[#FFFDFB] rounded-2xl border border-[#E7DCCE] p-6 shadow-sm">
+                            <div class="flex items-center justify-between pb-3 mb-4 border-b border-[#F0E6DB]">
+                                <h4 class="text-xs font-bold uppercase tracking-wider text-[#4A3222]">Resumen Total</h4>
+                                <span id="modalDiscountBadge" class="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                                    Descuento Aplicado
+                                </span>
+                            </div>
+                            <div class="space-y-2.5 text-xs">
+                                <div class="flex justify-between text-[#685444]">
+                                    <span id="modalSummaryMaderaText">Madera (Roble Europeo):</span>
+                                    <span id="modalSummaryMaderaVal" class="font-medium text-[#2E1F14]">$500.000</span>
+                                </div>
+                                <div class="flex justify-between text-[#685444]">
+                                    <span>Mano de obra artesanal y ensamble:</span>
+                                    <span id="modalSummaryManoObraVal" class="font-medium text-[#2E1F14]">$120.000</span>
+                                </div>
+                                <div class="flex justify-between text-[#685444]">
+                                    <span>Acabado poliuretano resistente:</span>
+                                    <span class="font-medium text-emerald-700">Incluido</span>
+                                </div>
+                                <div id="modalRowDescuento" class="flex justify-between text-emerald-700 font-medium">
+                                    <span>Descuento Transferencia (-5%):</span>
+                                    <span id="modalSummaryDescuentoVal">-$31.000</span>
+                                </div>
+                                <div class="pt-3 border-t border-[#EAE0D4] mt-3">
+                                    <div class="flex items-baseline justify-between">
+                                        <div>
+                                            <span class="text-xs font-bold uppercase tracking-wide text-[#3F2B1C] block">Total Estimado:</span>
+                                            <span class="text-[10px] text-[#8C7665]">*IVA incluido (COP)</span>
+                                        </div>
+                                        <div class="text-right">
+                                            <span id="modalTotalGrande" class="text-2xl font-black text-[#8B4513] tracking-tight">$589.000</span>
+                                            <span class="text-[11px] font-bold text-[#8B4513] block">COP</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Validity Notice -->
+                            <div class="mt-4 pt-3 border-t border-dashed border-[#E5DACD] flex items-center justify-between text-[10px] text-[#8C7665]">
+                                <span>Vigencia: 15 días calendario</span>
+                                <span class="font-semibold text-[#5B3920]">Garantía: 2 Años</span>
+                            </div>
+                        </div>
+
+                        <!-- CARD 4: Wood Palette Reference Guide -->
+                        <div class="bg-[#FFFDFB] rounded-2xl border border-[#E7DCCE] p-5 shadow-sm">
+                            <h4 class="text-[11px] font-bold uppercase tracking-wider text-[#4A3222] mb-3">Guía Rápida de Maderas</h4>
+                            <div class="grid grid-cols-2 gap-2 text-xs">
+                                <div class="flex items-center gap-2 p-1.5 rounded-lg bg-[#FAF6F0] border border-[#EADBCC]">
+                                    <span class="w-3.5 h-3.5 rounded-full bg-[#D4A373] shadow-inner"></span>
+                                    <div>
+                                        <span class="font-bold text-[11px] text-[#3E291B] block">Pino Macizo</span>
+                                        <span class="text-[9px] text-[#86705F]">Cálido y versátil</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2 p-1.5 rounded-lg bg-[#FAF6F0] border border-[#EADBCC]">
+                                    <span class="w-3.5 h-3.5 rounded-full bg-[#936639] shadow-inner"></span>
+                                    <div>
+                                        <span class="font-bold text-[11px] text-[#3E291B] block">Roble Natural</span>
+                                        <span class="text-[9px] text-[#86705F]">Vetas marcadas</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2 p-1.5 rounded-lg bg-[#FAF6F0] border border-[#EADBCC]">
+                                    <span class="w-3.5 h-3.5 rounded-full bg-[#A65B32] shadow-inner"></span>
+                                    <div>
+                                        <span class="font-bold text-[11px] text-[#3E291B] block">Cedro</span>
+                                        <span class="text-[9px] text-[#86705F]">Aromático &amp; fino</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2 p-1.5 rounded-lg bg-[#FAF6F0] border border-[#EADBCC]">
+                                    <span class="w-3.5 h-3.5 rounded-full bg-[#58311F] shadow-inner"></span>
+                                    <div>
+                                        <span class="font-bold text-[11px] text-[#3E291B] block">Nogal</span>
+                                        <span class="text-[9px] text-[#86705F]">Oscuro elegante</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- JAVASCRIPT: CONTROL DE LA VENTANA EMERGENTE Y CÁLCULOS DINÁMICOS          -->
+    <!-- ========================================================================= -->
+    <script>
+        // 1. Abrir Modal precargando la información del producto clickeado
+        function abrirModalCotizarProducto(nombreProducto, madera, alto, ancho, prof) {
+            const modal = document.getElementById('modalNuevaCotizacion');
+            
+            // Pre-llenar campo de producto
+            const inputProducto = document.getElementById('modal-product-name');
+            if (inputProducto) inputProducto.value = nombreProducto || "Mueble a Medida";
+
+            // Pre-seleccionar madera si coincide
+            const selectMadera = document.getElementById('modal-wood-select');
+            if (selectMadera && madera) {
+                const maderaLower = madera.toLowerCase();
+                if (maderaLower.includes('roble')) selectMadera.value = 'roble';
+                else if (maderaLower.includes('pino')) selectMadera.value = 'pino';
+                else if (maderaLower.includes('cedro') || maderaLower.includes('cerezo') || maderaLower.includes('caoba')) selectMadera.value = 'cedro';
+                else if (maderaLower.includes('nogal') || maderaLower.includes('ébano') || maderaLower.includes('ebano')) selectMadera.value = 'nogal';
+            }
+
+            // Pre-llenar medidas
+            if (document.getElementById('modal-alto')) document.getElementById('modal-alto').value = alto || 80;
+            if (document.getElementById('modal-ancho')) document.getElementById('modal-ancho').value = ancho || 120;
+            if (document.getElementById('modal-profundidad')) document.getElementById('modal-profundidad').value = prof || 60;
+
+            // Cantidad a 1
+            if (document.getElementById('modal-cantidad')) document.getElementById('modal-cantidad').value = 1;
+
+            // Actualizar gráficos y cálculos
+            actualizarGraficoSvg();
+            recalcularTotalCotizacionModal();
+
+            // Mostrar modal
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 2. Cerrar Modal
+        function cerrarModalCotizacion() {
+            const modal = document.getElementById('modalNuevaCotizacion');
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Cerrar al hacer clic en el backdrop oscuro
+        document.getElementById('modalNuevaCotizacion')?.addEventListener('click', function(e) {
+            if (e.target === this) cerrarModalCotizacion();
+        });
+
+        // 3. Sugerencias rápidas de producto
+        function seleccionarSugerencia(texto) {
+            const input = document.getElementById('modal-product-name');
+            if (input) input.value = texto;
+        }
+
+        // 4. Cambiar Cantidad (+ y -)
+        function cambiarCantidadModal(delta) {
+            const input = document.getElementById('modal-cantidad');
+            let val = parseInt(input.value) || 1;
+            val += delta;
+            if (val < 1) val = 1;
+            input.value = val;
+            recalcularTotalCotizacionModal();
+        }
+
+        // 5. Actualizar cotas en el Esquema 3D SVG
+        function actualizarGraficoSvg() {
+            const alto = document.getElementById('modal-alto')?.value || 80;
+            const ancho = document.getElementById('modal-ancho')?.value || 120;
+            const prof = document.getElementById('modal-profundidad')?.value || 60;
+
+            const textAlto = document.getElementById('svgTextAlto');
+            const textAncho = document.getElementById('svgTextAncho');
+            const textProf = document.getElementById('svgTextProfundidad');
+            const textFull = document.getElementById('svgTextDimensionesFull');
+
+            if (textAlto) textAlto.textContent = `${alto} cm`;
+            if (textAncho) textAncho.textContent = `${ancho} cm`;
+            if (textProf) textProf.textContent = `${prof} cm`;
+            if (textFull) textFull.textContent = `Cotas: ${alto}cm (alto) × ${ancho}cm (ancho) × ${prof}cm (prof.)`;
+        }
+
+        // 6. Vista previa de la foto del espacio
+        function mostrarVistaPreviaFotoModal(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById('modalFotoPreview');
+                    const ph = document.getElementById('modalFotoPlaceholder');
+                    if (img && ph) {
+                        img.src = e.target.result;
+                        img.classList.remove('hidden');
+                        ph.classList.add('hidden');
+                    }
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // 7. Cálculo dinámico de totales y desglose
+        function recalcularTotalCotizacionModal() {
+            const maderaSelect = document.getElementById('modal-wood-select');
+            const cantidadInput = document.getElementById('modal-cantidad');
+            if (!maderaSelect || !cantidadInput) return;
+
+            const madera = maderaSelect.value;
+            const cantidad = parseInt(cantidadInput.value) || 1;
+
+            let precioBaseMadera = 320000;
+            let nombreMadera = "Pino Macizo";
+
+            if (madera === 'roble') {
+                precioBaseMadera = 500000;
+                nombreMadera = "Roble Europeo";
+            } else if (madera === 'cedro') {
+                precioBaseMadera = 460000;
+                nombreMadera = "Cedro Rojo Tradicional";
+            } else if (madera === 'nogal') {
+                precioBaseMadera = 580000;
+                nombreMadera = "Nogal Americano Prémium";
+            }
+
+            // Actualizar badge de precio base
+            const badge = document.getElementById('modalWoodBasePriceBadge');
+            if (badge) badge.innerText = `Precio Base: $${precioBaseMadera.toLocaleString('es-CO')} COP`;
+
+            const subtotalMadera = precioBaseMadera * cantidad;
+            const manoObra = 120000 * cantidad;
+            const subtotalBruto = subtotalMadera + manoObra;
+
+            // Verificar si seleccionó transferencia (-5%)
+            const radioTransferencia = document.querySelector('input[name="payment_method"][value="transferencia"]');
+            let descuento = 0;
+            if (radioTransferencia && radioTransferencia.checked) {
+                descuento = Math.round(subtotalBruto * 0.05);
+            }
+
+            const totalFinal = subtotalBruto - descuento;
+
+            // Actualizar desglose en pantalla
+            const txtMadera = document.getElementById('modalSummaryMaderaText');
+            if (txtMadera) txtMadera.innerText = `Madera (${nombreMadera} × ${cantidad}):`;
+
+            const valMadera = document.getElementById('modalSummaryMaderaVal');
+            if (valMadera) valMadera.innerText = `$${subtotalMadera.toLocaleString('es-CO')}`;
+
+            const valManoObra = document.getElementById('modalSummaryManoObraVal');
+            if (valManoObra) valManoObra.innerText = `$${manoObra.toLocaleString('es-CO')}`;
+
+            const rowDescuento = document.getElementById('modalRowDescuento');
+            const badgeDescuento = document.getElementById('modalDiscountBadge');
+            const valDescuento = document.getElementById('modalSummaryDescuentoVal');
+
+            if (descuento > 0) {
+                if (rowDescuento) rowDescuento.classList.remove('hidden');
+                if (badgeDescuento) badgeDescuento.classList.remove('hidden');
+                if (valDescuento) valDescuento.innerText = `-$${descuento.toLocaleString('es-CO')}`;
+            } else {
+                if (rowDescuento) rowDescuento.classList.add('hidden');
+                if (badgeDescuento) badgeDescuento.classList.add('hidden');
+            }
+
+            const totalGrande = document.getElementById('modalTotalGrande');
+            if (totalGrande) {
+                totalGrande.innerText = `$${totalFinal.toLocaleString('es-CO')}`;
+            }
+        }
+
+        // 8. Enviar la cotización generada al servidor
+        async function enviarCotizacionDesdeCatalogo() {
+            const producto = document.getElementById('modal-product-name')?.value?.trim();
+            const cliente = document.getElementById('modal-client-name')?.value?.trim();
+            const telefono = document.getElementById('modal-client-phone')?.value?.trim();
+            const email = document.getElementById('modal-client-email')?.value?.trim();
+            const maderaSelect = document.getElementById('modal-wood-select');
+            const maderaTexto = maderaSelect?.options[maderaSelect.selectedIndex]?.text?.split('-')[0]?.trim() || "Pino Macizo";
+            const cantidad = parseInt(document.getElementById('modal-cantidad')?.value) || 1;
+            const alto = parseFloat(document.getElementById('modal-alto')?.value) || 80;
+            const ancho = parseFloat(document.getElementById('modal-ancho')?.value) || 120;
+            const profundidad = parseFloat(document.getElementById('modal-profundidad')?.value) || 60;
+            const observaciones = document.getElementById('modal-observaciones')?.value?.trim() || "";
+
+            if (!producto) {
+                alert('Por favor especifica el nombre del producto.');
+                document.getElementById('modal-product-name')?.focus();
+                return;
+            }
+
+            if (!cliente) {
+                alert('Por favor ingresa tu nombre de cliente.');
+                document.getElementById('modal-client-name')?.focus();
+                return;
+            }
+
+            // Extraer total numérico limpio
+            let totalVal = 418000;
+            const totalElement = document.getElementById('modalTotalGrande');
+            if (totalElement) {
+                const soloNums = totalElement.innerText.replace(/[^0-9]/g, '');
+                if (soloNums) totalVal = parseFloat(soloNums);
+            }
+
+            const btn = document.getElementById('btnGenerarCotizacionModal');
+            const htmlOriginal = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>Enviando proforma al taller...</span>`;
+
+            try {
+                const formData = new FormData();
+                formData.append('nombreCliente', cliente);
+                formData.append('telefono', telefono);
+                formData.append('correo', email);
+                formData.append('producto', producto);
+                formData.append('madera', maderaTexto);
+                formData.append('cantidad', cantidad);
+                formData.append('alto', alto);
+                formData.append('ancho', ancho);
+                formData.append('profundidad', profundidad);
+                formData.append('observaciones', observaciones);
+                formData.append('total', totalVal);
+
+                const fileInput = document.getElementById('modal-foto-input');
+                if (fileInput && fileInput.files.length > 0) {
+                    formData.append('fotoLugar', fileInput.files[0]);
+                }
+
+                // Intentar enviar a /MisProductos/GuardarCotizacion o a /MiCotizacion/GuardarCotizacion
+                let response = await fetch('/MisProductos/GuardarCotizacion', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    response = await fetch('/MiCotizacion/GuardarCotizacion', {
+                        method: 'POST',
+                        body: formData
+                    });
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    cerrarModalCotizacion();
+                    const msg = (data.message || '¡Cotización y Pedido registrados exitosamente!') + 
+                                '\n\n• Pulsa ACEPTAR para ver el avance de tu orden en "Mis Pedidos".' + 
+                                '\n• Pulsa CANCELAR para consultar tu proforma técnica en "Mis Cotizaciones".';
+                    if (confirm(msg)) {
+                        window.location.href = '/Mi_Pedido';
+                    } else {
+                        window.location.href = '/MiCotizacion';
+                    }
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (err) {
+                console.error('Error al enviar cotización:', err);
+                alert('Ocurrió un error al conectar con el servidor. Por favor intenta de nuevo.');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = htmlOriginal;
+            }
+        }
+    </script>
+</body>
+</html>

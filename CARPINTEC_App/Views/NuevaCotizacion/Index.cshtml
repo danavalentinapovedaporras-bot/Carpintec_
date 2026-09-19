@@ -1,461 +1,768 @@
-﻿
-
 @{
     Layout = null;
-}<!DOCTYPE html>
-<html class="light" lang="es" style="">
+}
+<!DOCTYPE html>
+
+<html lang="es">
 <head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>CARPINTEC - Nueva Cotización</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&amp;family=Work+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
-    <!-- Material Symbols -->
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet">
-    <!-- Tailwind CSS -->
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Carpintec - Nueva Cotización</title>
+    <!-- Google Fonts: Montserrat -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&amp;display=swap" rel="stylesheet" />
+    <!-- Tailwind CSS v3 with Forms & Container Plugins -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script id="tailwind-config">
+    <script>
             tailwind.config = {
-                darkMode: "class",
                 theme: {
                     extend: {
-                        "colors": {
-                            "surface-bright": "#fff8f6",
-                            "on-secondary-fixed-variant": "#763400",
-                            "background": "#fff8f6",
-                            "surface-dim": "#e4d7d4",
-                            "surface-tint": "#934b19",
-                            "primary-container": "#8b4513",
-                            "on-primary-fixed": "#321200",
-                            "error": "#ba1a1a",
-                            "surface-container": "#f9ebe7",
-                            "on-secondary": "#ffffff",
-                            "outline": "#877369",
-                            "on-primary": "#ffffff",
-                            "on-secondary-fixed": "#321200",
-                            "surface-container-high": "#f3e5e1",
-                            "tertiary-fixed": "#f7e0b5",
-                            "secondary": "#9a4600",
-                            "on-surface": "#201a18",
-                            "primary-fixed-dim": "#ffb68c",
-                            "tertiary-container": "#665635",
-                            "on-tertiary": "#ffffff",
-                            "on-error-container": "#93000a",
-                            "inverse-on-surface": "#fbeeea",
-                            "primary-fixed": "#ffdbc9",
-                            "on-surface-variant": "#54433a",
-                            "surface-container-low": "#fef1ed",
-                            "error-container": "#ffdad6",
-                            "on-primary-container": "#ffc29f",
-                            "on-primary-fixed-variant": "#753401",
-                            "tertiary-fixed-dim": "#dac49b",
-                            "secondary-fixed-dim": "#ffb68d",
-                            "inverse-primary": "#ffb68c",
-                            "surface-variant": "#ede0dc",
-                            "surface": "#fff8f6",
-                            "secondary-fixed": "#ffdbc9",
-                            "on-secondary-container": "#672c00",
-                            "secondary-container": "#fd8a3e",
-                            "outline-variant": "#dac2b6",
-                            "on-tertiary-container": "#e2cca2",
-                            "primary": "#6c2f00",
-                            "on-error": "#ffffff",
-                            "inverse-surface": "#362f2c",
-                            "tertiary": "#4d3f20",
-                            "on-tertiary-fixed": "#251a01",
-                            "surface-container-lowest": "#ffffff",
-                            "on-tertiary-fixed-variant": "#544525",
-                            "surface-container-highest": "#ede0dc",
-                            "on-background": "#201a18"
+                        colors: {
+                            timber: {
+                                50: '#FAF6F0',
+                                100: '#F4ECE1',
+                                200: '#E6D7C3',
+                                300: '#D5BEA2',
+                                400: '#BA9B7B',
+                                500: '#9C7A59',
+                                600: '#7E5F43',
+                                700: '#644A34',
+                                800: '#4D3827',
+                                900: '#34261B',
+                                950: '#231810'
+                            },
+                            wood: {
+                                light: '#f5ebe6',
+                                accent: '#8b4513',
+                                dark: '#5c2c16',
+                                surface: '#FFFBF7',
+                                border: '#E8DDD5'
+                            }
                         },
-                        "borderRadius": {
-                            "DEFAULT": "0.125rem",
-                            "lg": "0.25rem",
-                            "xl": "0.5rem",
-                            "full": "0.75rem"
-                        },
-                        "spacing": {
-                            "container-max": "1280px",
-                            "margin-mobile": "16px",
-                            "gutter": "24px",
-                            "margin-desktop": "64px",
-                            "base": "8px"
-                        },
-                        "fontFamily": {
-                            "headline-lg-mobile": ["Montserrat"],
-                            "body-lg": ["Work Sans"],
-                            "display-lg": ["Montserrat"],
-                            "headline-lg": ["Montserrat"],
-                            "body-md": ["Work Sans"],
-                            "title-md": ["Montserrat"],
-                            "label-md": ["Work Sans"]
-                        },
-                        "fontSize": {
-                            "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
-                            "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
-                            "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
-                            "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
-                            "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
-                            "title-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
-                            "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500" }]
+                        fontFamily: {
+                            sans: ['Montserrat', 'sans-serif'],
                         }
                     }
                 }
             }
     </script>
-    <style>
-            .material-symbols-outlined {
-                font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-                display: inline-block;
-                vertical-align: middle;
+    <style data-purpose="custom-utilities">
+            body {
+                font-family: 'Montserrat', sans-serif;
+                background-color: #F8F5F1;
+                color: #34261B;
             }
 
-            .form-input-focus:focus {
-                outline: none;
-                border-color: #6c2f00;
-                box-shadow: 0 0 0 2px rgba(108, 47, 0, 0.1);
+            input[type=number]::-webkit-inner-spin-button,
+            input[type=number]::-webkit-outer-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
             }
 
-            .custom-scrollbar::-webkit-scrollbar {
+            .custom-scroll::-webkit-scrollbar {
                 width: 6px;
             }
 
-            .custom-scrollbar::-webkit-scrollbar-track {
-                background: #f9ebe7;
-            }
-
-            .custom-scrollbar::-webkit-scrollbar-thumb {
-                background: #6c2f00;
-                border-radius: 10px;
-            }
-    </style>
-    <style>
-            body {
-                min-height: max(884px, 100dvh);
+            .custom-scroll::-webkit-scrollbar-thumb {
+                background: #D5BEA2;
+                border-radius: 4px;
             }
     </style>
 </head>
-<body class="bg-background text-on-background min-h-screen pb-24 md:pb-0">
-    <!-- TopAppBar -->
-    <header class="w-full top-0 sticky bg-primary dark:bg-primary-container text-on-primary dark:text-on-primary-container border-b-4 border-secondary shadow-sm z-50">
-        <div class="flex items-center justify-between px-margin-mobile md:px-margin-desktop h-16 w-full">
-            <div class="flex items-center gap-3 cursor-pointer active:scale-95">
-                <img src="~/images/logo.png" alt="Logo CARPINTEC" class="w-20 h-20 object-contain mb-2">
-                <h1 class="font-headline-lg text-headline-lg font-bold text-on-primary uppercase tracking-tight">CARPINTEC</h1>
-            </div>
-            <div class="hidden md:flex items-center gap-8">
-                <nav class="flex gap-6">
-                    <a class="font-title-md text-title-md text-on-primary/80 hover:bg-secondary-container transition-colors px-3 py-1 rounded" href="#">Inicio</a>
-                    <a class="font-title-md text-title-md text-on-primary text-on-primary/80 hover:bg-secondary-container transition-colors px-3 py-1 rounded" href="#" style="opacity: 0;">Acerca de</a>
-                    <a class="font-title-md text-title-md text-on-primary/80 hover:bg-secondary-container transition-colors px-3 py-1 rounded" href="#">Contacto</a>
-                    <a asp-controller="Instructivos"
-                       asp-action="Index"
-                       class="font-title-md text-title-md bg-primary-container text-white hover:bg-secondary transition-colors px-4 py-2 rounded-full flex items-center gap-2 shadow-sm">
-                        Instructivos
-                    </a>
-                </nav>
-                <div class="flex items-center gap-3 ml-4 bg-primary-container px-4 py-2 rounded-full border border-on-primary/20">
-
-                    <span class="font-label-md text-label-md">CARLOS</span>
+<body class="min-h-screen bg-[#FAF7F2] text-timber-900 antialiased flex flex-col">
+    <!-- BEGIN: MainHeader -->
+    <header class="bg-[#FFFDFB] border-b border-[#EAE3DA] sticky top-0 z-50 shadow-sm" data-purpose="site-navigation-header">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo & Identity -->
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl overflow-hidden shadow-inner bg-[#4A2613] p-1 flex items-center justify-center border border-[#7E5F43]">
+    <img alt="Carpintec Logo"
+                     class="h-8 w-8 object-contain mr-2"
+                     src="~/images/logo.png">                </div>
+                <div>
+                    <span class="text-2xl font-bold tracking-tight text-[#4A2613] uppercase flex items-center gap-1">
+                        Carpintec
+                        <span class="w-2 h-2 rounded-full bg-[#BA7039] inline-block"></span>
+                    </span>
+                    <span class="text-[10px] tracking-widest text-[#8A7160] uppercase block font-semibold">Muebles &amp; Madera Fina</span>
                 </div>
             </div>
-            <button class="md:hidden p-2">
-                <span class="material-symbols-outlined" data-icon="menu">menu</span>
-            </button>
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium" data-purpose="main-nav">
+                <a class="text-[#7E5F43] hover:text-[#4A2613] transition-colors py-1" href="/DashboardCliente">Inicio</a>
+                <a class="text-[#7E5F43] hover:text-[#4A2613] transition-colors py-1" href="/MisProductos">Catálogo</a>
+                <a class="text-[#7E5F43] hover:text-[#4A2613] transition-colors py-1" href="/MiCotizacion">Mis Cotizaciones</a>
+                <a class="text-[#7E5F43] hover:text-[#4A2613] transition-colors py-1" href="/Mi_Pedido">Mis Pedidos</a>
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-[#F0E6DA] text-[#6E4B31] border border-[#E0D0C0]">
+                    Cotizador Online
+                </span>
+            </nav>
+            <!-- Customer Profile Quick Access -->
+            <div class="flex items-center gap-3.5 pl-4 border-l border-[#EAE3DA] text-[#34261B]" data-purpose="user-profile-badge">
+                @await Html.PartialAsync("_ClientUserMenu")
+            </div>
         </div>
     </header>
-    <main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-12">
-        <div class="flex flex-col lg:flex-row gap-gutter">
-            <!-- Left Column: Form Section -->
-            <div class="w-full lg:w-2/3 bg-white border-4 border-primary p-6 md:p-10 shadow-xl relative overflow-hidden">
-                <!-- Background Texture Effect -->
-                <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuBnbxPW7Knq4EWrzkr61dMk9G-06RGMDwTYkQZLLZmwRJ2GBFzltli760YDmGuFyL5OlWnm9Zb0vGuiym4VaGHbaOn0EJPMXAALCmNALSjMVIZnmIyQm4kTi1dQcfSKi8IRpeb4M-X-LUmZksZiS3Ac3dJzsmXMZVwUyAC3gLt-90RZvFoOBbLdwKMVqtjITJdpYi6mwgLH-laH2_IjF1Jz6KicpBZ1TNLnoBZK4vOUYH9jbzq13QX8wNOhWRM8UV5Y4HqhMzQ1GfeG&quot;);"></div>
-                <div class="relative z-10">
-                    <header class="mb-8 border-b-2 border-surface-variant pb-4">
-                        <h2 class="font-display-lg text-headline-lg md:text-display-lg text-primary uppercase">Nueva Cotización</h2>
-                        <p class="font-body-md text-on-surface-variant italic">Define los detalles técnicos para tu pieza personalizada.</p>
-                    </header>
-                    <form class="space-y-8" id="quote-form">
-                        <!-- Basic Info Group -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="space-y-2">
-                                <label class="font-label-md text-label-md text-on-surface-variant block">CLIENTE</label>
-                                <input class="w-full bg-surface-container-lowest border border-outline px-4 py-3 font-body-md form-input-focus rounded-none" readonly="" type="text" value="Carlos Hernandez">
-                            </div>
-                            <div class="space-y-2">
-                                <label class="font-label-md text-label-md text-on-surface-variant block">PRODUCTO</label>
-                                <select class="w-full bg-white border border-outline px-4 py-3 font-body-md form-input-focus rounded-none appearance-none">
-                                    <option>Mesa de Comedor</option>
-                                    <option>Silla de Diseño</option>
-                                    <option>Escritorio Studio</option>
-                                    <option>Repisa Minimalista</option>
-                                </select>
-                            </div>
-                        </div>
-                        <!-- Material & Quantity -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="space-y-2">
-                                <label class="font-label-md text-label-md text-on-surface-variant block">TIPO DE MADERA</label>
-                                <select class="w-full bg-white border border-outline px-4 py-3 font-body-md form-input-focus rounded-none" id="wood-type">
-                                    <option value="320000">Pino Macizo ($320.000)</option>
-                                    <option value="550000">Roble Americano ($550.000)</option>
-                                    <option value="780000">Nogal Oscuro ($780.000)</option>
-                                    <option value="420000">Cedro Perfumado ($420.000)</option>
-                                </select>
-                            </div>
-                            <div class="space-y-2">
-                                <label class="font-label-md text-label-md text-on-surface-variant block">CANTIDAD</label>
-                                <div class="flex">
-                                    <button class="px-4 py-2 border border-primary bg-primary text-white hover:bg-secondary transition-colors" id="qty-minus" type="button">-</button>
-                                    <input class="w-full border-t border-b border-outline text-center font-bold text-primary focus:ring-0 focus:outline-none" id="quantity" min="1" type="number" value="1">
-                                    <button class="px-4 py-2 border border-primary bg-primary text-white hover:bg-secondary transition-colors" id="qty-plus" type="button">+</button>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Dimensions Group -->
-                        <div class="p-6 bg-surface-container border-2 border-dashed border-outline-variant rounded-lg">
-                            <h3 class="font-title-md text-title-md text-primary mb-4 flex items-center gap-2">
-                                <span class="material-symbols-outlined" data-icon="straighten">straighten</span>
-                                MEDIDAS (cm)
-                            </h3>
-                            <div class="grid grid-cols-3 gap-4">
-                                <div class="space-y-1 text-center">
-                                    <label class="font-label-md text-label-md text-on-surface-variant block">ALTO</label>
-                                    <input class="w-full bg-white border border-outline px-2 py-3 text-center font-body-md form-input-focus rounded-none" placeholder="80" type="number">
-                                </div>
-                                <div class="space-y-1 text-center">
-                                    <label class="font-label-md text-label-md text-on-surface-variant block">ANCHO</label>
-                                    <input class="w-full bg-white border border-outline px-2 py-3 text-center font-body-md form-input-focus rounded-none" placeholder="120" type="number">
-                                </div>
-                                <div class="space-y-1 text-center">
-                                    <label class="font-label-md text-label-md text-on-surface-variant block">PROFUNDIDAD</label>
-                                    <input class="w-full bg-white border border-outline px-2 py-3 text-center font-body-md form-input-focus rounded-none" placeholder="60" type="number">
-                                </div>
+    <!-- END: MainHeader -->
+    <!-- BEGIN: QuotationHeroSection -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-7 pb-4 w-full" data-purpose="quotation-overview-header">
+        <div class="bg-gradient-to-r from-[#FFFDFB] via-[#FCFAF7] to-[#F7EFE7] rounded-2xl p-6 sm:p-7 border border-[#E5DACD] shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div>
+                <div class="inline-flex items-center gap-2 mb-1.5">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-[#9C6D45] bg-[#F2E5D7] px-2.5 py-0.5 rounded">Taller Digital</span>
+                    <span class="text-xs text-[#8A7869]">• Proforma Técnica</span>
+                </div>
+                <h1 class="text-2xl sm:text-3xl font-bold text-[#2E1F14] tracking-tight flex items-center gap-2">
+                    NUEVA <span class="text-[#9C5A2A] font-extrabold">COTIZACIÓN</span>
+                </h1>
+                <p class="text-sm text-[#745E4D] mt-1">Define los detalles técnicos para tu pieza personalizada con materiales certificados.</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-3">
+                <!-- Cotización Badge -->
+                <div class="bg-white/90 backdrop-blur px-4 py-2.5 rounded-xl border border-[#DECDBE] text-center shadow-xs">
+                    <span class="text-[10px] font-bold tracking-wider text-[#8A7566] uppercase block">Folio</span>
+                    <span class="text-sm font-bold text-[#422B1D] font-mono tracking-wide">COT-2024-045</span>
+                </div>
+                <!-- Fecha Badge -->
+                <div class="bg-white/90 backdrop-blur px-4 py-2.5 rounded-xl border border-[#DECDBE] text-center shadow-xs">
+                    <span class="text-[10px] font-bold tracking-wider text-[#8A7566] uppercase block">Fecha Emisión</span>
+                    <span class="text-sm font-bold text-[#422B1D]">20 MAY 2024</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- END: QuotationHeroSection -->
+    <!-- BEGIN: MainContentGrid -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 w-full flex-1">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <!-- LEFT COLUMN: Form Inputs (8 Cols) -->
+            <div class="lg:col-span-8 space-y-7" data-purpose="form-main-column">
+                <!-- SECTION 1: Client Information -->
+                <section class="bg-[#FFFDFB] rounded-2xl border border-[#E7DCCE] p-6 shadow-sm" data-purpose="client-info-section">
+                    <div class="flex items-center gap-2.5 pb-4 mb-5 border-b border-[#F0E6DB]">
+                        <span class="w-7 h-7 rounded-lg bg-[#EFE4D6] text-[#7A4B29] flex items-center justify-center font-bold text-xs">01</span>
+                        <h2 class="text-sm font-bold uppercase tracking-wider text-[#4A3222]">Información del Cliente</h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Full Name -->
+                        <div>
+                            <label class="block text-xs font-semibold text-[#6C5645] mb-1.5" for="client-name">Nombre del Cliente</label>
+                            <div class="relative rounded-lg shadow-xs">
+                                <input class="w-full text-xs font-medium text-[#2E1F14] bg-[#FAF7F2] border border-[#D9CABA] rounded-lg px-3.5 py-2.5 focus:bg-white focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A] transition-all" id="client-name" placeholder="Escribe el nombre completo" type="text" value="@(ViewBag.NombreCliente ?? "")" />
                             </div>
                         </div>
-                        <!-- Pricing Breakdown -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 pt-4 border-t-2 border-surface-variant">
-                            <div class="flex justify-between items-center py-2 border-b border-outline-variant">
-                                <span class="font-body-md">Precio Unitario</span>
-                                <span class="font-title-md font-bold text-secondary" id="display-unit-price">$320.000</span>
-                            </div>
-                            <div class="flex justify-between items-center py-2 border-b border-outline-variant">
-                                <span class="font-body-md">Subtotal</span>
-                                <span class="font-title-md font-bold" id="display-subtotal">$320.000</span>
-                            </div>
-                            <div class="flex justify-between items-center py-2 border-b border-outline-variant">
-                                <span class="font-body-md">Mano de Obra</span>
-                                <span class="font-title-md font-bold" id="labor-cost">$120.000</span>
-                            </div>
-                            <div class="flex justify-between items-center py-2 border-b border-outline-variant">
-                                <span class="font-body-md">Descuento (5%)</span>
-                                <span class="font-title-md font-bold text-error" id="display-discount">-$16.000</span>
+                        <!-- Phone -->
+                        <div>
+                            <label class="block text-xs font-semibold text-[#6C5645] mb-1.5" for="client-phone">Teléfono Móvil</label>
+                            <div class="relative rounded-lg shadow-xs">
+                                <input class="w-full text-xs font-medium text-[#2E1F14] bg-[#FAF7F2] border border-[#D9CABA] rounded-lg px-3.5 py-2.5 focus:bg-white focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A] transition-all" id="client-phone" placeholder="Ej. 300 000 0000" type="text" value="@(ViewBag.TelefonoCliente ?? "")" />
                             </div>
                         </div>
-                        <!-- Final Metadata -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="space-y-2">
-                                <label class="font-label-md text-label-md text-on-surface-variant block">FECHA</label>
-                                <input class="w-full bg-white border border-outline px-4 py-3 font-body-md form-input-focus rounded-none" type="date" value="2023-11-20">
-                            </div>
-                            <div class="space-y-2">
-                                <label class="font-label-md text-label-md text-on-surface-variant block">TIEMPO DE ENTREGA</label>
-                                <input class="w-full bg-white border border-outline px-4 py-3 font-body-md form-input-focus rounded-none" placeholder="15 días hábiles" type="text">
+                        <!-- Email -->
+                        <div>
+                            <label class="block text-xs font-semibold text-[#6C5645] mb-1.5" for="client-email">Correo Electrónico</label>
+                            <div class="relative rounded-lg shadow-xs">
+                                <input class="w-full text-xs font-medium text-[#2E1F14] bg-[#FAF7F2] border border-[#D9CABA] rounded-lg px-3.5 py-2.5 focus:bg-white focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A] transition-all" id="client-email" placeholder="correo@ejemplo.com" type="email" value="@(ViewBag.CorreoCliente ?? "")" />
                             </div>
                         </div>
-                        <div class="space-y-2">
-                            <label class="font-label-md text-label-md text-on-surface-variant block">OBSERVACIONES</label>
-                            <textarea class="w-full bg-white border border-outline px-4 py-3 font-body-md form-input-focus rounded-none" placeholder="Detalles específicos sobre el acabado o ensamblaje..." rows="3"></textarea>
-                        </div>
-                        <div class="space-y-4 pt-6 border-t-2 border-surface-variant">
-                            <h3 class="font-title-md text-title-md text-primary uppercase tracking-tight">MÉTODOS DE PAGO</h3>
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                <div class="flex flex-col items-center p-3 border border-outline-variant bg-surface-container-lowest rounded">
-                                    <span class="material-symbols-outlined text-primary mb-1" data-icon="account_balance_wallet">account_balance_wallet</span>
-                                    <span class="font-label-md text-label-md">Nequi</span>
-                                </div>
-                                <div class="flex flex-col items-center p-3 border border-outline-variant bg-surface-container-lowest rounded">
-                                    <span class="material-symbols-outlined text-primary mb-1" data-icon="payments">payments</span>
-                                    <span class="font-label-md text-label-md">Daviplata</span>
-                                </div>
-                                <div class="flex flex-col items-center p-3 border border-outline-variant bg-surface-container-lowest rounded">
-                                    <span class="material-symbols-outlined text-primary mb-1" data-icon="account_balance">account_balance</span>
-                                    <span class="font-label-md text-label-md">PSE</span>
-                                </div>
-                                <div class="flex flex-col items-center p-3 border border-outline-variant bg-surface-container-lowest rounded">
-                                    <span class="material-symbols-outlined text-primary mb-1" data-icon="credit_card">credit_card</span>
-                                    <span class="font-label-md text-label-md">Tarjetas</span>
+                    </div>
+                </section>
+                <!-- SECTION 2: Product and Material Selection -->
+                <section class="bg-[#FFFDFB] rounded-2xl border border-[#E7DCCE] p-6 shadow-sm" data-purpose="product-material-section">
+                    <div class="flex items-center gap-2.5 pb-4 mb-5 border-b border-[#F0E6DB]">
+                        <span class="w-7 h-7 rounded-lg bg-[#EFE4D6] text-[#7A4B29] flex items-center justify-center font-bold text-xs">02</span>
+                        <h2 class="text-sm font-bold uppercase tracking-wider text-[#4A3222]">Detalles del Producto y Material</h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-5">
+                        <!-- Product Item -->
+                        <div class="md:col-span-7">
+                            <label class="block text-xs font-semibold text-[#6C5645] mb-1.5" for="product-name">Escribe o selecciona un Producto</label>
+                            <div class="relative">
+                                <input class="w-full text-xs font-semibold text-[#2E1F14] bg-[#FAF7F2] border border-[#D9CABA] rounded-lg px-3.5 py-2.5 focus:bg-white focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A] transition-all" id="product-name" placeholder="Ej. Mesa de Comedor, Estantería, etc." type="text" value="Mesa de Comedor Artesanal" />
+                                <div class="mt-2 flex flex-wrap gap-1.5">
+                                    <span class="text-[10px] text-[#8C7564]">Sugerencias:</span>
+                                    <button class="text-[10px] bg-[#EFE3D5] hover:bg-[#E2D2C2] text-[#5C3821] px-2 py-0.5 rounded transition" type="button" onclick="seleccionarSugerencia('Mesa Auxiliar')">Mesa Auxiliar</button>
+                                    <button class="text-[10px] bg-[#EFE3D5] hover:bg-[#E2D2C2] text-[#5C3821] px-2 py-0.5 rounded transition" type="button" onclick="seleccionarSugerencia('Escritorio Nórdico')">Escritorio Nórdico</button>
+                                    <button class="text-[10px] bg-[#EFE3D5] hover:bg-[#E2D2C2] text-[#5C3821] px-2 py-0.5 rounded transition" type="button" onclick="seleccionarSugerencia('Mueble TV')">Mueble TV</button>
                                 </div>
                             </div>
-                            <div class="p-4 bg-primary-container/10 border-2 border-primary border-dashed flex items-center gap-4 cursor-pointer hover:bg-primary-container/20 transition-colors">
-                                <div class="bg-primary text-white p-2 rounded-full">
-                                    <span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+                        </div>
+                        <!-- Style Selector -->
+                        <div class="md:col-span-5">
+                            <label class="block text-xs font-semibold text-[#6C5645] mb-1.5" for="product-style">
+                                Estilo de Diseño: <span class="text-[#9C5A2A] font-bold">Rústico Moderno</span>
+                            </label>
+                            <select class="w-full text-xs font-medium text-[#2E1F14] bg-[#FAF7F2] border border-[#D9CABA] rounded-lg px-3.5 py-2.5 focus:bg-white focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A]" id="product-style">
+                                <option selected="">Rústico Moderno</option>
+                                <option>Industrial Minimalista</option>
+                                <option>Nórdico Escandinavo</option>
+                                <option>Clásico Colonial</option>
+                            </select>
+                        </div>
+                        <!-- Wood Type -->
+                        <div class="md:col-span-7">
+                            <div class="flex items-center justify-between mb-1.5">
+                                <label class="block text-xs font-semibold text-[#6C5645]" for="wood-select">Tipo de Madera</label>
+                                <span id="ncWoodPriceBadge" class="text-xs font-bold text-[#8C5229] bg-[#F7ECE1] px-2 py-0.5 rounded border border-[#DEC9B7]">
+                                    Precio Base: $320.000 COP
+                                </span>
+                            </div>
+                            <select class="w-full text-xs font-medium text-[#2E1F14] bg-[#FAF7F2] border border-[#D9CABA] rounded-lg px-3.5 py-2.5 focus:bg-white focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A]" id="wood-select" onchange="recalcularTotalNuevaCotizacion()">
+                                <option selected="" value="pino">Pino Macizo - Acabado Natural ($320.000)</option>
+                                <option value="roble">Roble Europeo (+ $180.000)</option>
+                                <option value="cedro">Cedro Rojo Tradicional (+ $140.000)</option>
+                                <option value="nogal">Nogal Americano Prémium (+ $260.000)</option>
+                            </select>
+                        </div>
+                        <!-- Quantity with Stepper -->
+                        <div class="md:col-span-5">
+                            <label class="block text-xs font-semibold text-[#6C5645] mb-1.5">Cantidad</label>
+                            <div class="flex items-center bg-[#FAF7F2] border border-[#D9CABA] rounded-lg p-1">
+                                <button class="w-8 h-8 rounded bg-white shadow-xs text-[#5C3821] hover:bg-[#EFE4D6] font-bold text-sm flex items-center justify-center transition" type="button" onclick="cambiarCantidad(-1)">−</button>
+                                <input id="input-cantidad" class="w-full text-center border-0 bg-transparent text-sm font-bold text-[#34261B] focus:ring-0" min="1" type="number" value="1" oninput="recalcularTotalNuevaCotizacion()" />
+                                <button class="w-8 h-8 rounded bg-white shadow-xs text-[#5C3821] hover:bg-[#EFE4D6] font-bold text-sm flex items-center justify-center transition" type="button" onclick="cambiarCantidad(1)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- SECTION 3: Dimensions & Technical Isometric Graphic -->
+                <section class="bg-[#FFFDFB] rounded-2xl border border-[#E7DCCE] p-6 shadow-sm" data-purpose="dimensions-section">
+                    <div class="flex items-center justify-between pb-4 mb-5 border-b border-[#F0E6DB]">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-7 h-7 rounded-lg bg-[#EFE4D6] text-[#7A4B29] flex items-center justify-center font-bold text-xs">03</span>
+                            <div>
+                                <h2 class="text-sm font-bold uppercase tracking-wider text-[#4A3222]">Medidas Técnicas (cm)</h2>
+                                <p class="text-[11px] text-[#8C7665]">Ingresa las cotas exactas en centímetros para el cálculo volumétrico</p>
+                            </div>
+                        </div>
+                        <span class="hidden sm:inline-block text-[11px] bg-[#EFE6DB] text-[#69482F] px-2.5 py-1 rounded-md font-medium border border-[#DECFBD]">
+                            Escala 1:1
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                        <!-- Numerical Inputs (3 Axis) -->
+                        <div class="md:col-span-7 space-y-3.5">
+                            <!-- Alto -->
+                            <div class="bg-[#FAF7F2] p-3 rounded-xl border border-[#E5DACD] flex items-center justify-between gap-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs font-bold text-[#9C5A2A] bg-[#EFE1D2] w-6 h-6 rounded flex items-center justify-center">▲</span>
+                                    <span class="text-xs font-semibold text-[#543D2D] uppercase tracking-wide">Alto</span>
                                 </div>
+                                <div class="flex items-center gap-2">
+                                    <input id="nc-alto" oninput="recalcularTotalNuevaCotizacion()" class="w-20 text-center font-bold text-sm bg-white border border-[#CFBEAE] rounded-lg py-1.5 text-[#34261B] focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A]" type="number" value="80" />
+                                    <span class="text-xs font-semibold text-[#7E6654]">cm</span>
+                                </div>
+                            </div>
+                            <!-- Ancho -->
+                            <div class="bg-[#FAF7F2] p-3 rounded-xl border border-[#E5DACD] flex items-center justify-between gap-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs font-bold text-[#9C5A2A] bg-[#EFE1D2] w-6 h-6 rounded flex items-center justify-center">►</span>
+                                    <span class="text-xs font-semibold text-[#543D2D] uppercase tracking-wide">Ancho</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <input id="nc-ancho" oninput="recalcularTotalNuevaCotizacion()" class="w-20 text-center font-bold text-sm bg-white border border-[#CFBEAE] rounded-lg py-1.5 text-[#34261B] focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A]" type="number" value="120" />
+                                    <span class="text-xs font-semibold text-[#7E6654]">cm</span>
+                                </div>
+                            </div>
+                            <!-- Profundidad -->
+                            <div class="bg-[#FAF7F2] p-3 rounded-xl border border-[#E5DACD] flex items-center justify-between gap-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs font-bold text-[#9C5A2A] bg-[#EFE1D2] w-6 h-6 rounded flex items-center justify-center">↗</span>
+                                    <span class="text-xs font-semibold text-[#543D2D] uppercase tracking-wide">Profundidad</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <input id="nc-profundidad" oninput="recalcularTotalNuevaCotizacion()" class="w-20 text-center font-bold text-sm bg-white border border-[#CFBEAE] rounded-lg py-1.5 text-[#34261B] focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A]" type="number" value="60" />
+                                    <span class="text-xs font-semibold text-[#7E6654]">cm</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Technical Graphic / Isomeric Table Diagram -->
+                        <div class="md:col-span-5 bg-gradient-to-b from-[#F7EFE6] to-[#EFE2D3] border border-dashed border-[#CBB39C] rounded-xl p-4 flex flex-col items-center justify-center relative overflow-hidden min-h-[170px]" data-purpose="isometric-table-graphic">
+                            <span class="text-[10px] font-bold text-[#7A5338] uppercase tracking-wider mb-2">Esquema Técnico 3D</span>
+                            <!-- SVG Isometric Furniture Diagram -->
+                            <svg class="w-48 h-auto drop-shadow-sm" fill="none" viewbox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Top Table Board -->
+                                <polygon fill="#C99F77" points="100,18 165,48 100,75 35,48" stroke="#7A4C27" stroke-width="1.8"></polygon>
+                                <polygon fill="#9F734F" points="35,48 100,75 100,82 35,55" stroke="#7A4C27" stroke-width="1.8"></polygon>
+                                <polygon fill="#7A4C27" points="100,75 165,48 165,55 100,82" stroke="#7A4C27" stroke-width="1.8"></polygon>
+                                <!-- Front Left Leg -->
+                                <rect fill="#8B5731" height="55" rx="1" stroke="#5E381C" stroke-width="1.2" width="8" x="42" y="55"></rect>
+                                <!-- Front Center/Right Leg -->
+                                <rect fill="#784521" height="38" rx="1" stroke="#5E381C" stroke-width="1.2" width="8" x="96" y="80"></rect>
+                                <!-- Far Right Leg -->
+                                <rect fill="#8B5731" height="52" rx="1" stroke="#5E381C" stroke-width="1.2" width="7" x="153" y="53"></rect>
+                                <!-- Far Left/Back Leg -->
+                                <rect fill="#6A3B1B" height="42" opacity="0.4" rx="1" stroke="#482711" stroke-width="1.2" width="6" x="96" y="30"></rect>
+                                <!-- Dimension Lines -->
+                                <!-- Ancho (Width) -->
+                                <line stroke="#8C4412" stroke-dasharray="2 2" stroke-width="1.2" x1="30" x2="95" y1="44" y2="14"></line>
+                                <text id="svgTextAncho" fill="#8C4412" font-size="8" font-weight="700" x="50" y="24">120 cm</text>
+                                <!-- Profundidad (Depth) -->
+                                <line stroke="#8C4412" stroke-dasharray="2 2" stroke-width="1.2" x1="105" x2="170" y1="14" y2="44"></line>
+                                <text id="svgTextProfundidad" fill="#8C4412" font-size="8" font-weight="700" x="142" y="24">60 cm</text>
+                                <!-- Alto (Height) -->
+                                <line stroke="#8C4412" stroke-dasharray="2 2" stroke-width="1.2" x1="28" x2="28" y1="52" y2="110"></line>
+                                <text id="svgTextAlto" fill="#8C4412" font-size="8" font-weight="700" x="10" y="85">80 cm</text>
+                            </svg>
+                            <div class="text-[10px] text-[#7A5B44] text-center mt-2 font-medium">
+                                Visualización dimensional aproximada
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- SECTION 4: Observations & Notes -->
+                <section class="bg-[#FFFDFB] rounded-2xl border border-[#E7DCCE] p-6 shadow-sm" data-purpose="observations-section">
+                    <div class="flex items-center gap-2.5 pb-4 mb-4 border-b border-[#F0E6DB]">
+                        <span class="w-7 h-7 rounded-lg bg-[#EFE4D6] text-[#7A4B29] flex items-center justify-center font-bold text-xs">04</span>
+                        <h2 class="text-sm font-bold uppercase tracking-wider text-[#4A3222]">Observaciones y Especificaciones</h2>
+                    </div>
+                    <div>
+                        <textarea id="nc-observaciones" class="w-full text-xs text-[#2E1F14] bg-[#FAF7F2] border border-[#D9CABA] rounded-xl p-3.5 focus:bg-white focus:border-[#9C5A2A] focus:ring-1 focus:ring-[#9C5A2A] placeholder-[#9E8B7C] transition-all" placeholder="Indica detalles de esquinas redondeadas, perforaciones para cables, tono de barniz mate/satinado o requisitos particulares para el ensamble..." rows="3">Deseo los bordes superiores suavemente biselados con acabado poliuretano semi-mate resistente a la humedad.</textarea>
+                    </div>
+                </section>
+                <!-- SECTION 5: Payment Methods Selection -->
+                <section class="bg-[#FFFDFB] rounded-2xl border border-[#E7DCCE] p-6 shadow-sm" data-purpose="payment-methods-section">
+                    <div class="flex items-center gap-2.5 pb-4 mb-4 border-b border-[#F0E6DB]">
+                        <span class="w-7 h-7 rounded-lg bg-[#EFE4D6] text-[#7A4B29] flex items-center justify-center font-bold text-xs">05</span>
+                        <h2 class="text-sm font-bold uppercase tracking-wider text-[#4A3222]">Método de Pago Preferido</h2>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                        <!-- Option 1: Transfer / Cash -->
+                        <label class="cursor-pointer border-2 border-[#9C5A2A] bg-[#FAF3EC] rounded-xl p-3 flex flex-col justify-between transition-all hover:shadow-xs">
+                            <div class="flex items-center justify-between">
+                                <input checked="" value="transferencia" onchange="recalcularTotalNuevaCotizacion()" class="text-[#9C5A2A] focus:ring-[#9C5A2A] w-4 h-4" name="payment_method" type="radio" />
+                                <span class="text-[10px] font-bold bg-[#EAD4C2] text-[#693D1B] px-1.5 py-0.5 rounded">-5% OFF</span>
+                            </div>
+                            <div class="mt-3">
+                                <p class="text-xs font-bold text-[#3A2415]">Transferencia</p>
+                                <p class="text-[11px] text-[#745F50]">Bancolombia / Nequi</p>
+                            </div>
+                        </label>
+                        <!-- Option 2: Credit Card -->
+                        <label class="cursor-pointer border border-[#E0D2C3] bg-[#FAF7F2] hover:bg-[#FDFBF9] rounded-xl p-3 flex flex-col justify-between transition-all">
+                            <div class="flex items-center justify-between">
+                                <input value="tarjeta" onchange="recalcularTotalNuevaCotizacion()" class="text-[#9C5A2A] focus:ring-[#9C5A2A] w-4 h-4" name="payment_method" type="radio" />
+                                <span class="text-[10px] text-[#8C7665]">Hasta 12 cuotas</span>
+                            </div>
+                            <div class="mt-3">
+                                <p class="text-xs font-bold text-[#3A2415]">Tarjeta Crédito</p>
+                                <p class="text-[11px] text-[#745F50]">Visa, Mastercard</p>
+                            </div>
+                        </label>
+                        <!-- Option 3: Instalments -->
+                        <label class="cursor-pointer border border-[#E0D2C3] bg-[#FAF7F2] hover:bg-[#FDFBF9] rounded-xl p-3 flex flex-col justify-between transition-all">
+                            <div class="flex items-center justify-between">
+                                <input value="anticipo" onchange="recalcularTotalNuevaCotizacion()" class="text-[#9C5A2A] focus:ring-[#9C5A2A] w-4 h-4" name="payment_method" type="radio" />
+                                <span class="text-[10px] text-[#8C7665]">50% y 50%</span>
+                            </div>
+                            <div class="mt-3">
+                                <p class="text-xs font-bold text-[#3A2415]">Anticipo Taller</p>
+                                <p class="text-[11px] text-[#745F50]">Saldo contra-entrega</p>
+                            </div>
+                        </label>
+                        <!-- Option 4: PSE -->
+                        <label class="cursor-pointer border border-[#E0D2C3] bg-[#FAF7F2] hover:bg-[#FDFBF9] rounded-xl p-3 flex flex-col justify-between transition-all">
+                            <div class="flex items-center justify-between">
+                                <input value="pse" onchange="recalcularTotalNuevaCotizacion()" class="text-[#9C5A2A] focus:ring-[#9C5A2A] w-4 h-4" name="payment_method" type="radio" />
+                                <span class="text-[10px] text-[#8C7665]">Inmediato</span>
+                            </div>
+                            <div class="mt-3">
+                                <p class="text-xs font-bold text-[#3A2415]">PSE en Línea</p>
+                                <p class="text-[11px] text-[#745F50]">Débito bancario</p>
+                            </div>
+                        </label>
+                    </div>
+                </section>
+                <!-- Generate Quotation Action Button -->
+                <div class="pt-2">
+                    <button id="btnGenerarCotizacionOficial" onclick="enviarNuevaCotizacion()" class="w-full bg-[#8B4513] hover:bg-[#72370D] active:bg-[#592B0A] text-white font-bold py-4 px-6 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-3 group text-sm tracking-wide uppercase cursor-pointer" type="button">
+                        <svg class="w-5 h-5 text-[#E7C6A5] group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+                            <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                        Generar Cotización Oficial
+                    </button>
+                    <p class="text-center text-[11px] text-[#8A7666] mt-2">
+                        Al generar la cotización se registrará automáticamente tu Pedido y se enviará soporte a @(ViewBag.CorreoCliente ?? "tu correo")
+                    </p>
+                </div>
+            </div>
+            <!-- RIGHT COLUMN: Support Panels & Quotation Summary (4 Cols) -->
+            <div class="lg:col-span-4 space-y-6" data-purpose="support-summary-column">
+                <!-- CARD 1: Upload Space Photo (From Reference) -->
+                <div class="bg-[#FFFDFB] rounded-2xl border border-[#E7DCCE] p-6 shadow-sm" data-purpose="upload-space-card">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-[#4A3222]">Foto del Lugar / Espacio</h3>
+                        <span class="text-[10px] text-[#9C6D45] font-semibold bg-[#F5EADF] px-2 py-0.5 rounded">Opcional</span>
+                    </div>
+                    <!-- Dropzone Area -->
+                    <input type="file" id="nc-foto-lugar" accept="image/*" class="hidden" onchange="mostrarNombreArchivo(this)" />
+                    <div onclick="document.getElementById('nc-foto-lugar').click()" class="border-2 border-dashed border-[#D2BFAF] hover:border-[#8B4513] bg-[#FAF6F0] rounded-xl p-5 text-center transition-colors cursor-pointer group">
+                        <div class="w-12 h-12 mx-auto rounded-full bg-[#EFE3D5] flex items-center justify-center text-[#8B4513] mb-3 group-hover:bg-[#E7D4C1] transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+                                <path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" stroke-linecap="round" stroke-linejoin="round"></path>
+                                <path d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </div>
+                        <p id="dropzone-texto" class="text-xs font-bold text-[#3F2B1D]">Sube una foto del espacio</p>
+                        <p class="text-[11px] text-[#867160] mt-1">Arrastra o haz clic para cargar (PNG, JPG)</p>
+                    </div>
+                    <p class="text-[11px] text-[#786353] leading-relaxed mt-3.5">
+                        Sube una foto del lugar donde irá el producto para facilitar el cálculo de las medidas y el diseño del espacio en concordancia con tu ambiente.
+                    </p>
+                </div>
+                <!-- CARD 2: Instructivo de Medidas -->
+                <div class="bg-gradient-to-br from-[#FAF3EA] to-[#F1E4D6] rounded-2xl border border-[#DFCBB9] p-5 shadow-sm" data-purpose="measurement-assistance-card">
+                    <div class="flex items-start gap-3.5">
+                        <div class="w-10 h-10 rounded-full bg-[#EAD4C2] flex-shrink-0 flex items-center justify-center text-[#744522]">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+                                <path d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-xs font-bold text-[#3B2516] leading-snug">
+                                ¿No sabes cómo tomar las medidas?
+                            </h4>
+                            <p class="text-[11px] text-[#695546] mt-1.5 leading-relaxed">
+                                Consulta nuestro instructivo paso a paso para medir correctamente tu espacio.
+                            </p>
+                            <a href="/Instructivos"
+                               class="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-[#8B4513] hover:bg-[#6B3310] text-white text-xs font-bold rounded-lg transition-colors shadow-sm">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+                                    <path d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                                Ver Instructivo
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- CARD 3: Quotation Breakdown & Final Total -->
+                <div class="bg-[#FFFDFB] rounded-2xl border border-[#E7DCCE] p-6 shadow-sm" data-purpose="pricing-summary-card">
+                    <div class="flex items-center justify-between pb-3 mb-4 border-b border-[#F0E6DB]">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-[#4A3222]">Resumen Total</h3>
+                        <span id="badgeDescuento" class="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                            Descuento Aplicado
+                        </span>
+                    </div>
+                    <div class="space-y-2.5 text-xs">
+                        <div class="flex justify-between text-[#685444]">
+                            <span id="summaryMaderaTexto">Madera seleccionada (Pino Macizo):</span>
+                            <span id="summaryMaderaValor" class="font-medium text-[#2E1F14]">$320.000</span>
+                        </div>
+                        <div class="flex justify-between text-[#685444]">
+                            <span>Mano de obra artesanal y ensamble:</span>
+                            <span id="summaryManoObra" class="font-medium text-[#2E1F14]">$120.000</span>
+                        </div>
+                        <div class="flex justify-between text-[#685444]">
+                            <span>Acabado poliuretano resistente:</span>
+                            <span class="font-medium text-emerald-700">Incluido</span>
+                        </div>
+                        <div class="flex justify-between text-emerald-700 font-medium">
+                            <span id="summaryDescuentoTexto">Descuento Transferencia (-5%):</span>
+                            <span id="summaryDescuentoValor">-$22.000</span>
+                        </div>
+                        <div class="pt-3 border-t border-[#EAE0D4] mt-3">
+                            <div class="flex items-baseline justify-between">
                                 <div>
-                                    <h4 class="font-title-md text-primary text-sm font-bold">Pago a Cuotas</h4>
-                                    <p class="font-body-md text-on-surface-variant text-xs">Financia tu proyecto artesanal con plazos flexibles.</p>
+                                    <span class="text-xs font-bold uppercase tracking-wide text-[#3F2B1C] block">Total Estimado:</span>
+                                    <span class="text-[10px] text-[#8C7665]">*IVA incluido (COP)</span>
+                                </div>
+                                <div class="text-right">
+                                    <span id="summaryTotalGrande" class="text-2xl font-black text-[#8B4513] tracking-tight">$418.000</span>
+                                    <span class="text-[11px] font-bold text-[#8B4513] block">COP</span>
                                 </div>
                             </div>
-                        </div><a asp-controller="Factura"
-                             asp-action="Index"
-                             class="w-full bg-primary hover:bg-secondary text-white font-headline-lg-mobile py-5 rounded-none shadow-lg transform active:scale-95 transition-all flex items-center justify-center gap-3">
-
-                        GENERAR COTIZACIÓN
-                    </a>
-                </form>
-            </div>
-        </div>
-        <!-- Right Column -->
-        <div class="w-full lg:w-1/3 space-y-6">
-            <!-- Reference Image Card -->
-            <div class="bg-surface-container border-2 border-primary overflow-hidden shadow-md">
-                <img class="w-full h-64 object-cover grayscale-[20%] hover:grayscale-0 transition-all duration-500" data-alt="Woodworking workshop" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtB-sJjbrIcya7eD6TyZtTpXc3a1xZ3X3Vm5_80rzLwKW5MOzHKsbugYLYgXeK3z1sifKEwuejJ3i2IqHi90r_mMZKPMpgBxZG7S_CX_7CoQ5jGGhDN48xskXNxG-927wxm37sERsbQSfyzrxFbAYjun-B1GkZ2xGnc0nssZdemKtCsFgpkqI4L02DWZaGhA8oDykSTQNaKuk_zjgfhdGL2CcphFSXsYAA4Eb9PxESug-OEipKS2KYcvdVaByWOAuUXxO5az5_7s3S">
-                <div class="p-6">
-                    <h4 class="font-title-md text-primary uppercase mb-2">Referencia de Calidad</h4>
-                    <p class="font-body-md text-on-surface-variant">Visualiza el tipo de acabado que logramos. El Pino Macizo ofrece durabilidad y una estética rústica moderna inigualable.</p>
+                        </div>
+                    </div>
+                    <!-- Validity Notice -->
+                    <div class="mt-4 pt-3 border-t border-dashed border-[#E5DACD] flex items-center justify-between text-[10px] text-[#8C7665]">
+                        <span>Vigencia: 15 días calendario</span>
+                        <span class="font-semibold text-[#5B3920]">Garantía: 2 Años</span>
+                    </div>
+                </div>
+                <!-- CARD 4: Wood Palette Reference Guide -->
+                <div class="bg-[#FFFDFB] rounded-2xl border border-[#E7DCCE] p-5 shadow-sm" data-purpose="wood-guide-reference">
+                    <h4 class="text-[11px] font-bold uppercase tracking-wider text-[#4A3222] mb-3">Guía Rápida de Maderas</h4>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <div class="flex items-center gap-2 p-1.5 rounded-lg bg-[#FAF6F0] border border-[#EADBCC]">
+                            <span class="w-3.5 h-3.5 rounded-full bg-[#D4A373] shadow-inner"></span>
+                            <div>
+                                <span class="font-bold text-[11px] text-[#3E291B] block">Pino Macizo</span>
+                                <span class="text-[9px] text-[#86705F]">Cálido y versátil</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 p-1.5 rounded-lg bg-[#FAF6F0] border border-[#EADBCC]">
+                            <span class="w-3.5 h-3.5 rounded-full bg-[#936639] shadow-inner"></span>
+                            <div>
+                                <span class="font-bold text-[11px] text-[#3E291B] block">Roble Natural</span>
+                                <span class="text-[9px] text-[#86705F]">Vetas marcadas</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 p-1.5 rounded-lg bg-[#FAF6F0] border border-[#EADBCC]">
+                            <span class="w-3.5 h-3.5 rounded-full bg-[#A65B32] shadow-inner"></span>
+                            <div>
+                                <span class="font-bold text-[11px] text-[#3E291B] block">Cedro</span>
+                                <span class="text-[9px] text-[#86705F]">Aromático &amp; fino</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 p-1.5 rounded-lg bg-[#FAF6F0] border border-[#EADBCC]">
+                            <span class="w-3.5 h-3.5 rounded-full bg-[#58311F] shadow-inner"></span>
+                            <div>
+                                <span class="font-bold text-[11px] text-[#3E291B] block">Nogal</span>
+                                <span class="text-[9px] text-[#86705F]">Oscuro elegante</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <!-- Info Card: Wood Types -->
-            <div class="bg-primary text-white p-8 border-l-8 border-secondary shadow-lg">
-                <h4 class="font-headline-lg-mobile mb-4 flex items-center gap-2">
-                    <span class="material-symbols-outlined" data-icon="forest">forest</span>
-                    Guía de Maderas
-                </h4>
-                <ul class="space-y-4 font-body-md">
-                    <li class="flex items-start gap-3">
-                        <span class="text-secondary font-bold">1.</span>
-                        <div><strong class="block">Cedro</strong><span class="text-white/80 text-label-md">Resistente a la humedad.</span></div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-secondary font-bold">2.</span>
-                        <div><strong class="block">Roble</strong><span class="text-white/80 text-label-md">Dureza extrema.</span></div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-secondary font-bold">3.</span>
-                        <div><strong class="block">Abeto</strong><span class="text-white/80 text-label-md">Ligero y económico.</span></div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="text-secondary font-bold">4.</span>
-                        <div><strong class="block">Nogal</strong><span class="text-white/80 text-label-md">Acabado de lujo.</span></div>
-                    </li>
-                </ul>
-            </div>
-            <!-- Total Summary Card -->
-            <div class="sticky top-24 bg-secondary-container text-on-secondary-container p-6 border-4 border-primary shadow-2xl">
-                <div class="flex justify-between items-center mb-4">
-                    <span class="font-label-md uppercase tracking-widest">Resumen Total</span>
-                    <span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
-                </div>
-                <div class="text-4xl font-headline-lg font-bold mb-2" id="resumen-total">$424.000</div>
-                <p class="font-label-md opacity-80 border-t border-on-secondary-container/20 pt-2">
-                    *IVA incluido. Válido por 15 días.
-                </p>
-            </div>
         </div>
-    </div>
-</main>
-<!-- BottomNavBar (Mobile Only) -->
-<nav class="md:hidden fixed bottom-0 w-full z-50 bg-surface-container-highest dark:bg-surface-container-low text-primary dark:text-primary-fixed border-t-4 border-primary shadow-lg flex justify-around items-center h-20 pb-safe px-2">
-    <a class="flex flex-col items-center justify-center text-on-surface-variant transition-transform active:scale-90" href="#">
-        <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
-        <span class="font-label-md text-label-md">Home</span>
-    </a>
-    <a class="flex flex-col items-center justify-center text-on-surface-variant transition-transform active:scale-90" href="#">
-        <span class="material-symbols-outlined" data-icon="handyman">handyman</span>
-        <span class="font-label-md text-label-md">Catalog</span>
-    </a>
-    <a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-xl px-4 py-1 transition-transform active:scale-90" href="#">
-        <span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
-        <span class="font-label-md text-label-md">New Quote</span>
-    </a>
-    <a class="flex flex-col items-center justify-center text-on-surface-variant transition-transform active:scale-90" href="#">
-        <span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
-        <span class="font-label-md text-label-md">Orders</span>
-    </a>
-    <a class="flex flex-col items-center justify-center text-on-surface-variant transition-transform active:scale-90" href="#">
-        <span class="material-symbols-outlined" data-icon="person">person</span>
-        <span class="font-label-md text-label-md">Profile</span>
-    </a>
-</nav>
-<script>
-        const form = document.getElementById('quote-form');
-        const woodTypeSelect = document.getElementById('wood-type');
-        const quantityInput = document.getElementById('quantity');
-        const displayUnitPrice = document.getElementById('display-unit-price');
-        const displaySubtotal = document.getElementById('display-subtotal');
-        const displayDiscount = document.getElementById('display-discount');
-        const resumenTotal = document.getElementById('resumen-total');
+    </main>
+    <!-- END: MainContentGrid -->
+    <!-- BEGIN: Footer -->
+    <footer class="bg-[#2E1F14] text-[#D8C7B5] border-t border-[#463121] py-8 text-xs mt-auto" data-purpose="site-footer">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2.5">
+                <div class="w-7 h-7 rounded-lg overflow-hidden bg-[#4A2613] p-0.5 border border-[#6E492C]">
+                    <img alt="Carpintec Icon" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1WIGoyppDodnWrWJkefIOlCDNP3LghoV2s3rWFURPmCk6_TPctaEONR9asW48O_V_S4M06WxJtopXR9MJjkVtG_50qH7S6gQW6beCN9np_UH3f3RTn_EX1e_RNHjbHl-ye3gZxt2PS62ELIL7V_yW6JRhrZ-yqbv122o2LrdGRynEp7RdmyqI4e1CYIehW8_LzoBDA2k07bEGTHSppB7KjcilEdxZcnso3qs1FBIWEd3q6LWTVDLfnyhdrVF_sPCGfTnJOoSW_F6PU" />
+                </div>
+                <span class="font-bold text-white tracking-wide">CARPINTEC ARTISAN WORKSHOP</span>
+            </div>
+            <p class="text-[#9E8B79] text-center sm:text-right">
+                © 2024 Carpintec. Todos los derechos reservados. Muebles a medida de alta gama.
+            </p>
+        </div>
+    </footer>
+    <!-- END: Footer -->
 
-        // Fixed labor cost for this demonstration
-        const fixedLabor = 120000;
-
-        function formatCurrency(value) {
-            return '$' + value.toLocaleString('es-CO');
-        }
-
-        function calculateValues() {
-            const unitPrice = parseInt(woodTypeSelect.value);
-            const quantity = Math.max(1, parseInt(quantityInput.value) || 1);
-
-            const subtotal = unitPrice * quantity;
-            const discount = Math.round(subtotal * 0.05);
-            const total = subtotal + fixedLabor - discount;
-
-            // Update UI
-            displayUnitPrice.innerText = formatCurrency(unitPrice);
-            displaySubtotal.innerText = formatCurrency(subtotal);
-            displayDiscount.innerText = '-' + formatCurrency(discount);
-            resumenTotal.innerText = formatCurrency(total);
-        }
-
-        // Input Events
-        woodTypeSelect.addEventListener('change', calculateValues);
-        quantityInput.addEventListener('input', calculateValues);
-
-        // Quantity Stepper
-        document.getElementById('qty-plus').onclick = () => {
-            quantityInput.value = parseInt(quantityInput.value) + 1;
-            calculateValues();
-        };
-        document.getElementById('qty-minus').onclick = () => {
-            if (parseInt(quantityInput.value) > 1) {
-                quantityInput.value = parseInt(quantityInput.value) - 1;
-                calculateValues();
+    <script>
+        // Precios base por tipo de madera
+        function obtenerDatosMadera(clave) {
+            switch ((clave || '').toLowerCase()) {
+                case 'roble':
+                    return { nombre: 'Roble Europeo', base: 500000 };
+                case 'cedro':
+                    return { nombre: 'Cedro Rojo Tradicional', base: 460000 };
+                case 'nogal':
+                    return { nombre: 'Nogal Americano Prémium', base: 580000 };
+                case 'pino':
+                default:
+                    return { nombre: 'Pino Macizo - Acabado Natural', base: 320000 };
             }
-        };
+        }
 
-        // Form Submission Handling
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('button[type="submit"]');
-            const originalContent = btn.innerHTML;
+        // Recalcular costos, dimensiones y diagrama SVG
+        function recalcularTotalNuevaCotizacion() {
+            const alto = parseFloat(document.getElementById('nc-alto')?.value) || 80;
+            const ancho = parseFloat(document.getElementById('nc-ancho')?.value) || 120;
+            const prof = parseFloat(document.getElementById('nc-profundidad')?.value) || 60;
+            const cantidad = Math.max(1, parseInt(document.getElementById('input-cantidad')?.value) || 1);
 
-            btn.innerHTML = `
-                    <span class="material-symbols-outlined animate-spin" data-icon="progress_activity">progress_activity</span>
-                    PROCESANDO...
-                `;
-            btn.disabled = true;
+            // Actualizar etiquetas en el diagrama isométrico SVG
+            const svgAncho = document.getElementById('svgTextAncho');
+            if (svgAncho) svgAncho.textContent = `${ancho} cm`;
 
-            setTimeout(() => {
-                btn.innerHTML = `
-                        <span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
-                        COTIZACIÓN CREADA
+            const svgProf = document.getElementById('svgTextProfundidad');
+            if (svgProf) svgProf.textContent = `${prof} cm`;
+
+            const svgAlto = document.getElementById('svgTextAlto');
+            if (svgAlto) svgAlto.textContent = `${alto} cm`;
+
+            // Cálculo volumétrico
+            const volBase = 120 * 80 * 60; // 576,000 cm3
+            const volActual = ancho * alto * prof;
+            let factorVolumen = volActual / volBase;
+            factorVolumen = Math.max(0.65, Math.min(2.5, factorVolumen));
+
+            // Tipo de madera
+            const selectMadera = document.getElementById('wood-select');
+            const claveMadera = selectMadera ? selectMadera.value : 'pino';
+            const infoMadera = obtenerDatosMadera(claveMadera);
+
+            // Costo de madera proporcional al volumen y cantidad
+            const costoMaderaUnitario = Math.round(infoMadera.base * factorVolumen);
+            const costoMaderaTotal = costoMaderaUnitario * cantidad;
+
+            // Mano de obra proporcional
+            const manoObraBase = 120000;
+            const manoObraUnit = Math.round(manoObraBase * (factorVolumen > 1 ? (1 + (factorVolumen - 1) * 0.4) : 1));
+            const manoObraTotal = manoObraUnit * cantidad;
+
+            const subtotal = costoMaderaTotal + manoObraTotal;
+
+            // Método de pago y descuento
+            const radioTransfer = document.querySelector('input[name="payment_method"]:checked');
+            const esTransferencia = radioTransfer ? (radioTransfer.value === 'transferencia') : true;
+
+            let descuento = 0;
+            if (esTransferencia) {
+                descuento = Math.round(subtotal * 0.05);
+            }
+
+            const totalFinal = Math.max(50000, subtotal - descuento);
+
+            // Formateador de moneda colombiana
+            const fmt = (num) => '$' + Number(num).toLocaleString('es-CO');
+
+            // Actualizar resumen visual
+            const lblMaderaTexto = document.getElementById('summaryMaderaTexto');
+            if (lblMaderaTexto) lblMaderaTexto.textContent = `Madera (${infoMadera.nombre}):`;
+
+            const lblMaderaValor = document.getElementById('summaryMaderaValor');
+            if (lblMaderaValor) lblMaderaValor.textContent = fmt(costoMaderaTotal);
+
+            const lblManoObra = document.getElementById('summaryManoObra');
+            if (lblManoObra) lblManoObra.textContent = fmt(manoObraTotal);
+
+            const lblDescTexto = document.getElementById('summaryDescuentoTexto');
+            const lblDescValor = document.getElementById('summaryDescuentoValor');
+            const badgeDesc = document.getElementById('badgeDescuento');
+
+            if (esTransferencia) {
+                if (lblDescTexto) lblDescTexto.textContent = 'Descuento Transferencia (-5%):';
+                if (lblDescValor) lblDescValor.textContent = '-' + fmt(descuento);
+                if (badgeDesc) badgeDesc.classList.remove('hidden');
+            } else {
+                if (lblDescTexto) lblDescTexto.textContent = 'Descuento por método:';
+                if (lblDescValor) lblDescValor.textContent = '$0';
+                if (badgeDesc) badgeDesc.classList.add('hidden');
+            }
+
+            const lblTotal = document.getElementById('summaryTotalGrande');
+            if (lblTotal) lblTotal.textContent = fmt(totalFinal);
+
+            const badgePrecioMadera = document.getElementById('ncWoodPriceBadge');
+            if (badgePrecioMadera) badgePrecioMadera.textContent = `Precio Base: ${fmt(infoMadera.base)} COP`;
+        }
+
+        // Selección rápida de producto sugerido
+        function seleccionarSugerencia(nombre) {
+            const inputProd = document.getElementById('product-name');
+            if (inputProd) {
+                inputProd.value = nombre;
+                recalcularTotalNuevaCotizacion();
+            }
+        }
+
+        // Incrementar o decrementar cantidad
+        function cambiarCantidad(delta) {
+            const input = document.getElementById('input-cantidad');
+            if (!input) return;
+            let actual = parseInt(input.value) || 1;
+            actual = Math.max(1, actual + delta);
+            input.value = actual;
+            recalcularTotalNuevaCotizacion();
+        }
+
+        // Mostrar nombre del archivo subido en el dropzone
+        function mostrarNombreArchivo(input) {
+            if (input && input.files && input.files.length > 0) {
+                const archivo = input.files[0];
+                const dropTexto = document.getElementById('dropzone-texto');
+                if (dropTexto) {
+                    dropTexto.innerHTML = `<span class="text-emerald-700 font-bold">✓ Foto adjunta: ${archivo.name}</span>`;
+                }
+            }
+        }
+
+        // Enviar formulario al backend para crear Cotización y Pedido de forma inmediata
+        async function enviarNuevaCotizacion() {
+            const btn = document.getElementById('btnGenerarCotizacionOficial');
+            const originalHtml = btn ? btn.innerHTML : '';
+
+            try {
+                const nombre = (document.getElementById('client-name')?.value || '').trim();
+                const telefono = (document.getElementById('client-phone')?.value || '').trim();
+                const correo = (document.getElementById('client-email')?.value || '').trim();
+                const producto = (document.getElementById('product-name')?.value || '').trim();
+                const estilo = document.getElementById('product-style')?.value || '';
+                const maderaSelect = document.getElementById('wood-select');
+                const maderaNombre = maderaSelect ? maderaSelect.options[maderaSelect.selectedIndex].text.split('(')[0].trim() : 'Pino Macizo';
+                const cantidad = Math.max(1, parseInt(document.getElementById('input-cantidad')?.value) || 1);
+                const alto = parseFloat(document.getElementById('nc-alto')?.value) || 80;
+                const ancho = parseFloat(document.getElementById('nc-ancho')?.value) || 120;
+                const profundidad = parseFloat(document.getElementById('nc-profundidad')?.value) || 60;
+                const observaciones = document.getElementById('nc-observaciones')?.value || '';
+
+                if (!producto) {
+                    alert('Por favor especifica el nombre o tipo de producto a cotizar.');
+                    document.getElementById('product-name')?.focus();
+                    return;
+                }
+
+                // Obtener total final numérico
+                const textoTotal = document.getElementById('summaryTotalGrande')?.textContent || '';
+                const totalNumerico = parseInt(textoTotal.replace(/[^0-9]/g, '')) || 418000;
+
+                // Feedback visual en el botón
+                if (btn) {
+                    btn.disabled = true;
+                    btn.innerHTML = `
+                        <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Generando Cotización y Pedido...
                     `;
-                btn.classList.replace('bg-primary', 'bg-green-700');
+                }
 
-                setTimeout(() => {
-                    btn.innerHTML = originalContent;
-                    btn.classList.replace('bg-green-700', 'bg-primary');
+                const formData = new FormData();
+                formData.append('nombreCliente', nombre);
+                formData.append('telefono', telefono);
+                formData.append('correo', correo);
+                formData.append('producto', estilo ? `${producto} (${estilo})` : producto);
+                formData.append('madera', maderaNombre);
+                formData.append('cantidad', cantidad);
+                formData.append('alto', alto);
+                formData.append('ancho', ancho);
+                formData.append('profundidad', profundidad);
+                formData.append('tiempoEntrega', '15 días hábiles');
+                formData.append('observaciones', observaciones);
+                formData.append('total', totalNumerico);
+
+                const fileInput = document.getElementById('nc-foto-lugar');
+                if (fileInput && fileInput.files && fileInput.files.length > 0) {
+                    formData.append('fotoLugar', fileInput.files[0]);
+                }
+
+                const response = await fetch('/NuevaCotizacion/GuardarCotizacion', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const mensajeExito = `🎉 ¡Cotización y Pedido registrados exitosamente!\n\n` +
+                        `• Folio Cotización: ${data.folioCotizacion || 'Generado'}\n` +
+                        `• Código Pedido: ${data.codigoPedido || 'Generado'}\n\n` +
+                        `• Pulsa ACEPTAR para ir a "Mis Pedidos" y ver el avance en tiempo real.\n` +
+                        `• Pulsa CANCELAR para ir a "Mis Cotizaciones".`;
+
+                    if (confirm(mensajeExito)) {
+                        window.location.href = data.redirectUrl || '/Mi_Pedido';
+                    } else {
+                        window.location.href = '/MiCotizacion';
+                    }
+                } else {
+                    alert('Error al guardar: ' + (data.message || 'Error desconocido'));
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerHTML = originalHtml;
+                    }
+                }
+            } catch (err) {
+                console.error('Error al enviar la cotización:', err);
+                alert('Ocurrió un error al comunicar con el servidor. Por favor intenta de nuevo.');
+                if (btn) {
                     btn.disabled = false;
-                }, 3000);
-            }, 1500);
+                    btn.innerHTML = originalHtml;
+                }
+            }
+        }
+
+        // Inicializar cálculos al cargar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            recalcularTotalNuevaCotizacion();
         });
-
-        // Initial calculation
-        calculateValues();
-</script>
-
-
-
-
+    </script>
 </body></html>
