@@ -1,4 +1,4 @@
-
+@using CARPINTEC_App.Filters
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -57,106 +57,172 @@
                 <h2 class="text-xl font-bold">CARPINTEC</h2>
             </div>
 
+@{
+    bool esAdmin = User.IsInRole("Administrador");
+    bool esEmpleado = User.IsInRole("Empleado");
+    string nombreUsuario = Context.Session.GetString("NombreUsuario")
+                           ?? Context.Session.GetString("PrimerNombre")
+                           ?? User.Identity?.Name
+                           ?? "Usuario";
+    string cargoEmpleado = Context.Session.GetString("Cargo") ?? "Supervisor";
+}
             <ul class="nav flex-column">
 
                 <!-- Dashboard -->
                 <li class="nav-item mb-3">
-                    <a class="nav-link text-white" asp-controller="Dashboard" asp-action="Index">
-                        <i class="bi bi-speedometer2"></i> Dashboard
-                    </a>
+                    @if (esEmpleado)
+                    {
+                        <a class="nav-link text-white" asp-controller="DashboardEmpleado" asp-action="Index">
+                            <i class="bi bi-speedometer2"></i> Dashboard Empleado
+                        </a>
+                    }
+                    else
+                    {
+                        <a class="nav-link text-white" asp-controller="Dashboard" asp-action="Index">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    }
                 </li>
 
-                <!-- Administración -->
-                <small class="text-uppercase text-dark fw-bold mb-2">
-                    Administración
-                </small>
+                @if (esAdmin)
+                {
+                    <!-- Administración (Exclusivo Administrador) -->
+                    <small class="text-uppercase text-dark fw-bold mb-2">
+                        Administración
+                    </small>
 
-                <li class="nav-item">
-                    <a class="nav-link text-white" asp-controller="Usuarios" asp-action="Index">
-                        <i class="bi bi-people-fill"></i> Gestión de usuarios
-                    </a>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" asp-controller="Usuarios" asp-action="Index">
+                            <i class="bi bi-people-fill"></i> Gestión de usuarios
+                        </a>
+                    </li>
 
-                <li class="nav-item mb-3">
-                    <a class="nav-link text-white" asp-controller="Empleados" asp-action="Index">
-                        <i class="bi bi-person-badge-fill"></i> Gestión de empleados
-                    </a>
-                </li>
+                    <li class="nav-item mb-3">
+                        <a class="nav-link text-white" asp-controller="Empleados" asp-action="Index">
+                            <i class="bi bi-person-badge-fill"></i> Gestión de empleados
+                        </a>
+                    </li>
+                }
 
-                <!-- Gestión Comercial -->
-                <small class="text-uppercase text-dark fw-bold mt-2 mb-2">
-                    Gestión Comercial
-                </small>
+                @if (esAdmin || PermisosCargoHelper.TieneAcceso(cargoEmpleado, "Clientes") || PermisosCargoHelper.TieneAcceso(cargoEmpleado, "Cotizaciones") || PermisosCargoHelper.TieneAcceso(cargoEmpleado, "Pedidos") || PermisosCargoHelper.TieneAcceso(cargoEmpleado, "Ventas"))
+                {
+                    <!-- Gestión Comercial -->
+                    <small class="text-uppercase text-dark fw-bold mt-2 mb-2">
+                        Gestión Comercial
+                    </small>
 
-                <li class="nav-item">
-                    <a class="nav-link text-white" asp-controller="Clientes" asp-action="Index">
-                        <i class="bi bi-person-lines-fill"></i> Gestión de clientes
-                    </a>
-                </li>
+                    @if (esAdmin || PermisosCargoHelper.TieneAcceso(cargoEmpleado, "Clientes"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-controller="Clientes" asp-action="Index">
+                                <i class="bi bi-person-lines-fill"></i> Gestión de clientes
+                            </a>
+                        </li>
+                    }
 
-                <li class="nav-item">
-                    <a class="nav-link text-white" asp-controller="Cotizaciones" asp-action="Index">
-                        <i class="bi bi-file-earmark-text"></i> Cotizaciones
-                    </a>
-                </li>
+                    @if (esAdmin || PermisosCargoHelper.TieneAcceso(cargoEmpleado, "Cotizaciones"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-controller="Cotizaciones" asp-action="Index">
+                                <i class="bi bi-file-earmark-text"></i> Cotizaciones
+                            </a>
+                        </li>
+                    }
 
-                <li class="nav-item">
-                    <a class="nav-link text-white" asp-controller="Pedidos" asp-action="Index">
-                        <i class="bi bi-cart-fill"></i> Pedidos
-                    </a>
-                </li>
+                    @if (esAdmin || PermisosCargoHelper.TieneAcceso(cargoEmpleado, "Pedidos"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-controller="Pedidos" asp-action="Index">
+                                <i class="bi bi-cart-fill"></i> Pedidos
+                            </a>
+                        </li>
+                    }
 
-                <li class="nav-item mb-3">
-                    <a class="nav-link text-white" asp-controller="Ventas" asp-action="Index">
-                        <i class="bi bi-cash-stack"></i> Ventas y facturación
-                    </a>
-                </li>
+                    @if (esAdmin || PermisosCargoHelper.TieneAcceso(cargoEmpleado, "Ventas"))
+                    {
+                        <li class="nav-item mb-3">
+                            <a class="nav-link text-white" asp-controller="Ventas" asp-action="Index">
+                                <i class="bi bi-cash-stack"></i> Ventas y facturación
+                            </a>
+                        </li>
+                    }
+                }
 
-                <!-- Producción -->
-                <small class="text-uppercase text-dark fw-bold mt-2 mb-2">
-                    Producción
-                </small>
+                @if (esAdmin || PermisosCargoHelper.TieneAcceso(cargoEmpleado, "Diseños") || PermisosCargoHelper.TieneAcceso(cargoEmpleado, "Materiales") || PermisosCargoHelper.TieneAcceso(cargoEmpleado, "Inventario") || PermisosCargoHelper.TieneAcceso(cargoEmpleado, "Producción") || PermisosCargoHelper.TieneAcceso(cargoEmpleado, "Mis tareas"))
+                {
+                    <!-- Producción y Taller -->
+                    <small class="text-uppercase text-dark fw-bold mt-2 mb-2">
+                        Producción y Taller
+                    </small>
 
-                <li class="nav-item">
-                    <a class="nav-link text-white" asp-controller="Productos" asp-action="Index">
-                        <i class="bi bi-box-seam"></i> Productos
-                    </a>
-                </li>
+                    @if (esAdmin || PermisosCargoHelper.TieneAcceso(cargoEmpleado, "Diseños") || PermisosCargoHelper.TieneAcceso(cargoEmpleado, "Materiales"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-controller="Productos" asp-action="Index">
+                                <i class="bi bi-box-seam"></i> @(cargoEmpleado.Contains("Inventario", StringComparison.OrdinalIgnoreCase) ? "Materiales" : "Diseños y Productos")
+                            </a>
+                        </li>
+                    }
 
-                <li class="nav-item">
-                    <a class="nav-link text-white" asp-controller="Inventario" asp-action="Index">
-                        <i class="bi bi-boxes"></i> Inventario
-                    </a>
-                </li>
+                    @if (esAdmin || PermisosCargoHelper.TieneAcceso(cargoEmpleado, "Inventario"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-controller="Inventario" asp-action="Index">
+                                <i class="bi bi-boxes"></i> Inventario
+                            </a>
+                        </li>
+                    }
 
-                <li class="nav-item mb-3">
-                    <a class="nav-link text-white" asp-controller="ManoObra" asp-action="Index">
-                        <i class="bi bi-hammer"></i> Mano de obra
-                    </a>
-                </li>
+                    @if (esAdmin || PermisosCargoHelper.TieneAcceso(cargoEmpleado, "Producción"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-controller="Calendario" asp-action="Index">
+                                <i class="bi bi-calendar-event"></i> Producción / Calendario
+                            </a>
+                        </li>
+                    }
 
-                <!-- Reportes -->
-                <small class="text-uppercase text-dark fw-bold mt-2 mb-2">
-                    Reportes y soporte
-                </small>
+                    @if (esAdmin)
+                    {
+                        <li class="nav-item mb-3">
+                            <a class="nav-link text-white" asp-controller="ManoObra" asp-action="Index">
+                                <i class="bi bi-hammer"></i> Mano de obra
+                            </a>
+                        </li>
+                    }
+                }
 
-                <li class="nav-item">
-                    <a class="nav-link text-white" asp-controller="Reportes" asp-action="Index">
-                        <i class="bi bi-bar-chart-fill"></i> Reportes
-                    </a>
-                </li>
+                @if (esAdmin || PermisosCargoHelper.TieneAcceso(cargoEmpleado, "Reportes"))
+                {
+                    <!-- Reportes -->
+                    <small class="text-uppercase text-dark fw-bold mt-2 mb-2">
+                        Reportes y Soporte
+                    </small>
 
-                <li class="nav-item">
-                    <a class="nav-link text-white" asp-controller="Pqr" asp-action="Index">
-                        <i class="bi bi-chat-left-dots-fill"></i> PQR
-                    </a>
-                </li>
+                    @if (esAdmin || PermisosCargoHelper.TieneAcceso(cargoEmpleado, "Reportes"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-controller="Reportes" asp-action="Index">
+                                <i class="bi bi-bar-chart-fill"></i> Reportes
+                            </a>
+                        </li>
+                    }
 
-                <li class="nav-item mb-3">
-                    <a class="nav-link text-white" asp-controller="Configuracion" asp-action="Index">
-                        <i class="bi bi-gear-fill"></i> Configuración
-                    </a>
-                </li>
+                    @if (esAdmin)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-controller="Pqr" asp-action="Index">
+                                <i class="bi bi-chat-left-dots-fill"></i> PQR
+                            </a>
+                        </li>
+
+                        <li class="nav-item mb-3">
+                            <a class="nav-link text-white" asp-controller="Configuracion" asp-action="Index">
+                                <i class="bi bi-gear-fill"></i> Configuración
+                            </a>
+                        </li>
+                    }
+                }
 
                 <hr />
 
@@ -183,18 +249,25 @@
 
                     <div>
                         <h1 class="text-2xl font-bold text-gray-800">
-                            Bienvenido, Admin 👋
+                            Bienvenido, @(nombreUsuario.Split(' ')[0]) 👋
                         </h1>
 
                         <p class="text-gray-500 text-sm">
-                            Sistema de Gestión CARPINTEC
+                            @if (esAdmin)
+                            {
+                                <span>Sistema de Gestión CARPINTEC · Panel Administrativo</span>
+                            }
+                            else
+                            {
+                                <span>Panel Operativo · Puesto: <strong class="text-[#8c5338]">@cargoEmpleado</strong></span>
+                            }
                         </p>
                     </div>
 
                     <div class="flex items-center gap-4">
 
-                        <span class="font-semibold text-gray-700">
-                            Administrador
+                        <span class="font-semibold text-gray-700 px-3 py-1 bg-gray-100 rounded-full text-xs">
+                            @(esAdmin ? "Administrador" : cargoEmpleado)
                         </span>
 
                         <a asp-controller="Login"

@@ -1,8 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using CARPINTEC_App.Filters;
 
 namespace CARPINTEC_App.Controllers
 {
+    [Authorize]
+    [PermisoCargo("Inventario")]
     public class StockController : Controller
     {
         // GET: StockController

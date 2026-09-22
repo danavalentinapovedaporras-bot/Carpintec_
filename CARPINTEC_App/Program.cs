@@ -137,6 +137,14 @@ try
         BEGIN
             ALTER TABLE Empleado ADD FechaFinEstado DATE NULL;
         END
+        IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('Empleado') AND name = 'IdUsuario')
+        BEGIN
+            ALTER TABLE Empleado ADD IdUsuario INT NULL;
+            IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = 'FK_Empleado_Usuario')
+            BEGIN
+                ALTER TABLE Empleado ADD CONSTRAINT FK_Empleado_Usuario FOREIGN KEY (IdUsuario) REFERENCES Usuario(IdUsuario);
+            END
+        END
     ");
 }
 catch

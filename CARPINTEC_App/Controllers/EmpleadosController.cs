@@ -23,6 +23,11 @@ namespace CARPINTEC_App.Controllers
 
         public async Task<IActionResult> Index(int pagina = 1)
         {
+            if (User.IsInRole("Empleado"))
+            {
+                return RedirectToAction("Index", "DashboardEmpleado");
+            }
+
             int registrosPorPagina = 4;
 
 
@@ -198,6 +203,24 @@ namespace CARPINTEC_App.Controllers
             empleadoBD.FechaFinEstado = empleado.FechaFinEstado ?? empleado.FechaFinVacaciones;
 
             _context.Update(empleadoBD);
+
+            // Sincronizar con Usuario si existe vinculación
+            if (empleadoBD.IdUsuario.HasValue)
+            {
+                var usuarioBD = await _context.Usuarios
+                    .FirstOrDefaultAsync(u => u.IdUsuario == empleadoBD.IdUsuario.Value);
+
+                if (usuarioBD != null)
+                {
+                    usuarioBD.Nombre = empleadoBD.Nombre;
+                    usuarioBD.Apellido = empleadoBD.Apellido;
+                    if (!string.IsNullOrWhiteSpace(empleadoBD.Correo))
+                    {
+                        usuarioBD.Correo = empleadoBD.Correo;
+                    }
+                    _context.Update(usuarioBD);
+                }
+            }
 
             await _context.SaveChangesAsync();
 

@@ -1,10 +1,14 @@
-﻿using CARPINTEC_App.Models;
+using CARPINTEC_App.Models;
 using CARPINTEC_App.Data;
+using CARPINTEC_App.Filters;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CARPINTEC_App.Controllers;
 
+[Authorize]
+[PermisoCargo("Producción")]
 public class CalendarioController : Controller
 {
     private static readonly HashSet<string> CategoriasValidas =

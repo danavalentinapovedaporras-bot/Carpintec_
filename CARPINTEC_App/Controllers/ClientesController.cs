@@ -1,5 +1,6 @@
 using CARPINTEC_App.Data;
 using CARPINTEC_App.Models;
+using CARPINTEC_App.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CARPINTEC_App.Controllers
 {
     [Authorize]
+    [PermisoCargo("Clientes")]
     public class ClientesController : Controller
     {
         private readonly CarpintecContext _context;

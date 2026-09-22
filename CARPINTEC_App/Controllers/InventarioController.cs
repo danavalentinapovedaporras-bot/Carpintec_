@@ -1,5 +1,6 @@
 using CARPINTEC_App.Data;
 using CARPINTEC_App.Models;
+using CARPINTEC_App.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
@@ -8,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CARPINTEC_App.Controllers
 {
     [Authorize]
+    [PermisoCargo("Inventario")]
     public class InventarioController : Controller
     {
         private readonly CarpintecContext _context;
@@ -222,11 +224,7 @@ namespace CARPINTEC_App.Controllers
         }
 
 
-        // GET: Delete
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
+       
 
 
         [HttpPost]

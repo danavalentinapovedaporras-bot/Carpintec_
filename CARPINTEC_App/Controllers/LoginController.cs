@@ -3,6 +3,7 @@ using CARPINTEC_App.Models;
 using CARPINTEC_App.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CARPINTEC_App.Controllers
 {
@@ -374,6 +375,15 @@ namespace CARPINTEC_App.Controllers
                     usuario.Correo ?? ""
                 );
 
+                if (rolReal.Equals("Empleado", StringComparison.OrdinalIgnoreCase))
+                {
+                    var emp = await _context.Empleados.FirstOrDefaultAsync(e => e.IdUsuario == usuario.IdUsuario);
+                    if (emp != null && !string.IsNullOrWhiteSpace(emp.Cargo))
+                    {
+                        HttpContext.Session.SetString("Cargo", emp.Cargo.Trim());
+                    }
+                }
+
                 // =================================================
                 // Redireccionar según el rol REAL
                 // =================================================
@@ -398,7 +408,7 @@ namespace CARPINTEC_App.Controllers
 
                         return RedirectToAction(
                             "Index",
-                            "Dashboard"
+                            "DashboardEmpleado"
                         );
 
                     default:

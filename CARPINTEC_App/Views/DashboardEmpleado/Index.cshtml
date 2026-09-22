@@ -1,0 +1,582 @@
+@{
+    Layout = null;
+    string nombreEmpleado = ViewBag.NombreEmpleado as string
+                           ?? Context.Session.GetString("NombreUsuario")
+                           ?? User.Identity?.Name
+                           ?? "Empleado";
+
+    // Cargo del empleado autenticado asignado a su cuenta/correo
+    string cargoEmpleado = ViewBag.CargoEmpleado as string
+                           ?? Context.Session.GetString("Cargo")
+                           ?? "Empleado de Taller";
+
+    // Definir módulos oficiales según cargo
+    var modulosPorCargo = new Dictionary<string, List<(string Nombre, string Icono, string Url)>>(StringComparer.OrdinalIgnoreCase)
+    {
+        ["Supervisor"] = new List<(string, string, string)>
+        {
+            ("Inicio",       "home",        "/DashboardEmpleado"),
+            ("Clientes",     "users",       "/Clientes"),
+            ("Cotizaciones", "document",    "/Cotizaciones"),
+            ("Pedidos",      "shopping",    "/Pedidos"),
+            ("Diseños",      "pencil",      "/Productos"),
+            ("Producción",   "cog",         "/Calendario"),
+            ("Inventario",   "cube",        "/Inventario"),
+            ("Reportes",     "chart",       "/Reportes"),
+        },
+        ["Asesor comercial"] = new List<(string, string, string)>
+        {
+            ("Inicio",       "home",        "/DashboardEmpleado"),
+            ("Clientes",     "users",       "/Clientes"),
+            ("Cotizaciones", "document",    "/Cotizaciones"),
+            ("Pedidos",      "shopping",    "/Pedidos"),
+            ("Ventas",       "chart-bar",   "/Ventas"),
+        },
+        ["Diseñador de muebles"] = new List<(string, string, string)>
+        {
+            ("Inicio",       "home",        "/DashboardEmpleado"),
+            ("Clientes",     "users",       "/Clientes"),
+            ("Diseños",      "pencil",      "/Productos"),
+            ("Cotizaciones", "document",    "/Cotizaciones"),
+            ("Pedidos",      "shopping",    "/Pedidos"),
+        },
+        ["Jefe de producción"] = new List<(string, string, string)>
+        {
+            ("Inicio",       "home",        "/DashboardEmpleado"),
+            ("Pedidos",      "shopping",    "/Pedidos"),
+            ("Producción",   "cog",         "/Calendario"),
+            ("Inventario",   "cube",        "/Inventario"),
+            ("Reportes",     "chart",       "/Reportes"),
+        },
+        ["Operario de carpintería"] = new List<(string, string, string)>
+        {
+            ("Inicio",       "home",        "/DashboardEmpleado"),
+            ("Producción",   "cog",         "/Calendario"),
+            ("Mis tareas",   "clipboard",   "/Pedidos"),
+            ("Pedidos",      "shopping",    "/Pedidos"),
+        },
+        ["Encargado de inventario"] = new List<(string, string, string)>
+        {
+            ("Inicio",       "home",        "/DashboardEmpleado"),
+            ("Inventario",   "cube",        "/Inventario"),
+            ("Materiales",   "layers",      "/Productos"),
+            ("Entradas",     "arrow-down",  "/Inventario"),
+            ("Salidas",      "arrow-up",    "/Inventario"),
+            ("Reportes",     "chart",       "/Reportes"),
+        },
+    };
+
+    // Normalizar cargo para búsqueda (quitar tildes y caracteres especiales)
+    string cargoNorm = cargoEmpleado.Trim()
+        .Replace("ó", "o").Replace("Ó", "O")
+        .Replace("é", "e").Replace("É", "E")
+        .Replace("á", "a").Replace("Á", "A")
+        .Replace("í", "i").Replace("Í", "I")
+        .Replace("ú", "u").Replace("Ú", "U")
+        .Replace("ñ", "n").Replace("Ñ", "N");
+
+    // Mapeo defensivo para cargos antiguos en base de datos
+    if (cargoNorm.IndexOf("comercial", StringComparison.OrdinalIgnoreCase) >= 0 || cargoNorm.IndexOf("asesor", StringComparison.OrdinalIgnoreCase) >= 0)
+        cargoNorm = "Asesor comercial";
+    else if (cargoNorm.IndexOf("disen", StringComparison.OrdinalIgnoreCase) >= 0)
+        cargoNorm = "Diseñador de muebles";
+    else if (cargoNorm.IndexOf("jefe", StringComparison.OrdinalIgnoreCase) >= 0)
+        cargoNorm = "Jefe de producción";
+    else if (cargoNorm.IndexOf("operario", StringComparison.OrdinalIgnoreCase) >= 0 || cargoNorm.IndexOf("carpinter", StringComparison.OrdinalIgnoreCase) >= 0)
+        cargoNorm = "Operario de carpintería";
+    else if (cargoNorm.IndexOf("inventario", StringComparison.OrdinalIgnoreCase) >= 0 || cargoNorm.IndexOf("logist", StringComparison.OrdinalIgnoreCase) >= 0)
+        cargoNorm = "Encargado de inventario";
+    else if (cargoNorm.IndexOf("supervisor", StringComparison.OrdinalIgnoreCase) >= 0)
+        cargoNorm = "Supervisor";
+
+    List<(string Nombre, string Icono, string Url)> modulos;
+    if (!modulosPorCargo.TryGetValue(cargoEmpleado.Trim(), out modulos!))
+    {
+        if (!modulosPorCargo.TryGetValue(cargoNorm, out modulos!))
+        {
+            modulos = modulosPorCargo["Supervisor"];
+        }
+    }
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>CARPINTEC – Panel @cargoEmpleado</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'carp-bg':          '#FAF6F0',
+                        'carp-card-bg':     '#FFFFFF',
+                        'carp-dark':        '#3D2817',
+                        'carp-brown':       '#5E3E26',
+                        'carp-accent':      '#6E482F',
+                        'carp-accent-hover':'#593922',
+                        'carp-warm-tan':    '#EFE7DC',
+                        'carp-badge-tan':   '#DFD3C3',
+                        'carp-border':      '#EAE1D5',
+                        'carp-muted':       '#8C7A6B',
+                        'carp-green':       '#2E7D32',
+                        'carp-amber':       '#D97706',
+                        'carp-red':         '#DC2626',
+                        'carp-sidebar':     '#2E1B0E',
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Inter', 'system-ui', '-apple-system', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        .dashboard-card { transition: box-shadow .2s, transform .15s; }
+        .dashboard-card:hover { transform: translateY(-3px); }
+        .card-quarter-circle {
+            position: absolute; top: 0; right: 0;
+            width: 88px; height: 88px;
+            background-color: #F3EBDD;
+            border-bottom-left-radius: 100%;
+            pointer-events: none; z-index: 0; opacity: .85;
+            transition: transform 0.3s ease;
+        }
+        .dashboard-card:hover .card-quarter-circle { transform: scale(1.12); }
+    </style>
+</head>
+<body class="bg-carp-bg text-carp-dark font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-carp-warm-tan selection:text-carp-dark">
+
+    <!-- BEGIN: MainHeader -->
+    <header class="bg-white border-b border-carp-border sticky top-0 z-50 px-4 sm:px-8 py-3 transition-shadow shadow-xs">
+        <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+            <!-- Left: Logo -->
+            <div class="flex items-center space-x-3 shrink-0">
+                <a class="flex items-center gap-2 group" href="/DashboardEmpleado">
+                    <span class="text-xl font-extrabold tracking-widest text-carp-dark uppercase group-hover:text-carp-accent transition-colors">CARPINTEC</span>
+                </a>
+            </div>
+            <!-- Center: Search -->
+            <div class="flex-1 max-w-md mx-4 hidden md:block">
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-carp-muted">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1010.5 18a7.5 7.5 0 006.15-2.85z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"/>
+                        </svg>
+                    </span>
+                    <input class="w-full pl-10 pr-4 py-1.5 text-sm bg-carp-bg border border-carp-border rounded-full text-carp-dark placeholder-carp-muted focus:outline-none focus:ring-2 focus:ring-carp-accent/30 focus:border-carp-accent transition-all shadow-inner"
+                           placeholder="Buscar pedidos, cotizaciones, materiales..." type="text" />
+                </div>
+            </div>
+            <!-- Right: Actions -->
+            <div class="flex items-center space-x-4 sm:space-x-6 shrink-0">
+                <div class="hidden lg:flex items-center gap-2 px-3 py-1 bg-carp-warm-tan/60 rounded-full border border-carp-border text-xs font-semibold text-carp-brown">
+                    <span class="w-2 h-2 rounded-full bg-carp-green"></span>
+                    <span>@cargoEmpleado</span>
+                </div>
+                <a class="flex items-center space-x-1.5 text-sm font-medium text-carp-brown hover:text-carp-dark transition-colors" href="/Login/CerrarSesion">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                    </svg>
+                    <span class="hidden sm:inline">Cerrar Sesión</span>
+                </a>
+                <div class="flex items-center pl-2 border-l border-carp-border">
+                    <div class="w-9 h-9 rounded-full bg-carp-accent text-white flex items-center justify-center font-bold text-sm border-2 border-carp-warm-tan shadow-sm">
+                        @(nombreEmpleado.Length > 0 ? nombreEmpleado.Substring(0, 1).ToUpper() : "E")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- END: MainHeader -->
+
+    <!-- BEGIN: MainContent -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-8 py-6 w-full grow space-y-6">
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="bg-red-50 border-l-4 border-carp-red p-4 rounded-xl shadow-xs flex items-center justify-between gap-3 text-red-800">
+                <div class="flex items-center gap-3">
+                    <svg class="w-5 h-5 text-carp-red shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                    </svg>
+                    <span class="text-sm font-semibold">@TempData["Error"]</span>
+                </div>
+            </div>
+        }
+
+
+
+        <!-- Saludo e Información del Cargo -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-3 bg-white border border-carp-border rounded-2xl p-5 sm:p-6 shadow-xs">
+            <div>
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-carp-warm-tan text-carp-brown mb-2">
+                    <span class="w-2 h-2 rounded-full bg-carp-green"></span>
+                    <span>@GetHeroBadge(cargoEmpleado)</span>
+                </div>
+                <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-carp-dark">
+                    Bienvenido, <span class="text-carp-accent">@nombreEmpleado</span>
+                </h1>
+                <p class="text-sm sm:text-base text-carp-muted mt-1">
+                    Puesto: <span class="font-bold text-carp-accent">@cargoEmpleado</span> · <span class="text-carp-dark/80 font-medium">@GetRolDescripcion(cargoEmpleado)</span>
+                </p>
+            </div>
+            <div class="text-xs sm:text-sm font-medium text-carp-muted text-left md:text-right shrink-0 capitalize bg-carp-bg px-3 py-1.5 rounded-xl border border-carp-border">
+                @DateTime.Now.ToString("dddd, d 'de' MMMM yyyy", new System.Globalization.CultureInfo("es-ES"))
+            </div>
+        </div>
+
+        <!-- Hero Banner dinámico adaptado al cargo -->
+        <section class="relative rounded-2xl overflow-hidden shadow-sm border border-carp-border min-h-[250px] sm:min-h-[280px] flex items-center bg-carp-dark">
+            <img alt="Carpintec artesanal"
+                 class="absolute inset-0 w-full h-full object-cover object-center"
+                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6chcMSb9gVlv0E9ChSs7FMSsaosapV3dGbsZWdryTz9m3iEQvAxELofvjsb8G-3e2lidejDC50mY55qtMuGLE1N0uQKXzP8PRe8ZKWMUR41MAZSEXRvVZD19UiFRwL0EEVHtColNG9qSdBoKjsSadA3gy_oQyUHIF8pK7Hsc61c2rl2_IqB-0v1HoqKrPiVftQoy9OEUajTGUEms_drYUJgRg5G_BorVIS0bhAwFn" />
+            <div class="absolute inset-0 bg-gradient-to-r from-carp-dark/95 via-carp-dark/75 to-transparent"></div>
+            <div class="relative z-10 p-6 sm:p-10 max-w-2xl text-white space-y-3">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-bold tracking-wider uppercase bg-[#CDBAA7]/90 text-carp-dark backdrop-blur-sm shadow-xs">
+                    <svg class="w-3.5 h-3.5 text-carp-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"/>
+                    </svg>
+                    @GetHeroBadge(cargoEmpleado)
+                </span>
+                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold leading-tight text-white drop-shadow-sm">
+                    @GetHeroTitle(cargoEmpleado)
+                </h2>
+                <p class="text-xs sm:text-sm text-white/90 max-w-xl">
+                    @GetHeroSubtitle(cargoEmpleado)
+                </p>
+                <div class="pt-2 flex flex-wrap gap-2">
+                    @foreach (var mod in modulos.Where(m => m.Nombre != "Inicio"))
+                    {
+                        <a class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-carp-accent/80 hover:bg-carp-accent text-white text-xs font-semibold tracking-wide shadow-md transition-all border border-white/10"
+                           href="@mod.Url">@mod.Nombre</a>
+                    }
+                </div>
+            </div>
+        </section>
+
+        <!-- Métricas operativas según el área del cargo -->
+        <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            @if (cargoNorm == "Asesor comercial")
+            {
+                <div class="bg-carp-card-bg border border-carp-border rounded-2xl p-4 shadow-xs hover:shadow-sm transition-all">
+                    <p class="text-xs text-carp-muted font-medium">Cotizaciones Registradas</p>
+                    <p class="text-2xl font-bold text-carp-dark mt-1">@(ViewBag.TotalCotizaciones ?? 0)</p>
+                    <span class="text-[11px] text-carp-green font-semibold">En seguimiento comercial</span>
+                </div>
+                <div class="bg-carp-card-bg border border-carp-border rounded-2xl p-4 shadow-xs hover:shadow-sm transition-all">
+                    <p class="text-xs text-carp-muted font-medium">Clientes Activos</p>
+                    <p class="text-2xl font-bold text-carp-dark mt-1">@(ViewBag.TotalClientes ?? 0)</p>
+                    <span class="text-[11px] text-carp-muted font-semibold">Cartera registrada</span>
+                </div>
+                <div class="bg-carp-card-bg border border-carp-border rounded-2xl p-4 shadow-xs hover:shadow-sm transition-all">
+                    <p class="text-xs text-carp-muted font-medium">Pedidos Activos</p>
+                    <p class="text-2xl font-bold text-carp-dark mt-1">@(ViewBag.TotalPedidos ?? 0)</p>
+                    <span class="text-[11px] text-carp-accent font-semibold">Proyectos en marcha</span>
+                </div>
+                <div class="bg-carp-card-bg border border-carp-border rounded-2xl p-4 shadow-xs hover:shadow-sm transition-all">
+                    <p class="text-xs text-carp-muted font-medium">Pedidos Listos</p>
+                    <p class="text-2xl font-bold text-carp-dark mt-1">@(ViewBag.PedidosListos ?? 0)</p>
+                    <span class="text-[11px] text-carp-green font-semibold">Listos para entrega</span>
+                </div>
+            }
+            else if (cargoNorm == "Encargado de inventario")
+            {
+                <div class="bg-carp-card-bg border border-carp-border rounded-2xl p-4 shadow-xs hover:shadow-sm transition-all">
+                    <p class="text-xs text-carp-muted font-medium">Catálogo de Materiales</p>
+                    <p class="text-2xl font-bold text-carp-dark mt-1">@(ViewBag.TotalProductos ?? 0)</p>
+                    <span class="text-[11px] text-carp-green font-semibold">Insumos y referencias</span>
+                </div>
+                <div class="bg-carp-card-bg border border-carp-border rounded-2xl p-4 shadow-xs hover:shadow-sm transition-all">
+                    <p class="text-xs text-carp-muted font-medium">Pedidos en Fabricación</p>
+                    <p class="text-2xl font-bold text-carp-amber mt-1">@(ViewBag.PedidosFabricacion ?? 0)</p>
+                    <span class="text-[11px] text-carp-amber font-semibold">Demanda en taller</span>
+                </div>
+                <div class="bg-carp-card-bg border border-carp-border rounded-2xl p-4 shadow-xs hover:shadow-sm transition-all">
+                    <p class="text-xs text-carp-muted font-medium">Entradas a Bodega</p>
+                    <p class="text-2xl font-bold text-carp-dark mt-1">Al día</p>
+                    <span class="text-[11px] text-carp-muted font-semibold">Recepción de proveedores</span>
+                </div>
+                <div class="bg-carp-card-bg border border-carp-border rounded-2xl p-4 shadow-xs hover:shadow-sm transition-all">
+                    <p class="text-xs text-carp-muted font-medium">Salidas de Material</p>
+                    <p class="text-2xl font-bold text-carp-dark mt-1">Controlado</p>
+                    <span class="text-[11px] text-carp-green font-semibold">Despacho a operarios</span>
+                </div>
+            }
+            else if (cargoNorm == "Operario de carpintería" || cargoNorm == "Jefe de producción")
+            {
+                <div class="bg-carp-card-bg border border-carp-border rounded-2xl p-4 shadow-xs hover:shadow-sm transition-all">
+                    <p class="text-xs text-carp-muted font-medium">En Fabricación</p>
+                    <p class="text-2xl font-bold text-carp-amber mt-1">@(ViewBag.PedidosFabricacion ?? 0)</p>
+                    <span class="text-[11px] text-carp-amber font-semibold">En proceso de taller</span>
+                </div>
+                <div class="bg-carp-card-bg border border-carp-border rounded-2xl p-4 shadow-xs hover:shadow-sm transition-all">
+                    <p class="text-xs text-carp-muted font-medium">Pedidos Terminados</p>
+                    <p class="text-2xl font-bold text-carp-green mt-1">@(ViewBag.PedidosListos ?? 0)</p>
+                    <span class="text-[11px] text-carp-green font-semibold">Listos para entrega</span>
+                </div>
+                <div class="bg-carp-card-bg border border-carp-border rounded-2xl p-4 shadow-xs hover:shadow-sm transition-all">
+                    <p class="text-xs text-carp-muted font-medium">Total Pedidos Activos</p>
+                    <p class="text-2xl font-bold text-carp-dark mt-1">@(ViewBag.TotalPedidos ?? 0)</p>
+                    <span class="text-[11px] text-carp-muted font-semibold">Órdenes vigentes</span>
+                </div>
+                <div class="bg-carp-card-bg border border-carp-border rounded-2xl p-4 shadow-xs hover:shadow-sm transition-all">
+                    <p class="text-xs text-carp-muted font-medium">Materiales en Stock</p>
+                    <p class="text-2xl font-bold text-carp-dark mt-1">@(ViewBag.TotalProductos ?? 0)</p>
+                    <span class="text-[11px] text-carp-green font-semibold">Disponibles en almacén</span>
+                </div>
+            }
+            else
+            {
+                <!-- Supervisor / Diseñador -->
+                <div class="bg-carp-card-bg border border-carp-border rounded-2xl p-4 shadow-xs hover:shadow-sm transition-all">
+                    <p class="text-xs text-carp-muted font-medium">Clientes Activos</p>
+                    <p class="text-2xl font-bold text-carp-dark mt-1">@(ViewBag.TotalClientes ?? 0)</p>
+                    <span class="text-[11px] text-carp-green font-semibold">Cartera de clientes</span>
+                </div>
+                <div class="bg-carp-card-bg border border-carp-border rounded-2xl p-4 shadow-xs hover:shadow-sm transition-all">
+                    <p class="text-xs text-carp-muted font-medium">Cotizaciones</p>
+                    <p class="text-2xl font-bold text-carp-dark mt-1">@(ViewBag.TotalCotizaciones ?? 0)</p>
+                    <span class="text-[11px] text-carp-accent font-semibold">Proyectos valorizados</span>
+                </div>
+                <div class="bg-carp-card-bg border border-carp-border rounded-2xl p-4 shadow-xs hover:shadow-sm transition-all">
+                    <p class="text-xs text-carp-muted font-medium">En Fabricación</p>
+                    <p class="text-2xl font-bold text-carp-amber mt-1">@(ViewBag.PedidosFabricacion ?? 0)</p>
+                    <span class="text-[11px] text-carp-amber font-semibold">En proceso de taller</span>
+                </div>
+                <div class="bg-carp-card-bg border border-carp-border rounded-2xl p-4 shadow-xs hover:shadow-sm transition-all">
+                    <p class="text-xs text-carp-muted font-medium">Productos / Diseños</p>
+                    <p class="text-2xl font-bold text-carp-dark mt-1">@(ViewBag.TotalProductos ?? 0)</p>
+                    <span class="text-[11px] text-carp-green font-semibold">Catálogo registrado</span>
+                </div>
+            }
+        </section>
+
+        <!-- Título de sección de módulos -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2">
+            <div>
+                <h2 class="text-xl font-bold text-carp-dark">Módulos de Trabajo Asignados</h2>
+                <p class="text-xs sm:text-sm text-carp-muted">Accesos y operaciones configuradas para el puesto de <strong class="text-carp-accent">@cargoEmpleado</strong></p>
+            </div>
+            <span class="text-xs font-semibold px-3 py-1 bg-carp-badge-tan/60 text-carp-brown rounded-full self-start sm:self-auto">
+                @modulos.Count(m => m.Nombre != "Inicio") módulos principales
+            </span>
+        </div>
+
+        <!-- Grid dinámica de módulos en cuadros (Cards) -->
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            @foreach (var mod in modulos.Where(m => m.Nombre != "Inicio"))
+            {
+                <article class="dashboard-card relative bg-carp-card-bg border border-carp-border rounded-2xl p-5 sm:p-6 shadow-xs hover:shadow-md transition-all overflow-hidden flex flex-col justify-between">
+                    <div class="card-quarter-circle"></div>
+                    <div class="relative z-10 space-y-3">
+                        <div class="flex items-center gap-3.5">
+                            <div class="w-12 h-12 rounded-xl bg-carp-warm-tan/80 flex items-center justify-center text-carp-brown shrink-0 shadow-inner">
+                                @Html.Raw(GetIconSvgLg(mod.Icono))
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg text-carp-dark tracking-tight">@mod.Nombre</h3>
+                                <span class="text-[11px] text-carp-accent font-semibold">Módulo activo</span>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-carp-muted leading-relaxed">
+                            @GetCardDescription(mod.Nombre)
+                        </p>
+
+                        <ul class="space-y-1.5 pt-1 text-xs sm:text-sm">
+                            @foreach (var detalle in GetCardDetails(mod.Nombre))
+                            {
+                                <li class="flex items-center gap-2 text-carp-muted">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-carp-accent shrink-0"></span>
+                                    <span>@detalle</span>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="relative z-10 pt-4 mt-3 border-t border-carp-warm-tan/60 flex items-center justify-between">
+                        <a class="inline-flex items-center gap-1.5 text-xs font-bold text-carp-brown hover:text-carp-accent transition-colors group" href="@mod.Url">
+                            <span>Ingresar a @mod.Nombre</span>
+                            <span class="text-sm transition-transform group-hover:translate-x-1">→</span>
+                        </a>
+                        <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-carp-warm-tan text-carp-brown">@cargoEmpleado</span>
+                    </div>
+                </article>
+            }
+        </section>
+
+    </main>
+    <!-- END: MainContent -->
+
+    <!-- BEGIN: MainFooter -->
+    <footer class="bg-[#F4ECE2] border-t border-carp-border py-4 px-4 sm:px-8 mt-10">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between text-xs text-carp-muted gap-2">
+            <div>© 2024 CARPINTEC. Sistema de Gestión Integral.</div>
+            <div class="flex items-center space-x-3">
+                <span class="font-semibold text-carp-dark">Panel de @cargoEmpleado</span>
+                <span>·</span>
+                <a class="hover:text-carp-dark transition-colors" href="/DashboardEmpleado">Inicio</a>
+            </div>
+        </div>
+    </footer>
+    <!-- END: MainFooter -->
+
+    <!-- Widget soporte -->
+    <aside class="fixed bottom-6 right-6 z-50">
+        <button aria-label="Abrir chat de soporte"
+                class="w-12 h-12 p-3 bg-carp-accent hover:bg-carp-accent-hover text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center group"
+                type="button">
+            <svg class="w-6 h-6 transition-transform group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/>
+                <circle cx="8" cy="10" r="1.2"/>
+                <circle cx="12" cy="10" r="1.2"/>
+                <circle cx="16" cy="10" r="1.2"/>
+            </svg>
+        </button>
+    </aside>
+
+</body>
+</html>
+
+@functions {
+    static string GetRolDescripcion(string cargo)
+    {
+        string c = (cargo ?? "").ToLowerInvariant();
+        if (c.Contains("supervisor"))
+            return "Supervisa las diferentes áreas y consulta el estado general del sistema.";
+        if (c.Contains("asesor") || c.Contains("comercial") || c.Contains("ventas"))
+            return "Atiende clientes, realiza cotizaciones, gestiona pedidos y ventas.";
+        if (c.Contains("diseñ") || c.Contains("disen"))
+            return "Crea y modifica diseños de muebles según las necesidades del cliente.";
+        if (c.Contains("jefe") || c.Contains("producci"))
+            return "Planifica, coordina y controla los procesos de fabricación en el taller.";
+        if (c.Contains("operario") || c.Contains("carpinter"))
+            return "Ejecuta las labores de corte, ensamble, lijado y acabado de los muebles.";
+        if (c.Contains("inventario") || c.Contains("bodega") || c.Contains("almacen") || c.Contains("logist"))
+            return "Controla el stock, materiales, entradas y salidas en bodega.";
+        return "Panel operativo de gestión y seguimiento de actividades.";
+    }
+
+    static string GetHeroBadge(string cargo)
+    {
+        string c = (cargo ?? "").ToLowerInvariant();
+        if (c.Contains("supervisor")) return "SUPERVISIÓN GENERAL";
+        if (c.Contains("asesor") || c.Contains("comercial")) return "ÁREA COMERCIAL";
+        if (c.Contains("diseñ") || c.Contains("disen")) return "DISEÑO Y DESARROLLO";
+        if (c.Contains("jefe")) return "JEFATURA DE PRODUCCIÓN";
+        if (c.Contains("operario") || c.Contains("carpinter")) return "TALLER DE PRODUCCIÓN";
+        if (c.Contains("inventario") || c.Contains("bodega")) return "BODEGA E INVENTARIO";
+        return "PANEL OPERATIVO";
+    }
+
+    static string GetHeroTitle(string cargo)
+    {
+        string c = (cargo ?? "").ToLowerInvariant();
+        if (c.Contains("supervisor")) return "Supervisión y control integral de CARPINTEC";
+        if (c.Contains("asesor") || c.Contains("comercial")) return "Gestión de clientes, cotizaciones y ventas";
+        if (c.Contains("diseñ") || c.Contains("disen")) return "Diseños personalizados y modelado de muebles";
+        if (c.Contains("jefe")) return "Planificación y control de fabricación en taller";
+        if (c.Contains("operario") || c.Contains("carpinter")) return "Corte, ensamble y acabado artesanal de muebles";
+        if (c.Contains("inventario") || c.Contains("bodega")) return "Control de stock, materiales, entradas y salidas";
+        return "Diseñamos muebles personalizados para transformar tus espacios";
+    }
+
+    static string GetHeroSubtitle(string cargo)
+    {
+        string c = (cargo ?? "").ToLowerInvariant();
+        if (c.Contains("supervisor")) return "Monitorea clientes, pedidos, diseños, producción, inventario y reportes en tiempo real.";
+        if (c.Contains("asesor") || c.Contains("comercial")) return "Atiende a tus clientes, genera propuestas comerciales y haz seguimiento a pedidos activos.";
+        if (c.Contains("diseñ") || c.Contains("disen")) return "Transforma ideas en planos y especificaciones técnicas listas para fabricación.";
+        if (c.Contains("jefe")) return "Coordina órdenes de trabajo, supervisa tiempos y gestiona recursos en taller.";
+        if (c.Contains("operario") || c.Contains("carpinter")) return "Consulta tus órdenes en fabricación, tareas asignadas y estados de pedidos.";
+        if (c.Contains("inventario") || c.Contains("bodega")) return "Supervisa existencias, registra recepción de insumos y entrega de materiales.";
+        return "Accede a tus herramientas de trabajo y mantén la calidad en cada proyecto.";
+    }
+
+    static string GetIconSvg(string name) => name switch {
+        "home"       => "<svg class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path d=\"M3 12l2-2m0 0l7-7 7 7m-9 2v8m0 0H7a2 2 0 01-2-2v-6m10 6h-3m3 0a2 2 0 002-2v-6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/></svg>",
+        "users"      => "<svg class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path d=\"M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/></svg>",
+        "document"   => "<svg class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path d=\"M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/></svg>",
+        "shopping"   => "<svg class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path d=\"M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/></svg>",
+        "chart-bar"  => "<svg class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path d=\"M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/></svg>",
+        "pencil"     => "<svg class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path d=\"M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/></svg>",
+        "cog"        => "<svg class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path d=\"M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.8\"/><path d=\"M15 12a3 3 0 11-6 0 3 3 0 016 0z\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.8\"/></svg>",
+        "cube"       => "<svg class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path d=\"M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/></svg>",
+        "chart"      => "<svg class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path d=\"M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/></svg>",
+        "clipboard"  => "<svg class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/></svg>",
+        "layers"     => "<svg class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path d=\"M12 2l10 6-10 6L2 8l10-6zm0 12l10-6m-10 6L2 14m10 4l10-6m-10 6L2 18\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/></svg>",
+        "arrow-down" => "<svg class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path d=\"M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/></svg>",
+        "arrow-up"   => "<svg class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path d=\"M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"/></svg>",
+        _            => "<svg class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><circle cx=\"12\" cy=\"12\" r=\"10\" stroke-width=\"2\"/></svg>",
+    };
+
+    static string GetIconSvgLg(string name) => GetIconSvg(name).Replace("w-5 h-5", "w-6 h-6");
+
+    static string GetCardDescription(string nombre)
+    {
+        string n = (nombre ?? "").ToLowerInvariant()
+            .Replace("ó", "o").Replace("á", "a").Replace("é", "e").Replace("í", "i").Replace("ú", "u");
+
+        if (n.Contains("cliente"))
+            return "Gestiona la información, historial y seguimiento de clientes.";
+        if (n.Contains("cotizac"))
+            return "Crea, revisa y administra propuestas y cotizaciones de proyectos.";
+        if (n.Contains("pedido"))
+            return "Controla el estado y seguimiento de pedidos activos en sistema.";
+        if (n.Contains("venta"))
+            return "Consulta métricas, cierres y reportes comerciales del mes.";
+        if (n.Contains("diseñ") || n.Contains("disen"))
+            return "Administra planos, renders y especificaciones técnicas de muebles.";
+        if (n.Contains("producc"))
+            return "Supervisa órdenes de fabricación y el avance operativo en taller.";
+        if (n.Contains("inventar"))
+            return "Revisa existencias, alertas de stock y catálogo de bodega.";
+        if (n.Contains("reporte"))
+            return "Analiza indicadores clave de desempeño, tiempos y resultados.";
+        if (n.Contains("tarea"))
+            return "Revisa y gestiona las labores asignadas a tu puesto de trabajo.";
+        if (n.Contains("material"))
+            return "Controla el catálogo de materias primas, maderas y herrajes.";
+        if (n.Contains("entrada"))
+            return "Registra el ingreso y recepción de nuevos materiales a bodega.";
+        if (n.Contains("salida"))
+            return "Registra el consumo y despacho de insumos hacia producción.";
+        return "Accede a las funciones del módulo correspondiente.";
+    }
+
+    static IEnumerable<string> GetCardDetails(string nombre)
+    {
+        string n = (nombre ?? "").ToLowerInvariant()
+            .Replace("ó", "o").Replace("á", "a").Replace("é", "e").Replace("í", "i").Replace("ú", "u");
+
+        if (n.Contains("cliente"))
+            return new[] { "Ver listado de clientes activos", "Historial de compras y pedidos", "Datos de contacto y seguimiento" };
+        if (n.Contains("cotizac"))
+            return new[] { "Crear y gestionar cotizaciones", "Revisar cotizaciones pendientes", "Estado de aprobación por cliente" };
+        if (n.Contains("pedido"))
+            return new[] { "Pedidos en fabricación y lista", "Seguimiento de tiempos y etapas", "Ver pedidos asignados" };
+        if (n.Contains("venta"))
+            return new[] { "Resumen de ventas del mes", "Metas y cumplimiento comercial", "Reportes de cierre de negocio" };
+        if (n.Contains("diseñ") || n.Contains("disen"))
+            return new[] { "Planos y renders de productos", "Diseños aprobados por cliente", "Archivos y especificaciones técnicas" };
+        if (n.Contains("producc"))
+            return new[] { "Órdenes activas en el taller", "Progreso por etapa de fabricación", "Asignación de tareas operativas" };
+        if (n.Contains("inventar"))
+            return new[] { "Stock actual de materiales", "Alertas de inventario bajo", "Movimientos de entrada y salida" };
+        if (n.Contains("reporte"))
+            return new[] { "Indicadores de eficiencia", "Producción y desempeño del período", "Exportar informes consolidados" };
+        if (n.Contains("tarea"))
+            return new[] { "Tareas asignadas para hoy", "Avance de órdenes en proceso", "Registro de labores finalizadas" };
+        if (n.Contains("material"))
+            return new[] { "Catálogo de materias primas", "Maderas, tableros y herrajes", "Disponibilidad y stock mínimo" };
+        if (n.Contains("entrada"))
+            return new[] { "Registrar recepción de materiales", "Validar cantidades con factura", "Historial de ingresos a bodega" };
+        if (n.Contains("salida"))
+            return new[] { "Registrar entrega a operarios", "Asociar material a orden de pedido", "Historial de despachos" };
+        return new[] { "Acceder a las funciones del módulo", "Ver información actualizada" };
+    }
+}

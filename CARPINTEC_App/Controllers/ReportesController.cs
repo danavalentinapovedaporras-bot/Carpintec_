@@ -1,6 +1,7 @@
 using CARPINTEC_App.Data;
 using CARPINTEC_App.Models;
 using CARPINTEC_App.Models.ViewModels;
+using CARPINTEC_App.Filters;
 using ClosedXML.Excel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ using System.Globalization;
 namespace CARPINTEC_App.Controllers
 {
     [Authorize]
+    [PermisoCargo("Reportes")]
     public class ReportesController : Controller
     {
         private readonly CarpintecContext _context;

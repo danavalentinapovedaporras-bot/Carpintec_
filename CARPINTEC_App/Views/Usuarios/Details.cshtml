@@ -1,4 +1,4 @@
-﻿@model CARPINTEC_App.Models.Usuario
+@model CARPINTEC_App.Models.Usuario
 
 @{
     Layout = null;
@@ -99,6 +99,44 @@
                        readonly />
 
             </div>
+
+            @{
+                var empleado = Model.Empleados.FirstOrDefault(e => e.Estado == "Activo") 
+                              ?? Model.Empleados.FirstOrDefault();
+            }
+
+            @if (empleado != null)
+            {
+                <div class="col-12 mt-3 p-4 rounded-3 border" style="background-color: #fdfaf6; border-color: #D2B48C !important;">
+                    <h5 class="mb-3" style="color: #7a4f24;">Información de Empleado</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <label>Puesto / Cargo</label>
+                            <input class="form-control fw-bold" value="@empleado.Cargo" readonly />
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label>Documento</label>
+                            <input class="form-control" value="@empleado.TipoDocumento @empleado.Documento" readonly />
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label>Teléfono</label>
+                            <input class="form-control" value="@(string.IsNullOrEmpty(empleado.Telefono) ? "No registrado" : empleado.Telefono)" readonly />
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label>Dirección</label>
+                            <input class="form-control" value="@(string.IsNullOrEmpty(empleado.Direccion) ? "No registrada" : empleado.Direccion)" readonly />
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label>Fecha de Ingreso</label>
+                            <input class="form-control" value="@empleado.FechaIngreso.ToString("yyyy-MM-dd")" readonly />
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label>Salario</label>
+                            <input class="form-control fw-bold text-success" value="@(empleado.Salario.HasValue ? "$" + empleado.Salario.Value.ToString("N0") : "No asignado")" readonly />
+                        </div>
+                    </div>
+                </div>
+            }
 
         </div>
 
