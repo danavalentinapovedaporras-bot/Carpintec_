@@ -1,5 +1,6 @@
 using CARPINTEC_App.Data;
 using CARPINTEC_App.Models;
+using CARPINTEC_App.Filters;
 using ClosedXML.Excel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace CARPINTEC_App.Controllers
 {
     [Authorize]
+    [PermisoCargo("Pedidos")]
     public class PedidosController : Controller
     {
         private readonly CarpintecContext _context;

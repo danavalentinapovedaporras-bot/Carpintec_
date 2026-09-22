@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CARPINTEC_App.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Administrador")]
     public class ConfiguracionController : Controller
     {
         private readonly CarpintecContext _context;

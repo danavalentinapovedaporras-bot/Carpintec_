@@ -1,4 +1,4 @@
-﻿@model CARPINTEC_App.Models.Usuario
+@model CARPINTEC_App.Models.ViewModels.UsuarioGestionViewModel
 
 @{
     Layout = null;
@@ -14,87 +14,185 @@
     <title>Editar Usuario</title>
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
 
     <style>
-            body {
-                background: #ececec;
-                font-family: Arial, Helvetica, sans-serif;
-            }
+        body {
+            background: #ececec;
+            font-family: Arial, Helvetica, sans-serif;
+        }
 
-            .hoja {
-                width: 900px;
-                margin: 40px auto;
-                background: white;
-                padding: 40px;
-                border-radius: 15px;
-                box-shadow: 0 0 20px rgba(0,0,0,.20);
-            }
+        .hoja {
+            width: 900px;
+            max-width: 95%;
+            margin: 40px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,.20);
+        }
 
-            h2 {
-                color: #7a4f24;
-                margin-bottom: 30px;
-                text-align: center;
-            }
+        h2 {
+            color: #7a4f24;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .seccion-empleado {
+            background-color: #fdfaf6;
+            border: 2px dashed #D2B48C;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 
 <body>
 
     <div class="hoja">
+        <h2>Editar Usuario</h2>
 
-        <form asp-action="Edit" method="post">
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger mb-4">
+                @TempData["Error"]
+            </div>
+        }
+
+        <form asp-controller="Usuarios" asp-action="EditForm" method="post">
+            @Html.AntiForgeryToken()
 
             <input type="hidden" asp-for="IdUsuario" />
 
-            <div class="mb-3">
-                <label class="form-label">Nombre</label>
-                <input asp-for="Nombre" class="form-control" />
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Nombre</label>
+                    <input asp-for="Nombre" class="form-control" required />
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Apellido</label>
+                    <input asp-for="Apellido" class="form-control" required />
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Correo electrónico</label>
+                    <input asp-for="Correo" type="email" class="form-control" required />
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Rol</label>
+                    <select asp-for="Rol" id="rolSelectEdit" class="form-select" onchange="toggleEmpleadoCamposEdit()" required>
+                        <option value="Cliente">Cliente</option>
+                        <option value="Empleado">Empleado</option>
+                        <option value="Administrador">Administrador</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Estado</label>
+                    <select asp-for="Estado" class="form-select">
+                        <option value="Activo">Activo</option>
+                        <option value="Inactivo">Inactivo</option>
+                        <option value="Bloqueado">Bloqueado</option>
+                    </select>
+                </div>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label">Apellido</label>
-                <input asp-for="Apellido" class="form-control" />
-            </div>
+            <!-- SECCIÓN DATOS DE EMPLEADO -->
+            <div id="seccionEmpleadoEdit" class="seccion-empleado @(Model.Rol == "Empleado" ? "" : "d-none")">
+                <h5 class="mb-3" style="color: #7a4f24;">
+                    <span class="material-symbols-outlined align-middle me-1">badge</span>
+                    Información de Empleado
+                </h5>
 
-            <div class="mb-3">
-                <label class="form-label">Correo</label>
-                <input asp-for="Correo" class="form-control" />
-            </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Tipo de Documento</label>
+                        <select asp-for="TipoDocumento" class="form-select">
+                            <option value="CC">Cédula de Ciudadanía (CC)</option>
+                            <option value="CE">Cédula de Extranjería (CE)</option>
+                            <option value="TI">Tarjeta de Identidad (TI)</option>
+                            <option value="Pasaporte">Pasaporte</option>
+                        </select>
+                    </div>
 
-            <div class="mb-3">
-                <label class="form-label">Rol</label>
-                <input asp-for="Rol" class="form-control" />
-            </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Número de Documento *</label>
+                        <input asp-for="Documento" id="docInputEdit" class="form-control" placeholder="Ej: 1020304050" />
+                    </div>
 
-            <div class="mb-3">
-                <label class="form-label">Estado</label>
-                <select asp-for="Estado" class="form-select">
-                    <option value="Activo">Activo</option>
-                    <option value="Inactivo">Inactivo</option>
-                </select>
-            </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Puesto / Cargo *</label>
+                        <select asp-for="Cargo" id="cargoSelectEdit" class="form-select">
+                            <option value="">Seleccione cargo...</option>
+                            <option value="Supervisor">Supervisor</option>
+                            <option value="Asesor comercial">Asesor comercial</option>
+                            <option value="Diseñador de muebles">Diseñador de muebles</option>
+                            <option value="Jefe de producción">Jefe de producción</option>
+                            <option value="Operario de carpintería">Operario de carpintería</option>
+                            <option value="Encargado de inventario">Encargado de inventario</option>
+                        </select>
+                    </div>
 
-            <div class="mb-3">
-                <label class="form-label">Contraseña</label>
-                <input asp-for="Contraseña" class="form-control" />
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Teléfono</label>
+                        <input asp-for="Telefono" class="form-control" placeholder="Ej: 3101234567" />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Dirección</label>
+                        <input asp-for="Direccion" class="form-control" placeholder="Ej: Calle 10 # 20-30" />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Fecha de Ingreso</label>
+                        <input asp-for="FechaIngreso" type="date" class="form-control" />
+                    </div>
+
+                    <div class="col-12 mb-2">
+                        <label class="form-label fw-bold">Salario Mensual ($)</label>
+                        <input asp-for="Salario" type="number" step="0.01" min="0" class="form-control" placeholder="Ej: 1500000" />
+                    </div>
+                </div>
             </div>
 
             <div class="text-end mt-4">
-
-                <a asp-action="Index" class="btn btn-secondary">
+                <a asp-action="Index" class="btn btn-secondary me-2">
                     Cancelar
                 </a>
 
-                <button type="submit" class="btn btn-warning">
+                <button type="submit" class="btn btn-warning fw-bold">
                     Guardar Cambios
                 </button>
-
             </div>
-
         </form>
-
     </div>
 
+    <script>
+        function toggleEmpleadoCamposEdit() {
+            const rol = document.getElementById("rolSelectEdit").value;
+            const seccion = document.getElementById("seccionEmpleadoEdit");
+            const doc = document.getElementById("docInputEdit");
+            const cargo = document.getElementById("cargoSelectEdit");
+
+            if (rol === "Empleado") {
+                seccion.classList.remove("d-none");
+                if (doc) doc.required = true;
+                if (cargo) cargo.required = true;
+            } else {
+                seccion.classList.add("d-none");
+                if (doc) doc.required = false;
+                if (cargo) cargo.required = false;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            toggleEmpleadoCamposEdit();
+        });
+    </script>
 </body>
 
 </html>

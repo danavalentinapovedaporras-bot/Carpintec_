@@ -90,6 +90,22 @@
 
 
 
+<!-- ALERTAS TEMP DATA -->
+@if (TempData["Success"] != null)
+{
+    <div class="mb-6 p-4 rounded-2xl bg-green-50 border border-green-200 text-green-800 flex items-center gap-3 shadow-sm">
+        <span class="material-symbols-outlined text-green-600">check_circle</span>
+        <span class="font-bold">@TempData["Success"]</span>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="mb-6 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-800 flex items-center gap-3 shadow-sm">
+        <span class="material-symbols-outlined text-red-600">error</span>
+        <span class="font-bold">@TempData["Error"]</span>
+    </div>
+}
+
 <!-- INICIO: Cuadro beige estilo Dashboard para encabezado -->
 <div class="mb-8 bg-[#D2B48C] text-[#442a22] rounded-2xl p-6 shadow-md" style="background-color: #D2B48C;">
 
@@ -541,7 +557,7 @@ Acciones
 
 
 
-                <div class="bg-white w-full max-w-3xl rounded-3xl shadow-xl p-8">
+                <div class="bg-white w-full max-w-3xl rounded-3xl shadow-xl p-8 max-h-[90vh] overflow-y-auto">
 
 
 
@@ -719,60 +735,96 @@ Acciones
 
 
                                 <select name="Rol"
+                                        id="crearRol"
+                                        onchange="cambiarRolCrear()"
                                         class="w-full border rounded-xl px-4 py-3"
                                         required>
-
 
                                     <option value="">
                                         Seleccione rol
                                     </option>
 
-
-                                    <option value="Administrador">
-
-                                        Administrador
-
+                                    <option value="Cliente">
+                                        Cliente
                                     </option>
-
-
 
                                     <option value="Empleado">
-
                                         Empleado
-
                                     </option>
 
-
-
-                                    <option value="Cliente">
-
-                                        Cliente
-
+                                    <option value="Administrador">
+                                        Administrador
                                     </option>
-
-
 
                                 </select>
-
 
                             </div>
 
                             <!-- ESTADO -->
 
-
                             <div>
 
                                 <label class="font-semibold">
-
                                     Estado
-
                                 </label>
 
                                 <input type="text"
+                                       name="Estado"
                                        value="Activo"
                                        class="w-full border rounded-xl px-4 py-3 bg-gray-100"
                                        readonly>
 
+                            </div>
+
+                            <!-- SECCIÓN DINÁMICA DE EMPLEADO -->
+                            <div id="seccionEmpleadoCrear" class="hidden col-span-1 md:col-span-2 border-t-2 border-[#D2B48C] pt-4 mt-2 bg-amber-50/40 p-4 rounded-2xl">
+                                <div class="flex items-center gap-2 mb-3 text-[#442a22]">
+                                    <span class="material-symbols-outlined text-lg">badge</span>
+                                    <h3 class="font-bold text-base">Datos del Empleado</h3>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="font-semibold text-sm">Tipo de Documento</label>
+                                        <select name="TipoDocumento" id="crearTipoDocumento" class="w-full border rounded-xl px-4 py-2.5 mt-1 bg-white">
+                                            <option value="CC">Cédula de Ciudadanía (CC)</option>
+                                            <option value="CE">Cédula de Extranjería (CE)</option>
+                                            <option value="TI">Tarjeta de Identidad (TI)</option>
+                                            <option value="Pasaporte">Pasaporte</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="font-semibold text-sm">Número de Documento *</label>
+                                        <input name="Documento" id="crearDocumento" type="text" class="w-full border rounded-xl px-4 py-2.5 mt-1 bg-white" placeholder="Ej: 1020304050">
+                                    </div>
+                                    <div>
+                                        <label class="font-semibold text-sm">Puesto / Cargo *</label>
+                                        <select name="Cargo" id="crearCargo" class="w-full border rounded-xl px-4 py-2.5 mt-1 bg-white">
+                                            <option value="">Seleccione cargo...</option>
+                                            <option value="Supervisor">Supervisor</option>
+                                            <option value="Asesor comercial">Asesor comercial</option>
+                                            <option value="Diseñador de muebles">Diseñador de muebles</option>
+                                            <option value="Jefe de producción">Jefe de producción</option>
+                                            <option value="Operario de carpintería">Operario de carpintería</option>
+                                            <option value="Encargado de inventario">Encargado de inventario</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="font-semibold text-sm">Teléfono</label>
+                                        <input name="Telefono" id="crearTelefono" type="text" class="w-full border rounded-xl px-4 py-2.5 mt-1 bg-white" placeholder="Ej: 3101234567">
+                                    </div>
+                                    <div>
+                                        <label class="font-semibold text-sm">Dirección</label>
+                                        <input name="Direccion" id="crearDireccion" type="text" class="w-full border rounded-xl px-4 py-2.5 mt-1 bg-white" placeholder="Ej: Calle 10 # 20-30">
+                                    </div>
+                                    <div>
+                                        <label class="font-semibold text-sm">Fecha de Ingreso</label>
+                                        <input name="FechaIngreso" id="crearFechaIngreso" type="date" value="@DateTime.Today.ToString("yyyy-MM-dd")" class="w-full border rounded-xl px-4 py-2.5 mt-1 bg-white">
+                                    </div>
+                                    <div class="col-span-1 md:col-span-2">
+                                        <label class="font-semibold text-sm">Salario Mensual ($)</label>
+                                        <input name="Salario" id="crearSalario" type="number" step="0.01" min="0" class="w-full border rounded-xl px-4 py-2.5 mt-1 bg-white" placeholder="Ej: 1500000">
+                                    </div>
+                                </div>
                             </div>
 
                         </div>
@@ -827,7 +879,7 @@ MODAL VER USUARIO
             <div id="modalVer"
                  class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
 
-                <div class="bg-white rounded-3xl shadow-xl w-full max-w-2xl p-8">
+                <div class="bg-white rounded-3xl shadow-xl w-full max-w-2xl p-8 max-h-[90vh] overflow-y-auto">
 
                     <div class="flex justify-between items-center mb-6">
 
@@ -873,11 +925,45 @@ MODAL VER USUARIO
                                    readonly>
                         </div>
 
-                        <div>
+                        <div class="col-span-2">
                             <label class="font-semibold">Estado</label>
                             <input id="verEstado"
                                    class="w-full border rounded-xl px-4 py-3 bg-gray-100"
                                    readonly>
+                        </div>
+
+                        <!-- DETALLES EMPLEADO EN VER -->
+                        <div id="seccionEmpleadoVer" class="hidden col-span-2 border-t-2 border-[#D2B48C] pt-4 mt-2 bg-amber-50/40 p-4 rounded-2xl">
+                            <div class="flex items-center gap-2 mb-3 text-[#442a22]">
+                                <span class="material-symbols-outlined text-lg">badge</span>
+                                <h3 class="font-bold text-base">Datos de Empleado</h3>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="font-semibold text-sm">Puesto / Cargo</label>
+                                    <input id="verCargo" class="w-full border rounded-xl px-4 py-2.5 bg-gray-100 mt-1 font-bold text-[#442a22]" readonly>
+                                </div>
+                                <div>
+                                    <label class="font-semibold text-sm">Documento</label>
+                                    <input id="verDocumento" class="w-full border rounded-xl px-4 py-2.5 bg-gray-100 mt-1 font-semibold" readonly>
+                                </div>
+                                <div>
+                                    <label class="font-semibold text-sm">Teléfono</label>
+                                    <input id="verTelefono" class="w-full border rounded-xl px-4 py-2.5 bg-gray-100 mt-1 font-semibold" readonly>
+                                </div>
+                                <div>
+                                    <label class="font-semibold text-sm">Dirección</label>
+                                    <input id="verDireccion" class="w-full border rounded-xl px-4 py-2.5 bg-gray-100 mt-1 font-semibold" readonly>
+                                </div>
+                                <div>
+                                    <label class="font-semibold text-sm">Fecha Ingreso</label>
+                                    <input id="verFechaIngreso" class="w-full border rounded-xl px-4 py-2.5 bg-gray-100 mt-1 font-semibold" readonly>
+                                </div>
+                                <div>
+                                    <label class="font-semibold text-sm">Salario Mensual</label>
+                                    <input id="verSalario" class="w-full border rounded-xl px-4 py-2.5 bg-gray-100 mt-1 font-bold text-green-700" readonly>
+                                </div>
+                            </div>
                         </div>
 
                     </div>
@@ -893,7 +979,7 @@ MODAL EDITAR
             <div id="modalEditar"
                  class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
 
-                <div class="bg-white rounded-3xl shadow-xl w-full max-w-3xl p-8">
+                <div class="bg-white rounded-3xl shadow-xl w-full max-w-3xl p-8 max-h-[90vh] overflow-y-auto">
 
                     <div class="flex justify-between mb-6">
 
@@ -924,59 +1010,110 @@ MODAL EDITAR
 
 
                         <div>
-                            <label>Nombre</label>
+                            <label class="font-semibold text-sm">Nombre</label>
 
                             <input id="editNombre"
                                    name="Nombre"
-                                   class="border rounded-xl px-4 py-3 w-full">
+                                   class="border rounded-xl px-4 py-3 w-full" required>
 
                         </div>
 
 
                         <div>
-                            <label>Apellido</label>
+                            <label class="font-semibold text-sm">Apellido</label>
 
                             <input id="editApellido"
                                    name="Apellido"
-                                   class="border rounded-xl px-4 py-3 w-full">
+                                   class="border rounded-xl px-4 py-3 w-full" required>
 
                         </div>
 
 
                         <div>
-                            <label>Correo</label>
+                            <label class="font-semibold text-sm">Correo</label>
 
                             <input id="editCorreo"
                                    name="Correo"
-                                   class="border rounded-xl px-4 py-3 w-full">
+                                   type="email"
+                                   class="border rounded-xl px-4 py-3 w-full" required>
 
                         </div>
 
 
                         <div>
-                            <label>Rol</label>
+                            <label class="font-semibold text-sm">Rol</label>
 
                             <select id="editRol"
                                     name="Rol"
-                                    class="border rounded-xl px-4 py-3 w-full">
+                                    onchange="cambiarRolEditar()"
+                                    class="border rounded-xl px-4 py-3 w-full" required>
 
-                                <option value="Administrador">
-                                    Administrador
+                                <option value="Cliente">
+                                    Cliente
                                 </option>
 
                                 <option value="Empleado">
                                     Empleado
                                 </option>
 
-                                <option value="Cliente">
-                                    Cliente
+                                <option value="Administrador">
+                                    Administrador
                                 </option>
-
 
                             </select>
 
                         </div>
 
+                        <!-- SECCIÓN DINÁMICA DE EMPLEADO EDITAR -->
+                        <div id="seccionEmpleadoEditar" class="hidden col-span-2 border-t-2 border-[#D2B48C] pt-4 mt-2 bg-amber-50/40 p-4 rounded-2xl">
+                            <div class="flex items-center gap-2 mb-3 text-[#442a22]">
+                                <span class="material-symbols-outlined text-lg">badge</span>
+                                <h3 class="font-bold text-base">Datos del Empleado</h3>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="font-semibold text-sm">Tipo de Documento</label>
+                                    <select id="editTipoDocumento" class="w-full border rounded-xl px-4 py-2.5 mt-1 bg-white">
+                                        <option value="CC">Cédula de Ciudadanía (CC)</option>
+                                        <option value="CE">Cédula de Extranjería (CE)</option>
+                                        <option value="TI">Tarjeta de Identidad (TI)</option>
+                                        <option value="Pasaporte">Pasaporte</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="font-semibold text-sm">Número de Documento *</label>
+                                    <input id="editDocumento" type="text" class="w-full border rounded-xl px-4 py-2.5 mt-1 bg-white" placeholder="Ej: 1020304050">
+                                </div>
+                                <div>
+                                    <label class="font-semibold text-sm">Puesto / Cargo *</label>
+                                    <select id="editCargo" class="w-full border rounded-xl px-4 py-2.5 mt-1 bg-white">
+                                        <option value="">Seleccione cargo...</option>
+                                        <option value="Supervisor">Supervisor</option>
+                                        <option value="Asesor comercial">Asesor comercial</option>
+                                        <option value="Diseñador de muebles">Diseñador de muebles</option>
+                                        <option value="Jefe de producción">Jefe de producción</option>
+                                        <option value="Operario de carpintería">Operario de carpintería</option>
+                                        <option value="Encargado de inventario">Encargado de inventario</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="font-semibold text-sm">Teléfono</label>
+                                    <input id="editTelefono" type="text" class="w-full border rounded-xl px-4 py-2.5 mt-1 bg-white" placeholder="Ej: 3101234567">
+                                </div>
+                                <div>
+                                    <label class="font-semibold text-sm">Dirección</label>
+                                    <input id="editDireccion" type="text" class="w-full border rounded-xl px-4 py-2.5 mt-1 bg-white" placeholder="Ej: Calle 10 # 20-30">
+                                </div>
+                                <div>
+                                    <label class="font-semibold text-sm">Fecha de Ingreso</label>
+                                    <input id="editFechaIngreso" type="date" class="w-full border rounded-xl px-4 py-2.5 mt-1 bg-white">
+                                </div>
+                                <div class="col-span-2">
+                                    <label class="font-semibold text-sm">Salario Mensual ($)</label>
+                                    <input id="editSalario" type="number" step="0.01" min="0" class="w-full border rounded-xl px-4 py-2.5 mt-1 bg-white" placeholder="Ej: 1500000">
+                                </div>
+                            </div>
+                        </div>
 
                     </div>
 
@@ -1107,175 +1244,199 @@ MODAL ESTADO
                 // ======================
 
                 function abrirModalUsuario() {
-
                     let modal = document.getElementById("modalUsuario");
-
                     modal.classList.remove("hidden");
                     modal.classList.add("flex");
-
+                    cambiarRolCrear();
                 }
-
 
                 function cerrarModalUsuario() {
-
                     let modal = document.getElementById("modalUsuario");
-
                     modal.classList.add("hidden");
                     modal.classList.remove("flex");
-
                 }
 
+                function cambiarRolCrear() {
+                    const rolSelect = document.getElementById("crearRol");
+                    const seccion = document.getElementById("seccionEmpleadoCrear");
+                    const docInput = document.getElementById("crearDocumento");
+                    const cargoSelect = document.getElementById("crearCargo");
+                    if (!rolSelect || !seccion) return;
 
+                    if (rolSelect.value === "Empleado") {
+                        seccion.classList.remove("hidden");
+                        if (docInput) docInput.required = true;
+                        if (cargoSelect) cargoSelect.required = true;
+                    } else {
+                        seccion.classList.add("hidden");
+                        if (docInput) docInput.required = false;
+                        if (cargoSelect) cargoSelect.required = false;
+                    }
+                }
 
                 // ======================
                 // MODAL VER USUARIO
                 // ======================
 
                 function abrirModalVer(id) {
+                    fetch('/Usuarios/ObtenerUsuario?id=' + id)
+                    .then(response => {
+                        if (!response.ok) throw new Error("No se pudo obtener la información.");
+                        return response.json();
+                    })
+                    .then(data => {
+                        document.getElementById("verNombre").value = data.nombre || '';
+                        document.getElementById("verApellido").value = data.apellido || '';
+                        document.getElementById("verCorreo").value = data.correo || '';
+                        document.getElementById("verRol").value = data.rol || '';
+                        document.getElementById("verEstado").value = data.estado || '';
 
-    fetch('/Usuarios/ObtenerUsuario?id=' + id)
-    .then(response => response.json())
-    .then(data => {
+                        const seccionEmp = document.getElementById("seccionEmpleadoVer");
+                        if (data.rol === "Empleado") {
+                            seccionEmp.classList.remove("hidden");
+                            document.getElementById("verCargo").value = data.cargo || 'No asignado';
+                            document.getElementById("verDocumento").value = (data.tipoDocumento ? data.tipoDocumento + ' ' : '') + (data.documento || 'No registrado');
+                            document.getElementById("verTelefono").value = data.telefono || 'No registrado';
+                            document.getElementById("verDireccion").value = data.direccion || 'No registrada';
+                            document.getElementById("verFechaIngreso").value = data.fechaIngreso || 'No registrada';
+                            document.getElementById("verSalario").value = data.salario != null ? '$' + Number(data.salario).toLocaleString('es-CO') : 'No asignado';
+                        } else {
+                            seccionEmp.classList.add("hidden");
+                        }
 
-
-        document.getElementById("verNombre").value = data.nombre;
-
-        document.getElementById("verApellido").value = data.apellido;
-
-        document.getElementById("verCorreo").value = data.correo;
-
-        document.getElementById("verRol").value = data.rol;
-
-        document.getElementById("verEstado").value = data.estado;
-
-
-
-        let modal = document.getElementById("modalVer");
-
-        modal.classList.remove("hidden");
-
-        modal.classList.add("flex");
-
-
-    })
-    .catch(error => {
-
-        console.log(error);
-
-    });
-
-}
-
-
-                function cerrarModalVer() {
-
-                    let modal = document.getElementById("modalVer");
-
-                    modal.classList.add("hidden");
-                    modal.classList.remove("flex");
-
+                        let modal = document.getElementById("modalVer");
+                        modal.classList.remove("hidden");
+                        modal.classList.add("flex");
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        alert("Error al obtener datos del usuario.");
+                    });
                 }
 
-
+                function cerrarModalVer() {
+                    let modal = document.getElementById("modalVer");
+                    modal.classList.add("hidden");
+                    modal.classList.remove("flex");
+                }
 
                 // ======================
                 // MODAL EDITAR USUARIO
                 // ======================
 
-               function abrirModalEditar(id) {
+                function cambiarRolEditar() {
+                    const rolSelect = document.getElementById("editRol");
+                    const seccion = document.getElementById("seccionEmpleadoEditar");
+                    if (!rolSelect || !seccion) return;
 
+                    if (rolSelect.value === "Empleado") {
+                        seccion.classList.remove("hidden");
+                    } else {
+                        seccion.classList.add("hidden");
+                    }
+                }
 
-    fetch('/Usuarios/ObtenerUsuario?id=' + id)
+                function abrirModalEditar(id) {
+                    fetch('/Usuarios/ObtenerUsuario?id=' + id)
+                    .then(response => {
+                        if (!response.ok) throw new Error("No se pudo obtener el usuario.");
+                        return response.json();
+                    })
+                    .then(data => {
+                        document.getElementById("editIdUsuario").value = data.idUsuario;
+                        document.getElementById("editNombre").value = data.nombre || '';
+                        document.getElementById("editApellido").value = data.apellido || '';
+                        document.getElementById("editCorreo").value = data.correo || '';
+                        document.getElementById("editRol").value = data.rol || 'Cliente';
 
-    .then(response => response.json())
+                        const seccionEmp = document.getElementById("seccionEmpleadoEditar");
+                        if (data.rol === "Empleado") {
+                            seccionEmp.classList.remove("hidden");
+                            document.getElementById("editTipoDocumento").value = data.tipoDocumento || 'CC';
+                            document.getElementById("editDocumento").value = data.documento || '';
+                            document.getElementById("editCargo").value = data.cargo || '';
+                            document.getElementById("editTelefono").value = data.telefono || '';
+                            document.getElementById("editDireccion").value = data.direccion || '';
+                            document.getElementById("editFechaIngreso").value = data.fechaIngreso || '';
+                            document.getElementById("editSalario").value = data.salario != null ? data.salario : '';
+                        } else {
+                            seccionEmp.classList.add("hidden");
+                            document.getElementById("editTipoDocumento").value = 'CC';
+                            document.getElementById("editDocumento").value = '';
+                            document.getElementById("editCargo").value = '';
+                            document.getElementById("editTelefono").value = '';
+                            document.getElementById("editDireccion").value = '';
+                            document.getElementById("editFechaIngreso").value = '';
+                            document.getElementById("editSalario").value = '';
+                        }
 
-    .then(data => {
-
-
-        document.getElementById("editIdUsuario").value = data.idUsuario;
-
-        document.getElementById("editNombre").value = data.nombre;
-
-        document.getElementById("editApellido").value = data.apellido;
-
-        document.getElementById("editCorreo").value = data.correo;
-
-        document.getElementById("editRol").value = data.rol;
-
-
-
-        let modal = document.getElementById("modalEditar");
-
-        modal.classList.remove("hidden");
-
-        modal.classList.add("flex");
-
-
-    })
-
-    .catch(error => {
-
-        console.log(error);
-
-    });
-
-}
+                        let modal = document.getElementById("modalEditar");
+                        modal.classList.remove("hidden");
+                        modal.classList.add("flex");
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        alert("Error al cargar la información del usuario.");
+                    });
+                }
 
                 function cerrarModalEditar() {
-
                     let modal = document.getElementById("modalEditar");
-
                     modal.classList.add("hidden");
                     modal.classList.remove("flex");
-
                 }
-        function guardarUsuarioEditado() {
 
+                function guardarUsuarioEditado() {
+                    const rol = document.getElementById("editRol").value;
+                    const documento = document.getElementById("editDocumento").value.trim();
+                    const cargo = document.getElementById("editCargo").value;
 
-            let usuario = {
-
-                IdUsuario: document.getElementById("editIdUsuario").value,
-
-                Nombre: document.getElementById("editNombre").value,
-
-                Apellido: document.getElementById("editApellido").value,
-
-                Correo: document.getElementById("editCorreo").value,
-
-                Rol: document.getElementById("editRol").value
-
-            };
-
-
-            fetch('/Usuarios/Edit', {
-
-                method: 'POST',
-
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-
-                body: JSON.stringify(usuario)
-
-            })
-
-                .then(response => {
-
-                    if (response.ok) {
-
-                        location.reload();
-
-                    }
-                    else {
-
-                        alert("No se pudo actualizar el usuario");
-
+                    if (rol === "Empleado") {
+                        if (!documento) {
+                            alert("Por favor ingrese el número de documento para el empleado.");
+                            return;
+                        }
+                        if (!cargo) {
+                            alert("Por favor seleccione un puesto/cargo para el empleado.");
+                            return;
+                        }
                     }
 
-                });
+                    let usuario = {
+                        IdUsuario: parseInt(document.getElementById("editIdUsuario").value),
+                        Nombre: document.getElementById("editNombre").value.trim(),
+                        Apellido: document.getElementById("editApellido").value.trim(),
+                        Correo: document.getElementById("editCorreo").value.trim(),
+                        Rol: rol,
+                        TipoDocumento: document.getElementById("editTipoDocumento").value,
+                        Documento: documento,
+                        Cargo: cargo,
+                        Telefono: document.getElementById("editTelefono").value.trim(),
+                        Direccion: document.getElementById("editDireccion").value.trim(),
+                        FechaIngreso: document.getElementById("editFechaIngreso").value || null,
+                        Salario: document.getElementById("editSalario").value ? parseFloat(document.getElementById("editSalario").value) : null
+                    };
 
-
-        }
+                    fetch('/Usuarios/Edit', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(usuario)
+                    })
+                    .then(async response => {
+                        if (response.ok) {
+                            location.reload();
+                        } else {
+                            const data = await response.json().catch(() => null);
+                            alert(data && data.mensaje ? data.mensaje : "No se pudo actualizar el usuario.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        alert("Error al intentar actualizar el usuario.");
+                    });
+                }
 
 
 

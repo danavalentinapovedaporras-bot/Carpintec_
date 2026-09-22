@@ -6,6 +6,7 @@
 
 using CARPINTEC_App.Data;
 using CARPINTEC_App.Models;
+using CARPINTEC_App.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,7 @@ namespace CARPINTEC_App.Controllers
 {
     // Solo usuarios autenticados pueden acceder a este controlador
     [Authorize]
+    [PermisoCargo("Productos")]
     public class ProductosController : Controller
     {
         // Contexto de base de datos inyectado por DI
