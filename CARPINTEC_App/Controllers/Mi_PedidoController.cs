@@ -228,6 +228,8 @@ namespace CARPINTEC_App.Controllers
                 {
                     pedidoSeleccionado = pedidosCliente.FirstOrDefault(p =>
                         p.Estado != null && (
+                            p.Estado.Contains("Preparación", StringComparison.OrdinalIgnoreCase) ||
+                            p.Estado.Contains("Preparacion", StringComparison.OrdinalIgnoreCase) ||
                             p.Estado.Contains("Fabricación", StringComparison.OrdinalIgnoreCase) ||
                             p.Estado.Contains("Producción", StringComparison.OrdinalIgnoreCase) ||
                             p.Estado.Contains("Proceso", StringComparison.OrdinalIgnoreCase)
@@ -251,6 +253,8 @@ namespace CARPINTEC_App.Controllers
 
                 ViewBag.TienePedido = pedidoSeleccionado != null;
                 ViewBag.EnFabricacion = pedidoSeleccionado != null && (
+                    pedidoSeleccionado.Estado.Contains("Preparación", StringComparison.OrdinalIgnoreCase) ||
+                    pedidoSeleccionado.Estado.Contains("Preparacion", StringComparison.OrdinalIgnoreCase) ||
                     pedidoSeleccionado.Estado.Contains("Fabricación", StringComparison.OrdinalIgnoreCase) ||
                     pedidoSeleccionado.Estado.Contains("Producción", StringComparison.OrdinalIgnoreCase) ||
                     pedidoSeleccionado.Estado.Contains("Proceso", StringComparison.OrdinalIgnoreCase)
@@ -369,6 +373,55 @@ namespace CARPINTEC_App.Controllers
                 mensaje = feedbackTexto
             });
         }
+
+        // ==========================================
+        // POST: /Mi_Pedido/CancelarPedido
+        // ==========================================
+        [HttpPost]
+        public async Task<IActionResult> CancelarPedido([FromBody] CancelarPedidoDto dto)
+        {
+            try
+            {
+                if (dto == null || dto.IdPedido <= 0)
+                    return BadRequest(new { success = false, mensaje = "ID de pedido inválido." });
+
+                if (string.IsNullOrWhiteSpace(dto.Motivo))
+                    return BadRequest(new { success = false, mensaje = "Debes indicar el motivo de la cancelación." });
+
+                var pedido = await _context.Pedidos.FirstOrDefaultAsync(p => p.IdPedido == dto.IdPedido);
+
+                if (pedido == null)
+                    return NotFound(new { success = false, mensaje = "No se encontró el pedido especificado." });
+
+                // No permitir cancelar pedidos ya entregados/completados/cancelados
+                string estadoActual = pedido.Estado ?? "";
+                bool yaFinalizado = estadoActual.Contains("Entregado", StringComparison.OrdinalIgnoreCase)
+                                 || estadoActual.Contains("Completado", StringComparison.OrdinalIgnoreCase)
+                                 || estadoActual.Contains("Listo", StringComparison.OrdinalIgnoreCase)
+                                 || estadoActual.Contains("Cancelado", StringComparison.OrdinalIgnoreCase);
+
+                if (yaFinalizado)
+                    return BadRequest(new { success = false, mensaje = $"Este pedido ya tiene estado '{estadoActual}' y no puede ser cancelado." });
+
+                // Actualizar estado y registrar motivo
+                pedido.Estado = "Cancelado";
+                pedido.Observaciones = string.IsNullOrWhiteSpace(pedido.Observaciones)
+                    ? $"[CANCELADO {DateTime.Now:dd/MM/yyyy HH:mm}] Motivo: {dto.Motivo}"
+                    : pedido.Observaciones + $"\n[CANCELADO {DateTime.Now:dd/MM/yyyy HH:mm}] Motivo: {dto.Motivo}";
+
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    success = true,
+                    mensaje = $"El pedido #{pedido.CodigoPedido ?? pedido.IdPedido.ToString()} ha sido cancelado exitosamente. Nuestro equipo revisará tu solicitud."
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, mensaje = "Error al procesar la cancelación: " + ex.Message });
+            }
+        }
     }
 
     // DTOs de apoyo
@@ -388,5 +441,11 @@ namespace CARPINTEC_App.Controllers
         public string? Producto { get; set; }
         public int Estrellas { get; set; }
         public string? Comentario { get; set; }
+    }
+
+    public class CancelarPedidoDto
+    {
+        public int IdPedido { get; set; }
+        public string? Motivo { get; set; }
     }
 }

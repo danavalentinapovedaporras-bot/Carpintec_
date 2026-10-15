@@ -135,6 +135,106 @@ namespace CARPINTEC_App.Controllers
 
             return View(venta);
         }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> CheckoutSimulado(int id)
+        {
+            // Buscamos la venta usando IdVenta (como está en tu base de datos)
+            var venta = await _context.Ventas
+                .FirstOrDefaultAsync(v => v.IdVenta == id);
+
+            if (venta == null)
+            {
+                return NotFound();
+            }
+
+            // Preparamos el modelo para enviarlo a la vista con datos del cliente y costo de envío base
+            decimal subtotal = venta.Subtotal > 0 ? venta.Subtotal : venta.Total;
+            decimal costoEnvio = 35000;
+            decimal totalCalculado = subtotal + costoEnvio;
+
+            var model = new PasarelaPagoViewModel
+            {
+                IdVenta = venta.IdVenta,
+                NumeroFactura = venta.NumeroFactura ?? $"FAC-{venta.IdVenta}",
+                Subtotal = subtotal,
+                CostoEnvio = costoEnvio,
+                Total = totalCalculado,
+                Ciudad = venta.IdClienteNavigation?.Ciudad ?? "Bogotá D.C.",
+                Municipio = "Bogotá",
+                Direccion = venta.IdClienteNavigation?.Direccion ?? "",
+                HotelEmpresa = venta.IdClienteNavigation?.NombreEmpresa ?? ""
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ProcesarPagoSimulado(PasarelaPagoViewModel model)
+        {
+            var venta = await _context.Ventas
+                .Include(v => v.IdClienteNavigation)
+                .Include(v => v.IdPedidoNavigation)
+                .FirstOrDefaultAsync(v => v.IdVenta == model.IdVenta);
+
+            if (venta == null) return NotFound();
+
+            // Actualizar total con costo de envío si aplica
+            if (model.Total > 0)
+            {
+                venta.Total = model.Total;
+            }
+
+            // Actualizar datos del cliente si se proporcionaron
+            if (venta.IdClienteNavigation != null)
+            {
+                if (!string.IsNullOrWhiteSpace(model.Direccion)) venta.IdClienteNavigation.Direccion = model.Direccion;
+                if (!string.IsNullOrWhiteSpace(model.Ciudad)) venta.IdClienteNavigation.Ciudad = model.Ciudad;
+                if (!string.IsNullOrWhiteSpace(model.HotelEmpresa)) venta.IdClienteNavigation.NombreEmpresa = model.HotelEmpresa;
+            }
+
+            // Guardar detalle de despacho en observaciones del pedido
+            string detalleDespacho = $"[Despacho: {model.Direccion}, {model.Localidad}, {model.Municipio} - {model.Ciudad} (CP: {model.CodigoPostal}). Detalle: {model.Piso ?? "N/A"}. Lugar: {model.HotelEmpresa ?? "Particular"}. Costo Envío: ${model.CostoEnvio:N0}]";
+            if (venta.IdPedidoNavigation != null)
+            {
+                venta.IdPedidoNavigation.Observaciones = $"{venta.IdPedidoNavigation.Observaciones} {detalleDespacho}".Trim();
+            }
+
+            // Validamos qué seleccionó el cliente en la pasarela
+            if (model.MetodoPago == "Cuotas")
+            {
+                venta.Estado = "Pendiente"; // Queda pendiente para validación del supervisor
+                venta.MetodoPago = $"Crédito a {model.NumeroCuotas ?? 3} cuotas";
+                TempData["Mensaje"] = $"Plan a {model.NumeroCuotas ?? 3} cuotas solicitado. Quedó pendiente de validación por el supervisor.";
+            }
+            else
+            {
+                venta.Estado = "Pagada"; // Pago simulado exitoso
+                venta.MetodoPago = model.MetodoPago switch
+                {
+                    "PSE" => $"PSE - {model.BancoPse ?? "Bancolombia"}",
+                    "Nequi" => $"Nequi ({model.TelefonoNequi ?? "Celular"})",
+                    "Daviplata" => $"Daviplata ({model.TelefonoDaviplata ?? "Celular"})",
+                    _ => "Tarjeta (Simulado)"
+                };
+                TempData["Exito"] = $"¡El pago simulado por {venta.Total:C0} con {venta.MetodoPago} se ha procesado con éxito!";
+
+                if (venta.IdPedidoNavigation != null)
+                {
+                    venta.IdPedidoNavigation.Estado = "En Preparación";
+                }
+            }
+
+            _context.Update(venta);
+            await _context.SaveChangesAsync();
+
+            // Redirige al listado de ventas o al dashboard
+            return RedirectToAction("Index", "Ventas");
+        }
+
         [HttpGet]
         public IActionResult DetalleFacturaCard(int id)
         {
@@ -152,5 +252,7 @@ namespace CARPINTEC_App.Controllers
             // Retorna una "Vista Parcial" con el diseño de la tarjeta
             return PartialView("_DetalleFactura", venta);
         }
+
+
     }
 }

@@ -4,9 +4,13 @@
                         ?? new List<CARPINTEC_App.Controllers.DashboardClienteController.NotificacionClienteItem>();
     int totalNotif = ViewBag.TotalNotificaciones ?? notificaciones.Count;
     int totalPagos = ViewBag.TotalPagosPendientes ?? notificaciones.Count(n => n.Tipo == "pago");
-    int totalTerminar = ViewBag.TotalProductosPorTerminar ?? notificaciones.Count(n => n.Tipo == "terminar");
+    int totalPagados = ViewBag.TotalPagados ?? notificaciones.Count(n => n.Tipo == "pagado");
+    int totalDespacho = ViewBag.TotalDespacho ?? notificaciones.Count(n => n.Tipo == "despacho");
+    int totalCatalogo = ViewBag.TotalCatalogo ?? notificaciones.Count(n => n.Tipo == "catalogo");
     var primerPago = ViewBag.PrimerPagoPendiente as CARPINTEC_App.Controllers.DashboardClienteController.NotificacionClienteItem;
-    var primerTerminar = ViewBag.PrimerProductoPorTerminar as CARPINTEC_App.Controllers.DashboardClienteController.NotificacionClienteItem;
+    var primerPagado = ViewBag.PrimerPagado as CARPINTEC_App.Controllers.DashboardClienteController.NotificacionClienteItem;
+    var primerDespacho = ViewBag.PrimerDespacho as CARPINTEC_App.Controllers.DashboardClienteController.NotificacionClienteItem;
+    var primerCatalogo = ViewBag.PrimerCatalogo as CARPINTEC_App.Controllers.DashboardClienteController.NotificacionClienteItem;
 }
 <!DOCTYPE html>
 <html class="light" lang="es">
@@ -164,13 +168,25 @@
                             @if (totalPagos > 0)
                             {
                                 <button type="button" onclick="filtrarNotificacionesCampanita('pago', this)" class="btn-filtro-notif px-2.5 py-1 rounded-full bg-white text-[#6C5645] border border-[#D9CABA] hover:bg-[#EAE0D5] transition shrink-0">
-                                    Pagos (@totalPagos)
+                                    Pendientes (@totalPagos)
                                 </button>
                             }
-                            @if (totalTerminar > 0)
+                            @if (totalPagados > 0)
                             {
-                                <button type="button" onclick="filtrarNotificacionesCampanita('terminar', this)" class="btn-filtro-notif px-2.5 py-1 rounded-full bg-white text-[#6C5645] border border-[#D9CABA] hover:bg-[#EAE0D5] transition shrink-0">
-                                    En Taller (@totalTerminar)
+                                <button type="button" onclick="filtrarNotificacionesCampanita('pagado', this)" class="btn-filtro-notif px-2.5 py-1 rounded-full bg-white text-[#6C5645] border border-[#D9CABA] hover:bg-[#EAE0D5] transition shrink-0">
+                                    Pagados (@totalPagados)
+                                </button>
+                            }
+                            @if (totalDespacho > 0)
+                            {
+                                <button type="button" onclick="filtrarNotificacionesCampanita('despacho', this)" class="btn-filtro-notif px-2.5 py-1 rounded-full bg-white text-[#6C5645] border border-[#D9CABA] hover:bg-[#EAE0D5] transition shrink-0">
+                                    Despacho (@totalDespacho)
+                                </button>
+                            }
+                            @if (totalCatalogo > 0)
+                            {
+                                <button type="button" onclick="filtrarNotificacionesCampanita('catalogo', this)" class="btn-filtro-notif px-2.5 py-1 rounded-full bg-white text-[#6C5645] border border-[#D9CABA] hover:bg-[#EAE0D5] transition shrink-0">
+                                    Catálogo (@totalCatalogo)
                                 </button>
                             }
                         </div>
@@ -182,7 +198,7 @@
                                 foreach (var notif in notificaciones)
                                 {
                                     <div class="item-notif p-3.5 hover:bg-[#FAF7F2] transition flex items-start gap-3" data-tipo="@notif.Tipo">
-                                        <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white shrink-0 mt-0.5 shadow-xs @(notif.Tipo == "pago" ? "bg-rose-500" : (notif.Tipo == "terminar" ? "bg-emerald-600" : "bg-[#8B4513]"))">
+                                        <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white shrink-0 mt-0.5 shadow-xs @(notif.Tipo == "pago" ? "bg-rose-500" : (notif.Tipo == "pagado" ? "bg-emerald-600" : (notif.Tipo == "despacho" ? "bg-sky-600" : (notif.Tipo == "catalogo" ? "bg-amber-600" : "bg-[#8B4513]"))))">
                                             <span class="material-symbols-outlined text-[18px]">@notif.Icono</span>
                                         </div>
                                         <div class="flex-1 min-w-0">
@@ -194,16 +210,26 @@
                                             <div class="flex items-center justify-between">
                                                 @if (!string.IsNullOrEmpty(notif.Monto))
                                                 {
-                                                    <span class="text-xs font-black text-rose-700">@notif.Monto</span>
+                                                    <span class="text-xs font-black @(notif.Tipo == "pago" ? "text-rose-700" : (notif.Tipo == "pagado" ? "text-emerald-700" : "text-amber-800"))">@notif.Monto</span>
                                                 }
                                                 else if (!string.IsNullOrEmpty(notif.Estado))
                                                 {
-                                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-[#EFE3D5] text-[#5C3821]">@notif.Estado</span>
+                                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded @(notif.Tipo == "despacho" ? "bg-sky-100 text-sky-800 border border-sky-200" : (notif.Tipo == "pagado" ? "bg-emerald-100 text-emerald-800 border border-emerald-200" : "bg-[#EFE3D5] text-[#5C3821]"))">@notif.Estado</span>
                                                 }
-                                                <a href="@notif.UrlAccion" class="inline-flex items-center gap-1 text-[11px] font-bold text-primary hover:text-secondary transition ml-auto">
-                                                    @notif.TextoAccion
-                                                    <span class="material-symbols-outlined text-[12px]">chevron_right</span>
-                                                </a>
+                                                @if (notif.Tipo == "pago" && notif.IdVenta > 0)
+                                                {
+                                                    <button type="button" onclick="abrirModalPago(this)" data-id-venta="@notif.IdVenta" data-monto="@notif.Monto" data-codigo="@notif.Codigo" class="inline-flex items-center gap-1 text-[11px] font-bold text-rose-600 hover:text-rose-800 transition ml-auto cursor-pointer bg-transparent border-none p-0">
+                                                        Pagar
+                                                        <span class="material-symbols-outlined text-[12px]">arrow_forward</span>
+                                                    </button>
+                                                }
+                                                else
+                                                {
+                                                    <a href="@notif.UrlAccion" class="inline-flex items-center gap-1 text-[11px] font-bold text-primary hover:text-secondary transition ml-auto">
+                                                        @notif.TextoAccion
+                                                        <span class="material-symbols-outlined text-[12px]">chevron_right</span>
+                                                    </a>
+                                                }
                                             </div>
                                         </div>
                                     </div>
@@ -404,48 +430,111 @@
                                     }
                                 </div>
                             </div>
-                            <a href="@primerPago.UrlAccion" class="shrink-0 bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg transition shadow-xs flex items-center gap-1">
-                                Pagar
-                                <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
-                            </a>
+                            @if (primerPago.IdVenta > 0)
+                            {
+                                <button type="button" onclick="abrirModalPago(this)" data-id-venta="@primerPago.IdVenta" data-monto="@primerPago.Monto" data-codigo="@primerPago.Codigo" class="shrink-0 bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg transition shadow-xs flex items-center gap-1 cursor-pointer border-none">
+                                    Pagar
+                                    <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+                                </button>
+                            }
+                            else
+                            {
+                                <a href="@primerPago.UrlAccion" class="shrink-0 bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg transition shadow-xs flex items-center gap-1">
+                                    Pagar
+                                    <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+                                </a>
+                            }
                         </div>
                     }
 
-                    <!-- SECCIÓN 2: Producto por Terminar / En Taller -->
-                    @if (primerTerminar != null)
+                    <!-- SECCIÓN 2: Productos Pagos (Confirmados / En Preparación) -->
+                    @if (primerPagado != null)
                     {
                         <div class="bg-emerald-50/90 border border-emerald-200 rounded-xl p-3 flex items-start justify-between gap-3 shadow-2xs">
                             <div class="flex items-start gap-2.5 min-w-0">
                                 <div class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
-                                    <span class="material-symbols-outlined text-[16px]">@primerTerminar.Icono</span>
+                                    <span class="material-symbols-outlined text-[16px]">verified</span>
                                 </div>
                                 <div class="min-w-0">
                                     <div class="flex items-center gap-1.5">
-                                        <span class="font-bold text-emerald-950 text-xs">@primerTerminar.Titulo</span>
-                                        @if (!string.IsNullOrEmpty(primerTerminar.Estado))
+                                        <span class="font-bold text-emerald-950 text-xs">Pago Confirmado</span>
+                                        @if (!string.IsNullOrEmpty(primerPagado.Estado))
                                         {
-                                            <span class="text-[10px] bg-emerald-200/80 text-emerald-900 px-1.5 py-0.2 rounded font-bold">@primerTerminar.Estado</span>
+                                            <span class="text-[10px] bg-emerald-200/80 text-emerald-900 px-1.5 py-0.2 rounded font-bold">@primerPagado.Estado</span>
                                         }
                                     </div>
-                                    <p class="text-[11px] text-emerald-800 line-clamp-2 mt-0.5">@primerTerminar.Mensaje</p>
+                                    <p class="text-[11px] text-emerald-800 line-clamp-1 mt-0.5">@primerPagado.Mensaje</p>
                                 </div>
                             </div>
-                            <a href="@primerTerminar.UrlAccion" class="shrink-0 bg-emerald-700 hover:bg-emerald-800 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg transition shadow-xs flex items-center gap-1">
-                                Avance
+                            <a href="@primerPagado.UrlAccion" class="shrink-0 bg-emerald-700 hover:bg-emerald-800 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg transition shadow-xs flex items-center gap-1">
+                                Ver
                                 <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
                             </a>
                         </div>
                     }
 
-                    <!-- Si no hay pagos ni productos en alerta -->
-                    @if (primerPago == null && primerTerminar == null)
+                    <!-- SECCIÓN 3: Despacho y Entrega al Cliente -->
+                    @if (primerDespacho != null)
+                    {
+                        <div class="bg-sky-50/90 border border-sky-200 rounded-xl p-3 flex items-start justify-between gap-3 shadow-2xs">
+                            <div class="flex items-start gap-2.5 min-w-0">
+                                <div class="w-7 h-7 rounded-lg bg-sky-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+                                    <span class="material-symbols-outlined text-[16px]">local_shipping</span>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="font-bold text-sky-950 text-xs">Despacho & Entrega</span>
+                                        @if (!string.IsNullOrEmpty(primerDespacho.Codigo))
+                                        {
+                                            <span class="text-[10px] bg-sky-200/80 text-sky-950 px-1.5 py-0.2 rounded font-semibold">@primerDespacho.Codigo</span>
+                                        }
+                                    </div>
+                                    <p class="text-[11px] text-sky-800 line-clamp-1 mt-0.5">@primerDespacho.Mensaje</p>
+                                </div>
+                            </div>
+                            <a href="@primerDespacho.UrlAccion" class="shrink-0 bg-sky-700 hover:bg-sky-800 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg transition shadow-xs flex items-center gap-1">
+                                Rastrear
+                                <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+                            </a>
+                        </div>
+                    }
+
+                    <!-- SECCIÓN 4: Nuevos Productos del Catálogo -->
+                    @if (primerCatalogo != null)
+                    {
+                        <div class="bg-amber-50/90 border border-amber-200 rounded-xl p-3 flex items-start justify-between gap-3 shadow-2xs">
+                            <div class="flex items-start gap-2.5 min-w-0">
+                                <div class="w-7 h-7 rounded-lg bg-amber-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+                                    <span class="material-symbols-outlined text-[16px]">storefront</span>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="font-bold text-amber-950 text-xs">Nuevo en Catálogo</span>
+                                        <span class="text-[10px] bg-amber-200/80 text-amber-950 px-1.5 py-0.2 rounded font-semibold">Destacado</span>
+                                    </div>
+                                    <p class="text-[11px] text-amber-800 line-clamp-1 mt-0.5">@primerCatalogo.Titulo</p>
+                                    @if (!string.IsNullOrEmpty(primerCatalogo.Monto))
+                                    {
+                                        <span class="font-black text-xs text-amber-900 block mt-0.5">@primerCatalogo.Monto</span>
+                                    }
+                                </div>
+                            </div>
+                            <a href="@primerCatalogo.UrlAccion" class="shrink-0 bg-amber-700 hover:bg-amber-800 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg transition shadow-xs flex items-center gap-1">
+                                Catálogo
+                                <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+                            </a>
+                        </div>
+                    }
+
+                    <!-- Si no hay alertas en absoluto -->
+                    @if (primerPago == null && primerPagado == null && primerDespacho == null && primerCatalogo == null)
                     {
                         <div class="bg-surface-container rounded-xl p-3.5 flex items-center gap-3">
                             <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
                                 <span class="material-symbols-outlined text-lg">check_circle</span>
                             </div>
                             <div>
-                                <p class="text-xs font-bold text-on-surface">No tienes pagos pendientes ni entregas atrasadas</p>
+                                <p class="text-xs font-bold text-on-surface">No tienes notificaciones pendientes</p>
                                 <p class="text-[11px] text-on-surface-variant mt-0.5">Tus pedidos y finanzas están al día.</p>
                             </div>
                         </div>
@@ -529,6 +618,159 @@
             <a class="hover:text-primary transition-colors opacity-80 hover:opacity-100" href="#">Sustainability</a>
         </div>
     </footer>
+    <!-- ========== MODAL SIMULADOR DE PAGO ========== -->
+    <div id="modalPago" class="fixed inset-0 z-[100] hidden" style="font-family:'Montserrat',sans-serif;">
+        <!-- Overlay -->
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onclick="cerrarModalPago()"></div>
+        <!-- Modal Content -->
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div id="modalPagoCard" class="bg-white rounded-2xl shadow-2xl w-full max-w-lg relative overflow-hidden transform transition-all duration-300 scale-95 opacity-0" style="max-height:90vh; overflow-y:auto;">
+                <!-- Header con gradiente madera -->
+                <div class="bg-gradient-to-r from-[#5C4033] via-[#7B5B3A] to-[#8B6914] p-5 text-white">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                                <span class="material-symbols-outlined text-2xl">payments</span>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold tracking-tight">Pasarela de Pago</h3>
+                                <span class="text-[10px] bg-white/20 px-2 py-0.5 rounded-full font-medium">CARPINTEC · Modo Simulación</span>
+                            </div>
+                        </div>
+                        <button type="button" onclick="cerrarModalPago()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/25 flex items-center justify-center transition cursor-pointer">
+                            <span class="material-symbols-outlined text-lg">close</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Cuerpo del Modal -->
+                <div class="p-6">
+                    <!-- Resumen del monto -->
+                    <div class="bg-gradient-to-br from-[#FAF6F0] to-[#F5EFE6] border border-[#E8DDD5] rounded-xl p-4 mb-5 flex justify-between items-center">
+                        <div>
+                            <p class="text-[10px] text-[#8C7665] uppercase tracking-widest font-semibold">Total a Pagar</p>
+                            <p class="text-2xl font-black text-[#34261B] mt-0.5" id="modalMontoDisplay">$0</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[10px] text-[#8C7665] uppercase tracking-widest font-semibold">Referencia</p>
+                            <span class="text-xs font-bold text-[#5C4033]" id="modalCodigoDisplay">---</span>
+                        </div>
+                    </div>
+
+                    <!-- Formulario -->
+                    <form id="formPagoModal">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" id="modalIdVenta" name="idVenta" />
+
+                        <!-- Selección de método de pago -->
+                        <div class="mb-5">
+                            <label class="block text-xs font-bold text-[#34261B] mb-3 uppercase tracking-wider">Método de pago</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <!-- Opción Contado -->
+                                <label id="labelContado" class="metodo-pago-opt border-2 border-[#D2B48C] bg-[#FAF6F0] rounded-xl p-4 flex flex-col items-center cursor-pointer hover:border-[#5C4033] transition-all relative">
+                                    <input type="radio" name="tipoPago" value="Contado" checked class="sr-only" onchange="toggleCuotasModal(false)">
+                                    <div class="w-10 h-10 rounded-full bg-[#5C4033]/10 flex items-center justify-center mb-2">
+                                        <span class="material-symbols-outlined text-xl text-[#5C4033]">credit_card</span>
+                                    </div>
+                                    <span class="text-xs font-bold text-[#34261B]">Contado</span>
+                                    <span class="text-[10px] text-[#8C7665] text-center mt-0.5">Pago inmediato simulado</span>
+                                    <div class="absolute top-2 right-2 w-5 h-5 rounded-full bg-[#5C4033] flex items-center justify-center chk-ind shadow-sm">
+                                        <span class="material-symbols-outlined text-white text-[11px]">check</span>
+                                    </div>
+                                </label>
+                                <!-- Opción Cuotas -->
+                                <label id="labelCuotas" class="metodo-pago-opt border-2 border-[#E8DDD5] bg-white rounded-xl p-4 flex flex-col items-center cursor-pointer hover:border-[#5C4033] transition-all relative">
+                                    <input type="radio" name="tipoPago" value="Cuotas" class="sr-only" onchange="toggleCuotasModal(true)">
+                                    <div class="w-10 h-10 rounded-full bg-[#8C7665]/10 flex items-center justify-center mb-2">
+                                        <span class="material-symbols-outlined text-xl text-[#8C7665]">calendar_month</span>
+                                    </div>
+                                    <span class="text-xs font-bold text-[#34261B]">Cuotas</span>
+                                    <span class="text-[10px] text-[#8C7665] text-center mt-0.5">Requiere aprobación</span>
+                                    <div class="absolute top-2 right-2 w-5 h-5 rounded-full bg-[#5C4033] items-center justify-center chk-ind shadow-sm hidden">
+                                        <span class="material-symbols-outlined text-white text-[11px]">check</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Sección cuotas (oculta por defecto) -->
+                        <div id="seccionCuotasModal" class="hidden mb-5 bg-amber-50 border border-amber-200 rounded-xl p-4 transition-all">
+                            <label class="block text-xs font-bold text-amber-800 mb-2">Número de Cuotas:</label>
+                            <select name="numeroCuotas" id="selectCuotasModal" class="w-full border border-amber-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-[#5C4033] focus:border-[#5C4033] outline-none">
+                                <option value="3">3 Cuotas mensuales</option>
+                                <option value="6">6 Cuotas mensuales</option>
+                                <option value="12">12 Cuotas mensuales</option>
+                            </select>
+                            <p class="text-[10px] text-amber-700 mt-2 flex items-center gap-1">
+                                <span class="material-symbols-outlined text-xs">warning</span>
+                                Al elegir cuotas, el pedido queda pendiente de validación. <strong>No pasará a En Preparación.</strong>
+                            </p>
+                        </div>
+
+                        <!-- Datos de tarjeta simulados -->
+                        <div class="mb-6 border border-[#E8DDD5] rounded-xl p-4 bg-[#FDFBF7]">
+                            <h4 class="text-[11px] font-bold text-[#34261B] mb-3 flex items-center gap-1.5 uppercase tracking-wider">
+                                <span class="material-symbols-outlined text-sm text-[#8C7665]">credit_card</span>
+                                Datos de Tarjeta (Simulador)
+                            </h4>
+                            <div class="space-y-2.5">
+                                <input type="text" placeholder="Número de tarjeta (16 dígitos)" class="w-full bg-white border border-[#D7CCC8] rounded-lg text-sm text-[#34261B] px-3 py-2.5">
+                                <div class="grid grid-cols-2 gap-2.5">
+                                    <input type="text" placeholder="MM/AA" class="bg-white border border-[#D7CCC8] rounded-lg text-sm text-[#34261B] px-3 py-2.5">
+                                    <input type="text" placeholder="CVV" class="bg-white border border-[#D7CCC8] rounded-lg text-sm text-[#34261B] px-3 py-2.5">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botones de acción -->
+                        <div class="flex gap-3">
+                            <button type="button" onclick="cerrarModalPago()" class="flex-1 border-2 border-[#D7CCC8] text-[#5C4033] font-bold py-3 rounded-xl hover:bg-[#F5EFE6] transition-all flex items-center justify-center gap-2 text-sm cursor-pointer bg-transparent">
+                                <span class="material-symbols-outlined text-lg">close</span>
+                                Cancelar
+                            </button>
+                            <button type="button" onclick="procesarPagoModal()" id="btnProcesarPago" class="flex-1 bg-gradient-to-r from-[#5C4033] to-[#8B6914] text-white font-bold py-3 rounded-xl hover:opacity-90 transition-all shadow-lg flex items-center justify-center gap-2 text-sm cursor-pointer border-none">
+                                <span class="material-symbols-outlined text-lg">lock</span>
+                                Confirmar Pago
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Overlay: Procesando -->
+                <div id="modalProcesando" class="absolute inset-0 bg-white/95 backdrop-blur-sm hidden items-center justify-center z-10 flex-col">
+                    <div class="w-16 h-16 border-4 border-[#D2B48C] border-t-[#5C4033] rounded-full animate-spin mb-4"></div>
+                    <p class="text-sm font-bold text-[#34261B]">Procesando pago...</p>
+                    <p class="text-xs text-[#8C7665] mt-1">No cierres esta ventana</p>
+                </div>
+
+                <!-- Overlay: Éxito -->
+                <div id="modalExito" class="absolute inset-0 bg-white hidden items-center justify-center z-10 flex-col p-8">
+                    <div class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mb-4 shadow-lg shadow-emerald-100">
+                        <span class="material-symbols-outlined text-4xl text-emerald-600 fill-icon">check_circle</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-[#34261B] mb-2">¡Pago Exitoso!</h3>
+                    <p class="text-sm text-[#8C7665] text-center mb-6 max-w-xs" id="modalMensajeExito">Tu pago ha sido procesado correctamente.</p>
+                    <button type="button" onclick="window.location.reload()" class="bg-emerald-600 text-white font-bold px-8 py-3 rounded-xl hover:bg-emerald-700 transition shadow-lg cursor-pointer border-none text-sm">
+                        <span class="material-symbols-outlined text-sm mr-1 align-middle">check</span>
+                        Aceptar
+                    </button>
+                </div>
+
+                <!-- Overlay: Error -->
+                <div id="modalError" class="absolute inset-0 bg-white hidden items-center justify-center z-10 flex-col p-8">
+                    <div class="w-20 h-20 bg-rose-100 rounded-full flex items-center justify-center mb-4 shadow-lg shadow-rose-100">
+                        <span class="material-symbols-outlined text-4xl text-rose-600 fill-icon">error</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-[#34261B] mb-2">Error en el Pago</h3>
+                    <p class="text-sm text-[#8C7665] text-center mb-6 max-w-xs" id="modalMensajeError">Ocurrió un error inesperado.</p>
+                    <button type="button" onclick="resetModalPago()" class="bg-[#5C4033] text-white font-bold px-8 py-3 rounded-xl hover:opacity-90 transition shadow-lg cursor-pointer border-none text-sm">
+                        Reintentar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- FAB Chatbot -->
     <button class="fixed bottom-8 right-8 w-14 h-14 bg-primary text-white rounded-full shadow-lg hover:bg-primary/90 hover:scale-105 transition-all duration-300 flex items-center justify-center z-50">
         <span class="material-symbols-outlined text-2xl">chat</span>
@@ -610,6 +852,153 @@
 
             if (dropdown) {
                 dropdown.classList.toggle('hidden');
+            }
+        }
+
+        // ===== MODAL SIMULADOR DE PAGO DESDE NOTIFICACIONES =====
+        function abrirModalPago(btn) {
+            const idVenta = btn.getAttribute('data-id-venta');
+            const monto = btn.getAttribute('data-monto');
+            const codigo = btn.getAttribute('data-codigo');
+
+            document.getElementById('modalIdVenta').value = idVenta;
+            document.getElementById('modalMontoDisplay').textContent = monto || '$0';
+            document.getElementById('modalCodigoDisplay').textContent = codigo || '---';
+
+            // Reset modal al estado inicial
+            resetModalPago();
+
+            // Resetear selección a Contado
+            const radioContado = document.querySelector('#formPagoModal input[name="tipoPago"][value="Contado"]');
+            if (radioContado) radioContado.checked = true;
+            toggleCuotasModal(false);
+
+            // Mostrar modal con animación
+            const modal = document.getElementById('modalPago');
+            const card = document.getElementById('modalPagoCard');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+
+            // Cerrar dropdown de notificaciones
+            cerrarDropdownCampanita();
+
+            // Animar entrada
+            requestAnimationFrame(() => {
+                card.classList.remove('scale-95', 'opacity-0');
+                card.classList.add('scale-100', 'opacity-100');
+            });
+        }
+
+        function cerrarModalPago() {
+            const modal = document.getElementById('modalPago');
+            const card = document.getElementById('modalPagoCard');
+
+            // Animar salida
+            card.classList.remove('scale-100', 'opacity-100');
+            card.classList.add('scale-95', 'opacity-0');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }, 200);
+        }
+
+        function resetModalPago() {
+            const ids = ['modalProcesando', 'modalExito', 'modalError'];
+            ids.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.classList.add('hidden');
+                    el.classList.remove('flex');
+                }
+            });
+            const btnProcesar = document.getElementById('btnProcesarPago');
+            if (btnProcesar) btnProcesar.disabled = false;
+        }
+
+        function toggleCuotasModal(mostrar) {
+            const seccion = document.getElementById('seccionCuotasModal');
+            const labelContado = document.getElementById('labelContado');
+            const labelCuotas = document.getElementById('labelCuotas');
+
+            if (mostrar) {
+                seccion.classList.remove('hidden');
+                labelContado.classList.remove('border-[#D2B48C]', 'bg-[#FAF6F0]');
+                labelContado.classList.add('border-[#E8DDD5]', 'bg-white');
+                labelContado.querySelector('.chk-ind').classList.add('hidden');
+                labelContado.querySelector('.chk-ind').classList.remove('flex');
+                labelCuotas.classList.remove('border-[#E8DDD5]', 'bg-white');
+                labelCuotas.classList.add('border-[#D2B48C]', 'bg-[#FAF6F0]');
+                labelCuotas.querySelector('.chk-ind').classList.remove('hidden');
+                labelCuotas.querySelector('.chk-ind').classList.add('flex');
+            } else {
+                seccion.classList.add('hidden');
+                labelCuotas.classList.remove('border-[#D2B48C]', 'bg-[#FAF6F0]');
+                labelCuotas.classList.add('border-[#E8DDD5]', 'bg-white');
+                labelCuotas.querySelector('.chk-ind').classList.add('hidden');
+                labelCuotas.querySelector('.chk-ind').classList.remove('flex');
+                labelContado.classList.remove('border-[#E8DDD5]', 'bg-white');
+                labelContado.classList.add('border-[#D2B48C]', 'bg-[#FAF6F0]');
+                labelContado.querySelector('.chk-ind').classList.remove('hidden');
+                labelContado.querySelector('.chk-ind').classList.add('flex');
+            }
+        }
+
+        async function procesarPagoModal() {
+            const idVenta = document.getElementById('modalIdVenta').value;
+            const tipoPagoRadio = document.querySelector('#formPagoModal input[name="tipoPago"]:checked');
+            const tipoPago = tipoPagoRadio ? tipoPagoRadio.value : 'Contado';
+            const numeroCuotas = tipoPago === 'Cuotas' ? document.getElementById('selectCuotasModal').value : null;
+            const tokenInput = document.querySelector('#formPagoModal input[name="__RequestVerificationToken"]');
+            const token = tokenInput ? tokenInput.value : '';
+
+            // Mostrar overlay de procesando
+            document.getElementById('btnProcesarPago').disabled = true;
+            const procOverlay = document.getElementById('modalProcesando');
+            procOverlay.classList.remove('hidden');
+            procOverlay.classList.add('flex');
+
+            try {
+                const formData = new URLSearchParams();
+                formData.append('idVenta', idVenta);
+                formData.append('tipoPago', tipoPago);
+                if (numeroCuotas) formData.append('numeroCuotas', numeroCuotas);
+                formData.append('__RequestVerificationToken', token);
+
+                // Simular un pequeño delay para efecto visual
+                await new Promise(r => setTimeout(r, 1500));
+
+                const response = await fetch('@Url.Action("ProcesarPagoDesdeNotificacion", "DashboardCliente")', {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                });
+
+                const result = await response.json();
+
+                // Ocultar procesando
+                procOverlay.classList.add('hidden');
+                procOverlay.classList.remove('flex');
+
+                if (result.success) {
+                    document.getElementById('modalMensajeExito').textContent = result.mensaje;
+                    const exitoOverlay = document.getElementById('modalExito');
+                    exitoOverlay.classList.remove('hidden');
+                    exitoOverlay.classList.add('flex');
+                } else {
+                    document.getElementById('modalMensajeError').textContent = result.mensaje;
+                    const errorOverlay = document.getElementById('modalError');
+                    errorOverlay.classList.remove('hidden');
+                    errorOverlay.classList.add('flex');
+                }
+            } catch (err) {
+                const procOv = document.getElementById('modalProcesando');
+                procOv.classList.add('hidden');
+                procOv.classList.remove('flex');
+                document.getElementById('modalMensajeError').textContent = 'Error de conexión. Inténtalo de nuevo.';
+                const errorOverlay = document.getElementById('modalError');
+                errorOverlay.classList.remove('hidden');
+                errorOverlay.classList.add('flex');
             }
         }
     </script>

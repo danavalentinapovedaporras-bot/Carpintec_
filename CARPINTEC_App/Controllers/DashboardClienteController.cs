@@ -96,13 +96,22 @@ namespace CARPINTEC_App.Controllers
                 ViewBag.CotizacionesPendientes = cotizacionesCliente.Count(c => c.Estado != null && c.Estado.Equals("Pendiente", StringComparison.OrdinalIgnoreCase));
                 ViewBag.CotizacionesAprobadas = cotizacionesCliente.Count(c => c.Estado != null && (c.Estado.Equals("Aprobada", StringComparison.OrdinalIgnoreCase) || c.Estado.Equals("Pagada", StringComparison.OrdinalIgnoreCase)));
 
+                string correoFiltro = (correo ?? "").ToLower();
+                string nombreFiltro = (nombreCompleto ?? "").ToLower();
+
                 var pedidosCliente = await _context.Pedidos
-                    .Where(p => p.IdCliente == idCliente)
+                    .Include(p => p.IdCotizacionNavigation)
+                    .Where(p => 
+                        (idCliente > 0 && p.IdCliente == idCliente) ||
+                        (p.IdCotizacionNavigation != null && !string.IsNullOrEmpty(correoFiltro) && p.IdCotizacionNavigation.CorreoCliente != null && p.IdCotizacionNavigation.CorreoCliente.ToLower() == correoFiltro) ||
+                        (p.IdCotizacionNavigation != null && !string.IsNullOrEmpty(nombreFiltro) && p.IdCotizacionNavigation.NombreCliente != null && p.IdCotizacionNavigation.NombreCliente.ToLower() == nombreFiltro)
+                    )
+                    .OrderByDescending(p => p.FechaRegistro ?? DateTime.MinValue)
                     .ToListAsync();
 
                 ViewBag.TotalPedidos = pedidosCliente.Count;
-                ViewBag.PedidosEnFabricacion = pedidosCliente.Count(p => p.Estado != null && (p.Estado.Contains("Fabricación") || p.Estado.Contains("Proceso") || p.Estado.Equals("Pendiente", StringComparison.OrdinalIgnoreCase)));
-                ViewBag.PedidosListos = pedidosCliente.Count(p => p.Estado != null && (p.Estado.Contains("Listo") || p.Estado.Contains("Finalizado") || p.Estado.Contains("Entregado")));
+                ViewBag.PedidosEnFabricacion = pedidosCliente.Count(p => p.Estado != null && (p.Estado.Contains("Preparación") || p.Estado.Contains("Fabricación") || p.Estado.Contains("Proceso") || p.Estado.Equals("Pendiente", StringComparison.OrdinalIgnoreCase)));
+                ViewBag.PedidosListos = pedidosCliente.Count(p => p.Estado != null && (p.Estado.Contains("Listo") || p.Estado.Contains("Finalizado") || p.Estado.Contains("Entregado") || p.Estado.Contains("Despacho")));
 
                 var facturasCliente = await _context.Facturas
                     .Where(f => (!string.IsNullOrEmpty(nombreCompleto) && f.Cliente.Contains(nombreCompleto)) ||
@@ -122,11 +131,24 @@ namespace CARPINTEC_App.Controllers
                 ViewBag.PqrsResueltas = pqrsCliente.Count(p => p.Estado != null && (p.Estado.Equals("Resuelto", StringComparison.OrdinalIgnoreCase) || p.Estado.Equals("Cerrado", StringComparison.OrdinalIgnoreCase)));
 
                 // ==============================================================
-                // 8. GENERAR NOTIFICACIONES REALES: PAGOS PENDIENTES & PRODUCTOS POR TERMINAR
+                // 8. GENERAR NOTIFICACIONES REALES Y ACTUALIZADAS:
+                //    1. PRODUCTOS PENDIENTES DE PAGO
+                //    2. PRODUCTOS PAGOS (CONFIRMADOS / EN PREPARACIÓN)
+                //    3. PRODUCTOS EN DESPACHO Y ENTREGA AL CLIENTE
+                //    4. NUEVOS PRODUCTOS DEL CATÁLOGO
                 // ==============================================================
                 var listaNotificaciones = new List<NotificacionClienteItem>();
 
-                // A. Pagos Pendientes (Facturas con saldo pendiente)
+                // Pre-cargar ventas del cliente para asociar IdVenta
+                var ventasClienteParaFacturas = await _context.Ventas
+                    .Include(v => v.IdPedidoNavigation)
+                    .Where(v => v.IdCliente == idCliente || (v.IdPedidoNavigation != null && v.IdPedidoNavigation.IdCliente == idCliente))
+                    .OrderByDescending(v => v.FechaVenta)
+                    .ToListAsync();
+
+                // -------------------------------------------------------------
+                // 1. PRODUCTOS PENDIENTES DE PAGO (Facturas o Ventas pendientes)
+                // -------------------------------------------------------------
                 var facturasPendientes = facturasCliente
                     .Where(f => f.Estado != null && (f.Estado.Equals("Pendiente", StringComparison.OrdinalIgnoreCase) || f.Estado.Equals("Vencida", StringComparison.OrdinalIgnoreCase)))
                     .OrderByDescending(f => f.Fecha)
@@ -134,11 +156,14 @@ namespace CARPINTEC_App.Controllers
 
                 foreach (var f in facturasPendientes)
                 {
+                    var ventaAsociada = ventasClienteParaFacturas
+                        .FirstOrDefault(v => v.NumeroFactura != null && v.NumeroFactura == f.Folio);
+
                     listaNotificaciones.Add(new NotificacionClienteItem
                     {
                         Tipo = "pago",
                         Titulo = $"Factura #{f.Folio} pendiente de pago",
-                        Mensaje = $"Tienes un saldo pendiente por valor de {f.Total.ToString("C0", culturaEs)}.",
+                        Mensaje = $"Tienes un saldo pendiente de {f.Total.ToString("C0", culturaEs)}. Completa el pago para iniciar la fabricación.",
                         Monto = f.Total.ToString("C0", culturaEs),
                         Codigo = f.Folio,
                         Estado = f.Estado,
@@ -146,16 +171,12 @@ namespace CARPINTEC_App.Controllers
                         ColorBadge = "bg-rose-500",
                         UrlAccion = "/GestionFacturas",
                         TextoAccion = "Pagar Ahora",
-                        FechaStr = f.Fecha.ToString("d MMM yyyy", culturaEs)
+                        FechaStr = f.Fecha.ToString("d MMM yyyy", culturaEs),
+                        IdVenta = ventaAsociada?.IdVenta ?? 0
                     });
                 }
 
-                // A.2. Ventas registradas con saldo pendiente
-                var ventasCliente = await _context.Ventas
-                    .Where(v => v.IdCliente == idCliente)
-                    .ToListAsync();
-
-                var ventasPendientes = ventasCliente
+                var ventasPendientes = ventasClienteParaFacturas
                     .Where(v => v.Estado != null && v.Estado.Equals("Pendiente", StringComparison.OrdinalIgnoreCase))
                     .ToList();
 
@@ -167,7 +188,7 @@ namespace CARPINTEC_App.Controllers
                         {
                             Tipo = "pago",
                             Titulo = $"Orden #{v.NumeroFactura ?? v.IdVenta.ToString()} pendiente",
-                            Mensaje = $"Tienes un valor pendiente de {v.Total.ToString("C0", culturaEs)}.",
+                            Mensaje = $"Tienes un valor pendiente de {v.Total.ToString("C0", culturaEs)}. Completa el pago para enviar al taller.",
                             Monto = v.Total.ToString("C0", culturaEs),
                             Codigo = v.NumeroFactura ?? $"VNT-{v.IdVenta}",
                             Estado = "Pendiente",
@@ -175,108 +196,146 @@ namespace CARPINTEC_App.Controllers
                             ColorBadge = "bg-rose-500",
                             UrlAccion = "/GestionFacturas",
                             TextoAccion = "Pagar Saldo",
-                            FechaStr = v.FechaVenta.ToString("d MMM yyyy", culturaEs)
+                            FechaStr = v.FechaVenta.ToString("d MMM yyyy", culturaEs),
+                            IdVenta = v.IdVenta
                         });
                     }
                 }
 
-                // A.3. Cotizaciones pendientes de confirmación/pago si aún no hay facturas
-                if (!listaNotificaciones.Any(n => n.Tipo == "pago"))
-                {
-                    var cotPendientes = cotizacionesCliente
-                        .Where(c => c.Estado != null && c.Estado.Equals("Pendiente", StringComparison.OrdinalIgnoreCase))
-                        .Take(2)
-                        .ToList();
+                var cotPendientes = cotizacionesCliente
+                    .Where(c => c.Estado != null && c.Estado.Equals("Pendiente", StringComparison.OrdinalIgnoreCase))
+                    .Take(2)
+                    .ToList();
 
-                    foreach (var c in cotPendientes)
+                foreach (var c in cotPendientes)
+                {
+                    if (!listaNotificaciones.Any(n => n.Codigo == c.Folio))
                     {
                         listaNotificaciones.Add(new NotificacionClienteItem
                         {
                             Tipo = "pago",
-                            Titulo = $"Cotización #{c.Folio} en espera",
-                            Mensaje = $"Tu cotización para \"{c.DetalleProducto}\" ({c.Total.ToString("C0", culturaEs)}) está lista para confirmación y pago.",
+                            Titulo = $"Cotización #{c.Folio} en espera de pago",
+                            Mensaje = $"Tu cotización para \"{c.DetalleProducto}\" ({c.Total.ToString("C0", culturaEs)}) está lista para pagar y pasar a preparación.",
                             Monto = c.Total.ToString("C0", culturaEs),
                             Codigo = c.Folio,
                             Estado = "Pendiente",
                             Icono = "request_quote",
                             ColorBadge = "bg-amber-600",
                             UrlAccion = "/MiCotizacion",
-                            TextoAccion = "Ver y Confirmar",
+                            TextoAccion = "Pagar Cotización",
                             FechaStr = "En espera"
                         });
                     }
                 }
 
-                // B. Productos por Terminar o en fase avanzada en el taller
-                var hoy = DateOnly.FromDateTime(DateTime.Today);
-                var pedidosPorTerminar = pedidosCliente
-                    .Where(p => p.Estado != null && (
-                        p.Estado.Equals("Pintura", StringComparison.OrdinalIgnoreCase) ||
-                        p.Estado.Equals("Ensamble", StringComparison.OrdinalIgnoreCase) ||
-                        p.Estado.Equals("Completado", StringComparison.OrdinalIgnoreCase) ||
-                        p.Estado.Equals("Listo", StringComparison.OrdinalIgnoreCase) ||
-                        p.Estado.Contains("Entrega", StringComparison.OrdinalIgnoreCase) ||
-                        (p.FechaEntrega != default && p.FechaEntrega >= hoy && p.FechaEntrega <= hoy.AddDays(7) && !p.Estado.Equals("Entregado", StringComparison.OrdinalIgnoreCase))
-                    ))
-                    .OrderByDescending(p => p.FechaRegistro ?? DateTime.MinValue)
+                // -------------------------------------------------------------
+                // 2. PRODUCTOS PAGOS (Pago confirmado / En preparación en taller)
+                // -------------------------------------------------------------
+                var pedidosPagos = pedidosCliente
+                    .Where(p => p.Estado != null && !p.Estado.Equals("Pendiente", StringComparison.OrdinalIgnoreCase) && !p.Estado.Equals("Cancelado", StringComparison.OrdinalIgnoreCase))
+                    .Take(3)
                     .ToList();
 
-                foreach (var ped in pedidosPorTerminar)
+                foreach (var ped in pedidosPagos)
                 {
-                    bool esListo = ped.Estado.Equals("Completado", StringComparison.OrdinalIgnoreCase) || ped.Estado.Equals("Listo", StringComparison.OrdinalIgnoreCase);
-                    string titulo = esListo ? $"¡Tu {ped.Producto} está listo!" : $"¡Tu {ped.Producto} está por terminar!";
-                    string desc = esListo
-                        ? $"El pedido #{ped.CodigoPedido} ha finalizado su fabricación con éxito y está listo para ser despachado o entregado."
-                        : $"El pedido #{ped.CodigoPedido} está en fase de {ped.Estado}. Entrega programada para el {ped.FechaEntrega.ToString("d 'de' MMMM", culturaEs)}.";
-
                     listaNotificaciones.Add(new NotificacionClienteItem
                     {
-                        Tipo = "terminar",
-                        Titulo = titulo,
-                        Mensaje = desc,
+                        Tipo = "pagado",
+                        Titulo = $"¡Pago Confirmado! - {ped.Producto}",
+                        Mensaje = $"Pago recibido exitosamente. Tu pedido #{ped.CodigoPedido} está en estado \"{ped.Estado}\". Entrega estimada: {ped.FechaEntrega.ToString("d 'de' MMMM", culturaEs)}.",
+                        Monto = ped.ValorTotal > 0 ? ped.ValorTotal.ToString("C0", culturaEs) : null,
                         Codigo = ped.CodigoPedido,
                         Estado = ped.Estado,
-                        Icono = esListo ? "verified" : "build_circle",
-                        ColorBadge = esListo ? "bg-emerald-600" : "bg-teal-600",
+                        Icono = "verified",
+                        ColorBadge = "bg-emerald-600",
                         UrlAccion = "/Mi_Pedido",
                         TextoAccion = "Ver en Mi Pedido",
-                        FechaStr = $"Entrega: {ped.FechaEntrega.ToString("d MMM", culturaEs)}"
+                        FechaStr = ped.FechaRegistro.HasValue ? ped.FechaRegistro.Value.ToString("d MMM", culturaEs) : "Reciente"
                     });
                 }
 
-                // Si no hay pedidos en fase final pero sí en taller (ej. recién cotizado):
-                if (!pedidosPorTerminar.Any())
-                {
-                    var pedidosActivos = pedidosCliente
-                        .Where(p => p.Estado != null && !p.Estado.Equals("Entregado", StringComparison.OrdinalIgnoreCase) && !p.Estado.Equals("Cancelado", StringComparison.OrdinalIgnoreCase))
-                        .OrderByDescending(p => p.FechaRegistro ?? DateTime.MinValue)
-                        .Take(2)
-                        .ToList();
+                // -------------------------------------------------------------
+                // 3. PRODUCTOS EN PROCESO DE DESPACHO Y ENTREGA AL CLIENTE
+                // -------------------------------------------------------------
+                var hoy = DateOnly.FromDateTime(DateTime.Today);
+                var pedidosDespacho = pedidosCliente
+                    .Where(p => p.Estado != null && (
+                        p.Estado.Contains("Despacho", StringComparison.OrdinalIgnoreCase) ||
+                        p.Estado.Contains("Entrega", StringComparison.OrdinalIgnoreCase) ||
+                        p.Estado.Contains("Listo", StringComparison.OrdinalIgnoreCase) ||
+                        p.Estado.Contains("Completado", StringComparison.OrdinalIgnoreCase) ||
+                        p.Estado.Contains("Entregado", StringComparison.OrdinalIgnoreCase) ||
+                        (p.FechaEntrega != default && p.FechaEntrega >= hoy && p.FechaEntrega <= hoy.AddDays(7))
+                    ))
+                    .Take(3)
+                    .ToList();
 
-                    foreach (var ped in pedidosActivos)
+                foreach (var ped in pedidosDespacho)
+                {
+                    bool esEntregado = ped.Estado.Contains("Entregado", StringComparison.OrdinalIgnoreCase);
+                    string tituloDesp = esEntregado
+                        ? $"🚚 ¡Entregado con éxito! - {ped.Producto}"
+                        : $"🚚 En proceso de Despacho y Entrega - {ped.Producto}";
+                    string msgDesp = esEntregado
+                        ? $"Tu pedido #{ped.CodigoPedido} ha sido entregado exitosamente al cliente. ¡Esperamos que disfrutes tu mueble Carpintec!"
+                        : $"El pedido #{ped.CodigoPedido} ha salido a reparto o está en coordinación final de entrega al cliente. Entrega: {ped.FechaEntrega.ToString("d 'de' MMMM", culturaEs)}.";
+
+                    listaNotificaciones.Add(new NotificacionClienteItem
                     {
-                        listaNotificaciones.Add(new NotificacionClienteItem
-                        {
-                            Tipo = "terminar",
-                            Titulo = $"Pedido en Taller: {ped.Producto}",
-                            Mensaje = $"Tu orden #{ped.CodigoPedido} está en estado \"{ped.Estado}\". Entrega estimada: {ped.FechaEntrega.ToString("d 'de' MMMM", culturaEs)}.",
-                            Codigo = ped.CodigoPedido,
-                            Estado = ped.Estado,
-                            Icono = "handyman",
-                            ColorBadge = "bg-[#8b4513]",
-                            UrlAccion = "/Mi_Pedido",
-                            TextoAccion = "Ver Seguimiento",
-                            FechaStr = $"Entrega: {ped.FechaEntrega.ToString("d MMM", culturaEs)}"
-                        });
-                    }
+                        Tipo = "despacho",
+                        Titulo = tituloDesp,
+                        Mensaje = msgDesp,
+                        Codigo = ped.CodigoPedido,
+                        Estado = ped.Estado,
+                        Icono = "local_shipping",
+                        ColorBadge = "bg-sky-600",
+                        UrlAccion = "/Mi_Pedido",
+                        TextoAccion = "Rastrear Entrega",
+                        FechaStr = ped.FechaEntrega != default ? $"Entrega: {ped.FechaEntrega.ToString("d MMM", culturaEs)}" : "En ruta"
+                    });
+                }
+
+                // -------------------------------------------------------------
+                // 4. NUEVOS PRODUCTOS DEL CATÁLOGO
+                // -------------------------------------------------------------
+                var nuevosProductos = await _context.Productos
+                    .Where(p => p.Estado == null || p.Estado == "Activo")
+                    .OrderByDescending(p => p.IdProducto)
+                    .Take(3)
+                    .ToListAsync();
+
+                foreach (var prod in nuevosProductos)
+                {
+                    string precioFmt = prod.Precio.HasValue ? prod.Precio.Value.ToString("C0", culturaEs) : "A convenir";
+                    string matFmt = !string.IsNullOrWhiteSpace(prod.Material) ? prod.Material : "Maderas seleccionadas";
+                    string medFmt = !string.IsNullOrWhiteSpace(prod.Medidas) ? prod.Medidas : "Diseño a medida";
+
+                    listaNotificaciones.Add(new NotificacionClienteItem
+                    {
+                        Tipo = "catalogo",
+                        Titulo = $"✨ Nuevo en Catálogo: {prod.Nombre}",
+                        Mensaje = $"Nuevo modelo disponible en madera {matFmt} ({medFmt}). Disponible desde {precioFmt}. ¡Cotízalo a medida hoy!",
+                        Monto = precioFmt,
+                        Codigo = prod.Codigo ?? $"PRD-{prod.IdProducto:D3}",
+                        Estado = "Nuevo",
+                        Icono = "storefront",
+                        ColorBadge = "bg-amber-600",
+                        UrlAccion = "/MisProductos",
+                        TextoAccion = "Ver en Catálogo",
+                        FechaStr = prod.FechaRegistro.HasValue ? prod.FechaRegistro.Value.ToString("d MMM", culturaEs) : "Nuevo"
+                    });
                 }
 
                 ViewBag.ListaNotificaciones = listaNotificaciones;
                 ViewBag.TotalNotificaciones = listaNotificaciones.Count;
                 ViewBag.TotalPagosPendientes = listaNotificaciones.Count(n => n.Tipo == "pago");
-                ViewBag.TotalProductosPorTerminar = listaNotificaciones.Count(n => n.Tipo == "terminar");
+                ViewBag.TotalPagados = listaNotificaciones.Count(n => n.Tipo == "pagado");
+                ViewBag.TotalDespacho = listaNotificaciones.Count(n => n.Tipo == "despacho");
+                ViewBag.TotalCatalogo = listaNotificaciones.Count(n => n.Tipo == "catalogo");
                 ViewBag.PrimerPagoPendiente = listaNotificaciones.FirstOrDefault(n => n.Tipo == "pago");
-                ViewBag.PrimerProductoPorTerminar = listaNotificaciones.FirstOrDefault(n => n.Tipo == "terminar");
+                ViewBag.PrimerPagado = listaNotificaciones.FirstOrDefault(n => n.Tipo == "pagado");
+                ViewBag.PrimerDespacho = listaNotificaciones.FirstOrDefault(n => n.Tipo == "despacho");
+                ViewBag.PrimerCatalogo = listaNotificaciones.FirstOrDefault(n => n.Tipo == "catalogo");
 
                 return View();
             }
@@ -296,6 +355,66 @@ namespace CARPINTEC_App.Controllers
             }
         }
 
+        // POST: Procesar pago desde modal de notificaciones (Dashboard Cliente)
+        // Si el cliente cancela, el pedido NO pasa a "En Proceso"
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ProcesarPagoDesdeNotificacion(int idVenta, string tipoPago, int? numeroCuotas)
+        {
+            try
+            {
+                var venta = await _context.Ventas.FindAsync(idVenta);
+                if (venta == null)
+                    return Json(new { success = false, mensaje = "Venta no encontrada." });
+
+                if (tipoPago == "Contado")
+                {
+                    venta.Estado = "Pagada";
+                    venta.MetodoPago = "Tarjeta (Simulado)";
+
+                    // SOLO cuando se confirma el pago, el pedido pasa a "En Preparación"
+                    var pedido = await _context.Pedidos.FindAsync(venta.IdPedido);
+                    if (pedido != null &&
+                        (pedido.Estado.Equals("Pendiente", StringComparison.OrdinalIgnoreCase) ||
+                         pedido.Estado.Equals("Cotizado", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        pedido.Estado = "En Preparación";
+                        _context.Update(pedido);
+                    }
+
+                    // Actualizar factura asociada si existe
+                    if (!string.IsNullOrEmpty(venta.NumeroFactura))
+                    {
+                        var factura = await _context.Facturas.FirstOrDefaultAsync(f => f.Folio == venta.NumeroFactura);
+                        if (factura != null)
+                        {
+                            factura.Estado = "Pagada";
+                            _context.Update(factura);
+                        }
+                    }
+                }
+                else if (tipoPago == "Cuotas")
+                {
+                    venta.Estado = "Pendiente";
+                    venta.MetodoPago = $"Crédito a {numeroCuotas} cuotas";
+                    // El pedido NO cambia de estado — NO pasa a "En Preparación" sin pago confirmado
+                }
+
+                _context.Update(venta);
+                await _context.SaveChangesAsync();
+
+                var mensaje = tipoPago == "Contado"
+                    ? "¡Pago procesado exitosamente! Tu pedido ahora está en preparación de fabricación."
+                    : $"Plan a {numeroCuotas} cuotas solicitado. Queda pendiente de validación por el supervisor.";
+
+                return Json(new { success = true, mensaje, tipoPago });
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false, mensaje = "Error al procesar el pago. Inténtalo de nuevo." });
+            }
+        }
+
         public class NotificacionClienteItem
         {
             public string Id { get; set; } = Guid.NewGuid().ToString();
@@ -310,6 +429,7 @@ namespace CARPINTEC_App.Controllers
             public string UrlAccion { get; set; } = "#";
             public string TextoAccion { get; set; } = "Ver detalles";
             public string FechaStr { get; set; } = "Hoy";
+            public int IdVenta { get; set; }
         }
 
         /// <summary>

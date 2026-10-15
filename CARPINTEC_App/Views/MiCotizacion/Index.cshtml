@@ -687,6 +687,380 @@
         </div>
     </div>
 
+    <!-- ========================================================================= -->
+    <!-- MODAL SIMULADOR DE PAGO (MI COTIZACIÓN)                                  -->
+    <!-- ========================================================================= -->
+    <div id="modalSimuladorPagoMiCot" class="fixed inset-0 z-[60] hidden overflow-y-auto bg-black/70 backdrop-blur-sm flex justify-center items-center p-3 md:p-6">
+        <div id="modalSimuladorPagoMiCotCard" class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl border border-[#DECDBE] overflow-hidden flex flex-col relative transform transition-all duration-300 scale-95 opacity-0 my-4">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-[#4A2613] via-[#5C3821] to-[#7E5F43] text-white p-5 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center border border-white/20">
+                        <span class="material-symbols-outlined text-amber-200 text-xl">payments</span>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold tracking-tight text-white flex items-center gap-1.5">
+                            Simulador de Pago Seguro Carpintec
+                        </h3>
+                        <p class="text-[11px] text-[#E0D0C0]">Despacho a domicilio, medios de pago y activación de orden</p>
+                    </div>
+                </div>
+                <button type="button" onclick="cerrarModalSimuladorMiCot()" class="text-white/70 hover:text-white p-1 rounded-lg hover:bg-white/10 transition cursor-pointer bg-transparent border-none">
+                    <span class="material-symbols-outlined text-xl">close</span>
+                </button>
+            </div>
+
+            <!-- Cuerpo -->
+            <div class="p-5 md:p-6 overflow-y-auto max-h-[calc(88vh-110px)] space-y-5">
+                <!-- Alerta importante -->
+                <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-amber-700 text-base shrink-0 mt-0.5">info</span>
+                    <p class="text-[11px] text-amber-900 leading-snug">
+                        <strong>Nota importante:</strong> Si cancelas este simulador sin confirmar el pago, la cotización <strong>no se registrará</strong> y no aparecerá en tus pedidos ni en tu historial.
+                    </p>
+                </div>
+
+                <!-- Resumen de lo que se cotiza -->
+                <div class="bg-gradient-to-br from-[#FAF6F0] to-[#F5EFE6] border border-[#E8DDD5] rounded-xl p-4">
+                    <div class="flex flex-col sm:flex-row justify-between items-start gap-2 mb-3">
+                        <div>
+                            <p class="text-[10px] text-[#8C7665] uppercase tracking-wider font-bold">Producto a Cotizar y Despachar</p>
+                            <h4 id="simMiCotProductoNombre" class="text-sm font-bold text-[#34261B] mt-0.5">Producto</h4>
+                            <p id="simMiCotProductoDetalles" class="text-[11px] text-[#745E4D] mt-0.5">Madera • Medidas</p>
+                        </div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 bg-[#EFE3D5] text-[#5C3821] rounded-full self-start">
+                            Proforma con Despacho
+                        </span>
+                    </div>
+
+                    <!-- Desglose: Subtotal, Costo de Envío y Total a Pagar -->
+                    <div class="border-t border-[#E8DDD5] pt-3 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                        <div class="bg-white/80 p-2.5 rounded-lg border border-[#E8DDD5]">
+                            <span class="text-[10px] text-gray-500 uppercase font-semibold block">Subtotal Producto</span>
+                            <span id="simMiCotSubtotalDisplay" class="text-base font-bold text-[#34261B]">$320.000</span>
+                        </div>
+                        <div class="bg-white/80 p-2.5 rounded-lg border border-[#E8DDD5]">
+                            <span class="text-[10px] text-gray-500 uppercase font-semibold block">Costo de Envío</span>
+                            <span id="simMiCotEnvioDisplay" class="text-base font-bold text-[#8B4513]">+$35.000</span>
+                        </div>
+                        <div class="bg-[#FAF3EC] p-2.5 rounded-lg border-2 border-[#8B4513]">
+                            <span class="text-[10px] text-[#8B4513] uppercase font-bold block">Total a Pagar</span>
+                            <div class="flex items-baseline gap-1">
+                                <span id="simMiCotTotalDisplay" class="text-lg font-black text-[#8B4513]">$355.000</span>
+                                <span class="text-[10px] font-bold text-[#8B4513]">COP</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 1: DATOS DE DIRECCIÓN Y DESPACHO -->
+                <div class="border border-[#E8DDD5] rounded-xl p-4 bg-white space-y-3.5">
+                    <div class="flex items-center justify-between border-b border-[#F0E6DE] pb-2">
+                        <span class="text-xs font-bold text-[#34261B] uppercase tracking-wider flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-base text-[#8B4513]">local_shipping</span>
+                            Dirección de Entrega y Despacho
+                        </span>
+                        <span class="text-[10px] bg-sky-50 text-sky-700 font-semibold px-2 py-0.5 rounded border border-sky-200">
+                            Cobertura Nacional
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-bold text-[#4A3222] mb-1">Ciudad / Departamento *</label>
+                            <select id="simMiCotCiudad" onchange="actualizarCostoEnvioSimuladorMiCot()" class="w-full bg-[#FAF7F2] border border-[#D7CCC8] rounded-lg text-xs text-[#34261B] px-3 py-2 outline-none focus:border-[#8B4513]">
+                                <option value="Bogotá D.C." data-costo="35000" selected>Bogotá D.C. (Envío $35.000)</option>
+                                <option value="Medellín" data-costo="65000">Medellín (Envío $65.000)</option>
+                                <option value="Cali" data-costo="65000">Cali (Envío $65.000)</option>
+                                <option value="Barranquilla" data-costo="65000">Barranquilla (Envío $65.000)</option>
+                                <option value="Bucaramanga" data-costo="65000">Bucaramanga (Envío $65.000)</option>
+                                <option value="Cundinamarca (Chía/Soacha/Cota)" data-costo="45000">Cundinamarca Alrededores ($45.000)</option>
+                                <option value="Otro Municipio Nacional" data-costo="85000">Otro Municipio Nacional ($85.000)</option>
+                                <option value="Retiro en Taller Carpintec" data-costo="0">Retiro en Taller (Gratis $0)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-[#4A3222] mb-1">Municipio *</label>
+                            <input type="text" id="simMiCotMunicipio" value="Bogotá" placeholder="Ej. Bogotá, Chía, Envigado" class="w-full bg-[#FAF7F2] border border-[#D7CCC8] rounded-lg text-xs text-[#34261B] px-3 py-2 outline-none focus:border-[#8B4513]">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-[#4A3222] mb-1">Código Postal</label>
+                            <input type="text" id="simMiCotCodigoPostal" value="110111" placeholder="Ej. 110111" class="w-full bg-[#FAF7F2] border border-[#D7CCC8] rounded-lg text-xs text-[#34261B] px-3 py-2 outline-none focus:border-[#8B4513]">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-bold text-[#4A3222] mb-1">Dirección Exacta (Calle / Cra / No.) *</label>
+                            <input type="text" id="simMiCotDireccion" placeholder="Ej. Carrera 15 # 93-47" class="w-full bg-[#FAF7F2] border border-[#D7CCC8] rounded-lg text-xs text-[#34261B] px-3 py-2 outline-none focus:border-[#8B4513]">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-[#4A3222] mb-1">Localidad / Barrio *</label>
+                            <input type="text" id="simMiCotLocalidad" placeholder="Ej. Chapinero, Usaquén, Poblado" class="w-full bg-[#FAF7F2] border border-[#D7CCC8] rounded-lg text-xs text-[#34261B] px-3 py-2 outline-none focus:border-[#8B4513]">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-bold text-[#4A3222] mb-1">Piso / Apto / Torre</label>
+                            <input type="text" id="simMiCotPisoDepto" placeholder="Ej. Piso 4, Apto 402, Torre B" class="w-full bg-[#FAF7F2] border border-[#D7CCC8] rounded-lg text-xs text-[#34261B] px-3 py-2 outline-none focus:border-[#8B4513]">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-[#4A3222] mb-1">Tipo de Lugar</label>
+                            <select id="simMiCotTipoLugar" class="w-full bg-[#FAF7F2] border border-[#D7CCC8] rounded-lg text-xs text-[#34261B] px-3 py-2 outline-none focus:border-[#8B4513]">
+                                <option value="Residencial">Residencia / Apartamento</option>
+                                <option value="Empresa">Empresa / Oficina</option>
+                                <option value="Hotel">Hotel / Hospedaje</option>
+                                <option value="Local Comercial">Local Comercial</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-[#4A3222] mb-1">Hotel / Empresa / Razón</label>
+                            <input type="text" id="simMiCotHotelEmpresa" placeholder="Ej. Hotel Tequendama, S.A.S" class="w-full bg-[#FAF7F2] border border-[#D7CCC8] rounded-lg text-xs text-[#34261B] px-3 py-2 outline-none focus:border-[#8B4513]">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 2: DIFERENTES MEDIOS DE PAGO -->
+                <div class="border border-[#E8DDD5] rounded-xl p-4 bg-white space-y-4">
+                    <div class="flex items-center justify-between border-b border-[#F0E6DE] pb-2">
+                        <span class="text-xs font-bold text-[#34261B] uppercase tracking-wider flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-base text-[#8B4513]">account_balance_wallet</span>
+                            Selecciona tu Medio de Pago
+                        </span>
+                        <span class="text-[10px] bg-emerald-50 text-emerald-700 font-semibold px-2 py-0.5 rounded border border-emerald-200">
+                            100% Simulado y Seguro
+                        </span>
+                    </div>
+
+                    <!-- Selector de Pestañas de Medios de Pago -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        <!-- Tarjeta -->
+                        <button type="button" onclick="cambiarMetodoPagoSimuladorMiCot('tarjeta')" id="tabMiCotBtnTarjeta" class="metodo-micot-tab-btn py-2.5 px-3 rounded-xl border-2 border-[#8B4513] bg-[#FAF3EC] text-[#34261B] font-bold text-xs flex flex-col items-center gap-1 transition-all">
+                            <span class="material-symbols-outlined text-xl text-[#8B4513]">credit_card</span>
+                            <span>Tarjeta</span>
+                        </button>
+
+                        <!-- PSE -->
+                        <button type="button" onclick="cambiarMetodoPagoSimuladorMiCot('pse')" id="tabMiCotBtnPse" class="metodo-micot-tab-btn py-2.5 px-3 rounded-xl border-2 border-[#E8DDD5] bg-white text-gray-600 font-semibold text-xs flex flex-col items-center gap-1 hover:border-[#8B4513] transition-all">
+                            <span class="material-symbols-outlined text-xl text-blue-600">account_balance</span>
+                            <span>PSE (Bancos)</span>
+                        </button>
+
+                        <!-- Nequi -->
+                        <button type="button" onclick="cambiarMetodoPagoSimuladorMiCot('nequi')" id="tabMiCotBtnNequi" class="metodo-micot-tab-btn py-2.5 px-3 rounded-xl border-2 border-[#E8DDD5] bg-white text-gray-600 font-semibold text-xs flex flex-col items-center gap-1 hover:border-[#8B4513] transition-all">
+                            <span class="material-symbols-outlined text-xl text-purple-600">phone_android</span>
+                            <span>Nequi</span>
+                        </button>
+
+                        <!-- Daviplata -->
+                        <button type="button" onclick="cambiarMetodoPagoSimuladorMiCot('daviplata')" id="tabMiCotBtnDaviplata" class="metodo-micot-tab-btn py-2.5 px-3 rounded-xl border-2 border-[#E8DDD5] bg-white text-gray-600 font-semibold text-xs flex flex-col items-center gap-1 hover:border-[#8B4513] transition-all">
+                            <span class="material-symbols-outlined text-xl text-red-600">smartphone</span>
+                            <span>Daviplata</span>
+                        </button>
+                    </div>
+
+                    <!-- CONTENIDO 1: TARJETA CRÉDITO / DÉBITO -->
+                    <div id="panelMiCotMetodoTarjeta" class="space-y-3">
+                        <!-- Modalidad Contado o Cuotas -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <label id="simMiCotLabelContado" class="border-2 border-[#8B4513] bg-[#FAF3EC] rounded-xl p-3 flex flex-col items-center cursor-pointer hover:border-[#8B4513] transition-all relative">
+                                <input type="radio" name="simMiCotTipoPago" value="Contado" checked class="sr-only" onchange="toggleSimMiCotCuotas(false)">
+                                <span class="text-xs font-bold text-[#34261B]">Pago de Contado (100%)</span>
+                                <span class="text-[10px] text-emerald-700 font-semibold mt-0.5">Pasa a "En Preparación"</span>
+                                <div class="absolute top-2 right-2 w-4 h-4 rounded-full bg-[#8B4513] flex items-center justify-center sim-micot-chk">
+                                    <span class="material-symbols-outlined text-white text-[10px]">check</span>
+                                </div>
+                            </label>
+                            <label id="simMiCotLabelCuotas" class="border-2 border-[#E8DDD5] bg-white rounded-xl p-3 flex flex-col items-center cursor-pointer hover:border-[#8B4513] transition-all relative">
+                                <input type="radio" name="simMiCotTipoPago" value="Cuotas" class="sr-only" onchange="toggleSimMiCotCuotas(true)">
+                                <span class="text-xs font-bold text-[#34261B]">En Cuotas Mensuales</span>
+                                <span class="text-[10px] text-[#8C7665] mt-0.5">3, 6 o 12 meses</span>
+                                <div class="absolute top-2 right-2 w-4 h-4 rounded-full bg-[#8B4513] items-center justify-center sim-micot-chk hidden">
+                                    <span class="material-symbols-outlined text-white text-[10px]">check</span>
+                                </div>
+                            </label>
+                        </div>
+
+                        <!-- Selector de Cuotas -->
+                        <div id="simMiCotSeccionCuotas" class="hidden bg-amber-50 border border-amber-200 rounded-xl p-3">
+                            <label class="block text-xs font-bold text-amber-900 mb-1">Número de cuotas:</label>
+                            <select id="simMiCotSelectCuotas" class="w-full border border-amber-300 rounded-lg px-3 py-2 text-xs bg-white text-[#34261B]">
+                                <option value="3">3 cuotas mensuales sin interés</option>
+                                <option value="6">6 cuotas mensuales</option>
+                                <option value="12">12 cuotas mensuales</option>
+                            </select>
+                            <p class="text-[10px] text-amber-800 mt-1">* A cuotas la orden se registra en estado <strong>Pendiente</strong> para validación del supervisor.</p>
+                        </div>
+
+                        <div class="border border-[#E8DDD5] rounded-xl p-3.5 bg-[#FAF7F2] space-y-2.5">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-bold text-[#34261B] uppercase tracking-wider flex items-center gap-1.5">
+                                    <span class="material-symbols-outlined text-sm text-[#8C7665]">lock</span>
+                                    Datos de la Tarjeta
+                                </span>
+                                <div class="flex gap-1.5">
+                                    <span class="text-[9px] font-bold bg-[#E8DDD5] text-[#5C3821] px-1.5 py-0.5 rounded">VISA</span>
+                                    <span class="text-[9px] font-bold bg-[#E8DDD5] text-[#5C3821] px-1.5 py-0.5 rounded">MASTERCARD</span>
+                                    <span class="text-[9px] font-bold bg-[#E8DDD5] text-[#5C3821] px-1.5 py-0.5 rounded">AMEX</span>
+                                </div>
+                            </div>
+                            <div>
+                                <input type="text" id="card-titular-micot" placeholder="Nombre del Titular de la tarjeta" class="w-full bg-white border border-[#D7CCC8] rounded-lg text-xs text-[#34261B] px-3 py-2 outline-none focus:border-[#8B4513]">
+                            </div>
+                            <div>
+                                <input type="text" id="card-number-micot" placeholder="Número de tarjeta (16 dígitos)" maxlength="19" class="w-full bg-white border border-[#D7CCC8] rounded-lg text-xs font-mono text-[#34261B] px-3 py-2 outline-none focus:border-[#8B4513]">
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="text" id="card-expiry-micot" placeholder="MM/AA" maxlength="5" class="bg-white border border-[#D7CCC8] rounded-lg text-xs text-[#34261B] px-3 py-2 outline-none focus:border-[#8B4513]">
+                                <input type="password" id="card-cvv-micot" placeholder="CVV (3 dígitos)" maxlength="4" class="bg-white border border-[#D7CCC8] rounded-lg text-xs text-[#34261B] px-3 py-2 outline-none focus:border-[#8B4513]">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CONTENIDO 2: PSE (TRANSFERENCIAS BANCARIAS) -->
+                    <div id="panelMiCotMetodoPse" class="hidden space-y-3 border border-[#E8DDD5] rounded-xl p-3.5 bg-[#F8FAFC]">
+                        <div class="flex items-center gap-2 text-xs font-bold text-slate-800">
+                            <span class="material-symbols-outlined text-blue-600">account_balance</span>
+                            <span>Pago mediante PSE (Débito Bancario en Línea)</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-700 mb-1">Banco emisor *</label>
+                                <select id="pse-banco-micot" class="w-full bg-white border border-slate-300 rounded-lg text-xs text-slate-800 px-3 py-2 outline-none focus:border-blue-500">
+                                    <option value="Bancolombia">Bancolombia</option>
+                                    <option value="Banco de Bogotá">Banco de Bogotá</option>
+                                    <option value="Davivienda">Davivienda</option>
+                                    <option value="BBVA Colombia">BBVA Colombia</option>
+                                    <option value="Nequi">Nequi PSE</option>
+                                    <option value="Scotiabank Colpatria">Scotiabank Colpatria</option>
+                                    <option value="Banco de Occidente">Banco de Occidente</option>
+                                    <option value="Banco AV Villas">Banco AV Villas</option>
+                                    <option value="Banco Caja Social">Banco Caja Social</option>
+                                    <option value="Nu Colombia">Nu Colombia</option>
+                                    <option value="Lulo Bank">Lulo Bank</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-700 mb-1">Tipo de Cliente *</label>
+                                <select id="pse-tipo-persona-micot" class="w-full bg-white border border-slate-300 rounded-lg text-xs text-slate-800 px-3 py-2 outline-none focus:border-blue-500">
+                                    <option value="Persona Natural">Persona Natural</option>
+                                    <option value="Persona Jurídica (Empresa)">Persona Jurídica (Empresa)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-700 mb-1">Documento de Identidad (CC/NIT) *</label>
+                                <input type="text" id="pse-doc-micot" placeholder="Número de cédula o NIT" class="w-full bg-white border border-slate-300 rounded-lg text-xs text-slate-800 px-3 py-2 outline-none focus:border-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-700 mb-1">Correo registrado en PSE *</label>
+                                <input type="email" id="pse-email-micot" placeholder="ejemplo@correo.com" class="w-full bg-white border border-slate-300 rounded-lg text-xs text-slate-800 px-3 py-2 outline-none focus:border-blue-500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CONTENIDO 3: NEQUI -->
+                    <div id="panelMiCotMetodoNequi" class="hidden space-y-3 border border-purple-200 rounded-xl p-3.5 bg-purple-50/50">
+                        <div class="flex items-center gap-2 text-xs font-bold text-purple-900">
+                            <span class="material-symbols-outlined text-purple-600">phone_android</span>
+                            <span>Pago directo con Nequi</span>
+                        </div>
+                        <p class="text-[11px] text-purple-800 leading-snug">
+                            Ingresa tu número de teléfono registrado en Nequi. Se simulará la solicitud de aprobación push por el valor total de tu orden.
+                        </p>
+                        <div>
+                            <label class="block text-[11px] font-bold text-purple-900 mb-1">Número de celular Nequi (10 dígitos) *</label>
+                            <input type="tel" id="nequi-telefono-micot" placeholder="300 123 4567" maxlength="10" class="w-full bg-white border border-purple-300 rounded-lg text-xs text-purple-900 font-mono px-3 py-2 outline-none focus:border-purple-600">
+                        </div>
+                    </div>
+
+                    <!-- CONTENIDO 4: DAVIPLATA -->
+                    <div id="panelMiCotMetodoDaviplata" class="hidden space-y-3 border border-red-200 rounded-xl p-3.5 bg-red-50/50">
+                        <div class="flex items-center gap-2 text-xs font-bold text-red-900">
+                            <span class="material-symbols-outlined text-red-600">smartphone</span>
+                            <span>Pago mediante Daviplata</span>
+                        </div>
+                        <p class="text-[11px] text-red-800 leading-snug">
+                            Autoriza el pago directamente desde tu cuenta Daviplata en segundos.
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[11px] font-bold text-red-900 mb-1">Número Daviplata (10 dígitos) *</label>
+                                <input type="tel" id="daviplata-telefono-micot" placeholder="310 123 4567" maxlength="10" class="w-full bg-white border border-red-300 rounded-lg text-xs text-red-900 font-mono px-3 py-2 outline-none focus:border-red-600">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-red-900 mb-1">Documento Titular *</label>
+                                <input type="text" id="daviplata-doc-micot" placeholder="Número de cédula" class="w-full bg-white border border-red-300 rounded-lg text-xs text-red-900 px-3 py-2 outline-none focus:border-red-600">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones Cancelar / Confirmar -->
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="cerrarModalSimuladorMiCot()" class="flex-1 border-2 border-[#D7CCC8] text-[#5C3821] font-bold py-3 rounded-xl hover:bg-[#F5EFE6] transition-all flex items-center justify-center gap-1.5 text-xs uppercase tracking-wider cursor-pointer bg-transparent">
+                        <span class="material-symbols-outlined text-base">close</span>
+                        Cancelar
+                    </button>
+                    <button type="button" id="btnConfirmarPagoMiCot" onclick="ejecutarPagoMiCot()" class="flex-1 bg-gradient-to-r from-[#8B4513] to-[#592B0A] hover:from-[#72370D] hover:to-[#432007] text-white font-bold py-3 rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-1.5 text-xs uppercase tracking-wider cursor-pointer border-none">
+                        <span class="material-symbols-outlined text-base">lock</span>
+                        Confirmar Pago y Despacho
+                    </button>
+                </div>
+            </div>
+
+            <!-- Overlays -->
+            <div id="simMiCotOverlayProcesando" class="absolute inset-0 bg-white/95 backdrop-blur-sm hidden items-center justify-center z-20 flex-col">
+                <div class="w-14 h-14 border-4 border-[#D2B48C] border-t-[#8B4513] rounded-full animate-spin mb-3"></div>
+                <p class="text-sm font-bold text-[#34261B]">Procesando pago y registrando orden...</p>
+                <p class="text-xs text-[#8C7665] mt-1">Por favor espera un momento</p>
+            </div>
+
+            <div id="simMiCotOverlayExito" class="absolute inset-0 bg-white hidden items-center justify-center z-20 flex-col p-6 text-center">
+                <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mb-3 shadow-md shadow-emerald-100">
+                    <span class="material-symbols-outlined text-3xl text-emerald-600">check_circle</span>
+                </div>
+                <h3 class="text-base font-bold text-[#34261B] mb-1">¡Pago Exitoso y Orden Confirmada!</h3>
+                <p class="text-xs text-[#6C5645] mb-2 max-w-xs" id="simMiCotMensajeExito">Tu producto ha sido registrado exitosamente.</p>
+                <div class="bg-[#FAF7F2] border border-[#E8DDD5] rounded-xl p-3 mb-5 w-full max-w-xs text-xs space-y-1">
+                    <div class="flex justify-between text-[#8C7665]">
+                        <span>Folio Cotización:</span>
+                        <strong class="text-[#34261B]" id="simMiCotFolioExito">---</strong>
+                    </div>
+                    <div class="flex justify-between text-[#8C7665]">
+                        <span>Código Pedido:</span>
+                        <strong class="text-[#8B4513]" id="simMiCotCodigoPedidoExito">---</strong>
+                    </div>
+                    <div class="flex justify-between text-[#8C7665]">
+                        <span>Estado:</span>
+                        <strong class="text-emerald-700" id="simMiCotEstadoPedidoExito">En Preparación</strong>
+                    </div>
+                </div>
+                <div class="flex gap-2 w-full max-w-xs">
+                    <button type="button" onclick="window.location.reload()" class="flex-1 border border-[#D7CCC8] hover:bg-[#FAF7F2] text-[#5C3821] font-bold py-2.5 rounded-xl transition text-xs flex items-center justify-center">
+                        Ver Mis Cotizaciones
+                    </button>
+                    <a href="/Mi_Pedido" class="flex-1 bg-[#8B4513] hover:bg-[#72370D] text-white font-bold py-2.5 rounded-xl transition text-xs flex items-center justify-center shadow-md">
+                        Ver Mis Pedidos
+                    </a>
+                </div>
+            </div>
+
+            <div id="simMiCotOverlayError" class="absolute inset-0 bg-white hidden items-center justify-center z-20 flex-col p-6 text-center">
+                <div class="w-16 h-16 bg-rose-100 rounded-full flex items-center justify-center mb-3 shadow-md shadow-rose-100">
+                    <span class="material-symbols-outlined text-3xl text-rose-600">error</span>
+                </div>
+                <h3 class="text-base font-bold text-[#34261B] mb-1">Error al procesar el pago</h3>
+                <p class="text-xs text-[#6C5645] mb-5 max-w-xs" id="simMiCotMensajeError">Ocurrió un error inesperado al registrar la orden.</p>
+                <button type="button" onclick="resetSimuladorMiCot()" class="bg-[#8B4513] text-white font-bold px-6 py-2.5 rounded-xl hover:bg-[#72370D] transition shadow-md cursor-pointer border-none text-xs">
+                    Reintentar
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- ========================================== -->
     <!-- SCRIPTS                                    -->
     <!-- ========================================== -->
@@ -781,18 +1155,11 @@
         document.getElementById('inputAncho')?.addEventListener('input', calcularPrecioTotal);
         document.getElementById('inputProfundidad')?.addEventListener('input', calcularPrecioTotal);
 
-        // 5. Envío Real al Servidor (Guardar Cotización)
-        async function guardarCotizacionReal() {
+        // 5. Control del Simulador de Pago desde Mi Cotización
+        // Si no se confirma el pago, NUNCA se registra la cotización ni el pedido
+        function guardarCotizacionReal() {
             const producto = document.getElementById('selectProducto')?.value?.trim();
             const cliente = document.getElementById('txtCliente')?.value?.trim();
-            const telefono = document.getElementById('txtTelefono')?.value?.trim();
-            const email = document.getElementById('txtEmail')?.value?.trim();
-            const madera = document.getElementById('selectMadera')?.value;
-            const cantidad = parseInt(document.getElementById('inputCantidad')?.value) || 1;
-            const alto = parseFloat(document.getElementById('inputAlto')?.value) || 80;
-            const ancho = parseFloat(document.getElementById('inputAncho')?.value) || 120;
-            const profundidad = parseFloat(document.getElementById('inputProfundidad')?.value) || 60;
-            const observaciones = document.getElementById('txtObservaciones')?.value?.trim() || "";
 
             if (!producto) {
                 alert('Por favor, ingresa o selecciona el nombre del producto que deseas cotizar.');
@@ -806,20 +1173,135 @@
                 return;
             }
 
-            // Calcular monto numérico limpio
-            let totalVal = 320000;
-            const elementoTotal = document.getElementById('precioTotalDinamico');
-            if (elementoTotal) {
-                const soloNumeros = elementoTotal.innerText.replace(/[^0-9]/g, '');
-                if (soloNumeros) totalVal = parseFloat(soloNumeros);
+            const madera = document.getElementById('selectMadera')?.value || "Pino";
+            const cantidad = parseInt(document.getElementById('inputCantidad')?.value) || 1;
+            const alto = parseFloat(document.getElementById('inputAlto')?.value) || 80;
+            const ancho = parseFloat(document.getElementById('inputAncho')?.value) || 120;
+            const prof = parseFloat(document.getElementById('inputProfundidad')?.value) || 60;
+            const totalTexto = document.getElementById('precioTotalDinamico')?.innerText || '$320.000';
+
+            // Actualizar resumen en el modal del simulador
+            const elProd = document.getElementById('simMiCotProductoNombre');
+            if (elProd) elProd.textContent = producto;
+
+            const elDet = document.getElementById('simMiCotProductoDetalles');
+            if (elDet) elDet.textContent = `Madera ${madera} • ${ancho} x ${alto} x ${prof} cm • ${cantidad} unidad(es)`;
+
+            actualizarCostoEnvioSimuladorMiCot();
+            cambiarMetodoPagoSimuladorMiCot('tarjeta');
+
+            // Resetear estado
+            resetSimuladorMiCot();
+            const radioContado = document.querySelector('input[name="simMiCotTipoPago"][value="Contado"]');
+            if (radioContado) radioContado.checked = true;
+            toggleSimMiCotCuotas(false);
+
+            // Mostrar modal del simulador
+            const modal = document.getElementById('modalSimuladorPagoMiCot');
+            const card = document.getElementById('modalSimuladorPagoMiCotCard');
+            if (modal && card) {
+                modal.classList.remove('hidden');
+                requestAnimationFrame(() => {
+                    card.classList.remove('scale-95', 'opacity-0');
+                    card.classList.add('scale-100', 'opacity-100');
+                });
+            }
+        }
+
+        function cerrarModalSimuladorMiCot() {
+            const modal = document.getElementById('modalSimuladorPagoMiCot');
+            const card = document.getElementById('modalSimuladorPagoMiCotCard');
+            if (card) {
+                card.classList.remove('scale-100', 'opacity-100');
+                card.classList.add('scale-95', 'opacity-0');
+            }
+            setTimeout(() => {
+                if (modal) modal.classList.add('hidden');
+            }, 200);
+        }
+
+        function toggleSimMiCotCuotas(mostrar) {
+            const seccion = document.getElementById('simMiCotSeccionCuotas');
+            const labelContado = document.getElementById('simMiCotLabelContado');
+            const labelCuotas = document.getElementById('simMiCotLabelCuotas');
+
+            if (mostrar) {
+                if (seccion) seccion.classList.remove('hidden');
+                if (labelContado) {
+                    labelContado.classList.remove('border-[#8B4513]', 'bg-[#FAF3EC]');
+                    labelContado.classList.add('border-[#E8DDD5]', 'bg-white');
+                    const chk = labelContado.querySelector('.sim-micot-chk');
+                    if (chk) { chk.classList.add('hidden'); chk.classList.remove('flex'); }
+                }
+                if (labelCuotas) {
+                    labelCuotas.classList.remove('border-[#E8DDD5]', 'bg-white');
+                    labelCuotas.classList.add('border-[#8B4513]', 'bg-[#FAF3EC]');
+                    const chk = labelCuotas.querySelector('.sim-micot-chk');
+                    if (chk) { chk.classList.remove('hidden'); chk.classList.add('flex'); }
+                }
+            } else {
+                if (seccion) seccion.classList.add('hidden');
+                if (labelCuotas) {
+                    labelCuotas.classList.remove('border-[#8B4513]', 'bg-[#FAF3EC]');
+                    labelCuotas.classList.add('border-[#E8DDD5]', 'bg-white');
+                    const chk = labelCuotas.querySelector('.sim-micot-chk');
+                    if (chk) { chk.classList.remove('hidden'); chk.classList.add('flex'); }
+                }
+                if (labelContado) {
+                    labelContado.classList.remove('border-[#E8DDD5]', 'bg-white');
+                    labelContado.classList.add('border-[#8B4513]', 'bg-[#FAF3EC]');
+                    const chk = labelContado.querySelector('.sim-micot-chk');
+                    if (chk) { chk.classList.remove('hidden'); chk.classList.add('flex'); }
+                }
+            }
+        }
+
+        function resetSimuladorMiCot() {
+            const overlays = ['simMiCotOverlayProcesando', 'simMiCotOverlayExito', 'simMiCotOverlayError'];
+            overlays.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.classList.add('hidden');
+                    el.classList.remove('flex');
+                }
+            });
+            const btn = document.getElementById('btnConfirmarPagoMiCot');
+            if (btn) btn.disabled = false;
+        }
+
+        async function ejecutarPagoMiCot() {
+            const btnConfirmar = document.getElementById('btnConfirmarPagoMiCot');
+            if (btnConfirmar) btnConfirmar.disabled = true;
+
+            const overlayProc = document.getElementById('simMiCotOverlayProcesando');
+            if (overlayProc) {
+                overlayProc.classList.remove('hidden');
+                overlayProc.classList.add('flex');
             }
 
-            const btn = document.getElementById('btnGuardarCotizacion');
-            const textoOriginal = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>Guardando cotización...</span>`;
-
             try {
+                const producto = document.getElementById('selectProducto')?.value?.trim();
+                const cliente = document.getElementById('txtCliente')?.value?.trim();
+                const telefono = document.getElementById('txtTelefono')?.value?.trim();
+                const email = document.getElementById('txtEmail')?.value?.trim();
+                const madera = document.getElementById('selectMadera')?.value;
+                const cantidad = parseInt(document.getElementById('inputCantidad')?.value) || 1;
+                const alto = parseFloat(document.getElementById('inputAlto')?.value) || 80;
+                const ancho = parseFloat(document.getElementById('inputAncho')?.value) || 120;
+                const profundidad = parseFloat(document.getElementById('inputProfundidad')?.value) || 60;
+                const observaciones = document.getElementById('txtObservaciones')?.value?.trim() || "";
+
+                let totalVal = 320000;
+                const elementoTotal = document.getElementById('precioTotalDinamico');
+                if (elementoTotal) {
+                    const soloNumeros = elementoTotal.innerText.replace(/[^0-9]/g, '');
+                    if (soloNumeros) totalVal = parseFloat(soloNumeros);
+                }
+
+                const tipoPagoRadio = document.querySelector('input[name="simMiCotTipoPago"]:checked');
+                const tipoPago = tipoPagoRadio ? tipoPagoRadio.value : 'Contado';
+                const numeroCuotas = tipoPago === 'Cuotas' ? parseInt(document.getElementById('simMiCotSelectCuotas')?.value) || 3 : null;
+
                 const formData = new FormData();
                 formData.append('nombreCliente', cliente);
                 formData.append('telefono', telefono);
@@ -832,32 +1314,80 @@
                 formData.append('profundidad', profundidad);
                 formData.append('observaciones', observaciones);
                 formData.append('total', totalVal);
+                formData.append('tipoPago', tipoPago);
+                if (numeroCuotas) formData.append('numeroCuotas', numeroCuotas);
 
                 const inputFile = document.getElementById('inputFotoLugar');
                 if (inputFile && inputFile.files.length > 0) {
                     formData.append('fotoLugar', inputFile.files[0]);
                 }
 
+                await new Promise(r => setTimeout(r, 1000));
+
                 const response = await fetch('/MiCotizacion/GuardarCotizacion', {
                     method: 'POST',
                     body: formData
                 });
 
-                const data = await response.json();
+                let data;
+                try {
+                    data = await response.json();
+                } catch (jsonErr) {
+                    const textErr = await response.text();
+                    console.error('Respuesta no JSON:', textErr);
+                    data = { success: false, message: 'Error en la respuesta del servidor (Código ' + response.status + ')' };
+                }
 
-                if (data.success) {
-                    alert(data.message);
-                    cerrarModalCotizacion();
-                    window.location.reload();
+                if (overlayProc) {
+                    overlayProc.classList.add('hidden');
+                    overlayProc.classList.remove('flex');
+                }
+
+                if (data && data.success) {
+                    const elFolio = document.getElementById('simMiCotFolioExito');
+                    if (elFolio) elFolio.textContent = data.folioCotizacion || 'COT-2026';
+
+                    const elPed = document.getElementById('simMiCotCodigoPedidoExito');
+                    if (elPed) elPed.textContent = data.codigoPedido || 'PED-2026';
+
+                    const elEst = document.getElementById('simMiCotEstadoPedidoExito');
+                    if (elEst) {
+                        elEst.textContent = data.estadoPedido || (tipoPago === 'Contado' ? 'En Preparación' : 'Pendiente');
+                        elEst.className = tipoPago === 'Contado' ? 'text-emerald-700 font-bold' : 'text-amber-700 font-bold';
+                    }
+
+                    const elMsg = document.getElementById('simMiCotMensajeExito');
+                    if (elMsg && data.message) elMsg.textContent = data.message;
+
+                    const overlayExito = document.getElementById('simMiCotOverlayExito');
+                    if (overlayExito) {
+                        overlayExito.classList.remove('hidden');
+                        overlayExito.classList.add('flex');
+                    }
                 } else {
-                    alert('Error: ' + data.message);
+                    const elErr = document.getElementById('simMiCotMensajeError');
+                    if (elErr) elErr.textContent = (data && data.message) ? data.message : 'Error al procesar el pago.';
+
+                    const overlayErr = document.getElementById('simMiCotOverlayError');
+                    if (overlayErr) {
+                        overlayErr.classList.remove('hidden');
+                        overlayErr.classList.add('flex');
+                    }
                 }
             } catch (error) {
-                console.error('Error al guardar la cotización:', error);
-                alert('Ocurrió un error de conexión al enviar la cotización. Por favor intente de nuevo.');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = textoOriginal;
+                console.error('Error al procesar el pago:', error);
+                if (overlayProc) {
+                    overlayProc.classList.add('hidden');
+                    overlayProc.classList.remove('flex');
+                }
+                const elErr = document.getElementById('simMiCotMensajeError');
+                if (elErr) elErr.textContent = error.message ? ('Error: ' + error.message) : 'Ocurrió un error de conexión al enviar el pago.';
+
+                const overlayErr = document.getElementById('simMiCotOverlayError');
+                if (overlayErr) {
+                    overlayErr.classList.remove('hidden');
+                    overlayErr.classList.add('flex');
+                }
             }
         }
 

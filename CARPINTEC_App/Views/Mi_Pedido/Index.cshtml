@@ -261,7 +261,7 @@
                         Todos (<span id="countTodos">@listaPedidosBD.Count</span>)
                     </button>
                     <button type="button" onclick="filterOrders('en-proceso', this)" class="filter-tab px-4 py-2 rounded-lg hover:text-[#382013] transition">
-                        En producción (<span id="countProceso">0</span>)
+                        En preparación / producción (<span id="countProceso">0</span>)
                     </button>
                     <button type="button" onclick="filterOrders('completados', this)" class="filter-tab px-4 py-2 rounded-lg hover:text-[#382013] transition">
                         Completados (<span id="countCompletados">0</span>)
@@ -288,12 +288,13 @@
                         ? p.Producto 
                         : (!string.IsNullOrWhiteSpace(primerProd?.Nombre) ? primerProd.Nombre : $"Mueble Pedido #{p.CodigoPedido}");
                     
-                    string estadoStr = !string.IsNullOrWhiteSpace(p.Estado) ? p.Estado : "En producción";
+                    string estadoStr = !string.IsNullOrWhiteSpace(p.Estado) ? p.Estado : "En Preparación";
                     bool esEntregado = estadoStr.Contains("Entregado", StringComparison.OrdinalIgnoreCase) || estadoStr.Contains("Completado", StringComparison.OrdinalIgnoreCase) || estadoStr.Contains("Listo", StringComparison.OrdinalIgnoreCase);
-                    bool esPreparacion = estadoStr.Contains("Preparación", StringComparison.OrdinalIgnoreCase) || estadoStr.Contains("Pendiente", StringComparison.OrdinalIgnoreCase);
+                    bool esPreparacion = estadoStr.Contains("Preparación", StringComparison.OrdinalIgnoreCase) || estadoStr.Contains("Preparacion", StringComparison.OrdinalIgnoreCase);
+                    bool esPendiente = estadoStr.Contains("Pendiente", StringComparison.OrdinalIgnoreCase);
                     string categoria = esEntregado ? "completados" : "en-proceso";
-                    string statusClass = esEntregado ? "bg-[#796455]" : (esPreparacion ? "bg-[#be6a2d]" : "bg-[#67774d]");
-                    int progreso = esEntregado ? 100 : (esPreparacion ? 35 : 68);
+                    string statusClass = esEntregado ? "bg-[#796455]" : (esPreparacion ? "bg-[#be6a2d]" : (esPendiente ? "bg-[#8C7665]" : "bg-[#67774d]"));
+                    int progreso = esEntregado ? 100 : (esPreparacion ? 20 : (esPendiente ? 10 : 65));
                     string codigo = !string.IsNullOrEmpty(p.CodigoPedido) ? p.CodigoPedido : $"PED-{p.IdPedido:D4}";
                     
                     string fechaPed = p.FechaSolicitud != default 
@@ -466,6 +467,16 @@
                                 <span class="material-symbols-outlined text-base">visibility</span>
                                 <span>Ver detalle</span>
                             </button>
+                            @if (!esEntregado)
+                            {
+                                <button type="button"
+                                        onclick="openCancelModal(@p.IdPedido, '@codigo', '@Html.Raw(nombreProd.Replace("'", "\\'"))')"
+                                        class="flex-1 py-2.5 px-4 rounded-xl bg-red-700 hover:bg-red-800 text-white text-xs font-semibold shadow-sm transition flex items-center justify-center gap-1.5 active:scale-98"
+                                        title="Cancelar este pedido">
+                                    <span class="material-symbols-outlined text-base">cancel</span>
+                                    <span>Cancelar</span>
+                                </button>
+                            }
                             <button type="button" onclick="openInvoiceModalById(@p.IdPedido)" class="p-2.5 rounded-xl border border-[#d6c7b7] text-[#4e3221] hover:bg-[#ede3d8] transition flex items-center justify-center" title="Ver Factura">
                                 <span class="material-symbols-outlined text-base">receipt_long</span>
                             </button>
@@ -510,6 +521,72 @@
         </div>
 
     </main>
+
+    <!-- ======================================================= -->
+    <!-- MODAL: CANCELAR PEDIDO                                  -->
+    <!-- ======================================================= -->
+    <div id="cancelPedidoModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300">
+        <div id="cancelPedidoModalBox" class="bg-[#FAF7F2] border border-[#e0d0c0] w-full max-w-md rounded-3xl shadow-2xl overflow-hidden flex flex-col transform scale-95 transition-all duration-300">
+
+            <!-- Header -->
+            <div class="px-6 py-4 bg-red-700 text-white flex items-center justify-between shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-red-800/60 rounded-xl">
+                        <span class="material-symbols-outlined text-2xl">cancel</span>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-red-200 tracking-wider uppercase">Solicitud de cancelación</p>
+                        <h2 class="text-lg font-bold">Cancelar pedido</h2>
+                    </div>
+                </div>
+                <button type="button" onclick="closeCancelModal()" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors">
+                    <span class="material-symbols-outlined text-xl">close</span>
+                </button>
+            </div>
+
+            <!-- Body -->
+            <div class="p-6 space-y-5">
+                <!-- Alerta de advertencia -->
+                <div class="flex gap-3 p-4 bg-amber-50 border border-amber-200 rounded-2xl">
+                    <span class="material-symbols-outlined text-amber-500 text-2xl shrink-0">warning</span>
+                    <div class="text-xs text-amber-800 leading-relaxed">
+                        <strong class="block font-bold text-amber-900 mb-1">¿Estás seguro que deseas cancelar?</strong>
+                        Esta acción cambiará el estado del pedido <strong id="cancelModalCodigo" class="text-amber-900"></strong>
+                        — <em id="cancelModalNombre" class="text-amber-900 font-medium"></em> — a <strong>Cancelado</strong>.
+                        El equipo de Carpintec revisará tu solicitud.
+                    </div>
+                </div>
+
+                <!-- Campo motivo -->
+                <div>
+                    <label for="cancelMotivoInput" class="block text-xs font-semibold text-[#3d2415] mb-1.5">
+                        Motivo de la cancelación <span class="text-red-600">*</span>
+                    </label>
+                    <textarea id="cancelMotivoInput"
+                              rows="3"
+                              placeholder="Ej: Cambié de opinión, necesito modificar el diseño, problemas económicos..."
+                              class="w-full bg-white border border-[#d9cdbf] rounded-xl px-4 py-3 text-xs text-[#3d2415] placeholder:text-[#9d8070] focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-transparent resize-none transition"></textarea>
+                </div>
+
+                <!-- Feedback alert -->
+                <div id="cancelFeedbackAlert" class="hidden"></div>
+
+                <!-- Botones -->
+                <div class="flex gap-3 pt-1">
+                    <button type="button" onclick="closeCancelModal()"
+                            class="flex-1 py-2.5 px-4 rounded-xl border border-[#d6c7b7] text-[#4e3221] hover:bg-[#ede3d8] text-xs font-semibold transition flex items-center justify-center gap-1.5">
+                        <span class="material-symbols-outlined text-base">arrow_back</span>
+                        <span>Volver</span>
+                    </button>
+                    <button type="button" id="btnConfirmarCancelacion" onclick="confirmarCancelacionPedido()"
+                            class="flex-1 py-2.5 px-4 rounded-xl bg-red-700 hover:bg-red-800 text-white text-xs font-semibold shadow-sm transition flex items-center justify-center gap-1.5 active:scale-95">
+                        <span class="material-symbols-outlined text-base">cancel</span>
+                        <span>Confirmar cancelación</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- ======================================================= -->
     <!-- MODAL 1: DETALLE DEL PEDIDO & PROCESO DE PRODUCCIÓN     -->
@@ -1017,9 +1094,9 @@
 
         // Base de datos de Etapas Estándar de Carpintería
         const PRODUCTION_STAGES = [
-            { id: 1, name: "Diseño & Planimetría", desc: "Planos técnicos en 3D aprobados, despiece milimétrico y validación de acabados.", icon: "architecture" },
+            { id: 1, name: "En Preparación (Taller & Planos)", desc: "Pago confirmado. Orden en preparación técnica, revisión de medidas y cubicación de madera.", icon: "handyman" },
             { id: 2, name: "Selección & Corte de Madera", desc: "Escuadrado de tableros, calibración de vetas y corte CNC de piezas maestras.", icon: "straighten" },
-            { id: 3, name: "Armado & Ensamble", desc: "Unión de módulos, espigado reforzado e instalación de herrajes ocultos.", icon: "handyman" },
+            { id: 3, name: "Armado & Ensamble", desc: "Unión de módulos, espigado reforzado e instalación de herrajes ocultos.", icon: "construction" },
             { id: 4, name: "Lijado, Acabado & Pintura", desc: "Sellado de poros, aplicación de tinte madera natural y triple capa de laca poliuretano.", icon: "brush" },
             { id: 5, name: "Control de Calidad & Empaque", desc: "Inspección de nivelación, prueba de peso y empaque con esquineros de alta protección.", icon: "verified" },
             { id: 6, name: "Despacho & Entrega al Cliente", desc: "Transporte acolchado especializado e instalación en el espacio del cliente.", icon: "local_shipping" }
@@ -1106,14 +1183,15 @@
             const list = document.getElementById('stepperStepsList');
             list.innerHTML = '';
 
-            // Calcular etapa activa según progreso
+            // Calcular etapa activa según progreso o estado del pedido
             let activeStageIndex = 6;
             if (!isCompleted) {
-                if (progressPct <= 20) activeStageIndex = 1;
-                else if (progressPct <= 40) activeStageIndex = 2;
-                else if (progressPct <= 60) activeStageIndex = 3;
-                else if (progressPct <= 80) activeStageIndex = 4;
-                else if (progressPct < 100) activeStageIndex = 5;
+                const st = (currentOrderData && currentOrderData.status ? currentOrderData.status : '').toLowerCase();
+                if (st.includes('preparaci') || progressPct <= 20) activeStageIndex = 1;
+                else if (st.includes('corte') || progressPct <= 40) activeStageIndex = 2;
+                else if (st.includes('ensamble') || st.includes('armado') || progressPct <= 60) activeStageIndex = 3;
+                else if (st.includes('pintura') || st.includes('acabado') || progressPct <= 80) activeStageIndex = 4;
+                else if (st.includes('calidad') || progressPct < 100) activeStageIndex = 5;
             }
 
             PRODUCTION_STAGES.forEach((stage, idx) => {
@@ -1142,12 +1220,13 @@
                                        Completada
                                    </span>`;
                 } else if (stepState === 'active') {
+                    const badgeTxt = (currentOrderData && currentOrderData.status) ? currentOrderData.status : 'En Preparación';
                     iconHtml = `<div class="w-9 h-9 rounded-full bg-[#cb9861] text-white flex items-center justify-center font-bold text-sm shadow-md ring-4 ring-[#ecd5b8] shrink-0 animate-pulse">
                                     <span class="material-symbols-outlined text-lg">${stage.icon}</span>
                                 </div>`;
                     bgStyle = 'bg-[#FAF7F2] border-[#cb9861] ring-1 ring-[#cb9861]/40';
                     statusBadge = `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-[#be6a2d] text-white animate-pulse">
-                                       En Proceso en Taller
+                                       ${badgeTxt}
                                    </span>`;
                 } else {
                     iconHtml = `<div class="w-9 h-9 rounded-full bg-stone-200 text-stone-500 flex items-center justify-center font-bold text-xs shrink-0">
@@ -1527,6 +1606,85 @@
             updateTabCounts();
         });
 
+        // ---------------------------------------------------------
+        // MODAL DE CANCELAR PEDIDO
+        // ---------------------------------------------------------
+        let _cancelPedidoId = null;
+
+        function openCancelModal(idPedido, codigo, nombre) {
+            _cancelPedidoId = idPedido;
+            document.getElementById('cancelModalCodigo').innerText = '#' + codigo;
+            document.getElementById('cancelModalNombre').innerText = nombre;
+            document.getElementById('cancelMotivoInput').value = '';
+            document.getElementById('cancelFeedbackAlert').classList.add('hidden');
+            document.getElementById('cancelFeedbackAlert').innerHTML = '';
+            const modal = document.getElementById('cancelPedidoModal');
+            const box = document.getElementById('cancelPedidoModalBox');
+            modal.classList.add('modal-active');
+            box.classList.remove('scale-95');
+            box.classList.add('scale-100');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCancelModal() {
+            const modal = document.getElementById('cancelPedidoModal');
+            const box = document.getElementById('cancelPedidoModalBox');
+            modal.classList.remove('modal-active');
+            box.classList.remove('scale-100');
+            box.classList.add('scale-95');
+            document.body.style.overflow = 'auto';
+            _cancelPedidoId = null;
+        }
+
+        async function confirmarCancelacionPedido() {
+            if (!_cancelPedidoId) return;
+            const motivo = document.getElementById('cancelMotivoInput').value.trim();
+            const alert = document.getElementById('cancelFeedbackAlert');
+            const btn = document.getElementById('btnConfirmarCancelacion');
+
+            if (!motivo) {
+                alert.className = 'p-3 bg-red-50 border border-red-200 text-red-800 rounded-xl text-xs';
+                alert.innerText = 'Por favor escribe el motivo de la cancelación.';
+                alert.classList.remove('hidden');
+                return;
+            }
+
+            const prevText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<span class="material-symbols-outlined text-base animate-spin">progress_activity</span><span>Procesando...</span>`;
+            alert.classList.add('hidden');
+
+            try {
+                const resp = await fetch('/Mi_Pedido/CancelarPedido', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ IdPedido: _cancelPedidoId, Motivo: motivo })
+                });
+                const data = await resp.json();
+
+                if (data.success) {
+                    alert.className = 'p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-xs flex items-center gap-2';
+                    alert.innerHTML = `<span class="material-symbols-outlined text-emerald-600 text-lg">check_circle</span><span>${data.mensaje}</span>`;
+                    alert.classList.remove('hidden');
+                    setTimeout(() => {
+                        closeCancelModal();
+                        location.reload();
+                    }, 2500);
+                } else {
+                    alert.className = 'p-3 bg-red-50 border border-red-200 text-red-800 rounded-xl text-xs';
+                    alert.innerText = data.mensaje || 'No se pudo cancelar el pedido. Intenta de nuevo.';
+                    alert.classList.remove('hidden');
+                }
+            } catch (err) {
+                alert.className = 'p-3 bg-red-50 border border-red-200 text-red-800 rounded-xl text-xs';
+                alert.innerText = 'Error de conexión. Por favor intenta de nuevo.';
+                alert.classList.remove('hidden');
+            } finally {
+                btn.innerHTML = prevText;
+                btn.disabled = false;
+            }
+        }
+
         // Cerrar modales con tecla ESC
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') {
@@ -1534,6 +1692,7 @@
                 closeInvoiceModal();
                 closeIssueModal();
                 closeContactModal();
+                closeCancelModal();
             }
         });
     </script>

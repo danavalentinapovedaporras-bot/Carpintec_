@@ -27,6 +27,8 @@ GO
 ALTER TABLE [dbo].[Pedido] ADD CONSTRAINT [CK_Pedido_Estado] 
 CHECK (Estado IN (
     'Pendiente',
+    'En Proceso',
+    'En proceso',
     'En Preparación',
     'En Diseño',
     'Diseño',
@@ -34,6 +36,7 @@ CHECK (Estado IN (
     'Ensamble',
     'Pintura',
     'En Producción',
+    'Listo para Entrega',
     'Pendiente Entrega',
     'Entregado',
     'Completado',
