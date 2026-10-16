@@ -363,80 +363,103 @@
                     <table class="w-full text-left border-collapse">
                         <thead class="bg-surface-container-low border-b border-outline-variant/50 font-label-md text-label-md text-black font-bold">
                             <tr>
-                                <th class="p-4 py-3 font-bold text-black">ID</th>
+                                <th class="p-4 py-3 font-bold text-black">ID / Orden</th>
                                 <th class="p-4 py-3 font-bold text-black">Pedido</th>
                                 <th class="p-4 py-3 font-bold text-black">Empleado</th>
                                 <th class="p-4 py-3 font-bold text-black">Cargo</th>
                                 <th class="p-4 py-3 font-bold text-black">Actividad</th>
                                 <th class="p-4 py-3 font-bold text-black text-right">Horas</th>
-                                <th class="p-4 py-3 font-bold text-black text-right">Costo</th>
+                                <th class="p-4 py-3 font-bold text-black text-right">Costo Total</th>
                                 <th class="p-4 py-3 font-bold text-black text-center">Estado</th>
                                 <th class="p-4 py-3 font-bold text-black text-center no-print">Acciones</th>
                             </tr>
                         </thead>
                         <tbody class="font-body-sm text-body-sm text-on-surface">
-                         <tbody>
-    @foreach (var item in Model)
-    {
-        <tr class="border-b border-gray-100 hover:bg-gray-50/50 transition">
-            <td class="py-4 px-6 font-bold text-blue-600">@item.CodigoOrden</td>
-            <td class="py-4 px-6 text-gray-800 font-medium">Pedido #@item.IdPedido</td>
-            <td class="py-4 px-6">
-                <div class="flex items-center gap-2">
-                    <span class="w-7 h-7 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold">
-                        EMP
-                    </span>
-                    <span class="text-gray-700">ID: @item.IdEmpleado</span>
-                </div>
-            </td>
-            <td class="py-4 px-6 text-gray-600">Producto #@item.IdProducto</td>
-            <td class="py-4 px-6 text-gray-600">@item.Proceso</td>
-            <td class="py-4 px-6 text-gray-700 font-semibold">@(item.HorasReales ?? item.HorasEstimadas)h</td>
-            <td class="py-4 px-6 text-gray-900 font-bold">$@string.Format("{0:N2}", (item.HorasReales ?? item.HorasEstimadas) * item.CostoHora)</td>
-            <td class="py-4 px-6">
-                @if (item.Estado == "Completada" || item.Estado == "Finalizado")
-                {
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> @item.Estado
-                    </span>
-                }
-                else if (item.Estado == "En proceso")
-                {
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700">
-                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> @item.Estado
-                    </span>
-                }
-                else
-                {
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-rose-50 text-rose-700">
-                        <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> @item.Estado
-                    </span>
-                }
-            </td>
-            <td class="py-4 px-6 flex items-center gap-2 text-gray-400">
-                <a href="/ManoObra/Detalles/@item.IdManoObra" class="hover:text-blue-600 transition"><span class="material-symbols-outlined text-sm">visibility</span></a>
-                <a href="/ManoObra/Editar/@item.IdManoObra" class="hover:text-blue-600 transition"><span class="material-symbols-outlined text-sm">edit</span></a>
-                <a href="/ManoObra/Eliminar/@item.IdManoObra" class="hover:text-rose-600 transition"><span class="material-symbols-outlined text-sm">delete</span></a>
-            </td>
-        </tr>
-    }
-</tbody>
-                                
-                            
-                        
+                            @if (Model != null && Model.Any())
+                            {
+                                @foreach (var item in Model)
+                                {
+                                    var horas = item.HorasReales ?? item.HorasEstimadas;
+                                    var costoTotal = horas * item.CostoHora;
+                                    var empleadoNombre = item.IdEmpleadoNavigation != null ? $"{item.IdEmpleadoNavigation.Nombre} {item.IdEmpleadoNavigation.Apellido}" : $"ID: {item.IdEmpleado}";
+                                    var cargo = item.IdEmpleadoNavigation?.Cargo ?? "Operario";
+
+                                    <tr class="border-b border-outline-variant/10 hover:bg-surface-container-low/30 transition-colors">
+                                        <td class="py-4 px-4 font-bold text-black">@item.CodigoOrden</td>
+                                        <td class="py-4 px-4 text-black font-medium">Pedido #@item.IdPedido</td>
+                                        <td class="py-4 px-4">
+                                            <div class="flex items-center gap-2">
+                                                <span class="w-7 h-7 rounded-full bg-[#D2B48C]/40 text-black flex items-center justify-center text-xs font-bold shrink-0">
+                                                    @(item.IdEmpleadoNavigation != null && !string.IsNullOrEmpty(item.IdEmpleadoNavigation.Nombre) ? item.IdEmpleadoNavigation.Nombre.Substring(0, 1).ToUpper() : "E")
+                                                </span>
+                                                <span class="text-black font-semibold truncate max-w-[150px]" title="@empleadoNombre">@empleadoNombre</span>
+                                            </div>
+                                        </td>
+                                        <td class="py-4 px-4 text-on-surface-variant font-medium">@cargo</td>
+                                        <td class="py-4 px-4 text-on-surface font-semibold">
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded bg-surface-container text-xs font-bold text-black">
+                                                @item.Proceso
+                                            </span>
+                                        </td>
+                                        <td class="py-4 px-4 text-right text-black font-bold">@horas.ToString("N1")h</td>
+                                        <td class="py-4 px-4 text-right text-black font-bold">$@costoTotal.ToString("N2")</td>
+                                        <td class="py-4 px-4 text-center">
+                                            @if (item.Estado == "Completada" || item.Estado == "Finalizado")
+                                            {
+                                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> @item.Estado
+                                                </span>
+                                            }
+                                            else if (item.Estado == "En proceso" || item.Estado == "En Proceso")
+                                            {
+                                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> @item.Estado
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> @item.Estado
+                                                </span>
+                                            }
+                                        </td>
+                                        <td class="py-4 px-4 text-center no-print">
+                                            <div class="flex items-center justify-center gap-1.5">
+                                                <!-- Botón Ver Detalles -->
+                                                <button type="button" onclick="verDetalleManoObra(@item.IdManoObra)" class="p-1.5 hover:bg-surface-container rounded-lg text-black hover:text-black transition-colors" title="Ver detalles">
+                                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                                </button>
+                                                <!-- Botón Editar -->
+                                                <button type="button" onclick="abrirModalEditar(@item.IdManoObra)" class="p-1.5 hover:bg-[#D2B48C]/30 rounded-lg text-black hover:text-[#442a22] transition-colors" title="Editar asignación">
+                                                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                                                </button>
+                                                <!-- Botón Eliminar -->
+                                                <button type="button" onclick="confirmarEliminar(@item.IdManoObra, '@item.CodigoOrden', '@empleadoNombre')" class="p-1.5 hover:bg-red-50 rounded-lg text-red-600 hover:text-red-700 transition-colors" title="Eliminar asignación">
+                                                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="9" class="py-8 text-center text-on-surface-variant font-medium">
+                                        No se encontraron registros de mano de obra en el sistema.
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
                     </table>
                 </div>
 
-                @* ==========================================================================
-                   CAMBIO REALIZADO: Paginación dinámica según los registros reales devueltos por la BD.
-                   Preserva los parámetros de búsqueda y estado en los enlaces.
-                   ========================================================================== *@
+                @* Paginación dinámica *@
                 <div class="px-4 py-3 border-t border-outline-variant/30 bg-surface-container-lowest flex flex-col md:flex-row items-center justify-between gap-4 no-print">
                     <span class="font-body-sm text-body-sm text-black font-bold">
                         Mostrando @(ViewBag.RegistroInicio ?? 0) a @(ViewBag.RegistroFin ?? 0) de @(ViewBag.TotalRegistros ?? 0) registros
                     </span>
                     <div class="flex gap-2 items-center">
-                        @* Botón Anterior *@
                         @if (ViewBag.PaginaActual > 1)
                         {
                             <a href="@Url.Action("Index", new { pagina = ViewBag.PaginaActual - 1, search = ViewBag.Search, estado = ViewBag.Estado })" class="p-1.5 rounded text-black hover:bg-surface-container-high transition-colors" title="Página anterior">
@@ -450,7 +473,6 @@
                             </button>
                         }
 
-                        @* Botones de números de página *@
                         @for (int p = 1; p <= (ViewBag.TotalPaginas ?? 1); p++)
                         {
                             if (p == ViewBag.PaginaActual)
@@ -467,7 +489,6 @@
                             }
                         }
 
-                        @* Botón Siguiente *@
                         @if (ViewBag.PaginaActual < ViewBag.TotalPaginas)
                         {
                             <a href="@Url.Action("Index", new { pagina = ViewBag.PaginaActual + 1, search = ViewBag.Search, estado = ViewBag.Estado })" class="p-1.5 rounded text-black hover:bg-surface-container-high transition-colors" title="Página siguiente">
@@ -486,15 +507,13 @@
         </main>
     </div>
 
-    <!-- Ventana Emergente: Nueva Asignación de Mano de Obra -->
+    <!-- 1. MODAL: Nueva Asignación de Mano de Obra -->
     <div id="modalNuevaAsignacion" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 overflow-y-auto">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6 space-y-6 relative max-h-[90vh] overflow-y-auto">
-
-            <!-- Cabecera -->
             <div class="flex items-center justify-between border-b border-gray-100 pb-4">
                 <div>
                     <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-blue-600">badge</span>
+                        <span class="material-symbols-outlined text-[#D2B48C]">add_circle</span>
                         Nueva Asignación de Mano de Obra
                     </h3>
                     <p class="text-xs text-gray-500">Registra las horas y costos asociados a una actividad de producción.</p>
@@ -504,119 +523,119 @@
                 </button>
             </div>
 
-            <!-- Formulario -->
             <form asp-controller="ManoObra" asp-action="Crear" method="post" class="space-y-4">
+                @Html.AntiForgeryToken()
 
-                <!-- Pedido Asociado y Empleado -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-gray-700 mb-1">Pedido Asociado</label>
-                        <select name="IdPedido" class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none">
-                            <option value="">Seleccionar pedido...</option>
-                            <!-- Aquí puedes iterar tu ViewBag.ListaPedidos si aplica -->
-                        </select>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Código de Orden (Opcional)</label>
+                        <input type="text" name="CodigoOrden" placeholder="Ej. MO-2026-001 (Automático si se deja vacío)" class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-[#D2B48C] outline-none" />
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-700 mb-1">Empleado Responsable</label>
-                        <select name="IdEmpleado" class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none">
-                            <option value="">Seleccionar empleado...</option>
-                            <!-- Aquí puedes iterar tu ViewBag.ListaEmpleados si aplica -->
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Pedido Asociado *</label>
+                        <select name="IdPedido" required class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-[#D2B48C] outline-none">
+                            <option value="">Seleccionar pedido...</option>
+                            @if (ViewBag.ListaPedidos != null)
+                            {
+                                foreach (var ped in ViewBag.ListaPedidos)
+                                {
+                                    <option value="@ped.IdPedido">Pedido #@ped.IdPedido @(!string.IsNullOrEmpty(ped.Producto) ? $"- {ped.Producto}" : "")</option>
+                                }
+                            }
                         </select>
                     </div>
                 </div>
 
-                <!-- Producto/Proyecto y Tipo de Actividad -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 mb-1">
-                                Producto o Proyecto
-                            </label>
-
-                            <select name="IdProducto"
-                                    class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none">
-
-                                <option value="">Seleccionar producto...</option>
-
-                                @foreach (var producto in ViewBag.ListaProductos)
-                                {
-                                    <option value="@producto.IdProducto">
-                                        @producto.Nombre
-                                    </option>
-                                }
-
-                            </select>
-                        </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-700 mb-1">Tipo de Actividad</label>
-                        <select name="Proceso" class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none">
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Empleado Responsable *</label>
+                        <select name="IdEmpleado" required class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-[#D2B48C] outline-none">
+                            <option value="">Seleccionar empleado...</option>
+                            @if (ViewBag.ListaEmpleados != null)
+                            {
+                                foreach (var emp in ViewBag.ListaEmpleados)
+                                {
+                                    <option value="@emp.IdEmpleado">@emp.Nombre @emp.Apellido (@emp.Cargo)</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Producto / Proyecto *</label>
+                        <select name="IdProducto" required class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-[#D2B48C] outline-none">
+                            <option value="">Seleccionar producto...</option>
+                            @if (ViewBag.ListaProductos != null)
+                            {
+                                foreach (var prod in ViewBag.ListaProductos)
+                                {
+                                    <option value="@prod.IdProducto">@prod.Nombre</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Tipo de Actividad / Proceso *</label>
+                        <select name="Proceso" required class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-[#D2B48C] outline-none">
                             <option value="Diseño">Diseño</option>
                             <option value="Corte">Corte</option>
                             <option value="Ensamblaje">Ensamblaje</option>
                             <option value="Lijado">Lijado</option>
                             <option value="Pintura">Pintura</option>
                             <option value="Instalación">Instalación</option>
+                            <option value="Tapizado">Tapizado</option>
+                            <option value="Control de Calidad">Control de Calidad</option>
                             <option value="Otro">Otro</option>
                         </select>
                     </div>
-                </div>
-
-                <!-- Fechas -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-gray-700 mb-1">Fecha de Inicio</label>
-                        <input type="date" name="FechaInicio" class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none" />
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-700 mb-1">Fecha de Finalización</label>
-                        <input type="date" name="FechaFin" class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none" />
-                    </div>
-                </div>
-
-                <!-- Costos y Horas (Cálculo automático) -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-gray-700 mb-1">Horas Trabajadas</label>
-                        <input type="number" id="inputHoras" name="HorasReales" step="0.5" placeholder="Ej. 8" oninput="calcularTotal()" class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none" />
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-700 mb-1">Costo por Hora</label>
-                        <input type="number" id="inputCostoHora" name="CostoHora" step="0.01" placeholder="Ej. 15.00" oninput="calcularTotal()" class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none" />
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-700 mb-1">Costo Total</label>
-                            <input type="text"
-                                   id="inputCostoTotal"
-                                   readonly
-                                   placeholder="$0.00"
-                                   class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-100 font-bold text-blue-600 outline-none cursor-not-allowed" />
-                    </div>
-                </div>
-
-                <!-- Estado -->
-                <div>
-                    <label class="block text-xs font-bold text-gray-700 mb-1">Estado</label>
-                        <select name="Estado"
-                                class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none">
-
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Estado</label>
+                        <select name="Estado" class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-[#D2B48C] outline-none">
                             <option value="Pendiente">Pendiente</option>
                             <option value="En proceso">En proceso</option>
                             <option value="Completada">Completada</option>
-
                         </select>
+                    </div>
                 </div>
 
-                <!-- Observaciones -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Fecha de Inicio</label>
+                        <input type="date" name="FechaInicio" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-[#D2B48C] outline-none" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Fecha de Finalización</label>
+                        <input type="date" name="FechaFin" class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-[#D2B48C] outline-none" />
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Horas Trabajadas / Estimadas *</label>
+                        <input type="number" id="inputHoras" name="HorasReales" step="0.5" min="0" placeholder="Ej. 8" oninput="calcularTotal()" required class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-[#D2B48C] outline-none" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Costo por Hora ($) *</label>
+                        <input type="number" id="inputCostoHora" name="CostoHora" step="0.01" min="0" placeholder="Ej. 15000" oninput="calcularTotal()" required class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-[#D2B48C] outline-none" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Costo Total ($)</label>
+                        <input type="text" id="inputCostoTotal" readonly placeholder="$0.00" class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-100 font-bold text-black outline-none cursor-not-allowed" />
+                    </div>
+                </div>
+
                 <div>
                     <label class="block text-xs font-bold text-gray-700 mb-1">Observaciones</label>
-                    <textarea name="Observaciones" rows="2" placeholder="Detalles adicionales sobre la labor realizada..." class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+                    <textarea name="Observaciones" rows="2" placeholder="Detalles adicionales sobre la labor realizada..." class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-[#D2B48C] outline-none"></textarea>
                 </div>
 
-                <!-- Botones de Acción -->
                 <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
                     <button type="button" onclick="cerrarModalAsignacion()" class="px-4 py-2 text-xs font-bold text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition">
                         Cancelar
                     </button>
-                    <button type="submit" class="px-4 py-2 text-xs font-bold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition shadow">
+                    <button type="submit" class="px-5 py-2 text-xs font-bold text-black bg-[#D2B48C] rounded-lg hover:brightness-95 transition shadow" style="background-color: #D2B48C !important; color: #000000 !important;">
                         Guardar actividad
                     </button>
                 </div>
@@ -624,19 +643,416 @@
         </div>
     </div>
 
+    <!-- 2. MODAL: Ver Detalles de Mano de Obra -->
+    <div id="modalDetalleManoObra" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl p-6 space-y-6 relative max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-gray-100 pb-4">
+                <div class="flex items-center gap-3">
+                    <div class="p-2.5 bg-[#D2B48C]/30 rounded-xl text-black">
+                        <span class="material-symbols-outlined text-[24px]">visibility</span>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-black flex items-center gap-2">
+                            Detalles de la Mano de Obra
+                        </h3>
+                        <p class="text-xs text-gray-500" id="detCodigoOrdenSub">Cargando...</p>
+                    </div>
+                </div>
+                <button type="button" onclick="cerrarModalDetalle()" class="text-gray-400 hover:text-gray-600 p-1 rounded-lg">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <!-- Loader -->
+            <div id="detLoading" class="flex flex-col items-center justify-center py-12 gap-3">
+                <span class="material-symbols-outlined animate-spin text-3xl text-[#D2B48C]">sync</span>
+                <span class="text-sm font-bold text-gray-600">Cargando información...</span>
+            </div>
+
+            <!-- Contenido de Detalle -->
+            <div id="detContent" class="hidden space-y-6">
+                <!-- Tarjeta Principal con Estado y Código -->
+                <div class="bg-surface-container-low/50 p-4 rounded-xl border border-outline-variant/30 flex flex-wrap justify-between items-center gap-4">
+                    <div>
+                        <span class="text-xs text-gray-500 uppercase font-bold tracking-wider block">Orden de Trabajo</span>
+                        <span class="text-xl font-bold text-black" id="detCodigoOrden">-</span>
+                    </div>
+                    <div id="detEstadoBadge">
+                        <!-- Badge inyectado dinámicamente -->
+                    </div>
+                </div>
+
+                <!-- Grilla de Información -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                        <span class="text-xs text-gray-500 font-bold block mb-1">Empleado Responsable</span>
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm text-[#D2B48C]">person</span>
+                            <span class="text-sm font-bold text-black" id="detEmpleado">-</span>
+                        </div>
+                        <span class="text-xs text-gray-500 block mt-1" id="detEmpleadoSub">Cargo: - | Doc: -</span>
+                    </div>
+
+                    <div class="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                        <span class="text-xs text-gray-500 font-bold block mb-1">Pedido y Proyecto</span>
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm text-[#D2B48C]">shopping_bag</span>
+                            <span class="text-sm font-bold text-black" id="detPedido">-</span>
+                        </div>
+                        <span class="text-xs text-gray-600 block mt-1 font-semibold" id="detProducto">-</span>
+                    </div>
+
+                    <div class="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                        <span class="text-xs text-gray-500 font-bold block mb-1">Actividad / Proceso</span>
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm text-[#D2B48C]">handyman</span>
+                            <span class="text-sm font-bold text-black" id="detProceso">-</span>
+                        </div>
+                    </div>
+
+                    <div class="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                        <span class="text-xs text-gray-500 font-bold block mb-1">Fechas del Proceso</span>
+                        <div class="flex items-center gap-2 text-xs text-gray-700">
+                            <span class="material-symbols-outlined text-sm text-gray-400">calendar_today</span>
+                            <span>Inicio: <strong id="detFechaInicio">-</strong> | Fin: <strong id="detFechaFin">-</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resumen de Costos y Horas -->
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 grid grid-cols-3 gap-3 text-center">
+                    <div>
+                        <span class="text-xs text-gray-500 font-bold block">Horas Totales</span>
+                        <span class="text-lg font-bold text-black mt-1 block" id="detHoras">-</span>
+                    </div>
+                    <div>
+                        <span class="text-xs text-gray-500 font-bold block">Costo / Hora</span>
+                        <span class="text-lg font-bold text-black mt-1 block" id="detCostoHora">-</span>
+                    </div>
+                    <div class="border-l border-gray-200">
+                        <span class="text-xs text-gray-500 font-bold block">Costo Total</span>
+                        <span class="text-lg font-bold text-black mt-1 block" id="detCostoTotal">-</span>
+                    </div>
+                </div>
+
+                <!-- Observaciones -->
+                <div class="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                    <span class="text-xs text-gray-500 font-bold block mb-1">Observaciones / Notas</span>
+                    <p class="text-xs text-gray-700 italic" id="detObservaciones">Sin observaciones registradas.</p>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
+                <button type="button" onclick="cerrarModalDetalle()" class="px-4 py-2 text-xs font-bold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition">
+                    Cerrar
+                </button>
+                <button type="button" id="btnEditarDesdeDetalle" onclick="" class="px-5 py-2 text-xs font-bold text-black bg-[#D2B48C] rounded-lg hover:brightness-95 transition shadow flex items-center gap-1.5" style="background-color: #D2B48C !important; color: #000000 !important;">
+                    <span class="material-symbols-outlined text-sm">edit</span> Editar asignación
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. MODAL: Editar Asignación de Mano de Obra -->
+    <div id="modalEditarManoObra" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl p-6 space-y-6 relative max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-gray-100 pb-4">
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[#D2B48C]">edit_note</span>
+                        Editar Asignación de Mano de Obra
+                    </h3>
+                    <p class="text-xs text-gray-500">Actualiza las horas, costos o estado de la asignación seleccionada.</p>
+                </div>
+                <button type="button" onclick="cerrarModalEditar()" class="text-gray-400 hover:text-gray-600">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <form asp-controller="ManoObra" asp-action="Editar" method="post" class="space-y-4">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="editIdManoObra" name="IdManoObra" />
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Código de Orden</label>
+                        <input type="text" id="editCodigoOrden" name="CodigoOrden" class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-[#D2B48C] outline-none font-bold" required />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Pedido Asociado *</label>
+                        <select id="editIdPedido" name="IdPedido" required class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-[#D2B48C] outline-none">
+                            <option value="">Seleccionar pedido...</option>
+                            @if (ViewBag.ListaPedidos != null)
+                            {
+                                foreach (var ped in ViewBag.ListaPedidos)
+                                {
+                                    <option value="@ped.IdPedido">Pedido #@ped.IdPedido @(!string.IsNullOrEmpty(ped.Producto) ? $"- {ped.Producto}" : "")</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Empleado Responsable *</label>
+                        <select id="editIdEmpleado" name="IdEmpleado" required class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-[#D2B48C] outline-none">
+                            <option value="">Seleccionar empleado...</option>
+                            @if (ViewBag.ListaEmpleados != null)
+                            {
+                                foreach (var emp in ViewBag.ListaEmpleados)
+                                {
+                                    <option value="@emp.IdEmpleado">@emp.Nombre @emp.Apellido (@emp.Cargo)</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Producto / Proyecto *</label>
+                        <select id="editIdProducto" name="IdProducto" required class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-[#D2B48C] outline-none">
+                            <option value="">Seleccionar producto...</option>
+                            @if (ViewBag.ListaProductos != null)
+                            {
+                                foreach (var prod in ViewBag.ListaProductos)
+                                {
+                                    <option value="@prod.IdProducto">@prod.Nombre</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Tipo de Actividad / Proceso *</label>
+                        <select id="editProceso" name="Proceso" required class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-[#D2B48C] outline-none">
+                            <option value="Diseño">Diseño</option>
+                            <option value="Corte">Corte</option>
+                            <option value="Ensamblaje">Ensamblaje</option>
+                            <option value="Lijado">Lijado</option>
+                            <option value="Pintura">Pintura</option>
+                            <option value="Instalación">Instalación</option>
+                            <option value="Tapizado">Tapizado</option>
+                            <option value="Control de Calidad">Control de Calidad</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Estado</label>
+                        <select id="editEstado" name="Estado" class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-[#D2B48C] outline-none">
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="En proceso">En proceso</option>
+                            <option value="Completada">Completada</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Fecha de Inicio</label>
+                        <input type="date" id="editFechaInicio" name="FechaInicio" class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-[#D2B48C] outline-none" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Fecha de Finalización</label>
+                        <input type="date" id="editFechaFin" name="FechaFin" class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-[#D2B48C] outline-none" />
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Horas Trabajadas *</label>
+                        <input type="number" id="editHorasReales" name="HorasReales" step="0.5" min="0" placeholder="Ej. 8" oninput="calcularTotalEditar()" required class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-[#D2B48C] outline-none" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Costo por Hora ($) *</label>
+                        <input type="number" id="editCostoHora" name="CostoHora" step="0.01" min="0" placeholder="Ej. 15000" oninput="calcularTotalEditar()" required class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-[#D2B48C] outline-none" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Costo Total ($)</label>
+                        <input type="text" id="editCostoTotal" readonly placeholder="$0.00" class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-100 font-bold text-black outline-none cursor-not-allowed" />
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Observaciones</label>
+                    <textarea id="editObservaciones" name="Observaciones" rows="2" placeholder="Detalles adicionales..." class="w-full text-xs border border-gray-200 rounded-lg p-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-[#D2B48C] outline-none"></textarea>
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
+                    <button type="button" onclick="cerrarModalEditar()" class="px-4 py-2 text-xs font-bold text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-5 py-2 text-xs font-bold text-black bg-[#D2B48C] rounded-lg hover:brightness-95 transition shadow" style="background-color: #D2B48C !important; color: #000000 !important;">
+                        Guardar cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 4. MODAL: Confirmar Eliminación -->
+    <div id="modalEliminarManoObra" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-5 relative">
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[28px]">delete_forever</span>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-black">Eliminar Asignación</h3>
+                    <p class="text-xs text-gray-500 mt-1">¿Estás seguro de que deseas eliminar permanentemente esta actividad de mano de obra?</p>
+                </div>
+            </div>
+
+            <div class="p-3 bg-red-50 rounded-xl border border-red-200 text-xs text-red-800 font-medium">
+                <p>Orden: <strong id="eliminarCodigoTexto">-</strong></p>
+                <p class="mt-1">Empleado: <strong id="eliminarEmpleadoTexto">-</strong></p>
+                <p class="mt-1 text-[11px] text-red-600 italic">Esta acción no se puede deshacer.</p>
+            </div>
+
+            <form asp-controller="ManoObra" asp-action="Eliminar" method="post" class="flex items-center justify-end gap-3 pt-2">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="eliminarIdManoObra" name="id" value="" />
+                <button type="button" onclick="cerrarModalEliminar()" class="px-4 py-2 text-xs font-bold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition">
+                    Cancelar
+                </button>
+                <button type="submit" class="px-5 py-2 text-xs font-bold text-white bg-red-600 rounded-lg hover:bg-red-700 transition shadow">
+                    Sí, eliminar
+                </button>
+            </form>
+        </div>
+    </div>
+
     <script>
-            // Funciones para abrir/cerrar y calcular automáticamente el costo total
-            function abrirModalAsignacion() {
-                document.getElementById('modalNuevaAsignacion').classList.remove('hidden');
-            }
-            function cerrarModalAsignacion() {
-                document.getElementById('modalNuevaAsignacion').classList.add('hidden');
-            }
-            function calcularTotal() {
-                let horas = parseFloat(document.getElementById('inputHoras').value) || 0;
-                let costoHora = parseFloat(document.getElementById('inputCostoHora').value) || 0;
-                let total = horas * costoHora;
-                document.getElementById('inputCostoTotal').value = "$" + total.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            }
+        // Modal Nueva Asignación
+        function abrirModalAsignacion() {
+            document.getElementById('modalNuevaAsignacion').classList.remove('hidden');
+        }
+        function cerrarModalAsignacion() {
+            document.getElementById('modalNuevaAsignacion').classList.add('hidden');
+        }
+        function calcularTotal() {
+            let horas = parseFloat(document.getElementById('inputHoras').value) || 0;
+            let costoHora = parseFloat(document.getElementById('inputCostoHora').value) || 0;
+            let total = horas * costoHora;
+            document.getElementById('inputCostoTotal').value = "$" + total.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        // Modal Detalle
+        function verDetalleManoObra(id) {
+            const modal = document.getElementById('modalDetalleManoObra');
+            const loading = document.getElementById('detLoading');
+            const content = document.getElementById('detContent');
+
+            modal.classList.remove('hidden');
+            loading.classList.remove('hidden');
+            content.classList.add('hidden');
+
+            fetch(`@Url.Action("ObtenerManoObra", "ManoObra")?id=${id}`)
+                .then(r => {
+                    if (!r.ok) throw new Error("Error al obtener datos");
+                    return r.json();
+                })
+                .then(data => {
+                    document.getElementById('detCodigoOrdenSub').innerText = data.codigoOrden;
+                    document.getElementById('detCodigoOrden').innerText = data.codigoOrden;
+                    document.getElementById('detEmpleado').innerText = data.empleadoNombre;
+                    document.getElementById('detEmpleadoSub').innerText = `Cargo: ${data.empleadoCargo} | Doc: ${data.empleadoDocumento}`;
+                    document.getElementById('detPedido').innerText = data.pedidoCodigo;
+                    document.getElementById('detProducto').innerText = data.productoNombre;
+                    document.getElementById('detProceso').innerText = data.proceso;
+                    document.getElementById('detFechaInicio').innerText = data.fechaInicio || 'No definida';
+                    document.getElementById('detFechaFin').innerText = data.fechaFin || 'No definida';
+
+                    const horasTotales = (data.horasReales !== null ? data.horasReales : data.horasEstimadas);
+                    document.getElementById('detHoras').innerText = `${horasTotales} hrs`;
+                    document.getElementById('detCostoHora').innerText = `$${Number(data.costoHora).toLocaleString('es-CO', { minimumFractionDigits: 2 })}`;
+                    document.getElementById('detCostoTotal').innerText = data.costoTotalFormatted;
+                    document.getElementById('detObservaciones').innerText = data.observaciones || 'Sin observaciones registradas.';
+
+                    // Badge de Estado
+                    let badgeColor = 'bg-rose-50 text-rose-700 border-rose-200';
+                    let dotColor = 'bg-rose-500';
+                    if (data.estado === 'Completada' || data.estado === 'Finalizado') {
+                        badgeColor = 'bg-emerald-50 text-emerald-700 border-emerald-200';
+                        dotColor = 'bg-emerald-500';
+                    } else if (data.estado === 'En proceso' || data.estado === 'En Proceso') {
+                        badgeColor = 'bg-amber-50 text-amber-700 border-amber-200';
+                        dotColor = 'bg-amber-500';
+                    }
+                    document.getElementById('detEstadoBadge').innerHTML = `
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${badgeColor}">
+                            <span class="w-1.5 h-1.5 rounded-full ${dotColor}"></span> ${data.estado}
+                        </span>
+                    `;
+
+                    // Botón Editar desde detalle
+                    document.getElementById('btnEditarDesdeDetalle').onclick = function() {
+                        cerrarModalDetalle();
+                        abrirModalEditar(data.idManoObra);
+                    };
+
+                    loading.classList.add('hidden');
+                    content.classList.remove('hidden');
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("No se pudo cargar los detalles de la mano de obra.");
+                    cerrarModalDetalle();
+                });
+        }
+        function cerrarModalDetalle() {
+            document.getElementById('modalDetalleManoObra').classList.add('hidden');
+        }
+
+        // Modal Editar
+        function abrirModalEditar(id) {
+            fetch(`@Url.Action("ObtenerManoObra", "ManoObra")?id=${id}`)
+                .then(r => {
+                    if (!r.ok) throw new Error("Error al obtener datos");
+                    return r.json();
+                })
+                .then(data => {
+                    document.getElementById('editIdManoObra').value = data.idManoObra;
+                    document.getElementById('editCodigoOrden').value = data.codigoOrden;
+                    document.getElementById('editIdPedido').value = data.idPedido;
+                    document.getElementById('editIdEmpleado').value = data.idEmpleado;
+                    document.getElementById('editIdProducto').value = data.idProducto;
+                    document.getElementById('editProceso').value = data.proceso;
+                    document.getElementById('editEstado').value = data.estado;
+                    document.getElementById('editFechaInicio').value = data.fechaInicio || '';
+                    document.getElementById('editFechaFin').value = data.fechaFin || '';
+                    document.getElementById('editHorasReales').value = data.horasReales !== null ? data.horasReales : data.horasEstimadas;
+                    document.getElementById('editCostoHora').value = data.costoHora;
+                    document.getElementById('editObservaciones').value = data.observaciones || '';
+
+                    calcularTotalEditar();
+                    document.getElementById('modalEditarManoObra').classList.remove('hidden');
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("No se pudo cargar la información para editar.");
+                });
+        }
+        function cerrarModalEditar() {
+            document.getElementById('modalEditarManoObra').classList.add('hidden');
+        }
+        function calcularTotalEditar() {
+            let horas = parseFloat(document.getElementById('editHorasReales').value) || 0;
+            let costoHora = parseFloat(document.getElementById('editCostoHora').value) || 0;
+            let total = horas * costoHora;
+            document.getElementById('editCostoTotal').value = "$" + total.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        // Modal Eliminar
+        function confirmarEliminar(id, codigo, empleado) {
+            document.getElementById('eliminarIdManoObra').value = id;
+            document.getElementById('eliminarCodigoTexto').innerText = codigo;
+            document.getElementById('eliminarEmpleadoTexto').innerText = empleado;
+            document.getElementById('modalEliminarManoObra').classList.remove('hidden');
+        }
+        function cerrarModalEliminar() {
+            document.getElementById('modalEliminarManoObra').classList.add('hidden');
+        }
     </script>
 </body></html>

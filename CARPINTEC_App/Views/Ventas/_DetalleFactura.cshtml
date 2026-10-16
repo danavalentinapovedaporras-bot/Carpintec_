@@ -83,10 +83,10 @@
         <!-- Botones de Acción -->
         <div class="p-md bg-surface-container-low/30 border-t border-outline-variant/30 flex flex-col gap-3">
             <div class="flex gap-3">
-                <button type="button" class="flex-1 bg-surface-container-lowest border border-outline-variant/50 text-on-surface hover:bg-surface-container-low px-4 py-2 rounded-lg text-label-md font-label-md transition-colors flex justify-center items-center gap-2">
+                <button type="button" onclick="window.open('@Url.Action("VerFactura", "Ventas", new { id = Model.IdVenta })', '_blank')" class="flex-1 bg-surface-container-lowest border border-outline-variant/50 text-on-surface hover:bg-surface-container-low px-4 py-2 rounded-lg text-label-md font-label-md transition-colors flex justify-center items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]" data-icon="download">download</span> PDF
                 </button>
-                <button type="button" class="flex-1 bg-surface-container-lowest border border-outline-variant/50 text-on-surface hover:bg-surface-container-low px-4 py-2 rounded-lg text-label-md font-label-md transition-colors flex justify-center items-center gap-2">
+                <button type="button" onclick="window.open('@Url.Action("VerFactura", "Ventas", new { id = Model.IdVenta })', '_blank')" class="flex-1 bg-surface-container-lowest border border-outline-variant/50 text-on-surface hover:bg-surface-container-low px-4 py-2 rounded-lg text-label-md font-label-md transition-colors flex justify-center items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]" data-icon="print">print</span> Imprimir
                 </button>
             </div>

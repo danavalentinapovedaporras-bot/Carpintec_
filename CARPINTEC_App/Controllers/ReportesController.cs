@@ -24,15 +24,45 @@ namespace CARPINTEC_App.Controllers
         // GET: Reportes
         public async Task<IActionResult> Index(string periodo = "mes", int? anio = null)
         {
-            int anioActual = anio ?? DateTime.Now.Year;
+            int anioInicio = 2025;
+            int anioLimite = Math.Max(DateTime.Now.Year + 3, 2028);
+
+            var aniosSet = new SortedSet<int>();
+            for (int y = anioInicio; y <= anioLimite; y++)
+            {
+                aniosSet.Add(y);
+            }
+
+            // Si hay ventas registradas en años futuros o en 2025 en adelante
+            var aniosEnBd = await _context.Ventas
+                .Where(v => v.FechaVenta.Year >= anioInicio)
+                .Select(v => v.FechaVenta.Year)
+                .Distinct()
+                .ToListAsync();
+
+            foreach (var y in aniosEnBd)
+            {
+                if (y >= anioInicio) aniosSet.Add(y);
+            }
+
+            var aniosDisponibles = aniosSet.ToList();
+
+            int anioActual = (anio.HasValue && anio.Value >= anioInicio)
+                ? anio.Value
+                : (DateTime.Now.Year >= anioInicio ? DateTime.Now.Year : anioInicio);
+
+            if (!aniosDisponibles.Contains(anioActual))
+            {
+                aniosDisponibles.Add(anioActual);
+                aniosDisponibles = aniosDisponibles.OrderBy(y => y).ToList();
+            }
+
             var vm = new ReportesViewModel
             {
                 PeriodoSeleccionado = string.IsNullOrEmpty(periodo) ? "mes" : periodo.ToLower(),
-                AnioSeleccionado = anioActual
+                AnioSeleccionado = anioActual,
+                AniosDisponibles = aniosDisponibles
             };
-
-            // Lista de años para el selector (año actual y anteriores)
-            vm.AniosDisponibles = new List<int> { anioActual, anioActual - 1, anioActual - 2 };
 
             // 1. Rango de Fechas según el período seleccionado
             DateTime fechaInicio;
@@ -62,19 +92,11 @@ namespace CARPINTEC_App.Controllers
                 fechaFinPrev = fechaInicio.AddDays(-1).AddHours(23).AddMinutes(59).AddSeconds(59);
             }
 
-            // 2. CÁLCULO DE KPIS DESDE LA BASE DE DATOS
-            // Ventas Totales en el período
+            // 2. CÁLCULO DE KPIS DESDE LA BASE DE DATOS (DATOS 100% REALES)
+            // Ventas Totales en el período y año seleccionado
             var ventasPeriodo = await _context.Ventas
                 .Where(v => v.FechaVenta >= fechaInicio && v.FechaVenta <= fechaFin && v.Estado != "Anulada")
                 .SumAsync(v => (decimal?)v.Total) ?? 0m;
-
-            // Si no hay ventas en el rango estricto del mes, calculamos el total histórico reciente para mostrar datos válidos
-            if (ventasPeriodo == 0m)
-            {
-                ventasPeriodo = await _context.Ventas
-                    .Where(v => v.Estado != "Anulada")
-                    .SumAsync(v => (decimal?)v.Total) ?? 0m;
-            }
 
             var ventasPrev = await _context.Ventas
                 .Where(v => v.FechaVenta >= fechaInicioPrev && v.FechaVenta <= fechaFinPrev && v.Estado != "Anulada")
@@ -90,100 +112,112 @@ namespace CARPINTEC_App.Controllers
             }
             else
             {
-                vm.VariacionVentas = "+12%";
-                vm.VariacionVentasPositiva = true;
+                vm.VariacionVentas = ventasPeriodo > 0 ? "+100%" : "0%";
+                vm.VariacionVentasPositiva = ventasPeriodo >= 0;
             }
 
-            // Ganancias Netas (ventas pagadas o margen operativo)
+            // Ganancias Netas (ventas pagadas en el período seleccionado)
             decimal ganancias = await _context.Ventas
-                .Where(v => v.Estado == "Pagada")
+                .Where(v => v.FechaVenta >= fechaInicio && v.FechaVenta <= fechaFin && v.Estado == "Pagada")
                 .SumAsync(v => (decimal?)v.Total) ?? 0m;
 
-            if (ganancias == 0m)
-            {
-                ganancias = ventasPeriodo * 0.45m; // Estimación de margen del 45%
-            }
+            decimal gananciasPrev = await _context.Ventas
+                .Where(v => v.FechaVenta >= fechaInicioPrev && v.FechaVenta <= fechaFinPrev && v.Estado == "Pagada")
+                .SumAsync(v => (decimal?)v.Total) ?? 0m;
+
             vm.GananciasNetas = ganancias;
-            vm.VariacionGanancias = "+8.4%";
-            vm.VariacionGananciasPositiva = true;
-
-            // Pedidos Completados
-            vm.PedidosCompletados = await _context.Pedidos
-                .CountAsync(p => p.Estado == "Entregado" || p.Estado == "Finalizado" || p.Estado == "Completado");
-
-            if (vm.PedidosCompletados == 0)
+            if (gananciasPrev > 0)
             {
-                vm.PedidosCompletados = await _context.Pedidos.CountAsync();
+                decimal diffG = ((ganancias - gananciasPrev) / gananciasPrev) * 100;
+                vm.VariacionGanancias = (diffG >= 0 ? "+" : "") + diffG.ToString("0.#") + "%";
+                vm.VariacionGananciasPositiva = diffG >= 0;
             }
+            else
+            {
+                vm.VariacionGanancias = ganancias > 0 ? "+100%" : "0%";
+                vm.VariacionGananciasPositiva = ganancias >= 0;
+            }
+
+            // Pedidos Completados en el período
+            vm.PedidosCompletados = await _context.Pedidos
+                .Where(p => p.FechaSolicitud.Year == anioActual)
+                .CountAsync(p => p.Estado == "Entregado" || p.Estado == "Finalizado" || p.Estado == "Completado");
 
             // Cotizaciones Pendientes
             vm.CotizacionesPendientes = await _context.Cotizaciones
+                .Where(c => c.Fecha.Year == anioActual)
                 .CountAsync(c => c.Estado == "Pendiente");
 
-            // 3. GRÁFICA DE VENTAS POR MES (Últimos 6 Meses)
+            // 3. GRÁFICA DE VENTAS POR MES (Los 12 meses del año seleccionado - DATOS 100% REALES)
             string[] nombresMeses = { "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic" };
+            string[] nombresMesesCompletos = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" };
+            string[] coloresMeses = {
+                "#3B82F6", // Ene - Azul
+                "#06B6D4", // Feb - Cian
+                "#10B981", // Mar - Esmeralda
+                "#84CC16", // Abr - Verde lima
+                "#F59E0B", // May - Ámbar
+                "#F97316", // Jun - Naranja
+                "#EF4444", // Jul - Rojo Coral
+                "#EC4899", // Ago - Rosa
+                "#8B5CF6", // Sep - Violeta
+                "#6366F1", // Oct - Índigo
+                "#14B8A6", // Nov - Turquesa
+                "#D2B48C"  // Dic - Dorado / Beige Carpintec
+            };
+
             var listaMeses = new List<VentaMensualItem>();
 
-            for (int i = 5; i >= 0; i--)
+            for (int m = 1; m <= 12; m++)
             {
-                var fechaMes = DateTime.Now.AddMonths(-i);
-                int mesNum = fechaMes.Month;
-                int mesAnio = fechaMes.Year;
-
                 decimal totalMes = await _context.Ventas
-                    .Where(v => v.FechaVenta.Month == mesNum && v.FechaVenta.Year == mesAnio && v.Estado != "Anulada")
+                    .Where(v => v.FechaVenta.Month == m && v.FechaVenta.Year == anioActual && v.Estado != "Anulada")
                     .SumAsync(v => (decimal?)v.Total) ?? 0m;
 
                 listaMeses.Add(new VentaMensualItem
                 {
-                    Mes = nombresMeses[mesNum - 1],
-                    MesNumero = mesNum,
-                    Anio = mesAnio,
-                    Total = totalMes
+                    Mes = nombresMeses[m - 1],
+                    MesCompleto = nombresMesesCompletos[m - 1],
+                    MesNumero = m,
+                    Anio = anioActual,
+                    Total = totalMes,
+                    ColorHex = coloresMeses[m - 1]
                 });
             }
 
-            // Si no hay ventas registradas en los meses exactos, asignamos valores representativos derivados de ventas
             decimal maxVenta = listaMeses.Max(m => m.Total);
-            if (maxVenta == 0m)
+
+            // Cálculo estricto de alturas: solo si hay ventas reales en ese año; del resto quedan en 0
+            foreach (var item in listaMeses)
             {
-                // Valores de muestra proporcionales para visualización
-                int[] alturasDefault = { 60, 45, 85, 70, 95, 75 };
-                for (int i = 0; i < listaMeses.Count; i++)
-                {
-                    listaMeses[i].PorcentajeAltura = alturasDefault[i];
-                    listaMeses[i].Total = (vm.VentasTotales > 0 ? (vm.VentasTotales / 6) * (alturasDefault[i] / 100m) : 4500000m);
-                }
-                listaMeses[4].EsMesMaximo = true; // Mayo como pico
-            }
-            else
-            {
-                foreach (var item in listaMeses)
+                if (maxVenta > 0 && item.Total > 0)
                 {
                     int pct = (int)Math.Round((item.Total / maxVenta) * 100);
-                    item.PorcentajeAltura = Math.Max(pct, 15);
+                    item.PorcentajeAltura = Math.Max(pct, 10);
                     item.EsMesMaximo = (item.Total == maxVenta);
+                }
+                else
+                {
+                    item.PorcentajeAltura = 0;
+                    item.EsMesMaximo = false;
                 }
             }
             vm.VentasPorMes = listaMeses;
 
-            // 4. GRÁFICA DE PEDIDOS POR ESTADO
-            int totalPedidos = await _context.Pedidos.CountAsync();
+            // 4. GRÁFICA DE PEDIDOS POR ESTADO (Datos reales para el año seleccionado)
+            var pedidosDelAnio = await _context.Pedidos
+                .Where(p => p.FechaSolicitud.Year == anioActual)
+                .ToListAsync();
+
+            int totalPedidos = pedidosDelAnio.Count;
             vm.TotalPedidos = totalPedidos;
 
             if (totalPedidos > 0)
             {
-                vm.PedidosProduccion = await _context.Pedidos
-                    .CountAsync(p => p.Estado == "En Producción" || p.Estado == "En produccion" || p.Estado == "En proceso");
-
-                vm.PedidosEntregados = await _context.Pedidos
-                    .CountAsync(p => p.Estado == "Entregado" || p.Estado == "Finalizado" || p.Estado == "Completado");
-
-                vm.PedidosEnEspera = await _context.Pedidos
-                    .CountAsync(p => p.Estado == "Pendiente" || p.Estado == "En espera" || p.Estado == "Pendiente Entrega");
-
-                vm.PedidosCancelados = await _context.Pedidos
-                    .CountAsync(p => p.Estado == "Cancelado" || p.Estado == "Anulado");
+                vm.PedidosProduccion = pedidosDelAnio.Count(p => p.Estado == "En Producción" || p.Estado == "En produccion" || p.Estado == "En proceso");
+                vm.PedidosEntregados = pedidosDelAnio.Count(p => p.Estado == "Entregado" || p.Estado == "Finalizado" || p.Estado == "Completado");
+                vm.PedidosEnEspera = pedidosDelAnio.Count(p => p.Estado == "Pendiente" || p.Estado == "En espera" || p.Estado == "Pendiente Entrega");
+                vm.PedidosCancelados = pedidosDelAnio.Count(p => p.Estado == "Cancelado" || p.Estado == "Anulado");
 
                 vm.PorcentajeProduccion = Math.Round(((double)vm.PedidosProduccion / totalPedidos) * 100, 1);
                 vm.PorcentajeEntregados = Math.Round(((double)vm.PedidosEntregados / totalPedidos) * 100, 1);
@@ -192,40 +226,46 @@ namespace CARPINTEC_App.Controllers
             }
             else
             {
-                // Fallbacks visuales si no hay pedidos aún
-                vm.TotalPedidos = 124;
-                vm.PedidosProduccion = 56;
-                vm.PorcentajeProduccion = 45;
-                vm.PedidosEntregados = 37;
-                vm.PorcentajeEntregados = 30;
-                vm.PedidosEnEspera = 25;
-                vm.PorcentajeEnEspera = 20;
-                vm.PedidosCancelados = 6;
-                vm.PorcentajeCancelados = 5;
+                vm.PedidosProduccion = 0;
+                vm.PedidosEntregados = 0;
+                vm.PedidosEnEspera = 0;
+                vm.PedidosCancelados = 0;
+                vm.PorcentajeProduccion = 0;
+                vm.PorcentajeEntregados = 0;
+                vm.PorcentajeEnEspera = 0;
+                vm.PorcentajeCancelados = 0;
             }
 
-            // 5. TOP DE PRODUCTOS MÁS SOLICITADOS
+            // 5. TOP DE PRODUCTOS MÁS SOLICITADOS (Datos reales de la BD)
             var topProductosData = await _context.DetallePedidos
                 .Include(dp => dp.IdProductoNavigation)
-                .GroupBy(dp => new { dp.IdProducto, dp.IdProductoNavigation.Nombre, dp.IdProductoNavigation.Imagen, dp.IdProductoNavigation.Precio })
+                .Where(dp => dp.IdProductoNavigation != null)
+                .GroupBy(dp => new {
+                    dp.IdProducto,
+                    dp.IdProductoNavigation.Nombre,
+                    dp.IdProductoNavigation.Imagen,
+                    dp.IdProductoNavigation.Precio,
+                    dp.IdProductoNavigation.Categoria
+                })
                 .Select(g => new TopProductoItem
                 {
                     IdProducto = g.Key.IdProducto,
                     Nombre = g.Key.Nombre,
                     Imagen = g.Key.Imagen,
-                    TotalPedidos = g.Count(),
-                    PrecioPromedio = g.Key.Precio ?? g.Average(x => x.PrecioUnitario)
+                    TotalPedidos = g.Sum(x => x.Cantidad),
+                    PrecioPromedio = g.Key.Precio ?? (g.Average(x => (decimal?)x.PrecioUnitario) ?? 0m)
                 })
                 .OrderByDescending(p => p.TotalPedidos)
                 .Take(4)
                 .ToListAsync();
 
-            // Si hay menos de 4 en DetallePedidos, completamos con la tabla Productos
+            // Si hay menos de 4 en DetallePedidos, completamos con los productos reales del catálogo
             if (topProductosData.Count < 4)
             {
                 var idsExistentes = topProductosData.Select(t => t.IdProducto).ToList();
                 var productosCatalogo = await _context.Productos
                     .Where(p => !idsExistentes.Contains(p.IdProducto))
+                    .OrderBy(p => p.IdProducto)
                     .Take(4 - topProductosData.Count)
                     .ToListAsync();
 
@@ -236,20 +276,34 @@ namespace CARPINTEC_App.Controllers
                         IdProducto = prod.IdProducto,
                         Nombre = prod.Nombre,
                         Imagen = prod.Imagen,
-                        TotalPedidos = new Random().Next(10, 30),
-                        PrecioPromedio = prod.Precio ?? 1500000m
+                        TotalPedidos = 0,
+                        PrecioPromedio = prod.Precio ?? 0m
                     });
                 }
             }
 
+            // Asignar imágenes correctas a cada uno de los productos según su tipo / catálogo
+            foreach (var prodItem in topProductosData)
+            {
+                var prodDb = await _context.Productos.FirstOrDefaultAsync(p => p.IdProducto == prodItem.IdProducto);
+                string categoria = prodDb?.Categoria ?? "";
+
+                // Si no tiene imagen o es vacía / placeholder, asignar la imagen representativa correcta
+                if (string.IsNullOrWhiteSpace(prodItem.Imagen) || prodItem.Imagen.Contains("placeholder") || !prodItem.Imagen.StartsWith("/"))
+                {
+                    prodItem.Imagen = ProductosController.ObtenerImagenPorDefecto(categoria, prodItem.Nombre);
+                }
+            }
+
             int rank = 1;
-            int maxTop = topProductosData.Any() ? topProductosData.Max(x => x.TotalPedidos) : 1;
-            if (maxTop == 0) maxTop = 1;
+            int maxTop = topProductosData.Any() ? topProductosData.Max(x => x.TotalPedidos) : 0;
 
             foreach (var prod in topProductosData)
             {
                 prod.Ranking = rank++;
-                prod.PorcentajeBarra = (int)Math.Round(((double)prod.TotalPedidos / maxTop) * 100);
+                prod.PorcentajeBarra = maxTop > 0 && prod.TotalPedidos > 0 
+                    ? (int)Math.Round(((double)prod.TotalPedidos / maxTop) * 100) 
+                    : 0;
             }
             vm.TopProductos = topProductosData;
 

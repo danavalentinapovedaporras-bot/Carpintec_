@@ -114,6 +114,38 @@ builder.Services.AddSession(options =>
 var app = builder.Build();
 
 // =========================
+// Inicialización de imágenes de catálogo (Escritorios y Muebles)
+// =========================
+try
+{
+    var webRoot = app.Environment.WebRootPath ?? Path.Combine(app.Environment.ContentRootPath, "wwwroot");
+    var imagesDir = Path.Combine(webRoot, "images");
+    if (Directory.Exists(imagesDir))
+    {
+        var destEscritorio = Path.Combine(imagesDir, "escritorio.jpeg");
+        var destMesac = Path.Combine(imagesDir, "mesac.jpeg");
+        var brainImage = @"C:\Users\danav\.gemini\antigravity-ide\brain\991df03f-c337-43fe-9ea4-3b5076d53547\escritorio_madera_1792171003144.jpg";
+
+        if (File.Exists(brainImage))
+        {
+            File.Copy(brainImage, destEscritorio, true);
+            File.Copy(brainImage, destMesac, true);
+        }
+        else if (!File.Exists(destEscritorio))
+        {
+            using var http = new System.Net.Http.HttpClient();
+            var imgBytes = http.GetByteArrayAsync("https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=800").GetAwaiter().GetResult();
+            File.WriteAllBytes(destEscritorio, imgBytes);
+            File.WriteAllBytes(destMesac, imgBytes);
+        }
+    }
+}
+catch
+{
+    // Manejo silencioso si ocurre contingencia en arranque
+}
+
+// =========================
 // Inicialización segura de esquema para vacaciones
 // =========================
 try

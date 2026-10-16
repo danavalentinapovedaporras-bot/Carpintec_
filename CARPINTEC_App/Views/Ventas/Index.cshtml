@@ -273,6 +273,7 @@
                 <tr class="bg-surface-container-low/50 text-label-md font-label-md text-on-surface-variant border-b border-outline-variant/30">
                     <th class="py-3 px-4 font-semibold">Factura</th>
                     <th class="py-3 px-4 font-semibold">Cliente</th>
+                    <th class="py-3 px-4 font-semibold">Producto</th>
                     <th class="py-3 px-4 font-semibold">Fecha</th>
                     <th class="py-3 px-4 font-semibold">Total</th>
                     <th class="py-3 px-4 font-semibold">Estado</th>
@@ -292,6 +293,20 @@
                             
                             <!-- Nombre del Cliente desde la base de datos -->
                             <td class="py-3 px-4">@item.IdClienteNavigation?.Nombre</td>
+                            
+                            <!-- Producto(s) del pedido -->
+                            <td class="py-3 px-4 text-on-surface-variant text-xs">
+                                @if (item.IdPedidoNavigation?.DetallePedidos != null && item.IdPedidoNavigation.DetallePedidos.Any())
+                                {
+                                    @string.Join(", ", item.IdPedidoNavigation.DetallePedidos
+                                        .Where(d => d.IdProductoNavigation != null)
+                                        .Select(d => d.IdProductoNavigation.Nombre))
+                                }
+                                else
+                                {
+                                    <span class="italic">Sin productos</span>
+                                }
+                            </td>
                             
                             <!-- Fecha de Venta dinámica -->
                             <td class="py-3 px-4 text-on-surface-variant">@item.FechaVenta.ToString("dd/MM/yyyy")</td>
@@ -315,7 +330,7 @@
                                                         <button type="button" onclick="cargarDetalle(@item.IdVenta)" class="p-1 hover:text-primary hover:bg-surface-container-low rounded" title="Ver detalle">
                                                             <span class="material-symbols-outlined text-[18px]" data-icon="visibility">visibility</span>
                                                         </button>
-                                    <button class="p-1 hover:text-primary hover:bg-surface-container-low rounded" title="Descargar">
+                                    <button onclick="window.open('@Url.Action("VerFactura", "Ventas")/' + @item.IdVenta, '_blank')" class="p-1 hover:text-primary hover:bg-surface-container-low rounded" title="Descargar">
                                         <span class="material-symbols-outlined text-[18px]" data-icon="download">download</span>
                                     </button>
                                 </div>
@@ -326,7 +341,7 @@
                 else
                 {
                     <tr>
-                        <td colspan="6" class="py-6 text-center text-on-surface-variant">
+                        <td colspan="7" class="py-6 text-center text-on-surface-variant">
                             No hay facturas registradas en la base de datos.
                         </td>
                     </tr>
@@ -373,89 +388,7 @@
     </div>
 
 </div>
-                    <!--cuadros <actualizados></actualizados>-->
-<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/30 shadow-[0_4px_12px_rgba(68,42,34,0.03)] overflow-hidden">
-<div class="p-md border-b border-outline-variant/30 flex items-center gap-2">
-<span class="material-symbols-outlined text-primary" data-icon="analytics">analytics</span>
-<h3 class="text-body-lg font-body-lg font-semibold text-on-surface">Resumen de Ventas y Pendientes</h3>
 </div>
-<div class="p-md grid grid-cols-1 md:grid-cols-2 gap-lg">
-<!-- Ventas por Mes Chart -->
-<div>
-<h4 class="text-label-md font-label-md text-on-surface-variant mb-4 uppercase tracking-wider">Ventas por Mes</h4>
-<div class="flex items-end justify-between h-40 gap-2 pt-4">
-<div class="flex-1 flex flex-col items-center gap-2">
-<div class="w-full bg-primary-container rounded-t-sm" style="height: 60%"></div>
-<span class="text-[10px] text-on-surface-variant">Abr</span>
-</div>
-<div class="flex-1 flex flex-col items-center gap-2">
-<div class="w-full bg-primary-container rounded-t-sm" style="height: 45%"></div>
-<span class="text-[10px] text-on-surface-variant">May</span>
-</div>
-<div class="flex-1 flex flex-col items-center gap-2">
-<div class="w-full bg-primary-container rounded-t-sm" style="height: 80%"></div>
-<span class="text-[10px] text-on-surface-variant">Jun</span>
-</div>
-<div class="flex-1 flex flex-col items-center gap-2">
-<div class="w-full bg-primary-container rounded-t-sm" style="height: 70%"></div>
-<span class="text-[10px] text-on-surface-variant">Jul</span>
-</div>
-<div class="flex-1 flex flex-col items-center gap-2">
-<div class="w-full bg-primary-container rounded-t-sm" style="height: 95%"></div>
-<span class="text-[10px] text-on-surface-variant">Ago</span>
-</div>
-</div>
-</div>
-<!-- Pagos Pendientes List -->
-<div>
-<h4 class="text-label-md font-label-md text-on-surface-variant mb-4 uppercase tracking-wider">Pagos Pendientes</h4>
-<div class="overflow-x-auto">
-    <table class="w-full text-left border-collapse">
-        <thead>
-            <tr class="text-label-md font-label-md text-on-surface-variant border-b border-outline-variant/30">
-                <th class="py-2 px-2 font-semibold">Cliente</th>
-                <th class="py-2 px-2 font-semibold">Factura</th>
-                <th class="py-2 px-2 font-semibold">Total</th>
-                <th class="py-2 px-2 font-semibold">Vencimiento</th>
-                <th class="py-2 px-2 font-semibold">Estado</th>
-            </tr>
-        </thead>
-        <tbody class="text-body-sm font-body-sm">
-            <!-- INICIO: Listado de Facturas pendientes con códigos en negro -->
-            <tr class="border-b border-outline-variant/10 hover:bg-surface-container-low/30 transition-colors">
-                <td class="py-3 px-2 font-semibold text-on-surface">María Gómez</td>
-                <td class="py-3 px-2 font-bold text-black" style="color: #000000 !important;">FAC-2026-003</td>
-                <td class="py-3 px-2 font-semibold">$1.200.000</td>
-                <td class="py-3 px-2 text-on-surface-variant">21/08/2026</td>
-                <td class="py-3 px-2">
-                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-error-container/50 text-error">Vencido</span>
-                </td>
-            </tr>
-            <tr class="border-b border-outline-variant/10 hover:bg-surface-container-low/30 transition-colors">
-                <td class="py-3 px-2 font-semibold text-on-surface">Carlos Pérez</td>
-                <td class="py-3 px-2 font-bold text-black" style="color: #000000 !important;">FAC-2026-004</td>
-                <td class="py-3 px-2 font-semibold">$850.000</td>
-                <td class="py-3 px-2 text-on-surface-variant">27/08/2026</td>
-                <td class="py-3 px-2">
-                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-secondary-fixed text-on-secondary-fixed-variant">Pendiente</span>
-                </td>
-            </tr>
-            <tr class="border-b border-outline-variant/10 hover:bg-surface-container-low/30 transition-colors">
-                <td class="py-3 px-2 font-semibold text-on-surface">Ana Martínez</td>
-                <td class="py-3 px-2 font-bold text-black" style="color: #000000 !important;">FAC-2026-005</td>
-                <td class="py-3 px-2 font-semibold">$1.200.000</td>
-                <td class="py-3 px-2 text-on-surface-variant">29/08/2026</td>
-                <td class="py-3 px-2">
-                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-secondary-fixed text-on-secondary-fixed-variant">Pendiente</span>
-                </td>
-            </tr>
-            <!-- FIN: Listado de Facturas pendientes con códigos en negro -->
-        </tbody>
-    </table>
-</div>
-</div>
-</div>
-</div></div>
 <!-- Detail Panel (Sidebar) -->
                 <!-- Columna Derecha: Panel de Detalle Dinámico -->
                 <div class="xl:col-span-1" id="panel-detalle-factura">

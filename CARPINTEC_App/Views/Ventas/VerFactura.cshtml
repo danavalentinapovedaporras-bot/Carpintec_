@@ -1,404 +1,415 @@
-﻿@model CARPINTEC_App.Models.Factura
+@model CARPINTEC_App.Models.Venta
 @{
     Layout = null;
-    ViewData["Title"] = "Factura";
+    ViewData["Title"] = "Factura " + (Model.NumeroFactura ?? $"FAC-{Model.IdVenta}");
 }
 
 <!DOCTYPE html>
-
 <html lang="es">
-
 <head>
-
     <meta charset="utf-8" />
-
-    <title>Factura</title>
-
+    <title>Factura @(Model.NumeroFactura ?? $"FAC-{Model.IdVenta}") - CARPINTEC</title>
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-            body {
-                background: #ececec;
-                font-family: Arial,Helvetica,sans-serif;
-            }
+        body {
+            background: #ececec;
+            font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+            color: #333;
+        }
+
+        .factura {
+            width: 950px;
+            margin: 30px auto;
+            background: white;
+            padding: 50px;
+            box-shadow: 0 0 25px rgba(0,0,0,.15);
+            border-radius: 8px;
+        }
+
+        /* ── Encabezado ── */
+        .encabezado {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 3px solid #7a4f24;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .empresa-info { display: flex; align-items: center; gap: 16px; }
+
+        .empresa-logo {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .empresa-nombre {
+            font-size: 32px;
+            color: #7a4f24;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .empresa-subtitulo {
+            color: #888;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .empresa-contacto {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .factura-info { text-align: right; }
+
+        .factura-titulo {
+            font-size: 28px;
+            color: #7a4f24;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .factura-info p {
+            margin: 4px 0;
+            font-size: 13px;
+            color: #555;
+        }
+
+        .factura-info b { color: #333; }
+
+        .estado {
+            display: inline-block;
+            padding: 5px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 12px;
+            color: white;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .pagada   { background: #28a745; }
+        .pendiente { background: #ffc107; color: #333; }
+        .vencida  { background: #dc3545; }
+
+        /* ── Bloques emisor / cliente ── */
+        .bloques {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .caja {
+            flex: 1;
+            background: #faf7f4;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #D2B48C;
+        }
+
+        .caja h3 {
+            margin-bottom: 10px;
+            color: #7a4f24;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .caja p {
+            margin: 3px 0;
+            font-size: 13px;
+            color: #555;
+        }
+
+        .caja b { color: #333; }
+
+        /* ── Tabla de productos ── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        th {
+            background: #7a4f24;
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        th:first-child { border-radius: 8px 0 0 0; }
+        th:last-child  { border-radius: 0 8px 0 0; }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 13px;
+        }
+
+        tbody tr:hover { background: #faf7f4; }
+
+        tbody tr:last-child td { border-bottom: none; }
+
+        .sin-productos {
+            text-align: center;
+            color: #999;
+            font-style: italic;
+            padding: 30px;
+        }
+
+        /* ── Resumen de totales ── */
+        .resumen {
+            width: 350px;
+            margin-left: auto;
+            margin-bottom: 30px;
+        }
+
+        .resumen table { margin-bottom: 0; }
+
+        .resumen td {
+            border: none;
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+
+        .resumen tr:last-child td {
+            font-size: 20px;
+            font-weight: bold;
+            border-top: 2px solid #7a4f24;
+            padding-top: 12px;
+            color: #7a4f24;
+        }
+
+        /* ── Observaciones ── */
+        .obs {
+            background: #faf7f4;
+            padding: 18px 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            font-size: 13px;
+            color: #555;
+        }
+
+        .obs b { color: #7a4f24; }
+
+        /* ── Pie de factura ── */
+        .pie {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 2px solid #f0e8df;
+            font-size: 11px;
+            color: #aaa;
+        }
+
+        /* ── Botones ── */
+        .botones {
+            margin-top: 30px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .btn {
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-imprimir {
+            background: #7a4f24;
+            color: white;
+        }
+
+        .btn-imprimir:hover {
+            background: #5e3a18;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(122,79,36,0.3);
+        }
+
+        .btn-cerrar {
+            background: #e9e2da;
+            color: #7a4f24;
+        }
+
+        .btn-cerrar:hover {
+            background: #d4cac0;
+        }
+
+        /* ── Impresión ── */
+        @@media print {
+            body { background: white; }
 
             .factura {
-                width: 950px;
-                margin: 30px auto;
-                background: white;
-                padding: 45px;
-                box-shadow: 0 0 20px rgba(0,0,0,.20);
-            }
-
-            .encabezado {
-                display: flex;
-                justify-content: space-between;
-                align-items: flex-start;
-                border-bottom: 3px solid #7a4f24;
-                padding-bottom: 20px;
-            }
-
-            .logo {
-                font-size: 34px;
-                color: #7a4f24;
-                font-weight: bold;
-            }
-
-            .subtitulo {
-                color: #666;
-                margin-top: 5px;
-            }
-
-            .estado {
-                display: inline-block;
-                padding: 6px 15px;
-                border-radius: 20px;
-                font-weight: bold;
-                color: white;
-                margin-bottom: 15px;
-            }
-
-            .pagada {
-                background: #28a745;
-            }
-
-            .pendiente {
-                background: #ffc107;
-                color: black;
-            }
-
-            .vencida {
-                background: #dc3545;
-            }
-
-            .info {
-                text-align: right;
-            }
-
-            .bloques {
-                display: flex;
-                justify-content: space-between;
-                margin-top: 35px;
-            }
-
-            .caja {
-                width: 45%;
-                background: #f8f8f8;
-                padding: 18px;
-                border-radius: 10px;
-            }
-
-                .caja h3 {
-                    margin-bottom: 12px;
-                    color: #7a4f24;
-                }
-
-            table {
+                box-shadow: none;
+                margin: 0;
+                padding: 20px;
                 width: 100%;
-                border-collapse: collapse;
-                margin-top: 35px;
+                border-radius: 0;
             }
 
-            th {
-                background: #7a4f24;
-                color: white;
-                padding: 12px;
-            }
-
-            td {
-                padding: 12px;
-                border-bottom: 1px solid #ddd;
-            }
-
-            .resumen {
-                width: 350px;
-                margin-left: auto;
-                margin-top: 35px;
-            }
-
-                .resumen table {
-                    margin-top: 0;
-                }
-
-                .resumen td {
-                    border: none;
-                }
-
-            .total {
-                font-size: 22px;
-                font-weight: bold;
-                border-top: 2px solid #000;
-            }
-
-            .obs {
-                margin-top: 35px;
-                background: #f7f7f7;
-                padding: 15px;
-                border-radius: 8px;
-            }
-
-            .botones {
-                margin-top: 35px;
-                text-align: center;
-            }
-
-            button {
-                background: #7a4f24;
-                color: white;
-                border: none;
-                padding: 14px 25px;
-                border-radius: 8px;
-                cursor: pointer;
-                font-size: 16px;
-            }
-
-            @@media print {
-
-                body {
-                    background: white;
-                }
-
-                .factura {
-                    box-shadow: none;
-                    margin: 0;
-                    width: 100%;
-                }
-
-                .botones {
-                    display: none;
-                }
-            }
-
+            .botones { display: none !important; }
+            .pie { border-top-color: #ccc; }
+        }
     </style>
-
 </head>
-
 <body>
 
     <div class="factura">
 
+        <!-- ═══ ENCABEZADO ═══ -->
         <div class="encabezado">
-
             <div>
-
-                <div class="logo">
-
-                    CARPINTEC
-
+                <div class="empresa-info">
+                    <img src="/images/logo.png" alt="CARPINTEC Logo" class="empresa-logo" />
+                    <div>
+                        <div class="empresa-nombre">CARPINTEC</div>
+                        <div class="empresa-subtitulo">Carpintería y Diseño de Muebles</div>
+                        <div class="empresa-contacto">NIT: 901.XXX.XXX-X &nbsp;|&nbsp; Chía, Cundinamarca - Colombia</div>
+                    </div>
                 </div>
-
-                <div class="subtitulo">
-
-                    Carpintería y Diseño de Muebles
-
-                </div>
-
             </div>
-
-            <div class="info">
-
-                @if (Model.Estado == "Pagada")
-                {
-                    <span class="estado pagada">PAGADA</span>
+            <div class="factura-info">
+                @{
+                    var estadoClase = Model.Estado switch {
+                        "Pagada" => "pagada",
+                        "Pendiente" => "pendiente",
+                        "Vencida" => "vencida",
+                        _ => "pendiente"
+                    };
                 }
-
-                @if (Model.Estado == "Pendiente")
-                {
-                    <span class="estado pendiente">PENDIENTE</span>
-                }
-
-                @if (Model.Estado == "Vencida")
-                {
-                    <span class="estado vencida">VENCIDA</span>
-                }
-
-                <p><b>Factura:</b> @Model.Folio</p>
-
-                <p><b>Fecha:</b> @Model.Fecha.ToString("dd/MM/yyyy")</p>
-
-                <p><b>Vencimiento:</b> @(Model.FechaVencimiento?.ToString("dd/MM/yyyy") ?? "-")</p>
-
+                <span class="estado @estadoClase">@Model.Estado?.ToUpper()</span>
+                <div class="factura-titulo">Factura</div>
+                <p><b>N°:</b> @(Model.NumeroFactura ?? $"FAC-{Model.IdVenta}")</p>
+                <p><b>Fecha:</b> @Model.FechaVenta.ToString("dd/MM/yyyy")</p>
+                <p><b>Método de Pago:</b> @(Model.MetodoPago ?? "N/A")</p>
             </div>
-
         </div>
 
+        <!-- ═══ EMISOR / CLIENTE ═══ -->
         <div class="bloques">
-
             <div class="caja">
-
-                <h3>EMISOR</h3>
-
-                <b>CARPINTEC S.A.S.</b><br />
-
-                Carpintería y Diseño<br />
-
-                Chía - Cundinamarca<br />
-
-                Colombia
-
+                <h3>📋 Datos del Emisor</h3>
+                <p><b>CARPINTEC S.A.S.</b></p>
+                <p>Carpintería y Diseño de Muebles</p>
+                <p>Chía - Cundinamarca, Colombia</p>
+                <p>Tel: (601) 000-0000</p>
             </div>
-
             <div class="caja">
-
-                <h3>CLIENTE</h3>
-
-                <b>@Model.Cliente</b>
-
+                <h3>👤 Datos del Cliente</h3>
+                @if (Model.IdClienteNavigation != null)
+                {
+                    <p><b>@Model.IdClienteNavigation.Nombre @Model.IdClienteNavigation.Apellido</b></p>
+                    <p>Doc: @(Model.IdClienteNavigation.Documento ?? "N/A")</p>
+                    <p>Tel: @(Model.IdClienteNavigation.Telefono ?? "N/A")</p>
+                    <p>Email: @(Model.IdClienteNavigation.Correo ?? "N/A")</p>
+                    <p>Dir: @(Model.IdClienteNavigation.Direccion ?? "N/A")</p>
+                }
+                else
+                {
+                    <p><i>Cliente no disponible</i></p>
+                }
             </div>
-
         </div>
 
+        <!-- ═══ TABLA DE PRODUCTOS ═══ -->
         <table>
-
             <thead>
-
                 <tr>
-
+                    <th style="width:5%">#</th>
                     <th>Descripción</th>
-
-                    <th>Cantidad</th>
-
-                    <th>Precio</th>
-
-                    <th>Total</th>
-
+                    <th>Material</th>
+                    <th style="text-align:center">Cant.</th>
+                    <th style="text-align:right">Precio Unit.</th>
+                    <th style="text-align:right">Subtotal</th>
                 </tr>
-
             </thead>
-
             <tbody>
-
-                @if (Model.DetallesFactura != null && Model.DetallesFactura.Any())
+                @if (Model.IdPedidoNavigation?.DetallePedidos != null && Model.IdPedidoNavigation.DetallePedidos.Any())
                 {
-                    @foreach (var item in Model.DetallesFactura)
+                    var idx = 1;
+                    @foreach (var detalle in Model.IdPedidoNavigation.DetallePedidos)
                     {
                         <tr>
-
-                            <td>@item.Producto?.Nombre</td>
-
-                            <td style="text-align:center">
-                                @item.Cantidad
-                            </td>
-
-                            <td style="text-align:right">
-                                $@item.PrecioUnitario.ToString("N0")
-                            </td>
-
-                            <td style="text-align:right">
-                                $@item.Subtotal.ToString("N0")
-                            </td>
-
+                            <td>@(idx++)</td>
+                            <td><b>@(detalle.IdProductoNavigation?.Nombre ?? "Producto")</b></td>
+                            <td>@(detalle.Material ?? "-")</td>
+                            <td style="text-align:center">@detalle.Cantidad</td>
+                            <td style="text-align:right">$@detalle.PrecioUnitario.ToString("N0")</td>
+                            <td style="text-align:right">$@detalle.Subtotal.ToString("N0")</td>
                         </tr>
                     }
                 }
                 else
                 {
                     <tr>
-                        <td colspan="4" style="text-align:center">
+                        <td colspan="6" class="sin-productos">
                             No hay productos registrados para esta factura.
                         </td>
                     </tr>
                 }
-
             </tbody>
-
         </table>
 
+        <!-- ═══ RESUMEN DE TOTALES ═══ -->
         <div class="resumen">
-
             <table>
-
                 <tr>
-
                     <td>Subtotal</td>
-
-                    <td style="text-align:right">
-                        $@(Model.Subtotal?.ToString("N0") ?? "0")
-                    </td>
-
+                    <td style="text-align:right">$@Model.Subtotal.ToString("N0")</td>
                 </tr>
-
                 <tr>
-
-                    <td>IVA</td>
-
-                    <td style="text-align:right">
-                        $@(Model.IVA?.ToString("N0") ?? "0")
-                    </td>
-
+                    <td>IVA (19%)</td>
+                    <td style="text-align:right">$@Model.IVA.ToString("N0")</td>
                 </tr>
-
                 <tr>
-
-                    <td>Descuento</td>
-
-                    <td style="text-align:right">
-                        $@(Model.Descuento?.ToString("N0") ?? "0")
-                    </td>
-
-                </tr>
-
-                <tr>
-
-                    <td>Instalación</td>
-
-                    <td style="text-align:right">
-                        $@(Model.CostoInstalacion?.ToString("N0") ?? "0")
-                    </td>
-
-                </tr>
-
-                <tr>
-
-                    <td>Transporte</td>
-
-                    <td style="text-align:right">
-                        $@(Model.CostoTransporte?.ToString("N0") ?? "0")
-                    </td>
-
-                </tr>
-
-                <tr class="total">
-
                     <td>TOTAL</td>
-
-                    <td style="text-align:right">
-
-                        $@Model.Total.ToString("N0")
-
-                    </td>
-
+                    <td style="text-align:right">$@Model.Total.ToString("N0")</td>
                 </tr>
-
             </table>
-
         </div>
 
+        <!-- ═══ OBSERVACIONES ═══ -->
         <div class="obs">
-
-            <b>Método de pago:</b>
-
-            @(Model.MetodoPago ?? "-")
-
-            <br /><br />
-
-            <b>Observaciones:</b>
-
-            @(Model.Observaciones ?? "Sin observaciones")
-
+            <b>Observaciones:</b> @(Model.Observaciones ?? "Sin observaciones")
         </div>
 
+        <!-- ═══ PIE ═══ -->
+        <div class="pie">
+            <p>Esta factura fue generada electrónicamente por <b>CARPINTEC S.A.S.</b></p>
+            <p style="margin-top:4px">Gracias por su preferencia. — www.carpintec.com</p>
+        </div>
+
+        <!-- ═══ BOTONES (solo pantalla) ═══ -->
         <div class="botones">
-
-            <button onclick="window.print()">
-
-                🖨 Imprimir Factura
-
+            <button class="btn btn-imprimir" onclick="window.print()">
+                🖨 Imprimir / Descargar PDF
             </button>
-
+            <button class="btn btn-cerrar" onclick="window.close()">
+                ✕ Cerrar
+            </button>
         </div>
 
     </div>
 
 </body>
-
 </html>

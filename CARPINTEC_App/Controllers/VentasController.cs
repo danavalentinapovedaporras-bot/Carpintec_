@@ -54,6 +54,8 @@ namespace CARPINTEC_App.Controllers
             var query = _context.Ventas
                 .Include(v => v.IdClienteNavigation)
                 .Include(v => v.IdPedidoNavigation)
+                    .ThenInclude(p => p.DetallePedidos)
+                        .ThenInclude(d => d.IdProductoNavigation)
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(search))
@@ -121,11 +123,14 @@ namespace CARPINTEC_App.Controllers
             return View(ventasPaginadas);
         }
 
+        [AllowAnonymous]
         public IActionResult VerFactura(int id)
         {
             var venta = _context.Ventas
                 .Include(v => v.IdClienteNavigation)
                 .Include(v => v.IdPedidoNavigation)
+                    .ThenInclude(p => p.DetallePedidos)
+                        .ThenInclude(d => d.IdProductoNavigation)
                 .FirstOrDefault(v => v.IdVenta == id);
 
             if (venta == null)

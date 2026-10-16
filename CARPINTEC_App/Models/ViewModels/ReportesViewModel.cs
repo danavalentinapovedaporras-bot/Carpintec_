@@ -43,11 +43,13 @@ namespace CARPINTEC_App.Models.ViewModels
     public class VentaMensualItem
     {
         public string Mes { get; set; } = "";
+        public string MesCompleto { get; set; } = "";
         public int MesNumero { get; set; }
         public int Anio { get; set; }
         public decimal Total { get; set; }
         public int PorcentajeAltura { get; set; }
         public bool EsMesMaximo { get; set; }
+        public string ColorHex { get; set; } = "#D2B48C";
     }
 
     public class TopProductoItem

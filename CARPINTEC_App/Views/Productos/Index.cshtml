@@ -272,32 +272,50 @@
                     ? "bg-tertiary text-white"
                     : "bg-red-100 text-red-800";
 
-                <div class="bg-surface-container-lowest rounded-xl overflow-hidden product-card-shadow border border-border-subtle producto-card"
+                <div class="bg-surface-container-lowest rounded-xl overflow-hidden product-card-shadow border border-border-subtle producto-card group hover:shadow-md transition-shadow"
                      data-nombre="@producto.Nombre?.ToLower()"
                      data-codigo="@producto.Codigo?.ToLower()">
 
-                    @* --- Imagen del producto --- *@
-                    <div class="h-32 relative bg-surface-container">
-                        @if (!string.IsNullOrEmpty(producto.Imagen))
-                        {
-                            @* Imagen cargada por el usuario *@
-                            <img alt="@producto.Nombre"
-                                 class="w-full h-full object-cover"
-                                 src="@producto.Imagen" />
+                    @* --- Imagen del producto (fotografía siempre visible) --- *@
+                    <div class="h-44 relative bg-surface-container overflow-hidden">
+                        @{
+                            var imagenCalculada = CARPINTEC_App.Controllers.ProductosController.ObtenerImagenPorDefecto(producto.Categoria, producto.Nombre);
+                            var imagenUrl = !string.IsNullOrWhiteSpace(producto.Imagen) && producto.Imagen != "/images/Wooden.jpeg" && producto.Imagen != "/images/mesac.jpeg"
+                                ? (producto.Imagen.StartsWith("~") ? Url.Content(producto.Imagen) : producto.Imagen)
+                                : imagenCalculada;
+
+                            var catProd = (producto.Categoria ?? "").ToLowerInvariant();
+                            var nomProd = (producto.Nombre ?? "").ToLowerInvariant();
+                            var esEscritorio = catProd.Contains("escritorio") || nomProd.Contains("escritorio") || nomProd.Contains("despacho");
+
+                            if (esEscritorio && (string.IsNullOrWhiteSpace(producto.Imagen) || producto.Imagen == "/images/mesac.jpeg" || producto.Imagen == "/images/mesa.jpeg" || producto.Imagen == "/images/Wooden.jpeg"))
+                            {
+                                imagenUrl = "/images/escritorio.jpeg";
+                            }
                         }
-                        else
-                        {
-                            @* Placeholder cuando no hay imagen *@
-                            <div class="w-full h-full flex items-center justify-center">
-                                <span class="material-symbols-outlined text-4xl text-outline-variant">image</span>
-                            </div>
-                        }
+                        <img alt="@producto.Nombre"
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                             src="@imagenUrl"
+                             loading="lazy"
+                             onerror="manejarErrorImagenProducto(this, '@(producto.Categoria?.Replace("'", "\\'"))', '@(producto.Nombre?.Replace("'", "\\'"))');" />
+
                         @* Badge de estado (Activo/Inactivo) *@
                         <div class="absolute top-2 right-2">
-                            <span class="@badgeClass text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">
+                            <span class="@badgeClass text-[9px] font-bold px-2.5 py-0.5 rounded-full uppercase shadow-sm">
                                 @producto.Estado
                             </span>
                         </div>
+
+                        @* Categoría sobre la foto si existe *@
+                        @if (!string.IsNullOrEmpty(producto.Categoria))
+                        {
+                            <div class="absolute bottom-2 left-2">
+                                <span class="bg-black/60 backdrop-blur-sm text-white text-[10px] font-medium px-2 py-0.5 rounded-md flex items-center gap-1 shadow-sm">
+                                    <span class="material-symbols-outlined text-[11px]">category</span>
+                                    @producto.Categoria
+                                </span>
+                            </div>
+                        }
                     </div>
 
                     @* --- Información del producto --- *@
@@ -438,11 +456,12 @@
                 @* Campo: Imagen del producto (subida de archivo) *@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Fotografía del Producto</label>
+                    <p class="text-xs text-gray-500 mb-2">Puedes subir una foto propia o el sistema asignará automáticamente una fotografía de carpintería según la categoría.</p>
                     <input type="file" name="Imagen" accept="image/*" onchange="previsualizarImagen(event, 'preview-img-crear')"
                            class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#D2B48C]/20 file:text-wood-dark hover:file:bg-[#D2B48C]/30">
                     @* Vista previa de la imagen seleccionada *@
                     <div class="mt-2">
-                        <img id="preview-img-crear" src="#" alt="Vista previa" class="hidden h-24 w-24 object-cover rounded-lg border border-gray-200">
+                        <img id="preview-img-crear" src="#" alt="Vista previa" class="hidden h-28 w-28 object-cover rounded-xl border border-gray-200 shadow-sm">
                     </div>
                 </div>
 
@@ -517,8 +536,8 @@
                 @* Campos en 2 columnas: Categoría y Material *@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Categoría</label>
-                        <select name="Categoria" id="edit-categoria"
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Categoría *</label>
+                        <select name="Categoria" id="edit-categoria" required
                                 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#D2B48C]">
                             <option value="">Seleccione categoría</option>
                             <option value="Sillas">Sillas</option>
@@ -528,6 +547,7 @@
                             <option value="Closets">Closets</option>
                             <option value="Estantes">Estantes</option>
                             <option value="Comedores">Comedores</option>
+                            <option value="Cocinas">Cocinas</option>
                             <option value="Accesorios">Accesorios</option>
                             <option value="Otro">Otro</option>
                         </select>
@@ -556,15 +576,37 @@
                     </select>
                 </div>
 
-                @* Campo: Nueva imagen (opcional, solo si quiere cambiarla) *@
+                @* Campo: Fotografía del producto *@
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Cambiar Imagen (opcional)</label>
-                    @* Imagen actual *@
-                    <img id="edit-imagen-actual" src="" alt="Imagen actual" class="hidden h-20 w-20 object-cover rounded-lg border border-gray-200 mb-2">
-                    <input type="file" name="Imagen" accept="image/*" onchange="previsualizarImagen(event, 'edit-preview-img')"
-                           class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#D2B48C]/20 file:text-wood-dark hover:file:bg-[#D2B48C]/30">
-                    <div class="mt-2">
-                        <img id="edit-preview-img" src="#" alt="Vista previa" class="hidden h-24 w-24 object-cover rounded-lg border border-gray-200">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Fotografía del Producto</label>
+                    <p class="text-xs text-gray-500 mb-2">Haz clic en <strong>"Subir / Cambiar Foto"</strong> para seleccionar una nueva imagen desde tu dispositivo.</p>
+                    <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-xl border border-gray-200">
+                        <div class="relative shrink-0">
+                            <img id="edit-imagen-actual" src="/images/Wooden.jpeg" alt="Imagen actual"
+                                 class="h-24 w-24 object-cover rounded-xl border-2 border-[#D2B48C] shadow-sm bg-white"
+                                 onerror="this.onerror=null; this.src='/images/Wooden.jpeg';">
+                        </div>
+                        <div class="flex-1 space-y-2">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <label for="edit-imagen-file"
+                                       class="cursor-pointer inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#D2B48C] hover:brightness-95 text-black font-bold text-xs rounded-lg transition shadow-sm select-none"
+                                       style="background-color: #D2B48C; color: #000000;">
+                                    <span class="material-symbols-outlined text-[18px]">upload</span>
+                                    <span>Subir / Cambiar Foto</span>
+                                </label>
+                                <button type="button" id="btn-quitar-imagen-edit" onclick="limpiarImagenEdicion()"
+                                        class="hidden text-xs text-red-600 hover:text-red-800 font-semibold flex items-center gap-1 px-2.5 py-1.5 bg-red-50 hover:bg-red-100 rounded-lg transition">
+                                    <span class="material-symbols-outlined text-[14px]">undo</span> Cancelar cambio
+                                </button>
+                            </div>
+                            <input type="file" id="edit-imagen-file" name="Imagen" accept="image/*" onchange="previsualizarImagenEdicion(event)"
+                                   class="hidden">
+                            <div id="edit-imagen-badge" class="hidden text-xs text-green-700 bg-green-50 border border-green-200 px-2.5 py-1 rounded-md flex items-center gap-1 font-medium">
+                                <span class="material-symbols-outlined text-[14px] text-green-600">check_circle</span>
+                                <span id="edit-imagen-nombre-archivo">Imagen lista para guardar</span>
+                            </div>
+                            <p class="text-[11px] text-gray-400">Formatos soportados: JPG, PNG, WEBP, JPEG.</p>
+                        </div>
                     </div>
                 </div>
 
@@ -609,10 +651,9 @@
 
             @* Imagen del producto *@
             <div class="mb-4">
-                <img id="detalle-imagen" src="" alt="Producto" class="hidden w-full h-48 object-cover rounded-lg border border-gray-200">
-                <div id="detalle-sin-imagen" class="w-full h-48 bg-surface-container rounded-lg flex items-center justify-center hidden">
-                    <span class="material-symbols-outlined text-5xl text-outline-variant">image</span>
-                </div>
+                <img id="detalle-imagen" src="/images/Wooden.jpeg" alt="Producto"
+                     class="w-full h-52 object-cover rounded-xl border border-gray-200 shadow-sm"
+                     onerror="this.onerror=null; this.src='/images/Wooden.jpeg';">
             </div>
 
             @* Información detallada del producto *@
@@ -720,6 +761,141 @@
         }
 
         // ============================================================
+        // Función: resolverImagenJS
+        // Asigna imagen representativa en el cliente según categoría o nombre
+        // ============================================================
+        // Función: manejarErrorImagenProducto
+        // Fallback dinámico si una imagen falla al cargar en el cliente
+        // ============================================================
+        function manejarErrorImagenProducto(img, categoria, nombre) {
+            img.onerror = null;
+            var cat = (categoria || '').toLowerCase();
+            var nom = (nombre || '').toLowerCase();
+            if (cat.includes('escritorio') || nom.includes('escritorio') || nom.includes('despacho')) {
+                img.src = '/images/escritorio.jpeg';
+                // Fallback secundario a foto de escritorio de alta resolución si el archivo local está en proceso de creación
+                img.onerror = function () {
+                    this.onerror = null;
+                    this.src = 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=600';
+                };
+            } else {
+                img.src = resolverImagenJS(categoria, nombre);
+            }
+        }
+
+        // ============================================================
+        // Función: resolverImagenJS
+        // Asigna imagen representativa en el cliente según categoría o nombre
+        // ============================================================
+        function resolverImagenJS(categoria, nombre) {
+            categoria = (categoria || '').toLowerCase();
+            nombre = (nombre || '').toLowerCase();
+
+            // 1. Escritorios (evaluar antes de mesas)
+            if (categoria.includes('escritorio') || nombre.includes('escritorio') || nombre.includes('despacho') || categoria.includes('despacho') || nombre.includes('estudio')) {
+                return '/images/escritorio.jpeg';
+            }
+
+            // 2. Sillas
+            if (categoria.includes('silla') || nombre.includes('silla') || nombre.includes('sillon') || nombre.includes('sillón')) {
+                if (nombre.includes('cedro')) return '/images/silladecedro.jpeg';
+                return '/images/sillas.jpeg';
+            }
+
+            // 3. Mesas
+            if (categoria.includes('mesa') || nombre.includes('mesa')) {
+                if (nombre.includes('noche')) return '/images/mesadenoche.jpeg';
+                if (nombre.includes('centro') || nombre.includes('mesita') || nombre.includes('cafe') || nombre.includes('café')) return '/images/mesita.jpeg';
+                return '/images/mesa.jpeg';
+            }
+
+            // 4. Camas
+            if (categoria.includes('cama') || nombre.includes('cama') || categoria.includes('dormitorio') || nombre.includes('dormitorio') || nombre.includes('cabecero')) {
+                return '/images/cama.jpeg';
+            }
+
+            // 5. Closets / Armarios
+            if (categoria.includes('closet') || nombre.includes('closet') || categoria.includes('armario') || nombre.includes('armario') || nombre.includes('ropero')) {
+                return nombre.includes('roble') ? '/images/closetroble.jpeg' : '/images/closet.jpeg';
+            }
+
+            // 6. Estantes / Libreros / Repisas
+            if (categoria.includes('estante') || nombre.includes('estante') || nombre.includes('librero') || categoria.includes('repisa') || nombre.includes('biblioteca') || categoria.includes('biblioteca')) {
+                return '/images/estanteria.jpeg';
+            }
+
+            // 7. Comedores
+            if (categoria.includes('comedor') || nombre.includes('comedor')) {
+                return '/images/comedor.jpeg';
+            }
+
+            // 8. Cocinas
+            if (categoria.includes('cocina') || nombre.includes('cocina')) {
+                if (nombre.includes('cedro')) return '/images/Cocinadecedro.jpeg';
+                if (nombre.includes('roble')) return '/images/Cocinaderoble.jpeg';
+                if (nombre.includes('rústica') || nombre.includes('rustica')) return '/images/Cocina_rústica.jpeg';
+                return '/images/cocina.jpeg';
+            }
+
+            // 9. Accesorios / Organizadores
+            if (categoria.includes('accesorio') || nombre.includes('organiza') || categoria.includes('organiza') || nombre.includes('caja')) {
+                return '/images/organizador.jpeg';
+            }
+
+            // 10. Tocadores / Vanity
+            if (nombre.includes('vanity') || nombre.includes('tocador') || categoria.includes('vanity') || categoria.includes('tocador')) {
+                return '/images/Tocador elegante.jpeg';
+            }
+
+            return '/images/Wooden.jpeg';
+        }
+
+        // ============================================================
+        // Función: previsualizarImagenEdicion
+        // Previsualiza la nueva imagen seleccionada en el modal de edición
+        // ============================================================
+        function previsualizarImagenEdicion(event) {
+            var input = event.target;
+            if (input.files && input.files[0]) {
+                var file = input.files[0];
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var imgActual = document.getElementById('edit-imagen-actual');
+                    imgActual.src = e.target.result;
+
+                    var badge = document.getElementById('edit-imagen-badge');
+                    var txtNombre = document.getElementById('edit-imagen-nombre-archivo');
+                    if (badge) badge.classList.remove('hidden');
+                    if (txtNombre) txtNombre.textContent = file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB) listo para guardar';
+
+                    var btnQuitar = document.getElementById('btn-quitar-imagen-edit');
+                    if (btnQuitar) btnQuitar.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // ============================================================
+        // Función: limpiarImagenEdicion
+        // Cancela la selección de una nueva imagen y restaura la original
+        // ============================================================
+        function limpiarImagenEdicion() {
+            var fileInput = document.getElementById('edit-imagen-file');
+            if (fileInput) fileInput.value = '';
+
+            var imgActual = document.getElementById('edit-imagen-actual');
+            if (imgActual && imgActual.dataset.original) {
+                imgActual.src = imgActual.dataset.original;
+            }
+
+            var badge = document.getElementById('edit-imagen-badge');
+            if (badge) badge.classList.add('hidden');
+
+            var btnQuitar = document.getElementById('btn-quitar-imagen-edit');
+            if (btnQuitar) btnQuitar.classList.add('hidden');
+        }
+
+        // ============================================================
         // Función: abrirModalEditar
         // Carga los datos del producto por AJAX (fetch) y abre el modal
         // de edición con los campos pre-llenados
@@ -729,32 +905,71 @@
             // Cerrar modal de detalles si está abierto
             document.getElementById('modal-detalles').classList.add('hidden');
 
+            // Resetear input de archivo y controles de imagen
+            limpiarImagenEdicion();
+
             // Hacer petición GET al servidor para obtener datos del producto
             fetch('/Productos/Editar/' + id)
                 .then(function (response) { return response.json(); })
                 .then(function (data) {
                     // Llenar cada campo del formulario de edición con los datos recibidos
-                    document.getElementById('edit-id').value = data.idProducto;
-                    document.getElementById('edit-nombre').value = data.nombre || '';
-                    document.getElementById('edit-codigo').value = data.codigo || '';
-                    document.getElementById('edit-precio').value = data.precio || '';
-                    document.getElementById('edit-categoria').value = data.categoria || '';
-                    document.getElementById('edit-material').value = data.material || '';
-                    document.getElementById('edit-medidas').value = data.medidas || '';
-                    document.getElementById('edit-estado').value = data.estado || 'Activo';
-                    document.getElementById('edit-descripcion').value = data.descripcion || '';
-
-                    // Mostrar imagen actual si existe
-                    var imgActual = document.getElementById('edit-imagen-actual');
-                    if (data.imagen) {
-                        imgActual.src = data.imagen;
-                        imgActual.classList.remove('hidden');
-                    } else {
-                        imgActual.classList.add('hidden');
+                    var prodId = data.idProducto || data.IdProducto || id;
+                    document.getElementById('edit-id').value = prodId;
+                    document.getElementById('edit-nombre').value = data.nombre || data.Nombre || '';
+                    document.getElementById('edit-codigo').value = data.codigo || data.Codigo || '';
+                    document.getElementById('edit-precio').value = (data.precio !== undefined && data.precio !== null) ? data.precio : (data.Precio || '');
+                    
+                    // Asignación segura de Categoría
+                    var catVal = data.categoria || data.Categoria || '';
+                    var selectCat = document.getElementById('edit-categoria');
+                    if (selectCat && catVal) {
+                        selectCat.value = catVal;
+                        // Si no coincide exactamente (por ejemplo 'Escritorio' vs 'Escritorios'), buscar coincidencia parcial
+                        if (!selectCat.value) {
+                            var encontrada = false;
+                            for (var i = 0; i < selectCat.options.length; i++) {
+                                var optVal = selectCat.options[i].value;
+                                if (optVal && (optVal.toLowerCase() === catVal.toLowerCase() ||
+                                               optVal.toLowerCase().includes(catVal.toLowerCase()) ||
+                                               catVal.toLowerCase().includes(optVal.toLowerCase()))) {
+                                    selectCat.selectedIndex = i;
+                                    encontrada = true;
+                                    break;
+                                }
+                            }
+                            if (!encontrada) {
+                                var newOpt = document.createElement('option');
+                                newOpt.value = catVal;
+                                newOpt.textContent = catVal;
+                                newOpt.selected = true;
+                                selectCat.appendChild(newOpt);
+                            }
+                        }
                     }
+                    
+                    document.getElementById('edit-material').value = data.material || data.Material || '';
+                    document.getElementById('edit-medidas').value = data.medidas || data.Medidas || '';
+                    document.getElementById('edit-estado').value = data.estado || data.Estado || 'Activo';
+                    document.getElementById('edit-descripcion').value = data.descripcion || data.Descripcion || '';
 
-                    // Ocultar vista previa de nueva imagen
-                    document.getElementById('edit-preview-img').classList.add('hidden');
+                    // Mostrar imagen actual con fallback
+                    var imgActual = document.getElementById('edit-imagen-actual');
+                    var imgUrl = data.imagen || data.Imagen || resolverImagenJS(data.categoria, data.nombre);
+                    var catEdit = (data.categoria || data.Categoria || '').toLowerCase();
+                    var nomEdit = (data.nombre || data.Nombre || '').toLowerCase();
+                    if (catEdit.includes('escritorio') || nomEdit.includes('escritorio') || nomEdit.includes('despacho')) {
+                        if (!imgUrl || imgUrl.includes('mesac') || imgUrl.includes('Wooden') || imgUrl.includes('mesa.jpeg')) {
+                            imgUrl = '/images/escritorio.jpeg';
+                        }
+                    }
+                    imgActual.src = imgUrl;
+                    imgActual.dataset.original = imgUrl;
+                    imgActual.onerror = function () {
+                        this.onerror = null;
+                        this.src = catEdit.includes('escritorio') || nomEdit.includes('escritorio')
+                            ? 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=600'
+                            : '/images/Wooden.jpeg';
+                    };
 
                     // Mostrar el modal de edición
                     document.getElementById('modal-editar').classList.remove('hidden');
@@ -800,17 +1015,23 @@
                         estadoSpan.className = 'text-[10px] font-bold px-3 py-1 rounded-full uppercase bg-red-100 text-red-800';
                     }
 
-                    // Mostrar imagen o placeholder
+                    // Mostrar imagen con fallback
                     var imgDetalle = document.getElementById('detalle-imagen');
-                    var sinImagen = document.getElementById('detalle-sin-imagen');
-                    if (data.imagen) {
-                        imgDetalle.src = data.imagen;
-                        imgDetalle.classList.remove('hidden');
-                        sinImagen.classList.add('hidden');
-                    } else {
-                        imgDetalle.classList.add('hidden');
-                        sinImagen.classList.remove('hidden');
+                    var imgUrl = data.imagen || resolverImagenJS(data.categoria, data.nombre);
+                    var catDet = (data.categoria || '').toLowerCase();
+                    var nomDet = (data.nombre || '').toLowerCase();
+                    if (catDet.includes('escritorio') || nomDet.includes('escritorio') || nomDet.includes('despacho')) {
+                        if (!data.imagen || data.imagen.includes('mesac') || data.imagen.includes('Wooden') || data.imagen.includes('mesa.jpeg')) {
+                            imgUrl = '/images/escritorio.jpeg';
+                        }
                     }
+                    imgDetalle.src = imgUrl;
+                    imgDetalle.onerror = function () {
+                        this.onerror = null;
+                        this.src = catDet.includes('escritorio') || nomDet.includes('escritorio')
+                            ? 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=600'
+                            : '/images/Wooden.jpeg';
+                    };
 
                     // Configurar botón eliminar con el ID del producto
                     document.getElementById('detalle-eliminar-id').value = data.idProducto;

@@ -7,6 +7,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Carpintec - Reportes y Estadísticas</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- INICIO: Fuentes de Google - Work Sans -->
     <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
@@ -193,20 +194,36 @@
         <div class="space-y-gutter flex-1">
             <!-- CONTROLS & EXPORT -->
             <section class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 controls-section no-print">
-                <!-- Selector de período dinámico conectado al controlador -->
-                <div class="flex bg-surface-container-low p-1 rounded-xl border border-outline-variant shadow-sm">
-                    <a href="@Url.Action("Index", "Reportes", new { periodo = "mes", anio = Model.AnioSeleccionado })"
-                       class="px-6 py-2 rounded-lg font-bold font-title-md text-title-md transition-all @(Model.PeriodoSeleccionado == "mes" ? "bg-primary text-black" : "text-black hover:bg-surface-container-high")">
-                        Mes
-                    </a>
-                    <a href="@Url.Action("Index", "Reportes", new { periodo = "trimestre", anio = Model.AnioSeleccionado })"
-                       class="px-6 py-2 rounded-lg font-bold font-title-md text-title-md transition-all @(Model.PeriodoSeleccionado == "trimestre" ? "bg-primary text-black" : "text-black hover:bg-surface-container-high")">
-                        Trimestre
-                    </a>
-                    <a href="@Url.Action("Index", "Reportes", new { periodo = "anio", anio = Model.AnioSeleccionado })"
-                       class="px-6 py-2 rounded-lg font-bold font-title-md text-title-md transition-all @(Model.PeriodoSeleccionado == "anio" ? "bg-primary text-black" : "text-black hover:bg-surface-container-high")">
-                        Año
-                    </a>
+                <div class="flex flex-wrap items-center gap-3">
+                    <!-- Selector de período dinámico conectado al controlador -->
+                    <div class="flex bg-surface-container-low p-1 rounded-xl border border-outline-variant shadow-sm">
+                        <a href="@Url.Action("Index", "Reportes", new { periodo = "mes", anio = Model.AnioSeleccionado })"
+                           class="px-6 py-2 rounded-lg font-bold font-title-md text-title-md transition-all @(Model.PeriodoSeleccionado == "mes" ? "bg-primary text-black" : "text-black hover:bg-surface-container-high")">
+                            Mes
+                        </a>
+                        <a href="@Url.Action("Index", "Reportes", new { periodo = "trimestre", anio = Model.AnioSeleccionado })"
+                           class="px-6 py-2 rounded-lg font-bold font-title-md text-title-md transition-all @(Model.PeriodoSeleccionado == "trimestre" ? "bg-primary text-black" : "text-black hover:bg-surface-container-high")">
+                            Trimestre
+                        </a>
+                        <a href="@Url.Action("Index", "Reportes", new { periodo = "anio", anio = Model.AnioSeleccionado })"
+                           class="px-6 py-2 rounded-lg font-bold font-title-md text-title-md transition-all @(Model.PeriodoSeleccionado == "anio" ? "bg-primary text-black" : "text-black hover:bg-surface-container-high")">
+                            Año
+                        </a>
+                    </div>
+
+                    <!-- Selector de Año (solo a partir de 2025 y siguientes) -->
+                    <div class="flex items-center gap-2 bg-surface-container-low px-3 py-1.5 rounded-xl border border-outline-variant shadow-sm">
+                        <span class="material-symbols-outlined text-sm text-black">calendar_month</span>
+                        <label for="selectAnioTop" class="text-xs font-bold text-black uppercase tracking-wider">Año:</label>
+                        <select id="selectAnioTop"
+                                onchange="window.location.href='@Url.Action("Index", "Reportes")?periodo=@Model.PeriodoSeleccionado&anio=' + this.value"
+                                class="bg-surface-container-lowest border border-outline-variant/60 rounded-lg px-3 py-1 font-bold text-sm text-black cursor-pointer focus:border-[#D2B48C] focus:ring-1 focus:ring-[#D2B48C] outline-none">
+                            @foreach (var a in Model.AniosDisponibles)
+                            {
+                                <option value="@a" selected="@(a == Model.AnioSeleccionado)">@a</option>
+                            }
+                        </select>
+                    </div>
                 </div>
 
                 <div class="flex gap-3 w-full md:w-auto">
@@ -308,38 +325,55 @@
 
             <!-- ANALYTICS BENTO GRID -->
             <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Gráfica 1: Ventas por Mes (Datos reales de la BD) -->
-                <div class="lg:col-span-2 bg-surface-container-lowest p-card-padding rounded-xl border border-outline-variant card-shadow">
-                    <div class="flex justify-between items-center mb-6">
+                <!-- Gráfica 1: Ventas por Mes con Colores (Datos reales de la BD) -->
+                <div class="lg:col-span-2 bg-surface-container-lowest p-card-padding rounded-xl border border-outline-variant card-shadow flex flex-col justify-between">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
                         <div>
-                            <h4 class="font-title-md text-title-md text-black font-bold">Ventas por Mes</h4>
-                            <p class="font-label-md text-label-md text-black opacity-70">Histórico de facturación de los últimos 6 meses</p>
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[#D2B48C]">bar_chart</span>
+                                <h4 class="font-title-md text-title-md text-black font-bold">Ventas por Mes</h4>
+                            </div>
+                            <p class="font-label-md text-label-md text-black opacity-70">Facturación mensual (@Model.AnioSeleccionado) con gráfico de barras multicolor</p>
                         </div>
-                        <select onchange="window.location.href='@Url.Action("Index", "Reportes")?periodo=@Model.PeriodoSeleccionado&anio=' + this.value"
-                                class="bg-surface-container-low border border-outline-variant rounded-lg px-3 py-1 font-label-md text-label-md text-black font-bold cursor-pointer">
-                            @foreach (var anio in Model.AniosDisponibles)
-                            {
-                                <option value="@anio" selected="@(anio == Model.AnioSeleccionado)">@anio</option>
-                            }
-                        </select>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-black/60">Año:</span>
+                            <select onchange="window.location.href='@Url.Action("Index", "Reportes")?periodo=@Model.PeriodoSeleccionado&anio=' + this.value"
+                                    class="bg-surface-container-low border border-outline-variant rounded-lg px-3 py-1 font-label-md text-label-md text-black font-bold cursor-pointer focus:ring-1 focus:ring-[#D2B48C]">
+                                @foreach (var anio in Model.AniosDisponibles)
+                                {
+                                    <option value="@anio" selected="@(anio == Model.AnioSeleccionado)">@anio</option>
+                                }
+                            </select>
+                        </div>
                     </div>
 
-                    <div class="h-64 flex items-end justify-between gap-4 px-4 pt-6">
+                    <!-- Mensaje si no hay ventas en el año seleccionado -->
+                    @if (Model.VentasPorMes.All(m => m.Total == 0))
+                    {
+                        <div class="flex items-center gap-2 p-2.5 bg-surface-container-low/80 border border-outline-variant/30 rounded-lg text-xs font-bold text-black mb-2">
+                            <span class="material-symbols-outlined text-base text-[#D2B48C]">info</span>
+                            <span>No se registran movimientos de ventas en el año @Model.AnioSeleccionado.</span>
+                        </div>
+                    }
+
+                    <!-- Canvas del Gráfico de Barras con Chart.js -->
+                    <div class="relative w-full h-64 md:h-72 my-2">
+                        <canvas id="chartVentasMensuales"></canvas>
+                    </div>
+
+                    <!-- Leyenda de colores por cada mes -->
+                    <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 mt-3 pt-3 border-t border-outline-variant/30">
                         @if (Model.VentasPorMes != null && Model.VentasPorMes.Any())
                         {
                             foreach (var item in Model.VentasPorMes)
                             {
-                                <div class="flex flex-col items-center gap-2 w-full group relative" title="@item.Mes @item.Anio: @item.Total.ToString("C0", System.Globalization.CultureInfo.CreateSpecificCulture("es-CO"))">
-                                    <!-- Tooltip al pasar el cursor -->
-                                    <div class="absolute -top-10 opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-xs font-bold px-2 py-1 rounded shadow-lg pointer-events-none whitespace-nowrap z-10">
-                                        @item.Total.ToString("C0", System.Globalization.CultureInfo.CreateSpecificCulture("es-CO"))
+                                <div class="flex items-center gap-2 p-1.5 rounded-lg bg-surface-container-low/40 border border-outline-variant/20 hover:scale-105 transition-transform cursor-default"
+                                     title="@item.MesCompleto: @item.Total.ToString("C0", System.Globalization.CultureInfo.CreateSpecificCulture("es-CO"))">
+                                    <span class="w-3 h-3 rounded-full shrink-0 shadow-sm" style="background-color: @item.ColorHex;"></span>
+                                    <div class="truncate leading-tight">
+                                        <span class="font-bold text-xs text-black block">@item.Mes</span>
+                                        <span class="text-[10px] text-black/70 font-semibold block">$@((item.Total / 1000000m).ToString("0.0"))M</span>
                                     </div>
-
-                                    <!-- Barra de altura dinámica -->
-                                    <div class="w-full @(item.EsMesMaximo ? "bg-primary" : "bg-surface-container-highest hover:bg-primary") rounded-t-lg transition-all duration-500 shadow-sm"
-                                         style="height: @(item.PorcentajeAltura)%;">
-                                    </div>
-                                    <span class="font-label-md text-label-md text-black font-bold">@item.Mes</span>
                                 </div>
                             }
                         }
@@ -408,18 +442,14 @@
                         {
                             foreach (var prod in Model.TopProductos)
                             {
-                                <div class="group cursor-pointer bg-surface p-3 rounded-xl border border-outline-variant/20 hover:border-[#D2B48C] transition-all">
+                                var imgProd = !string.IsNullOrEmpty(prod.Imagen)
+                                    ? prod.Imagen
+                                    : CARPINTEC_App.Controllers.ProductosController.ObtenerImagenPorDefecto("", prod.Nombre);
+                                var fallbackImg = CARPINTEC_App.Controllers.ProductosController.ObtenerImagenPorDefecto("", prod.Nombre);
+
+                                <div class="group cursor-pointer bg-surface p-3 rounded-xl border border-outline-variant/20 hover:border-[#D2B48C] transition-all shadow-sm">
                                     <div class="relative overflow-hidden rounded-xl mb-3 aspect-video bg-surface-container">
-                                        @if (!string.IsNullOrEmpty(prod.Imagen))
-                                        {
-                                            <img alt="@prod.Nombre" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="@prod.Imagen" onerror="this.onerror=null; this.src='/images/carpintera.jpeg';" />
-                                        }
-                                        else
-                                        {
-                                            <div class="w-full h-full flex items-center justify-center bg-secondary-container text-black">
-                                                <span class="material-symbols-outlined text-4xl">chair</span>
-                                            </div>
-                                        }
+                                        <img alt="@prod.Nombre" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="@imgProd" onerror="this.onerror=null; this.src='@fallbackImg';" />
                                         <div class="absolute top-2 right-2 bg-black text-white font-bold font-label-md text-xs px-2 py-1 rounded shadow">
                                             #@prod.Ranking TOP
                                         </div>
@@ -453,15 +483,90 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Animación interactiva de las barras del gráfico mensual
-            const bars = document.querySelectorAll('.bg-surface-container-highest, .bg-primary');
-            bars.forEach((bar, index) => {
-                const targetHeight = bar.style.height;
-                if (targetHeight && targetHeight !== '0%') {
-                    bar.style.height = '0%';
-                    setTimeout(() => {
-                        bar.style.height = targetHeight;
-                    }, 150 + (index * 80));
+            const canvasElem = document.getElementById('chartVentasMensuales');
+            if (!canvasElem) return;
+
+            const ctx = canvasElem.getContext('2d');
+            const labels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.VentasPorMes.Select(m => m.Mes)));
+            const labelsCompletos = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.VentasPorMes.Select(m => m.MesCompleto)));
+            const dataValores = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.VentasPorMes.Select(m => m.Total)));
+            const colores = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.VentasPorMes.Select(m => m.ColorHex)));
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Ventas (@Model.AnioSeleccionado)',
+                        data: dataValores,
+                        backgroundColor: colores,
+                        borderColor: colores,
+                        borderWidth: 1.5,
+                        borderRadius: 8,
+                        borderSkipped: false,
+                        hoverBackgroundColor: colores,
+                        hoverBorderWidth: 2.5,
+                        hoverBorderColor: '#000000'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeOutQuart'
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#1b1c1c',
+                            titleColor: '#ffffff',
+                            bodyColor: '#ffffff',
+                            titleFont: { family: 'Work Sans', size: 13, weight: 'bold' },
+                            bodyFont: { family: 'Work Sans', size: 12, weight: 'bold' },
+                            padding: 12,
+                            cornerRadius: 8,
+                            displayColors: true,
+                            callbacks: {
+                                title: function(items) {
+                                    const idx = items[0].dataIndex;
+                                    return (labelsCompletos[idx] || labels[idx]) + ' ' + @Model.AnioSeleccionado;
+                                },
+                                label: function(item) {
+                                    const valor = item.raw;
+                                    return ' Facturación: ' + new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(valor);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                font: { family: 'Work Sans', weight: 'bold', size: 12 },
+                                color: '#000000'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            suggestedMax: 1000000,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.06)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                font: { family: 'Work Sans', weight: 'bold', size: 11 },
+                                color: '#000000',
+                                callback: function(value) {
+                                    if (value >= 1000000) return '$' + (value / 1000000).toFixed(1) + 'M';
+                                    if (value >= 1000) return '$' + (value / 1000).toFixed(0) + 'k';
+                                    return '$' + value;
+                                }
+                            }
+                        }
+                    }
                 }
             });
         });
